@@ -1,0 +1,35 @@
+{
+    "files.exclude": {
+        "**/node_modules/**/android": true,
+        "**/node_modules/**/ios": true,
+        "**/android/app/build": true,
+        "**/android/.gradle": true
+    },
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/android/app/build": true,
+        "**/android/.gradle": true
+    },
+    "files.watcherExclude": {
+        "**/node_modules/**": true,
+        "**/android/app/build/**": true,
+        "**/android/.gradle/**": true
+    },
+    "java.import.exclusions": [
+        "**/node_modules/**",
+        "**/android/app/build/**",
+        "**/android/.gradle/**"
+    ],
+    "java.compile.nullAnalysis.mode": "disabled",
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.jdt.ls.java.home": "/usr/lib/jvm/java-17-openjdk-amd64",
+    "gradle.java.home": "/usr/lib/jvm/java-17-openjdk-amd64",
+    "java.configuration.runtimes": [
+        {
+            "name": "JavaSE-17",
+            "path": "/usr/lib/jvm/java-17-openjdk-amd64",
+            "default": true
+        }
+    ],
+    "css.lint.unknownAtRules": "ignore"
+}
