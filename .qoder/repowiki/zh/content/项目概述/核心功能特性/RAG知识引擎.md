@@ -14,6 +14,8 @@
 - [rag-store.ts](file://src/store/rag-store.ts)
 - [vectorization-queue.ts](file://src/lib/rag/vectorization-queue.ts)
 - [rag.tsx](file://app/(tabs)/rag.tsx)
+- [micro-graph-extractor.ts](file://src/lib/rag/micro-graph-extractor.ts)
+- [graph-extractor.ts](file://src/lib/rag/graph-extractor.ts)
 </cite>
 
 ## 目录
@@ -31,11 +33,13 @@
 ## 简介
 本技术文档面向Nexara的RAG知识引擎，系统阐述基于SQLite + FTS5的向量存储架构与知识图谱抽取、查询重写与重排序机制的实现原理，并提供内存管理、缓存与性能优化策略、使用示例与与聊天系统的集成模式及最佳实践。
 
+**更新** 新增JIT（Just-In-Time）微图谱提取功能，实现实时知识图谱构建，支持密度检查、缓存机制和动态提取，显著增强RAG系统的上下文丰富度。
+
 ## 项目结构
 RAG引擎主要由以下层次构成：
 - 数据层：SQLite数据库与FTS5全文索引，负责向量、文档、知识图谱与任务队列的持久化。
 - 向量化层：文档/记忆分块、嵌入生成、向量入库与检索。
-- 知识图谱层：实体与关系抽取、去重与合并、查询与可视化。
+- 知识图谱层：实体与关系抽取、去重与合并、查询与可视化，包括全量抽取和JIT实时提取两种模式。
 - 检索层：查询重写、混合检索（向量+关键词）、重排序与精排。
 - 应用层：RAG UI、向量化队列、进度与状态管理、与聊天系统集成。
 
@@ -59,6 +63,8 @@ VS["向量存储<br/>vector-store.ts"]
 end
 subgraph "知识图谱层"
 GStore["图存储<br/>graph-store.ts"]
+JIT["JIT微图谱提取<br/>micro-graph-extractor.ts"]
+FullKG["全量图谱抽取<br/>graph-extractor.ts"]
 end
 subgraph "数据层"
 DB["SQLite/FTS5<br/>schema.ts"]
@@ -75,9 +81,11 @@ Split --> Emb
 Emb --> VS
 VS --> DB
 GStore --> DB
+JIT --> GStore
+FullKG --> GStore
 ```
 
-图表来源
+**图表来源**
 - [rag.tsx](file://app/(tabs)/rag.tsx)
 - [rag-store.ts](file://src/store/rag-store.ts)
 - [vectorization-queue.ts](file://src/lib/rag/vectorization-queue.ts)
@@ -89,9 +97,11 @@ GStore --> DB
 - [embedding.ts](file://src/lib/rag/embedding.ts)
 - [vector-store.ts](file://src/lib/rag/vector-store.ts)
 - [graph-store.ts](file://src/lib/rag/graph-store.ts)
+- [micro-graph-extractor.ts](file://src/lib/rag/micro-graph-extractor.ts)
+- [graph-extractor.ts](file://src/lib/rag/graph-extractor.ts)
 - [schema.ts](file://src/lib/db/schema.ts)
 
-章节来源
+**章节来源**
 - [rag.tsx](file://app/(tabs)/rag.tsx)
 - [rag-store.ts](file://src/store/rag-store.ts)
 - [schema.ts](file://src/lib/db/schema.ts)
@@ -102,11 +112,12 @@ GStore --> DB
 - 嵌入生成：多提供商适配（OpenAI、Vertex AI、Gemini、本地模型），批量与单条调用。
 - 查询重写：多策略（HyDE、Multi-Query、Expansion）提升召回。
 - 重排序：本地或远端rerank模型，支持进度回调与降级。
-- 知识图谱：节点/边的UPSERT、合并、去重与查询，支持会话/文档作用域隔离。
+- **JIT微图谱提取**：实时知识图谱构建，支持密度检查、缓存机制和动态提取，显著增强RAG系统的上下文丰富度。
+- **全量图谱抽取**：传统的批量知识图谱构建，支持会话/文档作用域隔离。
 - 队列与状态：持久化向量化任务、断点续传、重试与恢复。
 - UI与集成：RAG界面、向量化进度、与聊天系统检索流程集成。
 
-章节来源
+**章节来源**
 - [vector-store.ts](file://src/lib/rag/vector-store.ts)
 - [document-processor.ts](file://src/lib/rag/document-processor.ts)
 - [text-splitter.ts](file://src/lib/rag/text-splitter.ts)
@@ -116,9 +127,11 @@ GStore --> DB
 - [graph-store.ts](file://src/lib/rag/graph-store.ts)
 - [vectorization-queue.ts](file://src/lib/rag/vectorization-queue.ts)
 - [memory-manager.ts](file://src/lib/rag/memory-manager.ts)
+- [micro-graph-extractor.ts](file://src/lib/rag/micro-graph-extractor.ts)
+- [graph-extractor.ts](file://src/lib/rag/graph-extractor.ts)
 
 ## 架构总览
-RAG引擎采用“离线向量化 + 在线检索”的架构：
+RAG引擎采用"离线向量化 + 在线检索"的架构：
 - 离线：文档导入后进入向量化队列，分块、嵌入、入库；可选抽取知识图谱。
 - 在线：用户查询经重写/混合检索/重排序，结合知识图谱增强，最终返回上下文与引用。
 
@@ -133,6 +146,7 @@ participant Emb as "嵌入客户端<br/>embedding.ts"
 participant VS as "向量存储<br/>vector-store.ts"
 participant KR as "关键词检索<br/>schema.ts"
 participant Rer as "重排序<br/>reranker.ts"
+participant JIT as "JIT微图谱<br/>micro-graph-extractor.ts"
 U->>UI : 输入查询
 UI->>Store : 触发检索
 Store->>MM : retrieveContext(query, options)
@@ -144,13 +158,15 @@ MM->>VS : search(queryEmbedding, filters)
 VS-->>MM : 向量候选
 MM->>KR : 关键词混合检索
 KR-->>MM : 关键词候选
+MM->>JIT : extract(topKResults, query, sessionId)
+JIT-->>MM : 微图谱结果
 MM->>Rer : rerank(query, candidates, topK)
 Rer-->>MM : 重排结果
 MM-->>Store : 上下文+引用
 Store-->>UI : 展示
 ```
 
-图表来源
+**图表来源**
 - [memory-manager.ts](file://src/lib/rag/memory-manager.ts)
 - [query-rewriter.ts](file://src/lib/rag/query-rewriter.ts)
 - [embedding.ts](file://src/lib/rag/embedding.ts)
@@ -159,6 +175,7 @@ Store-->>UI : 展示
 - [reranker.ts](file://src/lib/rag/reranker.ts)
 - [rag.tsx](file://app/(tabs)/rag.tsx)
 - [rag-store.ts](file://src/store/rag-store.ts)
+- [micro-graph-extractor.ts](file://src/lib/rag/micro-graph-extractor.ts)
 
 ## 详细组件分析
 
@@ -190,11 +207,11 @@ ReturnNative --> End(["结束"])
 ReturnJS --> End
 ```
 
-图表来源
+**图表来源**
 - [vector-store.ts](file://src/lib/rag/vector-store.ts)
 - [schema.ts](file://src/lib/db/schema.ts)
 
-章节来源
+**章节来源**
 - [vector-store.ts](file://src/lib/rag/vector-store.ts)
 - [schema.ts](file://src/lib/db/schema.ts)
 
@@ -226,13 +243,13 @@ Split --> Embed["嵌入生成"]
 Embed --> Store["入库"]
 ```
 
-图表来源
+**图表来源**
 - [document-processor.ts](file://src/lib/rag/document-processor.ts)
 - [text-splitter.ts](file://src/lib/rag/text-splitter.ts)
 - [embedding.ts](file://src/lib/rag/embedding.ts)
 - [vector-store.ts](file://src/lib/rag/vector-store.ts)
 
-章节来源
+**章节来源**
 - [document-processor.ts](file://src/lib/rag/document-processor.ts)
 - [text-splitter.ts](file://src/lib/rag/text-splitter.ts)
 
@@ -266,13 +283,13 @@ VectorizationQueue --> TrigramTextSplitter : "分块"
 VectorizationQueue --> VectorStore : "入库"
 ```
 
-图表来源
+**图表来源**
 - [vectorization-queue.ts](file://src/lib/rag/vectorization-queue.ts)
 - [embedding.ts](file://src/lib/rag/embedding.ts)
 - [text-splitter.ts](file://src/lib/rag/text-splitter.ts)
 - [vector-store.ts](file://src/lib/rag/vector-store.ts)
 
-章节来源
+**章节来源**
 - [embedding.ts](file://src/lib/rag/embedding.ts)
 - [vectorization-queue.ts](file://src/lib/rag/vectorization-queue.ts)
 
@@ -297,15 +314,70 @@ R-->>R : 本地/远端重排
 R-->>Caller : 重排结果
 ```
 
-图表来源
+**图表来源**
 - [query-rewriter.ts](file://src/lib/rag/query-rewriter.ts)
 - [reranker.ts](file://src/lib/rag/reranker.ts)
 
-章节来源
+**章节来源**
 - [query-rewriter.ts](file://src/lib/rag/query-rewriter.ts)
 - [reranker.ts](file://src/lib/rag/reranker.ts)
 
-### 知识图谱抽取与管理
+### JIT微图谱提取与管理
+**新增** JIT（Just-In-Time）微图谱提取功能，实现实时知识图谱构建，显著增强RAG系统的上下文丰富度。
+
+- **核心功能**
+  - 基于召回文本动态提取微型图谱，实时响应用户查询。
+  - 支持密度检查、缓存机制和动态提取，避免重复计算。
+  - 与传统全量抽取形成互补，提供更丰富的上下文增强。
+
+- **缓存机制**
+  - 基于查询和召回块ID生成缓存键，支持过期清理。
+  - TTL（Time-To-Live）可配置，默认1小时。
+  - 缓存命中时直接返回，显著提升响应速度。
+
+- **提取流程**
+  1. 缓存检查：根据查询和召回结果生成缓存键
+  2. 文本准备：将topK结果合并为分析文本，限制最大字符数
+  3. LLM提取：使用统一prompt策略进行实体关系抽取
+  4. 结果解析：三层JSON提取（代码块、通用块、外层对象）
+  5. 缓存存储：保存提取结果，设置过期时间
+  6. 后台合并：异步将结果合并到全局知识图谱
+
+- **系统提示词策略**
+  - 支持自定义提示词、自由模式和领域自动检测
+  - 统一与全量抽取相同的prompt构建逻辑
+  - 支持实体类型约束和领域专注指令
+
+- **背景合并**
+  - 使用事务确保数据一致性
+  - 支持jit、full、summary三种来源类型的优先级
+  - 自动处理节点合并、边权重累加和重复边清理
+
+```mermaid
+flowchart TD
+A["开始JIT提取"] --> B["缓存键生成"]
+B --> C{"缓存命中?"}
+C --> |是| D["返回缓存结果"]
+C --> |否| E["准备分析文本"]
+E --> F["调用LLM提取"]
+F --> G{"提取成功?"}
+G --> |是| H["解析JSON结果"]
+H --> I["保存到缓存"]
+I --> J["后台合并到全局图"]
+J --> K["返回完整结果"]
+G --> |否| L["返回null"]
+D --> M["结束"]
+K --> M
+L --> M
+```
+
+**图表来源**
+- [micro-graph-extractor.ts](file://src/lib/rag/micro-graph-extractor.ts)
+
+**章节来源**
+- [micro-graph-extractor.ts](file://src/lib/rag/micro-graph-extractor.ts)
+
+### 全量图谱抽取与管理
 - 节点与边
   - UPSERT节点：按名称唯一，合并元数据与类型优先级。
   - 创建边：去重与权重累加，支持会话/文档作用域。
@@ -326,10 +398,12 @@ Filter --> Save["持久化KG"]
 Save --> Done(["完成"])
 ```
 
-图表来源
+**图表来源**
+- [graph-extractor.ts](file://src/lib/rag/graph-extractor.ts)
 - [graph-store.ts](file://src/lib/rag/graph-store.ts)
 
-章节来源
+**章节来源**
+- [graph-extractor.ts](file://src/lib/rag/graph-extractor.ts)
 - [graph-store.ts](file://src/lib/rag/graph-store.ts)
 
 ### 检索编排与混合检索
@@ -337,6 +411,7 @@ Save --> Done(["完成"])
   - 预计算文档授权范围，避免无效搜索。
   - 可选查询重写，生成变体并并行嵌入与检索。
   - 并行向量与摘要检索，混合关键词检索（RRF融合）。
+  - **JIT微图谱提取**：在检索后对topK结果进行实时图谱增强。
   - 可选重排序，最终聚合去重并生成上下文与引用。
 - 隐私与作用域
   - 严格按会话/文档作用域过滤，支持全局模式。
@@ -351,15 +426,17 @@ EMB --> SUM["摘要检索(并行)"]
 VEC --> HYB["关键词混合检索(FTS5)"]
 SUM --> HYB
 HYB --> RRF["RRF融合"]
-RRF --> RER["可选: 重排序"]
+RRF --> JIT["JIT微图谱提取"]
+JIT --> RER["可选: 重排序"]
 RER --> OUT["上下文+引用"]
 ```
 
-图表来源
+**图表来源**
 - [memory-manager.ts](file://src/lib/rag/memory-manager.ts)
 - [schema.ts](file://src/lib/db/schema.ts)
+- [micro-graph-extractor.ts](file://src/lib/rag/micro-graph-extractor.ts)
 
-章节来源
+**章节来源**
 - [memory-manager.ts](file://src/lib/rag/memory-manager.ts)
 - [schema.ts](file://src/lib/db/schema.ts)
 
@@ -367,6 +444,7 @@ RER --> OUT["上下文+引用"]
 - 组件耦合
   - memory-manager依赖嵌入、向量存储、关键词检索、重排序与图存储。
   - 向量化队列依赖嵌入客户端、分块器与向量存储。
+  - **JIT微图谱提取**依赖settings-store、api-store、graph-store和vector-store。
   - UI通过rag-store协调队列与状态，驱动检索流程。
 - 外部依赖
   - SQLite/FTS5：全文检索与触发器同步。
@@ -380,15 +458,19 @@ MM --> KR["schema.ts(Fts5)"]
 MM --> Rer["reranker.ts"]
 MM --> GStore["graph-store.ts"]
 MM --> Emb["embedding.ts"]
+MM --> JIT["micro-graph-extractor.ts"]
 Queue["vectorization-queue.ts"] --> Emb
 Queue --> Split["text-splitter.ts"]
 Queue --> VS
+JIT --> GStore
+JIT --> Settings["settings-store.ts"]
+JIT --> API["api-store.ts"]
 UI["rag.tsx"] --> Store["rag-store.ts"]
 Store --> Queue
 Store --> MM
 ```
 
-图表来源
+**图表来源**
 - [memory-manager.ts](file://src/lib/rag/memory-manager.ts)
 - [vector-store.ts](file://src/lib/rag/vector-store.ts)
 - [schema.ts](file://src/lib/db/schema.ts)
@@ -399,8 +481,9 @@ Store --> MM
 - [text-splitter.ts](file://src/lib/rag/text-splitter.ts)
 - [rag.tsx](file://app/(tabs)/rag.tsx)
 - [rag-store.ts](file://src/store/rag-store.ts)
+- [micro-graph-extractor.ts](file://src/lib/rag/micro-graph-extractor.ts)
 
-章节来源
+**章节来源**
 - [memory-manager.ts](file://src/lib/rag/memory-manager.ts)
 - [vectorization-queue.ts](file://src/lib/rag/vectorization-queue.ts)
 - [rag-store.ts](file://src/store/rag-store.ts)
@@ -416,11 +499,14 @@ Store --> MM
   - RRF融合在召回与稳定性间取得平衡；alpha与bm25Boost可调。
 - 队列与断点续传
   - 心跳与持久化任务避免中断丢失；指数退避重试提升鲁棒性。
+- **JIT微图谱提取性能**
+  - 缓存机制显著减少重复LLM调用，建议合理设置TTL。
+  - 文本截断限制防止LLM输入过长，默认6000字符。
+  - 超时控制防止长时间阻塞，默认5000ms。
+  - 后台合并避免阻塞主线程。
 - 内存与缓存
   - UI侧避免一次性加载大文档内容；向量存储使用BLOB，SQLite在百万级内表现稳定。
   - 建议开启增量哈希，避免重复向量化。
-
-[本节为通用指导，无需特定文件引用]
 
 ## 故障排查指南
 - 向量维度不匹配
@@ -438,17 +524,23 @@ Store --> MM
 - 队列卡住
   - 现象：任务长时间无进展。
   - 处理：检查心跳超时与重试次数；恢复中断任务。
+- **JIT微图谱提取问题**
+  - 现象：提取超时或失败。
+  - 处理：检查LLM模型配置，调整超时时间；查看缓存是否正常工作。
+  - 现象：缓存未生效。
+  - 处理：检查kg_jit_cache表结构，验证TTL设置。
 
-章节来源
+**章节来源**
 - [vector-store.ts](file://src/lib/rag/vector-store.ts)
 - [schema.ts](file://src/lib/db/schema.ts)
 - [reranker.ts](file://src/lib/rag/reranker.ts)
 - [vectorization-queue.ts](file://src/lib/rag/vectorization-queue.ts)
+- [micro-graph-extractor.ts](file://src/lib/rag/micro-graph-extractor.ts)
 
 ## 结论
-Nexara的RAG知识引擎以SQLite+FTS5为基础，结合向量化队列、查询重写、混合检索与重排序，实现了高效稳定的本地知识检索。通过严格的隐私作用域控制与KG增强，既满足个人会话记忆，也能支撑全局知识管理。建议在生产环境中启用FTS5、合理配置分块与阈值、开启增量哈希与断点续传，以获得最佳体验。
+Nexara的RAG知识引擎以SQLite+FTS5为基础，结合向量化队列、查询重写、混合检索与重排序，实现了高效稳定的本地知识检索。通过严格的隐私作用域控制与KG增强，既满足个人会话记忆，也能支撑全局知识管理。
 
-[本节为总结，无需特定文件引用]
+**更新** 新增的JIT微图谱提取功能进一步增强了系统的上下文丰富度，通过实时、缓存化的知识图谱构建，为用户提供更加智能和个性化的检索体验。建议在生产环境中启用FTS5、合理配置分块与阈值、开启增量哈希与断点续传，同时充分利用JIT缓存机制提升性能。
 
 ## 附录
 
@@ -463,9 +555,15 @@ Nexara的RAG知识引擎以SQLite+FTS5为基础，结合向量化队列、查询
   - 孤立会话/文档的向量与KG数据定期清理，避免碎片化。
 - 与聊天系统集成
   - 在消息归档时将对话轮次异步向量化；检索时按会话与文档授权范围过滤；支持KG关联增强。
+- **JIT微图谱提取配置**
+  - 缓存TTL：默认3600秒，可通过globalRagConfig.jitCacheTTL配置。
+  - 超时设置：默认5000ms，可根据网络环境调整。
+  - 文本截断：默认6000字符，防止LLM输入过长。
+  - 提示词策略：支持自定义、自由模式和领域自动检测。
 
-章节来源
+**章节来源**
 - [rag.tsx](file://app/(tabs)/rag.tsx)
 - [rag-store.ts](file://src/store/rag-store.ts)
 - [vectorization-queue.ts](file://src/lib/rag/vectorization-queue.ts)
 - [memory-manager.ts](file://src/lib/rag/memory-manager.ts)
+- [micro-graph-extractor.ts](file://src/lib/rag/micro-graph-extractor.ts)
