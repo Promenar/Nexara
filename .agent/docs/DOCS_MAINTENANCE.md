@@ -1,281 +1,96 @@
-# 文档维护流程
+# 文档维护流程（repowiki SSOT 体系）
 
-## 目的
-确保`.agent/docs/`中的文档与代码实现保持同步，避免文档过时导致的误导。
-
----
-
-## 触发文档更新的场景
-
-### 1. 重大架构变更
-**触发条件**:
-- 新增核心模块（如chat-store重构）
-- 修改现有架构设计（如LLM抽象层升级）
-- 数据库schema变更
-
-**需要更新的文档**:
-- `product-requirements.md` - 添加新功能到"现状"和Phase更新日志
-- `README.md` - 更新文档索引
-- 创建专门的架构文档（如`chat-store-refactor-*.md`）
-
-**检查清单**:
-- [ ] 更新PRD的版本号和日期
-- [ ] 添加Phase更新日志
-- [ ] 创建专项技术指南（如需要）
-- [ ] 更新README.md文档索引
+> **版本**: v2.0 (2026-04-20)
+> **核心原则**: `.qoder/repowiki/` 是项目架构文档的**唯一事实源 (SSOT)**，由工具基于代码库自动生成，始终保持同步。
 
 ---
 
-### 2. 新功能实现
-**触发条件**:
-- 实现PRD中规划的功能
-- 添加新的用户可见功能
+## 1. 文档体系分层
 
-**需要更新的文档**:
-- `product-requirements.md` - 标记功能为已完成✅
-- `README.md` - 添加新功能文档链接（如有）
-
-**检查清单**:
-- [ ] 在PRD中将`[ ]`改为`[x]`
-- [ ] 更新功能状态描述
-- [ ] 添加实现细节到相关章节
+| 层级 | 位置 | 维护方式 | 内容 |
+|------|------|---------|------|
+| **自动生成层** | `.qoder/repowiki/zh/content/` | 工具自动生成 | 架构设计、数据模型、接口定义、组件库、子系统详解（145+ 篇） |
+| **指针层** | `.agent/docs/*.md` | 仅保留指向 repowiki 的引用 | 已覆盖的核心文档（CODE_STRUCTURE、CORE_INTERFACES、DATA_SCHEMA、UI_KIT、NATIVE_BRIDGE_DEFENSE、ANDROID_BUILD_GUIDE） |
+| **手工维护层** | `.agent/docs/*.md` | 人工维护 | 操作 SOP、审计报告、优化方案、PRD 等含人工决策上下文的文档 |
 
 ---
 
-### 3. 技术栈升级
-**触发条件**:
-- Expo SDK版本升级
-- 主要依赖包升级
-- 构建工具链变更
+## 2. 自动生成层（repowiki）维护
 
-**需要更新的文档**:
-- `product-requirements.md` - 更新技术栈章节
-- `android-build-guide.md` - 更新构建步骤（如有变化）
+### 2.1 何时触发重新生成
 
-**检查清单**:
-- [ ] 更新技术栈版本号
-- [ ] 验证构建流程是否变化
-- [ ] 更新相关命令示例
+- 重大架构变更（新增/删除核心模块）
+- 数据库 schema 变更
+- 新增核心依赖或技术栈升级
+- 功能模块大幅重构
 
----
+### 2.2 repowiki 覆盖范围
 
-### 4. 品牌/命名变更
-**触发条件**:
-- 项目名称变更
-- 品牌标识变更
-- 关键术语更新
+repowiki 当前覆盖以下 19 个子系统：
 
-**需要更新的文档**:
-- **所有文档**需要全局搜索替换
+- 项目概述、核心架构设计、架构文档
+- 聊天系统详解、状态管理、数据库设计
+- UI 组件系统、服务层设计、工具库和实用程序
+- MCP 协议集成、RAG 知识引擎、智能代理系统
+- 多提供商模型集成、本地推理引擎
+- Web 客户端、Workbench 远程管理
+- 部署与运维、API 参考、开发指南
 
-**检查清单**:
-- [ ] 使用`grep -r "旧名称" .agent/docs/`搜索
-- [ ] 逐个文档替换
-- [ ] 验证路径引用仍然正确
-- [ ] 提交时注明品牌统一
+### 2.3 引用规范
+
+四端 Agent 在需要查阅架构信息时，**必须优先检索 repowiki**，而非 `.agent/docs/` 下的手工文档。
 
 ---
 
-## 定期维护计划
+## 3. 手工维护层文档清单
 
-### 月度检查（每月最后一天）
-- [ ] 检查README.md文档索引是否完整
-- [ ] 验证所有文档链接有效
-- [ ] 清理过时的临时文档
+以下文档包含人工决策上下文或操作流程，repowiki 无法自动生成，需人工维护：
 
-### 季度审查（每季度最后一周）
-- [ ] 全面审查PRD内容
-- [ ] 检查功能状态准确性
-- [ ] 归档过时的架构文档
-- [ ] 更新维护记录
-
-### 发布前检查
-- [ ] 确保PRD反映所有已实现功能
-- [ ] 验证版本号正确
-- [ ] 添加Release Notes到PRD
+| 文件 | 内容 | 更新触发条件 |
+|------|------|-------------|
+| `DOCS_MAINTENANCE.md` | 本文件（维护流程） | 文档体系变更时 |
+| `RELEASE_PROTOCOL.md` | Android Release 编译 SOP | 构建流程变更时 |
+| `PRODUCT_REQUIREMENTS.md` | 产品需求文档 (PRD) | 版本发布、功能规划变更时 |
+| `audit-report-final.md` | 审计报告 | 新一轮审计时 |
+| `comprehensive-defect-analysis.md` | 缺陷分析报告 | 新一轮审计时 |
+| `industry-comparison-report.md` | 行业对比分析 | 需要重新对标时 |
+| `artifacts-optimization-plan.md` | Artifacts 优化方案 | 实施进度变更时 |
+| `artifacts-upgrade-plan.md` | Artifacts 升级计划 | 实施进度变更时 |
 
 ---
 
-## 文档命名规范
+## 4. 指针层文档列表
 
-### 核心文档
-- `README.md` - 文档索引中心
-- `product-requirements.md` - 产品需求文档
+以下文件已替换为指向 repowiki 的指针，**不要在这些文件中写入实质内容**：
 
-### 技术指南
-格式: `{主题}-{类型}.md`
-- `llm-abstraction-layer-guide.md` ✅
-- `android-build-guide.md` ✅
-- `chat-store-refactor-overview.md` ✅
-
-### 参考文档
-格式: `{功能}-reference.md`
-- `settings-panels-reference.md` ✅
-
-### 设计文档
-格式: `{功能}-design.md`
-- `steerable-agent-loop-design.md` ✅
-
-### 协议/流程
-格式: `{主题}-protocol.md`
-- `release-protocol.md` ✅
+| 指针文件 | repowiki 目标 |
+|---------|--------------|
+| `CODE_STRUCTURE.md` | `核心架构设计/整体架构设计.md` |
+| `CORE_INTERFACES.md` | `架构文档/核心接口.md` |
+| `DATA_SCHEMA.md` | `架构文档/数据架构.md` |
+| `UI_KIT.md` | `架构文档/UI组件库.md` |
+| `NATIVE_BRIDGE_DEFENSE.md` | `架构文档/原生桥接防护.md` |
+| `ANDROID_BUILD_GUIDE.md` | `部署与运维/构建配置.md` |
 
 ---
 
-## 版本控制最佳实践
+## 5. 不再使用的目录
 
-### PRD版本号规则
-- **主版本号（1.x.0）**: 重大功能上线或架构变更
-- **次版本号（x.1.0）**: 新功能实现
-- **修订号（x.x.1）**: 文档修正或小更新
+以下目录已清理，**不要重新创建**：
 
-### Commit Message规范
-```bash
-# 新增文档
-git commit -m "docs: 添加chat-store重构Phase 2指南"
-
-# 更新文档
-git commit -m "docs: 更新PRD至v1.2.0并添加Phase 14"
-
-# 品牌统一
-git commit -m "docs: 品牌名统一更新 NeuralFlow → Nexara"
-
-# 修正错误
-git commit -m "docs: 修正android-build-guide中的路径错误"
-```
+- ~~`plans/`~~ — 历史实施计划，repowiki 已覆盖
+- ~~`todos/`~~ — 历史待办事项，应使用 GitHub Issues 或 `.agent/queue/`
+- ~~`archive/`~~ — 历史归档，Git 历史即可回溯
+- ~~`architecture/`~~ — 深度架构文档，repowiki 已全面覆盖
 
 ---
 
-## 快速检查清单
+## 6. 变更检查清单
 
-### 新功能上线后
-```bash
-# 1. 更新PRD
-- [ ] 更新版本号（如1.1.11 → 1.2.0）
-- [ ] 更新日期
-- [ ] 在"现状"中添加新功能
-- [ ] 添加Phase更新日志
+当发生代码变更时，按以下流程判断是否需要更新文档：
 
-# 2. 更新README.md
-- [ ] 添加新文档链接（如有）
-- [ ] 更新维护记录
-
-# 3. 创建专项文档（如需要）
-- [ ] 按命名规范创建
-- [ ] 添加到README索引
-```
-
-### 发现文档过时时
-```bash
-# 1. 识别问题
-- 文档描述与实际不符？
-- 包含已废弃的功能？
-- 缺少新实现的功能？
-
-# 2. 确定影响范围
-- 仅影响单个文档？
-- 需要更新多个文档？
-- 是否需要创建新文档？
-
-# 3. 执行更新
-- 按优先级更新（PRD > 技术指南 > 参考文档）
-- 提交时注明"修正过时内容"
-```
-
----
-
-## 工具和自动化
-
-### 推荐工具
-```bash
-# 搜索特定内容
-grep -r "关键词" .agent/docs/
-
-# 查找所有Markdown文件
-find .agent/docs/ -name "*.md"
-
-# 检查文档最后修改时间
-ls -lt .agent/docs/
-```
-
-### 自动化检查（可选）
-创建`.agent/scripts/check-docs.sh`：
-```bash
-#!/bin/bash
-# 检查文档是否包含过时的品牌名
-echo "检查过时的品牌名..."
-grep -r "NeuralFlow" .agent/docs/ && echo "⚠️  发现旧品牌名"
-
-# 检查PRD版本号
-echo "检查PRD版本号..."
-# 实现版本号自动检查逻辑
-```
-
----
-
-## 常见问题
-
-### Q: 何时应该创建新文档而不是更新现有文档？
-**A**: 当以下情况时创建新文档：
-- 新的重大功能需要详细说明（如chat-store重构）
-- 需要专门的技术指南或设计文档
-- 内容与现有文档主题不相关
-
-### Q: 如何处理临时文档？
-**A**: 
-- 放在`brain/`目录下的临时分析文档可以不归档
-- 有长期价值的文档应移到`.agent/docs/`
-- 定期清理过时的临时文档
-
-### Q: 文档更新应该与代码提交一起吗？
-**A**: 
-- **是**，如果是新功能实现，应在同一PR中更新PRD
-- **否**，如果是定期维护，可以单独提交
-- **灵活**，根据实际情况判断
-
----
-
----
-
-## 5. 任务追踪规范 (Task Tracking Standard)
-
-### 核心原则
-采用 **"索引-详情" (Index-Detail)** 模式，确保任务的可追溯性与上下文完整性。
-
-### 角色定义
-1.  **Dashboard (`.agent/TODO.md`)**: 
-    - 唯一的项目进度仪表盘。
-    - **严禁**直接在此处书写长篇大论的方案。
-    - 必须包含指向具体设计文档的链接。
-
-2.  **Inbox (`.agent/docs/todos/`)**:
-    - 存放活动任务的详细设计方案 (RFC/Implementation Plan)。
-    - 命名规范: `NNN_topic_name.md` (e.g., `002_rag_optimization.md`)。
-
-3.  **Archive (`.agent/docs/archive/`)**:
-    - 存放已完成任务的方案文档。
-    - 任务完成后，必须将对应文档从 `todos/` 移动至此，并更新状态为 ✅ Verified。
-
-### 状态流转
-`Draft` (in todos/) -> `Active` (linked in TODO.md) -> `Completed` -> `Archived` (mv to archive/)
-
----
-
-## 责任分配
-
-
-### AI Assistant
-- 主动提醒文档更新
-- 执行文档更新操作
-- 定期审查文档时效性
-
-### 开发者
-- 审查文档更新内容
-- 确认功能描述准确性
-- 批准重大文档变更
-
----
-
-**维护者**: AI Assistant + 开发团队  
-**创建日期**: 2026-01-15  
-**下次审查**: 2026-02-15
+1. **架构/接口/数据模型变更** → 触发 repowiki 重新生成
+2. **新功能上线** → 更新 `PRODUCT_REQUIREMENTS.md`
+3. **构建/发布流程变更** → 更新 `RELEASE_PROTOCOL.md`
+4. **新增人工决策** → 创建独立报告文档（如 `audit-*.md`、`*-plan.md`）
+5. **文档体系自身变更** → 更新本文件
