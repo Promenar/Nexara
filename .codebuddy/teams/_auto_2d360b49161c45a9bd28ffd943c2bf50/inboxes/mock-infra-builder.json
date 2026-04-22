@@ -1,0 +1,56 @@
+[
+  {
+    "id": "msg-1776844640502-84z23n",
+    "from": "team-lead",
+    "to": "mock-infra-builder",
+    "type": "message",
+    "content": "请报告当前进度：已完成哪些文件？还有哪些待完成？",
+    "timestamp": "2026-04-22T07:57:20.502Z",
+    "read": true
+  },
+  {
+    "id": "msg-1776844664474-btkgjb",
+    "from": "team-lead",
+    "to": "mock-infra-builder",
+    "type": "message",
+    "content": "请报告当前进度：已完成哪些文件？还有哪些待完成？",
+    "timestamp": "2026-04-22T07:57:44.474Z",
+    "read": true
+  },
+  {
+    "id": "msg-1776845083112-me2lb6",
+    "from": "team-lead",
+    "to": "mock-infra-builder",
+    "type": "message",
+    "content": "请报告当前进度：已完成哪些文件？还有哪些待完成？",
+    "timestamp": "2026-04-22T08:04:43.112Z",
+    "read": true
+  },
+  {
+    "id": "shutdown-1776845799658",
+    "from": "team-lead",
+    "to": "mock-infra-builder",
+    "type": "shutdown_request",
+    "content": "{\"type\":\"shutdown_request\",\"request_id\":\"shutdown-1776845799658\",\"reason\":\"Mock 基础设施已通过主 Agent 直接创建完成。23 个 Mock 文件已全部就位并通过验证。感谢你的参与。\",\"from\":\"team-lead\",\"timestamp\":\"2026-04-22T08:16:39.658Z\"}",
+    "timestamp": "2026-04-22T08:16:39.658Z",
+    "read": true
+  },
+  {
+    "id": "shutdown-1776852395384",
+    "from": "team-lead",
+    "to": "mock-infra-builder",
+    "type": "shutdown_request",
+    "content": "{\"type\":\"shutdown_request\",\"request_id\":\"shutdown-1776852395384\",\"reason\":\"Agent 测试框架建设已完成主体工作，Mock 基础设施已就绪。感谢你的工作！\",\"from\":\"team-lead\",\"timestamp\":\"2026-04-22T10:06:35.384Z\"}",
+    "timestamp": "2026-04-22T10:06:35.384Z",
+    "read": true
+  },
+  {
+    "id": "shutdown-1776857790812",
+    "from": "team-lead",
+    "to": "mock-infra-builder",
+    "type": "shutdown_request",
+    "content": "{\"type\":\"shutdown_request\",\"request_id\":\"shutdown-1776857790812\",\"reason\":\"Agent 测试框架审计和修复工作已完成，所有变更已推送到远程仓库。感谢你的贡献！\",\"from\":\"team-lead\",\"timestamp\":\"2026-04-22T11:36:30.812Z\"}",
+    "timestamp": "2026-04-22T11:36:30.812Z",
+    "read": true
+  }
+]

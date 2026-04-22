@@ -1,0 +1,65 @@
+[
+  {
+    "id": "msg-1776844641652-t4c8p7",
+    "from": "team-lead",
+    "to": "agent-test-scaffold",
+    "type": "message",
+    "content": "请报告当前进度：已完成哪些文件？还有哪些待完成？",
+    "timestamp": "2026-04-22T07:57:21.652Z",
+    "read": true
+  },
+  {
+    "id": "msg-1776845083701-vfn58d",
+    "from": "team-lead",
+    "to": "agent-test-scaffold",
+    "type": "message",
+    "content": "请报告当前进度：已完成哪些文件？还有哪些待完成？",
+    "timestamp": "2026-04-22T08:04:43.701Z",
+    "read": true
+  },
+  {
+    "id": "shutdown-1776845566582",
+    "from": "team-lead",
+    "to": "agent-test-scaffold",
+    "type": "shutdown_request",
+    "content": "{\"type\":\"shutdown_request\",\"request_id\":\"shutdown-1776845566582\",\"reason\":\"请完成剩余工作并汇报结果。\",\"from\":\"team-lead\",\"timestamp\":\"2026-04-22T08:12:46.582Z\"}",
+    "timestamp": "2026-04-22T08:12:46.582Z",
+    "read": true
+  },
+  {
+    "id": "shutdown-1776845572091",
+    "from": "team-lead",
+    "to": "agent-test-scaffold",
+    "type": "shutdown_request",
+    "content": "{\"type\":\"shutdown_request\",\"request_id\":\"shutdown-1776845572091\",\"reason\":\"请完成剩余工作并汇报结果。\",\"from\":\"team-lead\",\"timestamp\":\"2026-04-22T08:12:52.091Z\"}",
+    "timestamp": "2026-04-22T08:12:52.091Z",
+    "read": true
+  },
+  {
+    "id": "shutdown-1776845795248",
+    "from": "team-lead",
+    "to": "agent-test-scaffold",
+    "type": "shutdown_request",
+    "content": "{\"type\":\"shutdown_request\",\"request_id\":\"shutdown-1776845795248\",\"reason\":\"Agent Test 脚手架任务已完成。CLI 已成功创建并通过验证。请确认你的工作成果。\",\"from\":\"team-lead\",\"timestamp\":\"2026-04-22T08:16:35.248Z\"}",
+    "timestamp": "2026-04-22T08:16:35.248Z",
+    "read": true
+  },
+  {
+    "id": "shutdown-1776852396007",
+    "from": "team-lead",
+    "to": "agent-test-scaffold",
+    "type": "shutdown_request",
+    "content": "{\"type\":\"shutdown_request\",\"request_id\":\"shutdown-1776852396007\",\"reason\":\"Agent 测试 CLI 骨架已完成，CLI 入口已集成诊断和修复功能。感谢你的工作！\",\"from\":\"team-lead\",\"timestamp\":\"2026-04-22T10:06:36.007Z\"}",
+    "timestamp": "2026-04-22T10:06:36.007Z",
+    "read": true
+  },
+  {
+    "id": "shutdown-1776857791616",
+    "from": "team-lead",
+    "to": "agent-test-scaffold",
+    "type": "shutdown_request",
+    "content": "{\"type\":\"shutdown_request\",\"request_id\":\"shutdown-1776857791616\",\"reason\":\"Agent 测试框架审计和修复工作已完成，所有变更已推送到远程仓库。感谢你的贡献！\",\"from\":\"team-lead\",\"timestamp\":\"2026-04-22T11:36:31.616Z\"}",
+    "timestamp": "2026-04-22T11:36:31.616Z",
+    "read": true
+  }
+]

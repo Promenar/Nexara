@@ -1,4 +1,116 @@
-# SESSION HANDOVER (2026-04-06)
+# SESSION HANDOVER (2026-04-22)
+
+---
+
+## Agent 全自动测试框架建设 (已完成)
+
+### 已完成 (2026-04-22)
+- **Phase 1: 单元测试编写**
+  - ✅ `src/lib/llm/__tests__/stream-parser.test.ts` (流解析器测试)
+  - ✅ `src/lib/llm/__tests__/error-normalizer.test.ts` (错误标准化测试)
+  - ✅ `src/lib/llm/__tests__/thinking-detector.test.ts` (思考检测器测试)
+  - ✅ `src/lib/llm/__tests__/model-utils.test.ts` (模型工具测试)
+  - ✅ `src/lib/llm/__tests__/artifact-parser.test.ts` (Artifact 解析器测试)
+  - ✅ `src/lib/rag/__tests__/text-splitter.test.ts` (文本分块测试)
+  - ✅ `src/lib/rag/__tests__/embedding.test.ts` (嵌入测试)
+  - ✅ `src/lib/rag/__tests__/keyword-search.test.ts` (关键词搜索测试)
+  - ✅ `src/lib/rag/__tests__/reranker.test.ts` (重排序测试)
+  - ✅ `src/store/__tests__/settings-store.test.ts` (设置状态测试)
+
+- **Phase 2: 基准测试执行器**
+  - ✅ `scripts/agent-test/runner/benchmark-runner.ts` (完整的基准测试框架)
+    - 支持 SQLite CRUD、流解析、RAG 检索等基准测试
+    - 自动检测性能退化
+    - 历史数据存储
+
+- **Phase 4: 诊断引擎**
+  - ✅ `scripts/agent-test/diagnostician/error-classifier.ts` (错误分类器)
+    - 10+ 种错误模式匹配
+    - 置信度评分
+    - 修复建议生成
+  - ✅ `scripts/agent-test/diagnostician/stack-parser.ts` (堆栈解析器)
+    - 多格式堆栈解析
+    - 项目文件识别
+    - 代码上下文获取
+  - ✅ `scripts/agent-test/diagnostician/fix-strategies.ts` (修复策略库)
+    - 可选链添加策略
+    - Mock 修复策略
+    - 快照更新策略
+
+- **Phase 4: 自动修复**
+  - ✅ `scripts/agent-test/fix/safe-modifier.ts` (安全修改器)
+    - 文件备份
+    - 差异生成
+    - 干运行模式
+  - ✅ `scripts/agent-test/fix/rollback-manager.ts` (回滚管理器)
+    - 修改历史记录
+    - 批量回滚
+    - 过期清理
+
+- **Phase 3: 视觉测试**
+  - ✅ `scripts/agent-test/visual/screenshot-manager.ts` (截图管理器)
+    - iOS/Android 模拟器截图
+    - 设备列表获取
+    - 截图清理
+  - ✅ `scripts/agent-test/visual/baseline-manager.ts` (基线管理器)
+    - 基线版本化
+    - Manifest 管理
+    - 统计报告生成
+  - ✅ `scripts/agent-test/visual/diff-engine.ts` (差异对比引擎)
+    - pixelmatch 集成
+    - 性能优化
+    - 批量对比
+
+- **CLI 集成**
+  - ✅ `scripts/agent-test/cli.ts` (CLI 入口)
+    - run/diagnose/fix/benchmark/visual 模式
+    - 完整诊断流程
+    - 自动修复集成
+
+### 待完成
+- [x] ~~Store 状态测试 (settings-store)~~ ✅
+- [x] ~~RAG 管线测试 (embedding, keyword-search, reranker)~~ ✅
+- [ ] CI/CD 集成配置
+- [ ] CLI 帮助文档完善
+
+### 文件结构
+```
+scripts/agent-test/
+├── diagnostician/
+│   ├── error-classifier.ts ✅
+│   ├── stack-parser.ts ✅
+│   └── fix-strategies.ts ✅
+├── fix/
+│   ├── safe-modifier.ts ✅
+│   └── rollback-manager.ts ✅
+├── visual/
+│   ├── screenshot-manager.ts ✅
+│   ├── baseline-manager.ts ✅
+│   └── diff-engine.ts ✅
+├── runner/
+│   └── benchmark-runner.ts ✅
+└── cli.ts ✅
+
+src/lib/llm/__tests__/
+├── stream-parser.test.ts ✅
+├── error-normalizer.test.ts ✅
+├── thinking-detector.test.ts ✅
+├── model-utils.test.ts ✅
+└── artifact-parser.test.ts ✅
+
+src/lib/rag/__tests__/
+├── text-splitter.test.ts ✅
+├── embedding.test.ts ✅
+├── keyword-search.test.ts ✅
+└── reranker.test.ts ✅
+
+src/store/__tests__/
+└── settings-store.test.ts ✅
+```
+
+---
+
+## 上一会话 (2026-04-06) 遗留内容
 
 ## Done
 - **Phase 1 Markdown 中文排版修复** (commit `8002f3b`):

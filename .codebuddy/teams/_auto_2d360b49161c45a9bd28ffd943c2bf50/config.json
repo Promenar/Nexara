@@ -1,0 +1,28 @@
+{
+  "name": "_auto_2d360b49161c45a9bd28ffd943c2bf50",
+  "leadAgentId": "2d360b49161c45a9bd28ffd943c2bf50",
+  "workspacePath": "/Users/promenar/Codex/Nexara",
+  "createdAt": "2026-04-22T07:49:49.846Z",
+  "options": {
+    "workspacePath": "/Users/promenar/Codex/Nexara",
+    "isAutoTeam": true
+  },
+  "members": [
+    {
+      "memberId": "team-lead@_auto_2d360b49161c45a9bd28ffd943c2bf50",
+      "name": "team-lead",
+      "role": "Team Lead - coordinates the team and interacts with the user"
+    },
+    {
+      "memberId": "mock-infra-builder@_auto_2d360b49161c45a9bd28ffd943c2bf50",
+      "name": "mock-infra-builder",
+      "role": "扩展 Mock 基础设施"
+    },
+    {
+      "memberId": "agent-test-scaffold@_auto_2d360b49161c45a9bd28ffd943c2bf50",
+      "name": "agent-test-scaffold",
+      "role": "搭建 Agent Test CLI 骨架"
+    }
+  ],
+  "isAutoTeam": true
+}
