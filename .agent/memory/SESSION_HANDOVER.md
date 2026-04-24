@@ -158,9 +158,80 @@ src/store/__tests__/
 - **本地资源包体积**：echarts (~1MB) + mermaid (~3.3MB) 增加了 APK 大小约 4.3MB
 - **Metro assetExts**: 当前已包含 `bundle` 扩展名，无需额外配置
 
-## Active Plan
-- `.agent/docs/plans/markdown-chinese-layout-optimization.md` — 三阶段 Markdown 中文排版优化
-- 审计计划 `plans/c9800744e38f49179ef3277b2e694e53/plan.md` — Artifacts 全面的审计与重构
+## 本次会话 (2026-04-24) — WebView 重构方案评审 + 阶段零 POC 实施
+
+### Done
+- ✅ 读取并评审 v1 混合 WebView 聊天架构迁移方案
+- ✅ 深度代码库探索：设置页/开发者模式/滚动系统/流式节流/主题系统/WebView 用法/web-renderer 状态
+- ✅ 可行性与完整性评估：识别出 5 个重大盲区 + 4 个遗漏技术问题 + 工作量低估 2-3 倍
+- ✅ 用户反馈整合：6 项调整意见全部落实
+- ✅ 4 项技术决策评估完成（§4.1-4.4）
+- ✅ 生成 v2 方案文档：`.agent/docs/plans/single-webview-architecture-plan-v2.md`
+- ✅ **阶段零 POC 基建全部完成**：
+  - ✅ Bridge 协议类型定义：`src/types/webview-bridge.ts`（RN 侧）+ `src/web-renderer/src/types/bridge.ts`（Web 侧）
+  - ✅ CSS 变量主题系统：`src/web-renderer/src/bridge/theme.ts` — 映射 Colors.light/dark + ColorPalette → CSS custom properties
+  - ✅ Bridge 通信层：`src/web-renderer/src/bridge/index.ts` — postToRN + onRNMessage + initBridge
+  - ✅ Vite 构建管线：`src/web-renderer/vite.config.ts` — vite-plugin-singlefile + es2015 target
+  - ✅ 依赖安装：react-markdown + remark-gfm + remark-math + rehype-katex + katex + prism-react-renderer + vite-plugin-singlefile
+  - ✅ Web 端组件：MessageList + MessageBubble + MarkdownRenderer + CodeBlock（4 个核心组件）
+  - ✅ 自动滚动 Hook：`src/web-renderer/src/hooks/useAutoScroll.ts`
+  - ✅ RN 侧容器组件：`src/components/chat/WebViewMessageList.tsx` — 内含 POC 简化版 HTML + Bridge 通信
+  - ✅ POC 测试页面：`app/webview-renderer-demo.tsx` — 预置 8 条测试消息 + 主题切换 + 流式模拟
+  - ✅ visual-demo 入口扩展：Section 3 "WebView Renderer Lab" 按钮
+  - ✅ 构建验证：`npm run build` 成功，产物 `dist/index.html` 约 2.1MB（gzip 1.17MB）
+- ✅ **构建产物集成完成**：
+  - ✅ 构建脚本：`scripts/build-web-renderer.sh` — 自动构建 + 复制产物到 `assets/web-renderer/web-renderer.bundle`
+  - ✅ `WebViewMessageList` 升级：使用 `expo-asset` + `expo-file-system.readAsStringAsync()` 加载真实构建产物
+  - ✅ Metro 集成：已有 `assetExts.push('bundle')` 配置，`.bundle` 文件作为 asset 打包
+  - ✅ Bridge 通信验证：`INIT` / `READY` / `THEME_CHANGE` / `APPEND_MESSAGE` / `UPDATE_MESSAGE` 消息类型在构建产物中确认
+
+### Next Steps
+- [ ] **设备端到端验证**：运行 APP → 设置页 → 连点5次关于 → Visual Demo → Section 3 → WebView Renderer Lab
+- [ ] **POC 验证报告**：渲染质量/Markdown/KaTeX/代码高亮/滚动/主题切换/流式输出实测
+- [ ] **Go/No-Go 决策**：基于验证结果决定是否启动阶段一（核心渲染器）
+
+### Risks
+- 滚动体验可能不及原生（需在真机上验证）
+- web-renderer 构建产物 2.1MB 需要作为字符串内联到 JS bundle（可接受，但不支持热更新）
+- POC 简化版 HTML 不含 react-markdown/KaTeX/Prism.js（需集成构建产物后才能验证完整渲染）
+- 高级业务组件（RAG/Tools）工作量大（15-20天），需确保 POC 验证通过后再铺开
+
+### 文件清单（阶段零新建/修改）
+```
+新建文件:
+├── src/types/webview-bridge.ts                    # Bridge 协议类型（RN 侧）
+├── src/components/chat/WebViewMessageList.tsx     # RN WebView 容器
+├── src/web-renderer/src/types/bridge.ts           # Bridge 协议类型（Web 侧）
+├── src/web-renderer/src/bridge/index.ts           # Bridge 通信层
+├── src/web-renderer/src/bridge/theme.ts           # CSS 变量主题管理
+├── src/web-renderer/src/hooks/useAutoScroll.ts    # 自动滚动 Hook
+├── src/web-renderer/src/components/MessageList.tsx
+├── src/web-renderer/src/components/MessageBubble.tsx
+├── src/web-renderer/src/components/MarkdownRenderer.tsx
+├── src/web-renderer/src/components/CodeBlock.tsx
+├── app/webview-renderer-demo.tsx                  # POC 测试页面
+
+修改文件:
+├── src/web-renderer/vite.config.ts                # 添加 viteSingleFile 配置
+├── src/web-renderer/index.html                    # 精简为最小 HTML 壳
+├── src/web-renderer/src/main.tsx                  # 移除 StrictMode + KaTeX CSS
+├── src/web-renderer/src/App.tsx                   # 重写为 Bridge 入口
+├── src/web-renderer/src/index.css                 # 重写为 CSS 变量体系
+├── src/web-renderer/package.json                  # 新增 7 个依赖
+├── app/visual-demo.tsx                            # 新增 Section 3 入口
+
+构建产物:
+└── src/web-renderer/dist/index.html               # 2.1MB 单 HTML 内联产物
+
+删除文件:
+├── src/web-renderer/src/App.css                   # Vite 默认样式
+├── src/web-renderer/src/assets/react.svg          # 默认资源
+├── src/web-renderer/src/assets/vite.svg
+├── src/web-renderer/src/assets/hero.png
+```
+
+### Active Plan
+- `.agent/docs/plans/single-webview-architecture-plan-v2.md` — 混合 WebView 聊天架构迁移计划 v2
 
 ## Build Environment
 - **JDK**: OpenJDK 17.0.18 @ `/usr/lib/jvm/java-17-openjdk-amd64`
