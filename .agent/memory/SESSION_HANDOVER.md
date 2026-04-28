@@ -158,7 +158,7 @@ src/store/__tests__/
 - **本地资源包体积**：echarts (~1MB) + mermaid (~3.3MB) 增加了 APK 大小约 4.3MB
 - **Metro assetExts**: 当前已包含 `bundle` 扩展名，无需额外配置
 
-## 本次会话 (2026-04-24 ~ 2026-04-28) — WebView 重构 Phase 0~2 全量实施
+## 本次会话 (2026-04-24 ~ 2026-04-28) — WebView 重构 Phase 0~2 全量实施 + Stitch 视觉重构
 
 ### Done
 - ✅ **Phase 0 POC 基建**：Bridge 协议 + Vite 构建管线 + 基础 Markdown + 设备验证通过
@@ -176,6 +176,17 @@ src/store/__tests__/
   - ApprovalCard (continuation/action 双模式 + 干预输入)
   - ProcessingIndicator (胶囊入口 + 归档/摘要详情)
   - ToolExecutionTimeline (750行 → WebView, 含折叠/搜索/RAG引用/干预)
+- ✅ **Stitch 视觉重构** (`5f50182`):
+  - 接入 Stitch MCP，读取 "Modern Session UI Redesign" 项目设计素材
+  - theme.ts: 应用 Material Design 3 动态颜色体系 (Zinc-950 基底 + Indigo 主色)
+  - index.css: 全面 Glassmorphism 风格重写 (~1100行)
+    - 玻璃拟态工具类: `.glass-panel` (blur 20px + 0.5px 微边框)
+    - 消息气泡: 内阴影 + 0.5px 微边框
+    - 图表卡片/代码块: backdrop-filter 玻璃效果
+    - 消息操作按钮: 圆形图标风格
+    - 审批卡片: 背景光晕装饰
+    - 任务监控/时间线/RAG: 统一玻璃风格
+  - CodeBlock.tsx / ProcessingIndicator.tsx: 移除主题硬编码色
 - ✅ **Bridge 协议扩展**：
   - BridgeMessage 新增 6 个扩展字段 (task/executionSteps/ragState/approvalRequest/processingState/loopStatus)
   - WebToRNMessage 新增 3 个交互消息 (APPROVE_ACTION/SET_INTERVENTION/TOGGLE_COMPONENT)
@@ -183,6 +194,8 @@ src/store/__tests__/
 - ✅ **依赖清理**：移除 mermaid/echarts npm 依赖 (改用 CDN iframe)
 - ✅ **全部组件设备验证通过**（21 条 mock 消息覆盖）
 - ✅ **方案文档更新**：阶段 0/1/2 标记完成，工作量修正
+- ✅ **交付归档文档**：`.agent/docs/plans/webview-phase0-2-delivery-report.md`
+- ✅ **UI 设计规范**：`.agent/docs/plans/webview-ui-design-spec.md`
 
 ### 关键技术决策记录
 1. **mermaid.render() 导致 WebView 白屏崩溃** — try-catch 无法捕获（引擎级崩溃）
@@ -190,9 +203,13 @@ src/store/__tests__/
    - 副作用：bundle 从 4.8MB 降至 2.23MB，但首次渲染需网络
 2. **sessionId 缺失导致 ApprovalCard 不渲染** — INIT 未传递 sessionId
    - 解决：WebViewMessageList 新增 sessionId prop + INIT payload 携带
+3. **Stitch 设计系统映射** — MD3 动态颜色 + Glassmorphism
+   - 解决：保留 CSS 变量接口，theme.ts 注入 MD3 token 值
+   - 新增 `--glass-bg` / `--glass-border` / `--glass-blur` / `--bg-surface-*` 变量
 
 ### Next Steps
-- [ ] **视觉对齐专项**：逐组件对比 RN 原生，修复间距/字号/圆角/色值偏差（预估 1-2 天）
+- [ ] **设备验证**：安装最新构建，验证 Stitch 玻璃拟态视觉效果
+- [ ] **视觉对齐专项**：逐组件对比 RN 原生 vs WebView，修复剩余偏差（预估 0.5-1 天）
 - [ ] **Phase 3 集成**：feature flag 接入 `app/chat/[id].tsx`，替代 FlatList（预估 8-12 天）
   - 滚动系统重设计 (MutationObserver + 用户打断检测)
   - 键盘协调 (ChatInput ↔ WebView padding-bottom)
@@ -200,12 +217,12 @@ src/store/__tests__/
   - ExecutionModeSelector (气泡外 BottomSheet)
 
 ### Risks
-- 视觉精细度尚未系统验证，可能存在排版偏差
+- Stitch 视觉重构尚未实机验证，可能存在暗色/浅色切换异常
 - 图表首次渲染依赖 CDN（离线场景显示错误信息 + 重试按钮）
 - Phase 3 滚动系统复杂度高，需与 RN 原生体验对标
 - 长会话（>200条消息）性能未测
 
-### 文件清单（Phase 0~2 全量）
+### 文件清单（Phase 0~2 + Stitch 重构 全量）
 ```
 新建文件:
 ├── src/types/webview-bridge.ts                    # Bridge 协议类型（RN 侧）
