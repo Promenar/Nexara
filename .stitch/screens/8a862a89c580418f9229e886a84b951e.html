@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Knowledge Base</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@400;500;600;700;800&amp;family=Space+Grotesk:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-fixed-variant": "#47464a",
+                    "on-primary-fixed": "#07006c",
+                    "surface-container": "#201f22",
+                    "on-secondary-container": "#b6b4b8",
+                    "on-secondary-fixed": "#1b1b1e",
+                    "tertiary-fixed-dim": "#ffb783",
+                    "primary-container": "#8083ff",
+                    "surface-container-highest": "#353437",
+                    "surface-container-high": "#2a2a2c",
+                    "on-background": "#e5e1e4",
+                    "primary-fixed-dim": "#c0c1ff",
+                    "tertiary-container": "#d97721",
+                    "on-secondary": "#303033",
+                    "surface-tint": "#c0c1ff",
+                    "surface-container-low": "#1c1b1d",
+                    "background": "#131315",
+                    "tertiary-fixed": "#ffdcc5",
+                    "on-primary-fixed-variant": "#2f2ebe",
+                    "inverse-surface": "#e5e1e4",
+                    "surface-bright": "#39393b",
+                    "primary": "#c0c1ff",
+                    "outline": "#908fa0",
+                    "on-tertiary": "#4f2500",
+                    "on-primary": "#1000a9",
+                    "surface-container-lowest": "#0e0e10",
+                    "surface": "#131315",
+                    "error": "#ffb4ab",
+                    "on-tertiary-fixed-variant": "#703700",
+                    "outline-variant": "#464554",
+                    "on-primary-container": "#0d0096",
+                    "secondary-fixed": "#e4e1e6",
+                    "on-error": "#690005",
+                    "inverse-primary": "#494bd6",
+                    "primary-fixed": "#e1e0ff",
+                    "on-surface-variant": "#c7c4d7",
+                    "surface-dim": "#131315",
+                    "secondary-container": "#47464a",
+                    "on-tertiary-fixed": "#301400",
+                    "surface-variant": "#353437",
+                    "on-tertiary-container": "#452000",
+                    "secondary-fixed-dim": "#c8c5ca",
+                    "inverse-on-surface": "#313032",
+                    "secondary": "#c8c5ca",
+                    "on-surface": "#e5e1e4",
+                    "tertiary": "#ffb783",
+                    "on-error-container": "#ffdad6",
+                    "error-container": "#93000a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "sm": "8px",
+                    "xs": "4px",
+                    "lg": "24px",
+                    "xl": "32px",
+                    "md": "16px",
+                    "gutter": "16px",
+                    "unit": "4px",
+                    "safe-margin": "20px"
+            },
+            "fontFamily": {
+                    "label-md": ["Inter", "sans-serif"],
+                    "code": ["Space Grotesk", "monospace"],
+                    "body-md": ["Inter", "sans-serif"],
+                    "h1": ["Manrope", "sans-serif"],
+                    "h2": ["Manrope", "sans-serif"],
+                    "body-lg": ["Inter", "sans-serif"]
+            },
+            "fontSize": {
+                    "label-md": ["13px", {"lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                    "code": ["14px", {"lineHeight": "22px", "fontWeight": "400"}],
+                    "body-md": ["15px", {"lineHeight": "25px", "fontWeight": "400"}],
+                    "h1": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "h2": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "body-lg": ["17px", {"lineHeight": "26px", "fontWeight": "400"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 0.5px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+        }
+        .glass-input {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(12px);
+            border: 0.5px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface antialiased font-body-md selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar -->
+<nav class="fixed top-0 w-full z-50 bg-zinc-950/70 backdrop-blur-xl border-b border-white/[0.05] shadow-none flex items-center justify-between px-5 h-16 md:hidden">
+<div class="flex items-center gap-sm text-indigo-400">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">menu</span>
+</div>
+<div class="font-manrope text-sm tracking-tight font-medium text-indigo-500 font-bold tracking-tighter">
+            Knowledge Base
+        </div>
+<div class="w-8 h-8 rounded-full bg-surface-container-high overflow-hidden border border-white/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]">person</span>
+</div>
+</nav>
+<!-- NavigationDrawer (Web) -->
+<aside class="hidden md:flex flex-col h-full py-8 px-6 bg-zinc-950/95 backdrop-blur-3xl h-full w-80 border-r border-r border-white/10 shadow-2xl shadow-black fixed left-0 top-0 z-40 transition-all duration-300 ease-in-out">
+<div class="flex flex-col mb-xl text-left">
+<div class="flex items-center gap-md mb-md">
+<div class="w-12 h-12 rounded-full bg-surface-container-highest border border-white/10 overflow-hidden flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">psychology</span>
+</div>
+<div>
+<h2 class="font-h2 text-h2 text-indigo-500 font-black">Intelligence Core</h2>
+<p class="font-label-md text-label-md text-on-surface-variant">Premium Tier</p>
+</div>
+</div>
+<div class="font-code text-code text-outline text-xs">v2.4.0</div>
+</div>
+<nav class="flex flex-col gap-xs font-manrope text-base">
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-zinc-400 hover:text-zinc-100 hover:bg-white/[0.02]" href="#">
+<span class="material-symbols-outlined">history</span>
+                Recents
+            </a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-zinc-400 hover:text-zinc-100 hover:bg-white/[0.02]" href="#">
+<span class="material-symbols-outlined">star</span>
+                Starred
+            </a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg bg-white/5 text-indigo-400 border-r-2 border-indigo-500" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">description</span>
+                Documents
+            </a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-zinc-400 hover:text-zinc-100 hover:bg-white/[0.02]" href="#">
+<span class="material-symbols-outlined">account_tree</span>
+                Graph View
+            </a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-zinc-400 hover:text-zinc-100 hover:bg-white/[0.02]" href="#">
+<span class="material-symbols-outlined">archive</span>
+                Archived
+            </a>
+</nav>
+</aside>
+<!-- Main Canvas -->
+<main class="pt-20 md:pt-8 md:pl-[340px] pb-32 md:pb-lg min-h-screen px-safe-margin w-full max-w-7xl mx-auto">
+<!-- Header -->
+<header class="mb-xl">
+<h1 class="font-h1 text-h1 text-on-surface tracking-tight">Knowledge Base</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-xs">Centralized intelligence repository and vector storage.</p>
+</header>
+<!-- Portal View Cards -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-md mb-xl">
+<div class="glass-card rounded-xl p-lg flex flex-col gap-md relative overflow-hidden group hover:border-white/30 transition-colors">
+<div class="flex justify-between items-start">
+<div class="w-10 h-10 rounded-lg bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20">
+<span class="material-symbols-outlined text-indigo-400">description</span>
+</div>
+</div>
+<div>
+<h3 class="font-h2 text-h2 text-on-surface">Documents</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mt-xs">1,204 Indexed</p>
+</div>
+</div>
+<div class="glass-card rounded-xl p-lg flex flex-col gap-md relative overflow-hidden group hover:border-white/30 transition-colors">
+<div class="flex justify-between items-start">
+<div class="w-10 h-10 rounded-lg bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20">
+<span class="material-symbols-outlined text-indigo-400">psychology</span>
+</div>
+</div>
+<div>
+<h3 class="font-h2 text-h2 text-on-surface">Memory</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mt-xs">8.5GB Allocated</p>
+</div>
+</div>
+<div class="glass-card rounded-xl p-lg flex flex-col gap-md relative overflow-hidden group hover:border-white/30 transition-colors">
+<div class="flex justify-between items-start">
+<div class="w-10 h-10 rounded-lg bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20">
+<span class="material-symbols-outlined text-indigo-400">hub</span>
+</div>
+</div>
+<div>
+<h3 class="font-h2 text-h2 text-on-surface">Knowledge Graph</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mt-xs">45K Entities Linked</p>
+</div>
+</div>
+</section>
+<!-- Document Control Area -->
+<section class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-md mb-lg">
+<div class="flex items-center gap-sm font-label-md text-label-md text-on-surface-variant">
+<span class="hover:text-primary cursor-pointer transition-colors">Root</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<span class="hover:text-primary cursor-pointer transition-colors">Engineering</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<span class="text-on-surface">System Architecture</span>
+</div>
+<div class="flex items-center gap-sm w-full lg:w-auto">
+<button class="flex-1 lg:flex-none glass-card px-md py-sm rounded-lg flex items-center justify-center gap-xs text-indigo-400 font-label-md text-label-md hover:bg-white/5 transition-colors">
+<span class="material-symbols-outlined text-[18px]">create_new_folder</span>
+                    New Folder
+                </button>
+<button class="flex-1 lg:flex-none glass-card px-md py-sm rounded-lg flex items-center justify-center gap-xs text-on-surface font-label-md text-label-md hover:bg-white/5 transition-colors">
+<span class="material-symbols-outlined text-[18px]">account_tree</span>
+                    View Graph
+                </button>
+<button class="flex-1 lg:flex-none glass-card px-md py-sm rounded-lg flex items-center justify-center gap-xs text-on-surface font-label-md text-label-md hover:bg-white/5 transition-colors">
+<span class="material-symbols-outlined text-[18px]">task_alt</span>
+                    Task Status
+                </button>
+</div>
+</section>
+<!-- Content Grid (Folders & Docs) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-xl">
+<!-- Left Column: Folders & Upload -->
+<div class="lg:col-span-4 flex flex-col gap-lg">
+<!-- Folders -->
+<div class="grid grid-cols-2 gap-sm">
+<div class="glass-card rounded-lg p-md flex items-center gap-sm hover:bg-white/5 cursor-pointer transition-colors">
+<span class="material-symbols-outlined text-outline">folder</span>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">API Specs</span>
+<span class="font-code text-[11px] text-on-surface-variant">12 docs</span>
+</div>
+</div>
+<div class="glass-card rounded-lg p-md flex items-center gap-sm hover:bg-white/5 cursor-pointer transition-colors">
+<span class="material-symbols-outlined text-outline">folder</span>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">Diagrams</span>
+<span class="font-code text-[11px] text-on-surface-variant">8 docs</span>
+</div>
+</div>
+<div class="glass-card rounded-lg p-md flex items-center gap-sm hover:bg-white/5 cursor-pointer transition-colors">
+<span class="material-symbols-outlined text-outline">folder</span>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">Legacy</span>
+<span class="font-code text-[11px] text-on-surface-variant">45 docs</span>
+</div>
+</div>
+<div class="glass-card rounded-lg p-md flex items-center gap-sm hover:bg-white/5 cursor-pointer transition-colors">
+<span class="material-symbols-outlined text-outline">folder</span>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">Drafts</span>
+<span class="font-code text-[11px] text-on-surface-variant">3 docs</span>
+</div>
+</div>
+</div>
+<!-- Dropzone -->
+<div class="border-[1px] border-dashed border-outline-variant rounded-xl p-xl flex flex-col items-center justify-center text-center gap-sm bg-white/[0.01] hover:bg-white/[0.03] transition-colors cursor-pointer">
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center mb-xs">
+<span class="material-symbols-outlined text-on-surface-variant">cloud_upload</span>
+</div>
+<h4 class="font-label-md text-label-md text-on-surface">Drag &amp; drop files</h4>
+<p class="font-code text-code text-on-surface-variant text-sm">PDF, Markdown, TXT up to 50MB</p>
+</div>
+</div>
+<!-- Right Column: Document List -->
+<div class="lg:col-span-8 flex flex-col gap-xs">
+<h3 class="font-label-md text-label-md text-on-surface-variant mb-xs px-xs uppercase tracking-widest text-[11px]">Recent Documents</h3>
+<div class="glass-card rounded-lg p-md flex items-center justify-between hover:bg-white/5 transition-colors group cursor-pointer">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors">description</span>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">Microservices_Architecture_v2.pdf</span>
+<span class="font-code text-[12px] text-on-surface-variant">Updated 2 hours ago • 2.4 MB</span>
+</div>
+</div>
+<div class="flex items-center gap-xs">
+<div class="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(192,193,255,0.5)]"></div>
+<span class="font-label-md text-label-md text-on-surface-variant text-[11px]">Indexed</span>
+</div>
+</div>
+<div class="glass-card rounded-lg p-md flex items-center justify-between hover:bg-white/5 transition-colors group cursor-pointer">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors">description</span>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">Auth_Flow_Sequence.md</span>
+<span class="font-code text-[12px] text-on-surface-variant">Updated yesterday • 14 KB</span>
+</div>
+</div>
+<div class="flex items-center gap-xs">
+<div class="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(192,193,255,0.5)]"></div>
+<span class="font-label-md text-label-md text-on-surface-variant text-[11px]">Indexed</span>
+</div>
+</div>
+<div class="glass-card rounded-lg p-md flex items-center justify-between hover:bg-white/5 transition-colors group cursor-pointer">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors">description</span>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">Database_Schema_2024.txt</span>
+<span class="font-code text-[12px] text-on-surface-variant">Updated 3 days ago • 89 KB</span>
+</div>
+</div>
+<div class="flex items-center gap-xs">
+<div class="w-2 h-2 rounded-full bg-outline-variant"></div>
+<span class="font-label-md text-label-md text-on-surface-variant text-[11px]">Pending</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Floating Vectorization Progress -->
+<div class="fixed bottom-24 md:bottom-8 right-safe-margin z-40 glass-card rounded-xl p-md flex items-center gap-md w-[280px] shadow-2xl shadow-black/50">
+<div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-[18px]">rotate_right</span>
+</div>
+<div class="flex flex-col flex-1 gap-xs">
+<div class="flex justify-between items-center w-full">
+<span class="font-label-md text-label-md text-on-surface text-[12px]">Vectorizing context...</span>
+<span class="font-code text-[11px] text-primary">68%</span>
+</div>
+<div class="w-full h-1 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[68%] rounded-full shadow-[0_0_8px_rgba(192,193,255,0.8)]"></div>
+</div>
+</div>
+</div>
+<!-- BottomNavBar (Mobile) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-20 pb-safe px-4 bg-zinc-900/60 backdrop-blur-2xl rounded-t-2xl border-t border-white/[0.08] inner-shadow-sm md:hidden">
+<a class="flex flex-col items-center justify-center text-indigo-400 relative after:content-[''] after:absolute after:-bottom-1 after:w-1 after:h-1 after:bg-indigo-500 after:rounded-full font-manrope text-[10px] font-semibold uppercase tracking-widest active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">folder_open</span>
+            Library
+        </a>
+<a class="flex flex-col items-center justify-center text-zinc-500 hover:text-zinc-200 font-manrope text-[10px] font-semibold uppercase tracking-widest active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined mb-1">psychology</span>
+            Memory
+        </a>
+<a class="flex flex-col items-center justify-center text-zinc-500 hover:text-zinc-200 font-manrope text-[10px] font-semibold uppercase tracking-widest active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined mb-1">hub</span>
+            Graph
+        </a>
+<a class="flex flex-col items-center justify-center text-zinc-500 hover:text-zinc-200 font-manrope text-[10px] font-semibold uppercase tracking-widest active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined mb-1">settings</span>
+            Settings
+        </a>
+</nav>
+</body></html>

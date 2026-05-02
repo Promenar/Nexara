@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Add Provider - Settings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&amp;family=Manrope:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-bright": "#39393b",
+                      "inverse-primary": "#494bd6",
+                      "tertiary-fixed-dim": "#ffb783",
+                      "outline": "#908fa0",
+                      "on-surface": "#e5e1e4",
+                      "on-error-container": "#ffdad6",
+                      "primary-fixed-dim": "#c0c1ff",
+                      "on-primary": "#1000a9",
+                      "surface-container-high": "#2a2a2c",
+                      "on-tertiary": "#4f2500",
+                      "inverse-surface": "#e5e1e4",
+                      "surface-container": "#201f22",
+                      "on-primary-fixed-variant": "#2f2ebe",
+                      "on-tertiary-fixed": "#301400",
+                      "surface-tint": "#c0c1ff",
+                      "surface-dim": "#131315",
+                      "on-tertiary-container": "#452000",
+                      "primary-container": "#8083ff",
+                      "tertiary": "#ffb783",
+                      "on-tertiary-fixed-variant": "#703700",
+                      "surface-container-highest": "#353437",
+                      "on-surface-variant": "#c7c4d7",
+                      "on-error": "#690005",
+                      "on-background": "#e5e1e4",
+                      "tertiary-container": "#d97721",
+                      "on-primary-container": "#0d0096",
+                      "secondary-fixed": "#e4e1e6",
+                      "tertiary-fixed": "#ffdcc5",
+                      "surface-container-lowest": "#0e0e10",
+                      "on-secondary-container": "#b6b4b8",
+                      "error": "#ffb4ab",
+                      "surface": "#131315",
+                      "secondary": "#c8c5ca",
+                      "on-secondary-fixed-variant": "#47464a",
+                      "error-container": "#93000a",
+                      "secondary-container": "#47464a",
+                      "on-secondary": "#303033",
+                      "inverse-on-surface": "#313032",
+                      "primary": "#c0c1ff",
+                      "surface-variant": "#353437",
+                      "background": "#131315",
+                      "primary-fixed": "#e1e0ff",
+                      "on-secondary-fixed": "#1b1b1e",
+                      "on-primary-fixed": "#07006c",
+                      "surface-container-low": "#1c1b1d",
+                      "secondary-fixed-dim": "#c8c5ca",
+                      "outline-variant": "#464554"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "sm": "8px",
+                      "safe-margin": "20px",
+                      "xl": "32px",
+                      "unit": "4px",
+                      "gutter": "16px",
+                      "md": "16px",
+                      "xs": "4px",
+                      "lg": "24px"
+              },
+              "fontFamily": {
+                      "body-md": ["Inter"],
+                      "h2": ["Manrope"],
+                      "label-md": ["Inter"],
+                      "h1": ["Manrope"],
+                      "code": ["Space Grotesk"],
+                      "body-lg": ["Inter"]
+              },
+              "fontSize": {
+                      "body-md": ["15px", {"lineHeight": "25px", "fontWeight": "400"}],
+                      "h2": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "label-md": ["13px", {"lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                      "h1": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                      "code": ["14px", {"lineHeight": "22px", "fontWeight": "400"}],
+                      "body-lg": ["17px", {"lineHeight": "26px", "fontWeight": "400"}]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen pb-safe">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-zinc-950/70 backdrop-blur-3xl border-b border-white/10 shadow-none flex justify-between items-center h-16 px-5 w-full transition-transform">
+<button class="text-zinc-400 hover:bg-white/5 active:scale-95 transition-transform p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">arrow_back</span>
+</button>
+<h1 class="text-lg font-bold text-zinc-100 font-manrope tracking-wide">Settings</h1>
+<button class="text-indigo-400 hover:bg-white/5 active:scale-95 transition-transform p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">account_circle</span>
+</button>
+</header>
+<main class="pt-24 px-safe-margin pb-32 max-w-3xl mx-auto space-y-lg">
+<!-- Header Section -->
+<section class="space-y-sm">
+<h2 class="font-h1 text-h1 text-on-surface">Add Provider</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Select a provider and configure the necessary credentials to integrate their services.</p>
+</section>
+<!-- Preset Cards Grid -->
+<section class="space-y-md">
+<h3 class="font-h2 text-h2 text-on-surface">Select Provider</h3>
+<div class="grid grid-cols-2 md:grid-cols-3 gap-md">
+<!-- Selected Card -->
+<button class="flex flex-col items-center justify-center p-md rounded-xl bg-surface-container border border-primary-container relative overflow-hidden group shadow-[inset_0_0_10px_rgba(255,255,255,0.02)] transition-all">
+<div class="absolute inset-0 bg-primary-container/10"></div>
+<span class="material-symbols-outlined text-primary mb-sm text-3xl" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+<span class="font-label-md text-label-md text-on-surface">OpenAI</span>
+<div class="absolute top-2 right-2 text-primary">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</button>
+<!-- Unselected Cards -->
+<button class="flex flex-col items-center justify-center p-md rounded-xl bg-surface/50 backdrop-blur-xl border border-white/10 hover:border-white/30 hover:shadow-[inset_0_0_15px_rgba(255,255,255,0.05)] transition-all active:scale-95">
+<span class="material-symbols-outlined text-on-surface-variant mb-sm text-3xl" style="font-variation-settings: 'FILL' 0;">psychology</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Anthropic</span>
+</button>
+<button class="flex flex-col items-center justify-center p-md rounded-xl bg-surface/50 backdrop-blur-xl border border-white/10 hover:border-white/30 hover:shadow-[inset_0_0_15px_rgba(255,255,255,0.05)] transition-all active:scale-95">
+<span class="material-symbols-outlined text-on-surface-variant mb-sm text-3xl" style="font-variation-settings: 'FILL' 0;">language</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Google</span>
+</button>
+<button class="flex flex-col items-center justify-center p-md rounded-xl bg-surface/50 backdrop-blur-xl border border-white/10 hover:border-white/30 hover:shadow-[inset_0_0_15px_rgba(255,255,255,0.05)] transition-all active:scale-95">
+<span class="material-symbols-outlined text-on-surface-variant mb-sm text-3xl" style="font-variation-settings: 'FILL' 0;">cloud</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Azure</span>
+</button>
+<button class="flex flex-col items-center justify-center p-md rounded-xl bg-surface/50 backdrop-blur-xl border border-white/10 hover:border-white/30 hover:shadow-[inset_0_0_15px_rgba(255,255,255,0.05)] transition-all active:scale-95">
+<span class="material-symbols-outlined text-on-surface-variant mb-sm text-3xl" style="font-variation-settings: 'FILL' 0;">api</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Cohere</span>
+</button>
+<button class="flex flex-col items-center justify-center p-md rounded-xl bg-surface/50 backdrop-blur-xl border border-white/10 hover:border-white/30 hover:shadow-[inset_0_0_15px_rgba(255,255,255,0.05)] transition-all active:scale-95">
+<span class="material-symbols-outlined text-on-surface-variant mb-sm text-3xl" style="font-variation-settings: 'FILL' 0;">memory</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Mistral</span>
+</button>
+</div>
+</section>
+<!-- Form Section -->
+<section class="space-y-md bg-surface-container/30 backdrop-blur-2xl p-lg rounded-xl border border-white/10 shadow-[inset_0_0_20px_rgba(255,255,255,0.02)]">
+<h3 class="font-h2 text-h2 text-on-surface mb-md">Configuration</h3>
+<div class="space-y-sm">
+<label class="font-label-md text-label-md text-on-surface-variant block">Provider Name</label>
+<input class="w-full bg-surface-container border border-white/10 rounded-lg px-4 py-3 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors placeholder:text-surface-variant shadow-[inset_0_2px_4px_rgba(0,0,0,0.2)]" type="text" value="OpenAI"/>
+</div>
+<div class="space-y-sm">
+<label class="font-label-md text-label-md text-on-surface-variant block">Base URL</label>
+<input class="w-full bg-surface-container border border-white/10 rounded-lg px-4 py-3 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors placeholder:text-on-surface-variant/50 shadow-[inset_0_2px_4px_rgba(0,0,0,0.2)]" placeholder="https://api.openai.com/v1" type="text"/>
+</div>
+<div class="space-y-sm">
+<label class="font-label-md text-label-md text-on-surface-variant block flex justify-between">
+<span>API Key</span>
+<span class="text-xs text-on-surface-variant/70">Securely stored</span>
+</label>
+<div class="relative">
+<input class="w-full bg-surface-container border border-white/10 rounded-lg px-4 py-3 font-code text-code text-on-surface focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors placeholder:text-on-surface-variant/50 shadow-[inset_0_2px_4px_rgba(0,0,0,0.2)] pr-12" placeholder="sk-..." type="password"/>
+<button class="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface transition-colors p-1">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 0;">visibility</span>
+</button>
+</div>
+</div>
+<!-- Vertex AI Specific Fields (Example of specialized fields) -->
+<div class="pt-sm mt-sm border-t border-white/5 space-y-md opacity-50 pointer-events-none">
+<div class="space-y-sm">
+<label class="font-label-md text-label-md text-on-surface-variant block">Project ID (Vertex AI)</label>
+<input class="w-full bg-surface-container/50 border border-white/5 rounded-lg px-4 py-3 font-body-md text-body-md text-on-surface/50 focus:outline-none transition-colors shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)]" disabled="" placeholder="google-cloud-project-id" type="text"/>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Save Action -->
+<div class="fixed bottom-0 w-full z-40 bg-background/90 backdrop-blur-xl border-t border-white/10 p-safe-margin pb-safe md:relative md:bg-transparent md:border-none md:p-0 md:mt-xl max-w-3xl mx-auto px-safe-margin md:pb-xl">
+<button class="w-full bg-inverse-primary text-white font-label-md text-label-md rounded-xl py-4 flex items-center justify-center space-x-2 active:scale-[0.98] transition-transform shadow-lg">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">save</span>
+<span>Save Provider Configuration</span>
+</button>
+</div>
+</body></html>

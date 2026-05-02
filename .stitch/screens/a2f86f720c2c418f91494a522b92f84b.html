@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>D3 Document Editor</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&amp;family=Manrope:wght@600;700&amp;family=Space+Grotesk&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed-variant": "#47464a",
+                        "on-primary-fixed": "#07006c",
+                        "surface-container": "#201f22",
+                        "on-secondary-container": "#b6b4b8",
+                        "on-secondary-fixed": "#1b1b1e",
+                        "tertiary-fixed-dim": "#ffb783",
+                        "primary-container": "#8083ff",
+                        "surface-container-highest": "#353437",
+                        "surface-container-high": "#2a2a2c",
+                        "on-background": "#e5e1e4",
+                        "primary-fixed-dim": "#c0c1ff",
+                        "tertiary-container": "#d97721",
+                        "on-secondary": "#303033",
+                        "surface-tint": "#c0c1ff",
+                        "surface-container-low": "#1c1b1d",
+                        "background": "#131315",
+                        "tertiary-fixed": "#ffdcc5",
+                        "on-primary-fixed-variant": "#2f2ebe",
+                        "inverse-surface": "#e5e1e4",
+                        "surface-bright": "#39393b",
+                        "primary": "#c0c1ff",
+                        "outline": "#908fa0",
+                        "on-tertiary": "#4f2500",
+                        "on-primary": "#1000a9",
+                        "surface-container-lowest": "#0e0e10",
+                        "surface": "#131315",
+                        "error": "#ffb4ab",
+                        "on-tertiary-fixed-variant": "#703700",
+                        "outline-variant": "#464554",
+                        "on-primary-container": "#0d0096",
+                        "secondary-fixed": "#e4e1e6",
+                        "on-error": "#690005",
+                        "inverse-primary": "#494bd6",
+                        "primary-fixed": "#e1e0ff",
+                        "on-surface-variant": "#c7c4d7",
+                        "surface-dim": "#131315",
+                        "secondary-container": "#47464a",
+                        "on-tertiary-fixed": "#301400",
+                        "surface-variant": "#353437",
+                        "on-tertiary-container": "#452000",
+                        "secondary-fixed-dim": "#c8c5ca",
+                        "inverse-on-surface": "#313032",
+                        "secondary": "#c8c5ca",
+                        "on-surface": "#e5e1e4",
+                        "tertiary": "#ffb783",
+                        "on-error-container": "#ffdad6",
+                        "error-container": "#93000a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "8px",
+                        "xs": "4px",
+                        "lg": "24px",
+                        "xl": "32px",
+                        "md": "16px",
+                        "gutter": "16px",
+                        "unit": "4px",
+                        "safe-margin": "20px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Inter"],
+                        "code": ["Space Grotesk"],
+                        "body-md": ["Inter"],
+                        "h1": ["Manrope"],
+                        "h2": ["Manrope"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-md": ["13px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "code": ["14px", { "lineHeight": "22px", "fontWeight": "400" }],
+                        "body-md": ["15px", { "lineHeight": "25px", "fontWeight": "400" }],
+                        "h1": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "h2": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "body-lg": ["17px", { "lineHeight": "26px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .inner-shadow-sm { box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05); }
+        .glass-panel { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 0.5px solid rgba(255, 255, 255, 0.1); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface min-h-screen flex flex-col font-body-md overflow-hidden">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-zinc-950/70 backdrop-blur-xl border-b border-white/[0.05] shadow-none flex items-center justify-between px-5 h-16 w-full">
+<div class="flex items-center gap-4">
+<button class="text-zinc-400 hover:bg-white/5 transition-colors active:scale-95 duration-200 p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<div class="flex flex-col">
+<h1 class="text-indigo-500 font-bold tracking-tighter font-h1 text-h1">Knowledge Base</h1>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="h-8 w-8 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center overflow-hidden">
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]">person</span>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 mt-16 pb-20 flex flex-col md:flex-row max-w-[1600px] mx-auto w-full relative h-[calc(100vh-64px)]">
+<!-- Navigation Drawer (Hidden on Mobile) -->
+<aside class="hidden md:flex flex-col h-full py-8 px-6 bg-zinc-950/95 backdrop-blur-3xl h-full w-80 border-r border-r border-white/10 shadow-2xl shadow-black transition-all duration-300 ease-in-out shrink-0">
+<div class="flex items-center gap-3 mb-8">
+<div class="h-10 w-10 rounded-lg bg-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-container" style="font-variation-settings: 'FILL' 1;">memory</span>
+</div>
+<div>
+<h2 class="font-h2 text-h2 text-on-surface">Intelligence Core</h2>
+<p class="font-label-md text-label-md text-on-surface-variant">Premium Tier • v2.4.0</p>
+</div>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-zinc-400 hover:bg-white/[0.02] hover:text-zinc-100 transition-colors" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-md text-label-md">Recents</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-zinc-400 hover:bg-white/[0.02] hover:text-zinc-100 transition-colors" href="#">
+<span class="material-symbols-outlined">star</span>
+<span class="font-label-md text-label-md">Starred</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg bg-white/5 text-indigo-400 border-r-2 border-indigo-500 hover:bg-white/[0.02] transition-colors" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="font-label-md text-label-md">Documents</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-zinc-400 hover:bg-white/[0.02] hover:text-zinc-100 transition-colors" href="#">
+<span class="material-symbols-outlined">account_tree</span>
+<span class="font-label-md text-label-md">Graph View</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-zinc-400 hover:bg-white/[0.02] hover:text-zinc-100 transition-colors" href="#">
+<span class="material-symbols-outlined">archive</span>
+<span class="font-label-md text-label-md">Archived</span>
+</a>
+</nav>
+</aside>
+<!-- Editor Workspace -->
+<section class="flex-1 flex flex-col h-full overflow-hidden relative p-safe-margin lg:p-xl gap-lg">
+<!-- GlassHeader -->
+<div class="glass-panel rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shrink-0 inner-shadow-sm z-10">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-[28px]" style="font-variation-settings: 'FILL' 1;">description</span>
+<div>
+<input class="bg-transparent border-none p-0 m-0 font-h2 text-h2 text-on-surface focus:ring-0 w-full placeholder-on-surface-variant" placeholder="Document Title..." type="text" value="System_Architecture_v3.md"/>
+<div class="flex items-center gap-2 mt-1">
+<span class="font-label-md text-label-md text-on-surface-variant">24.5 MB</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span class="font-label-md text-label-md text-primary">Markdown</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-3 self-end sm:self-auto">
+<!-- Toggle -->
+<div class="flex items-center bg-surface-container p-1 rounded-lg border border-outline-variant">
+<button class="px-3 py-1.5 rounded bg-surface-bright text-on-surface shadow-sm flex items-center gap-2 transition-colors">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+<span class="font-label-md text-label-md hidden sm:inline">Preview</span>
+</button>
+<button class="px-3 py-1.5 rounded text-on-surface-variant hover:text-on-surface flex items-center gap-2 transition-colors">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+<span class="font-label-md text-label-md hidden sm:inline">Edit</span>
+</button>
+</div>
+<!-- Save Button -->
+<button class="bg-[#8083ff] text-white px-4 py-2 rounded-lg font-label-md text-label-md flex items-center gap-2 hover:bg-opacity-90 active:scale-95 transition-all shadow-lg shadow-indigo-500/20">
+<span class="material-symbols-outlined text-[18px]">save</span>
+                        Save
+                    </button>
+</div>
+</div>
+<!-- Warning Banner -->
+<div class="bg-error-container/20 border border-error/30 rounded-lg p-3 flex items-start gap-3 shrink-0">
+<span class="material-symbols-outlined text-error mt-0.5">warning</span>
+<div class="flex-1">
+<p class="font-body-md text-body-md text-on-surface">Large file detected (24.5 MB). Editing performance may be degraded. Consider splitting the document.</p>
+</div>
+<button class="text-on-surface-variant hover:text-on-surface p-1">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<!-- Content Area (SyntaxHighlighter Simulation) -->
+<div class="flex-1 glass-panel rounded-xl overflow-hidden flex flex-col inner-shadow-sm relative group">
+<!-- Line Numbers & Code -->
+<div class="flex-1 overflow-auto flex bg-[#1a1a1c]">
+<div class="w-12 shrink-0 bg-[#151517] border-r border-white/5 py-4 flex flex-col items-end pr-3 select-none text-outline-variant font-code text-code">
+<span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span><span>15</span>
+</div>
+<div class="flex-1 p-4 font-code text-code text-on-surface whitespace-pre overflow-x-auto focus:outline-none" contenteditable="false">
+<span class="text-indigo-400"># System Architecture v3</span>
+<span class="text-emerald-400">## Overview</span>
+The core intelligence engine operates on a distributed neural network, leveraging localized edge computing for low-latency responses.
+
+<span class="text-emerald-400">### Components</span>
+- <span class="text-amber-300">**Ingestion Layer**</span>: Handles high-throughput data streams.
+- <span class="text-amber-300">**Processing Matrix**</span>: GPU-accelerated node clusters.
+- <span class="text-amber-300">**Storage Substrate**</span>: Immutable ledger for state preservation.
+
+<span class="text-pink-400">python</span>
+<span class="text-blue-400">def</span> <span class="text-yellow-200">initialize_core</span>(nodes: <span class="text-blue-400">int</span>) -&gt; <span class="text-blue-400">bool</span>:
+    <span class="text-zinc-500">"""Bootstraps the intelligence matrix."""</span>
+<span class="text-blue-400">try</span>:
+        matrix = DistributedMatrix(nodes)
+        matrix.start()
+        <span class="text-blue-400">return True</span>
+<span class="text-blue-400">except</span> MatrixError <span class="text-blue-400">as</span> e:
+        log.error(<span class="text-amber-300">f"Failed to initialize: {e}"</span>)
+        <span class="text-blue-400">return False</span>
+<span class="text-pink-400"></span>
+</div>
+</div>
+</div>
+<!-- Bottom Toolbar -->
+<div class="bg-surface-container-low border-t border-white/[0.05] p-2 flex items-center justify-between shrink-0 rounded-b-xl -mt-lg z-10 glass-panel">
+<div class="flex items-center gap-4 px-2">
+<span class="font-code text-[12px] text-on-surface-variant">UTF-8</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span class="font-code text-[12px] text-on-surface-variant">1,245 words</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span class="font-code text-[12px] text-on-surface-variant">8,902 characters</span>
+</div>
+<div class="flex items-center gap-2 px-3 py-1 bg-surface-container rounded-md border border-white/5">
+<span class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></span>
+<span class="font-label-md text-[12px] text-on-surface">Preview Mode (Read-Only)</span>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-20 pb-safe px-4 bg-zinc-900/60 backdrop-blur-2xl border-t border-white/[0.08] inner-shadow-sm rounded-t-2xl">
+<a class="flex flex-col items-center justify-center text-zinc-500 hover:text-zinc-200 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined">folder_open</span>
+<span class="font-manrope text-[10px] font-semibold uppercase tracking-widest mt-1">Library</span>
+</a>
+<a class="flex flex-col items-center justify-center text-zinc-500 hover:text-zinc-200 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined">psychology</span>
+<span class="font-manrope text-[10px] font-semibold uppercase tracking-widest mt-1">Memory</span>
+</a>
+<a class="flex flex-col items-center justify-center text-indigo-400 relative after:content-[''] after:absolute after:-bottom-1 after:w-1 after:h-1 after:bg-indigo-500 after:rounded-full hover:text-zinc-200 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">description</span>
+<span class="font-manrope text-[10px] font-semibold uppercase tracking-widest mt-1">Docs</span>
+</a>
+<a class="flex flex-col items-center justify-center text-zinc-500 hover:text-zinc-200 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-manrope text-[10px] font-semibold uppercase tracking-widest mt-1">Settings</span>
+</a>
+</nav>
+</body></html>

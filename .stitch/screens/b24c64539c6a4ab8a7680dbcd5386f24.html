@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Advanced Retrieval Settings</title>
+<!-- Fonts & Icons -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&amp;family=Manrope:wght@600;700&amp;family=Space+Grotesk:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-low": "#1c1b1d",
+                        "on-tertiary-fixed-variant": "#703700",
+                        "inverse-primary": "#494bd6",
+                        "primary-container": "#8083ff",
+                        "tertiary-fixed-dim": "#ffb783",
+                        "surface-variant": "#353437",
+                        "primary-fixed": "#e1e0ff",
+                        "surface-container-high": "#2a2a2c",
+                        "error-container": "#93000a",
+                        "surface-container-lowest": "#0e0e10",
+                        "on-tertiary-container": "#452000",
+                        "secondary-fixed-dim": "#c8c5ca",
+                        "tertiary-fixed": "#ffdcc5",
+                        "surface-tint": "#c0c1ff",
+                        "primary": "#c0c1ff",
+                        "surface-dim": "#131315",
+                        "on-tertiary-fixed": "#301400",
+                        "on-error-container": "#ffdad6",
+                        "on-secondary-fixed-variant": "#47464a",
+                        "surface-bright": "#39393b",
+                        "inverse-on-surface": "#313032",
+                        "tertiary-container": "#d97721",
+                        "surface-container": "#201f22",
+                        "surface": "#131315",
+                        "surface-container-highest": "#353437",
+                        "on-background": "#e5e1e4",
+                        "on-surface-variant": "#c7c4d7",
+                        "secondary": "#c8c5ca",
+                        "secondary-container": "#47464a",
+                        "secondary-fixed": "#e4e1e6",
+                        "on-secondary": "#303033",
+                        "on-primary-fixed-variant": "#2f2ebe",
+                        "on-primary-container": "#0d0096",
+                        "on-surface": "#e5e1e4",
+                        "outline": "#908fa0",
+                        "on-secondary-container": "#b6b4b8",
+                        "tertiary": "#ffb783",
+                        "outline-variant": "#464554",
+                        "primary-fixed-dim": "#c0c1ff",
+                        "inverse-surface": "#e5e1e4",
+                        "error": "#ffb4ab",
+                        "on-secondary-fixed": "#1b1b1e",
+                        "on-tertiary": "#4f2500",
+                        "on-error": "#690005",
+                        "on-primary-fixed": "#07006c",
+                        "background": "#131315",
+                        "on-primary": "#1000a9"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "lg": "24px",
+                        "unit": "4px",
+                        "gutter": "16px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "xl": "32px",
+                        "safe-margin": "20px"
+                    },
+                    "fontFamily": {
+                        "h1": ["manrope"],
+                        "code": ["spaceGrotesk"],
+                        "body-md": ["inter"],
+                        "label-md": ["inter"],
+                        "h2": ["manrope"],
+                        "body-lg": ["inter"]
+                    },
+                    "fontSize": {
+                        "h1": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "code": ["14px", { "lineHeight": "22px", "fontWeight": "400" }],
+                        "body-md": ["15px", { "lineHeight": "25px", "fontWeight": "400" }],
+                        "label-md": ["13px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "h2": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "body-lg": ["17px", { "lineHeight": "26px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md min-h-screen antialiased flex flex-col selection:bg-primary-container/30">
+<!-- Shared Component: TopAppBar -->
+<div class="relative flex h-auto w-full flex-col bg-[#111122] dark group/design-root overflow-x-hidden" style='font-family: Manrope, "Noto Sans", sans-serif;'>
+<div class="flex items-center bg-[#111122] p-4 pb-2 justify-between">
+<div class="text-white flex size-12 shrink-0 items-center" data-icon="ArrowLeft" data-size="24px" data-weight="regular">
+<svg fill="currentColor" height="24px" viewbox="0 0 256 256" width="24px" xmlns="http://www.w3.org/2000/svg">
+<path d="M224,128a8,8,0,0,1-8,8H59.31l58.35,58.34a8,8,0,0,1-11.32,11.32l-72-72a8,8,0,0,1,0-11.32l72-72a8,8,0,0,1,11.32,11.32L59.31,120H216A8,8,0,0,1,224,128Z"></path>
+</svg>
+</div>
+<h2 class="text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1">Advanced Retrieval</h2>
+</div>
+<h2 class="text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Memory Retrieval</h2>
+<div class="@container">
+<div class="relative flex w-full flex-col items-start justify-between gap-3 p-4 @[480px]:flex-row @[480px]:items-center">
+<div class="flex w-full shrink-[3] items-center justify-between">
+<p class="text-white text-base font-medium leading-normal">Retrieval Limit</p>
+<p class="text-white text-sm font-normal leading-normal @[480px]:hidden">15</p>
+</div>
+<div class="flex h-4 w-full items-center gap-4">
+<div class="flex h-1 flex-1 rounded-sm bg-[#333466]">
+<div class="h-full w-[32%] rounded-sm bg-indigo-500"></div>
+<div class="relative"><div class="absolute -left-2 -top-1.5 size-4 rounded-full bg-indigo-500"></div></div>
+</div>
+<p class="text-white text-sm font-normal leading-normal hidden @[480px]:block">15</p>
+</div>
+</div>
+</div>
+<div class="@container">
+<div class="relative flex w-full flex-col items-start justify-between gap-3 p-4 @[480px]:flex-row @[480px]:items-center">
+<div class="flex w-full shrink-[3] items-center justify-between">
+<p class="text-white text-base font-medium leading-normal">Similarity Threshold</p>
+<p class="text-white text-sm font-normal leading-normal @[480px]:hidden">0.75</p>
+</div>
+<div class="flex h-4 w-full items-center gap-4">
+<div class="flex h-1 flex-1 rounded-sm bg-[#333466]">
+<div class="h-full w-[32%] rounded-sm bg-indigo-500"></div>
+<div class="relative"><div class="absolute -left-2 -top-1.5 size-4 rounded-full bg-indigo-500"></div></div>
+</div>
+<p class="text-white text-sm font-normal leading-normal hidden @[480px]:block">0.75</p>
+</div>
+</div>
+</div>
+<h2 class="text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Document Retrieval</h2>
+<div class="h-5 bg-[#111122]"></div>
+</div>
+<!-- Main Content Area transitioning to Theme Classes -->
+<main class="flex-1 flex flex-col pb-safe-margin bg-background">
+<!-- Document Retrieval (Continued) -->
+<section class="px-safe-margin pb-md flex flex-col gap-md">
+<div class="flex flex-col gap-sm mt-sm">
+<div class="flex items-center justify-between">
+<span class="font-body-md text-on-background">Top-K</span>
+<span class="font-body-md text-on-surface-variant">10</span>
+</div>
+<div class="relative w-full h-1 bg-surface-variant rounded-full flex items-center">
+<div class="absolute left-0 h-full bg-primary rounded-full w-[25%]"></div>
+<div class="absolute left-[25%] size-4 bg-primary rounded-full -ml-2 shadow-[0_0_8px_rgba(192,193,255,0.4)]"></div>
+</div>
+</div>
+<div class="flex flex-col gap-sm mt-md">
+<div class="flex items-center justify-between">
+<span class="font-body-md text-on-background">Similarity Threshold</span>
+<span class="font-body-md text-on-surface-variant">0.60</span>
+</div>
+<div class="relative w-full h-1 bg-surface-variant rounded-full flex items-center">
+<div class="absolute left-0 h-full bg-primary rounded-full w-[60%]"></div>
+<div class="absolute left-[60%] size-4 bg-primary rounded-full -ml-2 shadow-[0_0_8px_rgba(192,193,255,0.4)]"></div>
+</div>
+</div>
+</section>
+<!-- Divider -->
+<div class="h-[0.5px] w-full bg-outline-variant/40 my-sm"></div>
+<!-- Reranking -->
+<section class="px-safe-margin py-md flex flex-col gap-md">
+<h2 class="font-h2 text-h2 text-on-background">Reranking</h2>
+<div class="flex items-center justify-between py-xs">
+<div class="flex flex-col">
+<span class="font-body-md text-on-background">Enable Cross-Encoder</span>
+<span class="font-label-md text-on-surface-variant">Improves context relevance ordering</span>
+</div>
+<button class="relative w-11 h-6 rounded-full bg-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50">
+<span class="absolute left-[22px] top-[2px] size-5 bg-on-primary rounded-full shadow-sm transition-transform"></span>
+</button>
+</div>
+<div class="flex flex-col gap-sm mt-sm">
+<div class="flex items-center justify-between">
+<span class="font-body-md text-on-background text-on-background/60">N-Set (Pre-Rerank)</span>
+<span class="font-body-md text-on-surface-variant">50</span>
+</div>
+<div class="relative w-full h-1 bg-surface-variant rounded-full flex items-center opacity-60 pointer-events-none">
+<div class="absolute left-0 h-full bg-primary rounded-full w-[50%]"></div>
+<div class="absolute left-[50%] size-4 bg-primary rounded-full -ml-2"></div>
+</div>
+</div>
+<div class="flex flex-col gap-sm mt-md">
+<div class="flex items-center justify-between">
+<span class="font-body-md text-on-background text-on-background/60">Final Limit</span>
+<span class="font-body-md text-on-surface-variant">5</span>
+</div>
+<div class="relative w-full h-1 bg-surface-variant rounded-full flex items-center opacity-60 pointer-events-none">
+<div class="absolute left-0 h-full bg-primary rounded-full w-[20%]"></div>
+<div class="absolute left-[20%] size-4 bg-primary rounded-full -ml-2"></div>
+</div>
+</div>
+</section>
+<!-- Divider -->
+<div class="h-[0.5px] w-full bg-outline-variant/40 my-sm"></div>
+<!-- Query Rewriting -->
+<section class="px-safe-margin py-md flex flex-col gap-md">
+<h2 class="font-h2 text-h2 text-on-background">Query Rewriting</h2>
+<p class="font-body-md text-on-surface-variant mb-xs -mt-sm">Transform queries before retrieval to improve vector matching and context discovery.</p>
+<div class="grid grid-cols-2 gap-sm">
+<button class="flex items-center justify-center py-sm px-md rounded-lg border border-primary bg-primary/10 text-primary-fixed-dim font-label-md transition-colors">
+                    None
+                </button>
+<button class="flex items-center justify-center py-sm px-md rounded-lg border border-outline-variant bg-surface-container-low text-on-surface-variant font-label-md hover:bg-surface-variant transition-colors">
+                    Multi-Query
+                </button>
+<button class="flex items-center justify-center py-sm px-md rounded-lg border border-outline-variant bg-surface-container-low text-on-surface-variant font-label-md hover:bg-surface-variant transition-colors">
+                    HyDE
+                </button>
+<button class="flex items-center justify-center py-sm px-md rounded-lg border border-outline-variant bg-surface-container-low text-on-surface-variant font-label-md hover:bg-surface-variant transition-colors">
+                    Step-Back
+                </button>
+</div>
+</section>
+<!-- Divider -->
+<div class="h-[0.5px] w-full bg-outline-variant/40 my-sm"></div>
+<!-- Observability -->
+<section class="px-safe-margin py-md flex flex-col gap-md">
+<h2 class="font-h2 text-h2 text-on-background">Observability</h2>
+<div class="flex items-center justify-between py-xs">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-outline" data-icon="troubleshoot">troubleshoot</span>
+<span class="font-body-md text-on-background">Log retrieval metrics</span>
+</div>
+<button class="relative w-11 h-6 rounded-full bg-surface-variant transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50">
+<span class="absolute left-[2px] top-[2px] size-5 bg-outline rounded-full shadow-sm transition-transform"></span>
+</button>
+</div>
+<div class="flex items-center justify-between py-xs">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-outline" data-icon="save">save</span>
+<span class="font-body-md text-on-background">Save contexts to run</span>
+</div>
+<button class="relative w-11 h-6 rounded-full bg-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50">
+<span class="absolute left-[22px] top-[2px] size-5 bg-on-primary rounded-full shadow-sm transition-transform"></span>
+</button>
+</div>
+<div class="flex items-center justify-between py-xs">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-outline" data-icon="timeline">timeline</span>
+<span class="font-body-md text-on-background">Enable Tracing</span>
+</div>
+<button class="relative w-11 h-6 rounded-full bg-surface-variant transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50">
+<span class="absolute left-[2px] top-[2px] size-5 bg-outline rounded-full shadow-sm transition-transform"></span>
+</button>
+</div>
+</section>
+</main>
+</body></html>

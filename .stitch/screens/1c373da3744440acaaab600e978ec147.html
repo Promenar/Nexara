@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Theme Settings - Personalization</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@600;700&amp;family=Space+Grotesk&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-bright": "#39393b",
+                      "inverse-primary": "#494bd6",
+                      "tertiary-fixed-dim": "#ffb783",
+                      "outline": "#908fa0",
+                      "on-surface": "#e5e1e4",
+                      "on-error-container": "#ffdad6",
+                      "primary-fixed-dim": "#c0c1ff",
+                      "on-primary": "#1000a9",
+                      "surface-container-high": "#2a2a2c",
+                      "on-tertiary": "#4f2500",
+                      "inverse-surface": "#e5e1e4",
+                      "surface-container": "#201f22",
+                      "on-primary-fixed-variant": "#2f2ebe",
+                      "on-tertiary-fixed": "#301400",
+                      "surface-tint": "#c0c1ff",
+                      "surface-dim": "#131315",
+                      "on-tertiary-container": "#452000",
+                      "primary-container": "#8083ff",
+                      "tertiary": "#ffb783",
+                      "on-tertiary-fixed-variant": "#703700",
+                      "surface-container-highest": "#353437",
+                      "on-surface-variant": "#c7c4d7",
+                      "on-error": "#690005",
+                      "on-background": "#e5e1e4",
+                      "tertiary-container": "#d97721",
+                      "on-primary-container": "#0d0096",
+                      "secondary-fixed": "#e4e1e6",
+                      "tertiary-fixed": "#ffdcc5",
+                      "surface-container-lowest": "#0e0e10",
+                      "on-secondary-container": "#b6b4b8",
+                      "error": "#ffb4ab",
+                      "surface": "#131315",
+                      "secondary": "#c8c5ca",
+                      "on-secondary-fixed-variant": "#47464a",
+                      "error-container": "#93000a",
+                      "secondary-container": "#47464a",
+                      "on-secondary": "#303033",
+                      "inverse-on-surface": "#313032",
+                      "primary": "#c0c1ff",
+                      "surface-variant": "#353437",
+                      "background": "#131315",
+                      "primary-fixed": "#e1e0ff",
+                      "on-secondary-fixed": "#1b1b1e",
+                      "on-primary-fixed": "#07006c",
+                      "surface-container-low": "#1c1b1d",
+                      "secondary-fixed-dim": "#c8c5ca",
+                      "outline-variant": "#464554"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "sm": "8px",
+                      "safe-margin": "20px",
+                      "xl": "32px",
+                      "unit": "4px",
+                      "gutter": "16px",
+                      "md": "16px",
+                      "xs": "4px",
+                      "lg": "24px"
+              },
+              "fontFamily": {
+                      "body-md": [
+                              "inter"
+                      ],
+                      "h2": [
+                              "manrope"
+                      ],
+                      "label-md": [
+                              "inter"
+                      ],
+                      "h1": [
+                              "manrope"
+                      ],
+                      "code": [
+                              "spaceGrotesk"
+                      ],
+                      "body-lg": [
+                              "inter"
+                      ]
+              },
+              "fontSize": {
+                      "body-md": [
+                              "15px",
+                              {
+                                      "lineHeight": "25px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "h2": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-md": [
+                              "13px",
+                              {
+                                      "lineHeight": "18px",
+                                      "letterSpacing": "0.02em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "h1": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "code": [
+                              "14px",
+                              {
+                                      "lineHeight": "22px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-lg": [
+                              "17px",
+                              {
+                                      "lineHeight": "26px",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen antialiased selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-zinc-950/70 backdrop-blur-3xl flex justify-between items-center h-16 px-5 border-b border-white/10 shadow-none">
+<button class="text-zinc-400 hover:bg-white/5 active:scale-95 transition-transform p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">arrow_back</span>
+</button>
+<h1 class="text-lg font-bold text-zinc-100 font-manrope text-sm font-medium tracking-wide">Settings</h1>
+<button class="text-zinc-400 hover:bg-white/5 active:scale-95 transition-transform p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">account_circle</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-24 pb-32 px-safe-margin max-w-2xl mx-auto space-y-lg">
+<!-- Header -->
+<div class="space-y-sm">
+<h2 class="font-h1 text-h1 text-on-surface">Personalization</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Customize the appearance of your AI workspace. Select colors and themes to optimize your focus.</p>
+</div>
+<!-- Preview Card -->
+<section class="bg-white/[0.03] backdrop-blur-[20px] border-[0.5px] border-white/10 rounded-xl p-md shadow-[inset_0_0_2px_rgba(255,255,255,0.05)] overflow-hidden relative">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent pointer-events-none"></div>
+<div class="relative z-10 space-y-md">
+<div class="flex items-center justify-between mb-sm">
+<h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Live Preview</h3>
+<div class="flex space-x-xs">
+<div class="w-3 h-3 rounded-full bg-error-container"></div>
+<div class="w-3 h-3 rounded-full bg-tertiary-container"></div>
+<div class="w-3 h-3 rounded-full bg-primary-container"></div>
+</div>
+</div>
+<div class="space-y-sm">
+<div class="flex justify-end">
+<div class="bg-surface-container-high border-[0.5px] border-outline-variant text-on-surface px-md py-sm rounded-lg rounded-tr-none font-body-md text-body-md max-w-[80%] shadow-sm">
+                            Analyze this dataset for anomalies.
+                        </div>
+</div>
+<div class="flex justify-start">
+<div class="text-on-surface px-md py-sm font-body-md text-body-md max-w-[90%]">
+                            I've reviewed the dataset. I found three statistical anomalies in Q3 revenue projections.
+                        </div>
+</div>
+</div>
+<div class="flex gap-sm mt-md">
+<button class="flex-1 bg-primary text-on-primary py-2 px-4 rounded-lg font-label-md text-label-md text-center transition-colors hover:bg-primary-fixed">Primary Action</button>
+<button class="flex-1 bg-white/[0.05] border-[0.5px] border-outline-variant text-primary py-2 px-4 rounded-lg font-label-md text-label-md text-center transition-colors hover:bg-white/[0.1]">Secondary</button>
+</div>
+<!-- Color Shades Preview -->
+<div class="pt-sm border-t border-white/5 flex justify-between gap-1">
+<div class="h-8 flex-1 rounded-sm bg-primary/20" title="100"></div>
+<div class="h-8 flex-1 rounded-sm bg-primary/40" title="300"></div>
+<div class="h-8 flex-1 rounded-sm bg-primary" title="500"></div>
+<div class="h-8 flex-1 rounded-sm bg-primary-fixed-dim" title="700"></div>
+<div class="h-8 flex-1 rounded-sm bg-on-primary-container" title="900"></div>
+</div>
+</div>
+</section>
+<!-- Theme Mode Selection -->
+<section class="space-y-sm">
+<h3 class="font-h2 text-h2 text-on-surface">Appearance</h3>
+<div class="grid grid-cols-3 gap-md">
+<button class="bg-white/[0.03] backdrop-blur-[20px] border-[0.5px] border-white/10 rounded-xl p-md flex flex-col items-center gap-sm transition-all hover:bg-white/[0.05] active:scale-95 group">
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center border-[0.5px] border-outline-variant group-hover:border-primary/50">
+<span class="material-symbols-outlined text-on-surface" style="font-variation-settings: 'FILL' 0;">light_mode</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant group-hover:text-on-surface">Light</span>
+</button>
+<button class="bg-primary/10 backdrop-blur-[20px] border-[0.5px] border-primary/30 rounded-xl p-md flex flex-col items-center gap-sm transition-all hover:bg-primary/20 active:scale-95 group relative shadow-[inset_0_0_8px_rgba(192,193,255,0.1)]">
+<div class="absolute top-2 right-2 w-2 h-2 rounded-full bg-primary"></div>
+<div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center border-[0.5px] border-primary/50">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">dark_mode</span>
+</div>
+<span class="font-label-md text-label-md text-primary font-bold">Dark</span>
+</button>
+<button class="bg-white/[0.03] backdrop-blur-[20px] border-[0.5px] border-white/10 rounded-xl p-md flex flex-col items-center gap-sm transition-all hover:bg-white/[0.05] active:scale-95 group">
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center border-[0.5px] border-outline-variant group-hover:border-primary/50">
+<span class="material-symbols-outlined text-on-surface" style="font-variation-settings: 'FILL' 0;">devices</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant group-hover:text-on-surface">System</span>
+</button>
+</div>
+</section>
+<!-- Accent Color Picker -->
+<section class="space-y-sm">
+<div class="flex justify-between items-center mb-sm">
+<h3 class="font-h2 text-h2 text-on-surface">Accent Color</h3>
+<span class="font-code text-code text-primary uppercase tracking-wider">Indigo</span>
+</div>
+<div class="bg-white/[0.03] backdrop-blur-[20px] border-[0.5px] border-white/10 rounded-xl p-md shadow-[inset_0_0_2px_rgba(255,255,255,0.05)]">
+<div class="grid grid-cols-5 gap-md">
+<!-- Color Options -->
+<button class="aspect-square rounded-full bg-[#ef4444] ring-2 ring-transparent ring-offset-2 ring-offset-background hover:scale-110 transition-transform"></button>
+<button class="aspect-square rounded-full bg-[#f97316] ring-2 ring-transparent ring-offset-2 ring-offset-background hover:scale-110 transition-transform"></button>
+<button class="aspect-square rounded-full bg-[#eab308] ring-2 ring-transparent ring-offset-2 ring-offset-background hover:scale-110 transition-transform"></button>
+<button class="aspect-square rounded-full bg-[#22c55e] ring-2 ring-transparent ring-offset-2 ring-offset-background hover:scale-110 transition-transform"></button>
+<button class="aspect-square rounded-full bg-[#06b6d4] ring-2 ring-transparent ring-offset-2 ring-offset-background hover:scale-110 transition-transform"></button>
+<button class="aspect-square rounded-full bg-[#3b82f6] ring-2 ring-transparent ring-offset-2 ring-offset-background hover:scale-110 transition-transform"></button>
+<button class="aspect-square rounded-full bg-[#c0c1ff] ring-2 ring-primary ring-offset-2 ring-offset-background scale-110 transition-transform shadow-[0_0_15px_rgba(192,193,255,0.5)]"></button>
+<button class="aspect-square rounded-full bg-[#a855f7] ring-2 ring-transparent ring-offset-2 ring-offset-background hover:scale-110 transition-transform"></button>
+<button class="aspect-square rounded-full bg-[#ec4899] ring-2 ring-transparent ring-offset-2 ring-offset-background hover:scale-110 transition-transform"></button>
+<button class="aspect-square rounded-full bg-[#64748b] ring-2 ring-transparent ring-offset-2 ring-offset-background hover:scale-110 transition-transform"></button>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 pb-safe bg-zinc-950/80 backdrop-blur-2xl border-t border-white/5 shadow-none flex justify-around items-center h-20 px-6">
+<button class="text-zinc-500 p-2 hover:text-zinc-200 active:scale-90 duration-200 flex flex-col items-center gap-1 group">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">chat_bubble</span>
+</button>
+<button class="text-zinc-500 p-2 hover:text-zinc-200 active:scale-90 duration-200 flex flex-col items-center gap-1 group">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">explore</span>
+</button>
+<button class="text-zinc-500 p-2 hover:text-zinc-200 active:scale-90 duration-200 flex flex-col items-center gap-1 group">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">analytics</span>
+</button>
+<button class="text-indigo-400 bg-white/5 rounded-xl p-2 active:scale-90 duration-200 flex flex-col items-center gap-1">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">settings</span>
+</button>
+</nav>
+</body></html>

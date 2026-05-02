@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>E3 Provider Models Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;family=Space+Grotesk:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-bright": "#39393b",
+                        "inverse-primary": "#494bd6",
+                        "tertiary-fixed-dim": "#ffb783",
+                        "outline": "#908fa0",
+                        "on-surface": "#e5e1e4",
+                        "on-error-container": "#ffdad6",
+                        "primary-fixed-dim": "#c0c1ff",
+                        "on-primary": "#1000a9",
+                        "surface-container-high": "#2a2a2c",
+                        "on-tertiary": "#4f2500",
+                        "inverse-surface": "#e5e1e4",
+                        "surface-container": "#201f22",
+                        "on-primary-fixed-variant": "#2f2ebe",
+                        "on-tertiary-fixed": "#301400",
+                        "surface-tint": "#c0c1ff",
+                        "surface-dim": "#131315",
+                        "on-tertiary-container": "#452000",
+                        "primary-container": "#8083ff",
+                        "tertiary": "#ffb783",
+                        "on-tertiary-fixed-variant": "#703700",
+                        "surface-container-highest": "#353437",
+                        "on-surface-variant": "#c7c4d7",
+                        "on-error": "#690005",
+                        "on-background": "#e5e1e4",
+                        "tertiary-container": "#d97721",
+                        "on-primary-container": "#0d0096",
+                        "secondary-fixed": "#e4e1e6",
+                        "tertiary-fixed": "#ffdcc5",
+                        "surface-container-lowest": "#0e0e10",
+                        "on-secondary-container": "#b6b4b8",
+                        "error": "#ffb4ab",
+                        "surface": "#131315",
+                        "secondary": "#c8c5ca",
+                        "on-secondary-fixed-variant": "#47464a",
+                        "error-container": "#93000a",
+                        "secondary-container": "#47464a",
+                        "on-secondary": "#303033",
+                        "inverse-on-surface": "#313032",
+                        "primary": "#c0c1ff",
+                        "surface-variant": "#353437",
+                        "background": "#131315",
+                        "primary-fixed": "#e1e0ff",
+                        "on-secondary-fixed": "#1b1b1e",
+                        "on-primary-fixed": "#07006c",
+                        "surface-container-low": "#1c1b1d",
+                        "secondary-fixed-dim": "#c8c5ca",
+                        "outline-variant": "#464554"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "8px",
+                        "safe-margin": "20px",
+                        "xl": "32px",
+                        "unit": "4px",
+                        "gutter": "16px",
+                        "md": "16px",
+                        "xs": "4px",
+                        "lg": "24px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter", "sans-serif"],
+                        "h2": ["Manrope", "sans-serif"],
+                        "label-md": ["Inter", "sans-serif"],
+                        "h1": ["Manrope", "sans-serif"],
+                        "code": ["Space Grotesk", "monospace"],
+                        "body-lg": ["Inter", "sans-serif"]
+                    },
+                    "fontSize": {
+                        "body-md": ["15px", { "lineHeight": "25px", "fontWeight": "400" }],
+                        "h2": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "label-md": ["13px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "h1": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "code": ["14px", { "lineHeight": "22px", "fontWeight": "400" }],
+                        "body-lg": ["17px", { "lineHeight": "26px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: theme('colors.background'); color: theme('colors.on-background'); }
+        .glass-panel { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 0.5px solid rgba(255, 255, 255, 0.1); }
+        .glass-input { background: rgba(0, 0, 0, 0.2); backdrop-filter: blur(10px); border: 0.5px solid rgba(255, 255, 255, 0.1); box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="antialiased min-h-screen flex flex-col pt-safe pb-safe">
+<!-- TopAppBar JSON Component -->
+<header class="bg-zinc-950/70 backdrop-blur-3xl fixed top-0 w-full z-50 border-b border-white/10 shadow-none flex justify-between items-center h-16 px-5 w-full">
+<button class="text-indigo-400 hover:bg-white/5 p-2 rounded-full active:scale-95 transition-transform flex items-center justify-center">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="text-lg font-bold text-zinc-100 font-manrope text-sm font-medium tracking-wide">Settings</h1>
+<button class="text-zinc-400 hover:bg-white/5 p-2 rounded-full active:scale-95 transition-transform flex items-center justify-center">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</header>
+<main class="flex-grow pt-[80px] px-safe-margin pb-[100px] flex flex-col gap-lg max-w-4xl mx-auto w-full">
+<!-- Header Section -->
+<div class="flex flex-col gap-sm">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center">
+<img alt="Provider Logo" class="w-6 h-6 rounded-sm object-cover" data-alt="A sleek, minimalist vector logo featuring a stylized geometric shape in deep indigo and subtle white gradients, conveying artificial intelligence and data processing. The logo sits against a dark charcoal background, evoking a modern, professional, dark-mode software interface. The lighting is precise, highlighting the sharp edges and smooth curves of the design. The overall mood is high-tech, sophisticated, and authoritative." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAp_wIR0OqUh7W4KV4gS7Zhe74Q1hs4HB34H4wka9C9SWNJFMWy-qEqx3WqILFpNILgKmjnrougaOS3cPRT9s8kI71Y4JuSKC3qTBLZ1zTtZO22_FDCrx2dMeH5ltvW7XttzX33nx6z5e22lU9pp5pw4nASfIzdeQOZ9WrFTwMe2_winy3HnPtNaSxEU1WEvHLdoZJtLqM3TrheKoevvOycGjKKgaDa-jEhHawAjqxJTi_0j_Q7ugXi8Xs8k4qjeRxYhRPZ_CofSS-S"/>
+</div>
+<div>
+<h2 class="font-h1 text-h1 text-on-surface">Anthropic</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Manage model access and capabilities.</p>
+</div>
+</div>
+</div>
+<!-- Action Bar & Search -->
+<div class="flex flex-col md:flex-row gap-md justify-between items-start md:items-center glass-panel p-md rounded-xl">
+<div class="relative w-full md:w-64">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="glass-input w-full rounded-full pl-10 pr-4 py-2 font-body-md text-body-md text-on-surface placeholder:text-outline-variant focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" placeholder="Search models..." type="text"/>
+</div>
+<div class="flex flex-wrap gap-sm w-full md:w-auto">
+<button class="flex items-center gap-xs px-4 py-2 rounded-lg bg-surface-container-high hover:bg-surface-container-highest border border-outline-variant/30 text-on-surface font-label-md text-label-md transition-colors">
+<span class="material-symbols-outlined text-[18px]">sync</span>
+                    Auto Fetch
+                </button>
+<button class="flex items-center gap-xs px-4 py-2 rounded-lg bg-surface-container-high hover:bg-surface-container-highest border border-outline-variant/30 text-on-surface font-label-md text-label-md transition-colors">
+<span class="material-symbols-outlined text-[18px]">block</span>
+                    Disable All
+                </button>
+<button class="flex items-center gap-xs px-4 py-2 rounded-lg bg-inverse-primary text-on-primary font-label-md text-label-md hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                    Add Model
+                </button>
+</div>
+</div>
+<!-- Models List -->
+<div class="flex flex-col gap-md">
+<!-- Model Item 1 -->
+<div class="glass-panel p-md rounded-xl flex flex-col gap-md transition-all hover:border-white/20 group">
+<div class="flex flex-wrap justify-between items-start gap-md">
+<div class="flex-grow flex flex-col gap-xs">
+<div class="flex items-center gap-sm">
+<input class="bg-transparent border-none p-0 font-h2 text-h2 text-on-surface focus:ring-0 focus:border-b focus:border-primary w-full max-w-[200px]" type="text" value="Claude 3.5 Sonnet"/>
+<span class="px-2 py-0.5 rounded-full bg-primary/10 border border-primary/20 text-primary font-label-md text-[11px] leading-[16px]">Active</span>
+</div>
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-[16px] text-outline">key</span>
+<input class="bg-transparent border-none p-0 font-code text-code text-on-surface-variant focus:ring-0 w-full max-w-[300px]" type="text" value="claude-3-5-sonnet-20240620"/>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="flex items-center gap-xs px-3 py-1.5 rounded-lg bg-surface-container border border-outline-variant/20 hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-[16px] text-tertiary">science</span>
+<span class="font-label-md text-label-md text-on-surface">Test</span>
+</button>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-on-surface after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+<div class="flex flex-wrap items-center justify-between gap-sm pt-sm border-t border-white/5">
+<!-- Type Selector Group -->
+<div class="flex bg-surface-container-low rounded-lg p-0.5 border border-white/5">
+<button class="px-3 py-1 rounded-md bg-surface-container-highest shadow-sm font-label-md text-label-md text-on-surface">Chat</button>
+<button class="px-3 py-1 rounded-md font-label-md text-label-md text-outline hover:text-on-surface transition-colors">Reasoning</button>
+<button class="px-3 py-1 rounded-md font-label-md text-label-md text-outline hover:text-on-surface transition-colors">Image</button>
+</div>
+<!-- Capabilities Tags -->
+<div class="flex gap-xs flex-wrap">
+<span class="px-2 py-1 rounded-md bg-white/5 border border-white/10 font-label-md text-[11px] text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">visibility</span> Vision
+                        </span>
+<span class="px-2 py-1 rounded-md bg-white/5 border border-white/10 font-label-md text-[11px] text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">public</span> Internet
+                        </span>
+</div>
+</div>
+</div>
+<!-- Model Item 2 -->
+<div class="glass-panel p-md rounded-xl flex flex-col gap-md transition-all hover:border-white/20 group">
+<div class="flex flex-wrap justify-between items-start gap-md">
+<div class="flex-grow flex flex-col gap-xs">
+<div class="flex items-center gap-sm">
+<input class="bg-transparent border-none p-0 font-h2 text-h2 text-on-surface focus:ring-0 focus:border-b focus:border-primary w-full max-w-[200px]" type="text" value="Claude 3 Opus"/>
+<span class="px-2 py-0.5 rounded-full bg-surface-container border border-outline-variant/30 text-outline font-label-md text-[11px] leading-[16px]">Disabled</span>
+</div>
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-[16px] text-outline">key</span>
+<input class="bg-transparent border-none p-0 font-code text-code text-on-surface-variant focus:ring-0 w-full max-w-[300px]" type="text" value="claude-3-opus-20240229"/>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="flex items-center gap-xs px-3 py-1.5 rounded-lg bg-surface-container border border-outline-variant/20 hover:bg-surface-container-high transition-colors opacity-50 cursor-not-allowed">
+<span class="material-symbols-outlined text-[16px] text-outline">science</span>
+<span class="font-label-md text-label-md text-outline">Test</span>
+</button>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-outline after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+<div class="flex flex-wrap items-center justify-between gap-sm pt-sm border-t border-white/5 opacity-70">
+<!-- Type Selector Group -->
+<div class="flex bg-surface-container-low rounded-lg p-0.5 border border-white/5">
+<button class="px-3 py-1 rounded-md bg-surface-container-highest shadow-sm font-label-md text-label-md text-on-surface">Chat</button>
+<button class="px-3 py-1 rounded-md font-label-md text-label-md text-outline hover:text-on-surface transition-colors">Reasoning</button>
+<button class="px-3 py-1 rounded-md font-label-md text-label-md text-outline hover:text-on-surface transition-colors">Image</button>
+</div>
+<!-- Capabilities Tags -->
+<div class="flex gap-xs flex-wrap">
+<span class="px-2 py-1 rounded-md bg-white/5 border border-white/10 font-label-md text-[11px] text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">psychology</span> Reasoning
+                        </span>
+</div>
+</div>
+</div>
+<!-- Model Item 3 (Error State Example) -->
+<div class="glass-panel p-md rounded-xl flex flex-col gap-md transition-all border-error/30 hover:border-error/50 bg-error-container/5">
+<div class="flex flex-wrap justify-between items-start gap-md">
+<div class="flex-grow flex flex-col gap-xs">
+<div class="flex items-center gap-sm">
+<input class="bg-transparent border-none p-0 font-h2 text-h2 text-on-surface focus:ring-0 focus:border-b focus:border-primary w-full max-w-[200px]" type="text" value="Claude 3 Haiku"/>
+<span class="px-2 py-0.5 rounded-full bg-error/10 border border-error/20 text-error font-label-md text-[11px] leading-[16px]">Failing</span>
+</div>
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-[16px] text-error/70">key</span>
+<input class="bg-transparent border-none p-0 font-code text-code text-on-surface-variant focus:ring-0 w-full max-w-[300px]" type="text" value="claude-3-haiku-20240307"/>
+</div>
+<p class="font-body-md text-[12px] text-error mt-1">Error: Invalid API Key or Quota Exceeded.</p>
+</div>
+<div class="flex items-center gap-md">
+<button class="flex items-center gap-xs px-3 py-1.5 rounded-lg bg-error-container/20 border border-error/30 hover:bg-error-container/40 transition-colors">
+<span class="material-symbols-outlined text-[16px] text-error">refresh</span>
+<span class="font-label-md text-label-md text-error">Retry</span>
+</button>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-on-surface after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+<div class="flex flex-wrap items-center justify-between gap-sm pt-sm border-t border-white/5">
+<!-- Type Selector Group -->
+<div class="flex bg-surface-container-low rounded-lg p-0.5 border border-white/5">
+<button class="px-3 py-1 rounded-md bg-surface-container-highest shadow-sm font-label-md text-label-md text-on-surface">Chat</button>
+<button class="px-3 py-1 rounded-md font-label-md text-label-md text-outline hover:text-on-surface transition-colors">Reasoning</button>
+<button class="px-3 py-1 rounded-md font-label-md text-label-md text-outline hover:text-on-surface transition-colors">Image</button>
+</div>
+<!-- Capabilities Tags -->
+<div class="flex gap-xs flex-wrap">
+<span class="px-2 py-1 rounded-md bg-white/5 border border-white/10 font-label-md text-[11px] text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">bolt</span> Fast
+                        </span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar JSON Component - Suppressed on Desktop, visible on Mobile -->
+<nav class="md:hidden bg-zinc-950/80 backdrop-blur-2xl fixed bottom-0 w-full z-50 pb-safe border-t border-white/5 shadow-none flex justify-around items-center h-20 px-6 w-full">
+<button class="flex flex-col items-center gap-1 text-zinc-500 p-2 hover:text-zinc-200 active:scale-90 duration-200">
+<span class="material-symbols-outlined">chat_bubble</span>
+<span class="font-manrope text-[10px] uppercase tracking-tighter">Chat</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-zinc-500 p-2 hover:text-zinc-200 active:scale-90 duration-200">
+<span class="material-symbols-outlined">explore</span>
+<span class="font-manrope text-[10px] uppercase tracking-tighter">Explore</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-zinc-500 p-2 hover:text-zinc-200 active:scale-90 duration-200">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-manrope text-[10px] uppercase tracking-tighter">Analytics</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-indigo-400 bg-white/5 rounded-xl p-2 active:scale-90 duration-200">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-manrope text-[10px] uppercase tracking-tighter">Settings</span>
+</button>
+</nav>
+</body></html>

@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nexara - RAG Configuration</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&amp;family=Manrope:wght@600;700&amp;family=Space+Grotesk:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#c0c1ff",
+                        "outline": "#908fa0",
+                        "on-tertiary": "#4f2500",
+                        "on-primary": "#1000a9",
+                        "surface-container-lowest": "#0e0e10",
+                        "surface": "#131315",
+                        "error": "#ffb4ab",
+                        "on-tertiary-fixed-variant": "#703700",
+                        "outline-variant": "#464554",
+                        "on-primary-container": "#0d0096",
+                        "secondary-fixed": "#e4e1e6",
+                        "on-error": "#690005",
+                        "inverse-primary": "#494bd6",
+                        "primary-fixed": "#e1e0ff",
+                        "on-surface-variant": "#c7c4d7",
+                        "surface-dim": "#131315",
+                        "secondary-container": "#47464a",
+                        "on-tertiary-fixed": "#301400",
+                        "surface-variant": "#353437",
+                        "on-tertiary-container": "#452000",
+                        "secondary-fixed-dim": "#c8c5ca",
+                        "inverse-on-surface": "#313032",
+                        "secondary": "#c8c5ca",
+                        "on-surface": "#e5e1e4",
+                        "tertiary": "#ffb783",
+                        "on-error-container": "#ffdad6",
+                        "error-container": "#93000a",
+                        "on-secondary-fixed-variant": "#47464a",
+                        "on-primary-fixed": "#07006c",
+                        "surface-container": "#201f22",
+                        "on-secondary-container": "#b6b4b8",
+                        "on-secondary-fixed": "#1b1b1e",
+                        "tertiary-fixed-dim": "#ffb783",
+                        "primary-container": "#8083ff",
+                        "surface-container-highest": "#353437",
+                        "surface-container-high": "#2a2a2c",
+                        "on-background": "#e5e1e4",
+                        "primary-fixed-dim": "#c0c1ff",
+                        "tertiary-container": "#d97721",
+                        "on-secondary": "#303033",
+                        "surface-tint": "#c0c1ff",
+                        "surface-container-low": "#1c1b1d",
+                        "background": "#131315",
+                        "tertiary-fixed": "#ffdcc5",
+                        "on-primary-fixed-variant": "#2f2ebe",
+                        "inverse-surface": "#e5e1e4",
+                        "surface-bright": "#39393b"
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.25rem",
+                        lg: "0.5rem",
+                        xl: "0.75rem",
+                        full: "9999px"
+                    },
+                    spacing: {
+                        sm: "8px",
+                        xs: "4px",
+                        lg: "24px",
+                        xl: "32px",
+                        md: "16px",
+                        gutter: "16px",
+                        unit: "4px",
+                        "safe-margin": "20px"
+                    },
+                    fontFamily: {
+                        "code": ["Space Grotesk"],
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "h2": ["Manrope"],
+                        "body-lg": ["Inter"],
+                        "h1": ["Manrope"]
+                    },
+                    fontSize: {
+                        "code": ["14px", { lineHeight: "22px", fontWeight: "400" }],
+                        "body-md": ["15px", { lineHeight: "25px", fontWeight: "400" }],
+                        "label-md": ["13px", { lineHeight: "18px", letterSpacing: "0.02em", fontWeight: "500" }],
+                        "h2": ["20px", { lineHeight: "28px", fontWeight: "600" }],
+                        "body-lg": ["17px", { lineHeight: "26px", fontWeight: "400" }],
+                        "h1": ["24px", { lineHeight: "32px", fontWeight: "700" }]
+                    }
+                }
+            }
+        };
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col md:flex-row pb-24 md:pb-0">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-zinc-900/60 backdrop-blur-xl border-b-[0.5px] border-white/10 shadow-none flex justify-between items-center px-5 h-16 w-full hidden md:flex">
+<div class="flex items-center gap-4">
+<button class="text-zinc-400 hover:bg-white/5 transition-colors p-2 rounded-full">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="text-xl font-extrabold tracking-tighter text-zinc-100 font-manrope">Nexara</h1>
+</div>
+<nav class="flex gap-6">
+<a class="text-zinc-400 hover:bg-white/5 transition-colors px-3 py-2 rounded-lg font-label-md flex items-center gap-2" href="#"><span class="material-symbols-outlined">forum</span> Chat</a>
+<a class="text-zinc-400 hover:bg-white/5 transition-colors px-3 py-2 rounded-lg font-label-md flex items-center gap-2" href="#"><span class="material-symbols-outlined">insights</span> Insights</a>
+<a class="text-zinc-400 hover:bg-white/5 transition-colors px-3 py-2 rounded-lg font-label-md flex items-center gap-2" href="#"><span class="material-symbols-outlined">deployed_code</span> Artifacts</a>
+<a class="text-indigo-400 opacity-80 duration-150 px-3 py-2 rounded-lg font-label-md flex items-center gap-2" href="#"><span class="material-symbols-outlined">settings</span> Settings</a>
+</nav>
+<div>
+<div class="w-8 h-8 rounded-full bg-surface-container-high border border-outline-variant overflow-hidden flex items-center justify-center">
+<span class="material-symbols-outlined text-outline">person</span>
+</div>
+</div>
+</header>
+<!-- NavigationDrawer (Desktop Side Nav) -->
+<aside class="hidden md:flex flex-col h-full py-8 h-full w-72 border-r-[0.5px] border-white/5 bg-zinc-950/95 backdrop-blur-3xl shadow-[20px_0_40px_rgba(0,0,0,0.4)] fixed left-0 top-16 z-40">
+<div class="px-6 pb-6 border-b-[0.5px] border-white/5 mb-4 flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-container-high overflow-hidden border border-outline-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-outline">person</span>
+</div>
+<div>
+<div class="font-manrope font-semibold text-sm text-on-background">Nexara Intelligence</div>
+<div class="font-label-md text-outline">Pro Researcher</div>
+</div>
+</div>
+<nav class="flex-1 overflow-y-auto font-manrope font-semibold text-sm">
+<a class="flex items-center gap-3 text-zinc-400 px-6 py-4 hover:bg-white/10 transition-all tap-highlight-transparent" href="#">
+<span class="material-symbols-outlined">person</span> Personal Space
+            </a>
+<a class="flex items-center gap-3 text-zinc-400 px-6 py-4 hover:bg-white/10 transition-all tap-highlight-transparent" href="#">
+<span class="material-symbols-outlined">group</span> Team Alpha
+            </a>
+<a class="flex items-center gap-3 text-zinc-400 px-6 py-4 hover:bg-white/10 transition-all tap-highlight-transparent" href="#">
+<span class="material-symbols-outlined">rocket_launch</span> Project Nexus
+            </a>
+<a class="flex items-center gap-3 text-zinc-400 px-6 py-4 hover:bg-white/10 transition-all tap-highlight-transparent" href="#">
+<span class="material-symbols-outlined">archive</span> Archived
+            </a>
+<a class="flex items-center gap-3 text-zinc-400 px-6 py-4 hover:bg-white/10 transition-all tap-highlight-transparent" href="#">
+<span class="material-symbols-outlined">delete</span> Trash
+            </a>
+</nav>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 w-full md:pl-72 pt-16 md:pt-24 px-safe-margin max-w-7xl mx-auto flex flex-col gap-lg">
+<!-- Header area for main canvas -->
+<header class="flex flex-col gap-sm">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-[28px]">tune</span>
+<h2 class="font-h1 text-h1 text-on-background">RAG Pipeline Configuration</h2>
+</div>
+<p class="font-body-md text-body-md text-outline">Fine-tune chunking, retrieval limits, and summarization templates for Agent SPA.</p>
+</header>
+<!-- Status Card -->
+<section class="bg-white/[0.03] backdrop-blur-[20px] border-[0.5px] border-white/10 rounded-xl p-md flex items-center justify-between shadow-sm">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 rounded-lg bg-surface-container-high border-[0.5px] border-outline-variant flex items-center justify-center relative">
+<span class="material-symbols-outlined text-primary">database</span>
+<div class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-green-500 border-2 border-background"></div>
+</div>
+<div>
+<h3 class="font-h2 text-[16px] leading-[24px] text-on-background">Vector Store Status</h3>
+<p class="font-label-md text-label-md text-outline">Connected · 1.2M Vectors</p>
+</div>
+</div>
+<div class="flex items-center gap-xs bg-surface-container px-3 py-1.5 rounded-full border-[0.5px] border-outline-variant">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span class="font-label-md text-label-md text-tertiary">Custom Config</span>
+</div>
+</section>
+<!-- Configuration Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-lg">
+<!-- Chunking Strategy Card -->
+<section class="bg-white/[0.03] backdrop-blur-[20px] border-[0.5px] border-white/10 rounded-xl p-lg flex flex-col gap-lg shadow-sm hover:shadow-[inset_0_0_15px_rgba(255,255,255,0.02)] transition-shadow">
+<div class="flex items-center gap-sm border-b-[0.5px] border-white/5 pb-md">
+<span class="material-symbols-outlined text-outline">view_cozy</span>
+<h3 class="font-h2 text-[18px] leading-[26px] text-on-background">Chunking Strategy</h3>
+</div>
+<div class="flex flex-col gap-md">
+<div>
+<div class="flex justify-between mb-sm">
+<label class="font-label-md text-label-md text-on-surface">Chunk Size</label>
+<span class="font-code text-code text-primary">1024 tokens</span>
+</div>
+<input class="w-full h-1 bg-surface-container-high rounded-lg appearance-none cursor-pointer accent-primary" max="4096" min="256" type="range" value="1024"/>
+<div class="flex justify-between mt-1 text-[11px] text-outline font-label-md">
+<span>256</span>
+<span>4096</span>
+</div>
+</div>
+<div class="pt-sm">
+<div class="flex justify-between mb-sm">
+<label class="font-label-md text-label-md text-on-surface">Chunk Overlap</label>
+<span class="font-code text-code text-primary">128 tokens</span>
+</div>
+<input class="w-full h-1 bg-surface-container-high rounded-lg appearance-none cursor-pointer accent-primary" max="512" min="0" type="range" value="128"/>
+<div class="flex justify-between mt-1 text-[11px] text-outline font-label-md">
+<span>0</span>
+<span>512</span>
+</div>
+</div>
+<div class="pt-md mt-sm border-t-[0.5px] border-white/5 flex items-center justify-between">
+<div>
+<div class="font-label-md text-label-md text-on-surface">Semantic Boundary Recognition</div>
+<div class="text-[12px] text-outline mt-0.5">Attempt to split at paragraph/sentence ends.</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-surface-container-high peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+</section>
+<!-- Memory & Retrieval Card -->
+<section class="bg-white/[0.03] backdrop-blur-[20px] border-[0.5px] border-white/10 rounded-xl p-lg flex flex-col gap-lg shadow-sm hover:shadow-[inset_0_0_15px_rgba(255,255,255,0.02)] transition-shadow">
+<div class="flex items-center gap-sm border-b-[0.5px] border-white/5 pb-md">
+<span class="material-symbols-outlined text-outline">memory</span>
+<h3 class="font-h2 text-[18px] leading-[26px] text-on-background">Memory &amp; Retrieval</h3>
+</div>
+<div class="flex flex-col gap-md">
+<div class="flex items-center justify-between p-sm rounded-lg bg-surface-container/50 border-[0.5px] border-white/5">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-outline">history</span>
+<div>
+<div class="font-label-md text-label-md text-on-surface">Memory Chunking</div>
+<div class="text-[12px] text-outline mt-0.5">Include conversation history in context.</div>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-surface-container-high peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<div>
+<label class="font-label-md text-label-md text-on-surface block mb-sm">Top-K Results</label>
+<div class="flex bg-surface-container-high rounded-lg p-1 border-[0.5px] border-outline-variant">
+<button class="flex-1 py-1.5 text-[13px] font-medium rounded-md text-outline hover:text-on-surface transition-colors">3</button>
+<button class="flex-1 py-1.5 text-[13px] font-medium rounded-md bg-surface-container-low text-primary shadow-sm border-[0.5px] border-white/10">5</button>
+<button class="flex-1 py-1.5 text-[13px] font-medium rounded-md text-outline hover:text-on-surface transition-colors">10</button>
+<button class="flex-1 py-1.5 text-[13px] font-medium rounded-md text-outline hover:text-on-surface transition-colors">20</button>
+</div>
+</div>
+<div>
+<label class="font-label-md text-label-md text-on-surface block mb-sm">Distance Metric</label>
+<select class="w-full bg-surface-container-high border-[0.5px] border-outline-variant text-on-surface text-sm rounded-lg focus:ring-primary focus:border-primary block p-2.5 outline-none appearance-none font-code text-code">
+<option>Cosine Similarity</option>
+<option>Euclidean (L2)</option>
+<option>Dot Product</option>
+</select>
+</div>
+</div>
+</section>
+<!-- Template Editor (Full Width) -->
+<section class="bg-white/[0.03] backdrop-blur-[20px] border-[0.5px] border-white/10 rounded-xl flex flex-col shadow-sm hover:shadow-[inset_0_0_15px_rgba(255,255,255,0.02)] transition-shadow lg:col-span-2 overflow-hidden">
+<div class="flex items-center justify-between p-lg border-b-[0.5px] border-white/5 bg-surface-container-lowest/30">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-outline">code_blocks</span>
+<h3 class="font-h2 text-[18px] leading-[26px] text-on-background">System Summary Template</h3>
+</div>
+<div class="flex gap-2">
+<span class="px-2 py-1 rounded bg-surface-container-high border-[0.5px] border-outline-variant text-[11px] font-code text-primary">{{context}}</span>
+<span class="px-2 py-1 rounded bg-surface-container-high border-[0.5px] border-outline-variant text-[11px] font-code text-primary">{{query}}</span>
+</div>
+</div>
+<div class="p-md bg-[#0e0e10]/80">
+<textarea class="w-full bg-transparent border-none text-on-surface font-code text-code resize-none focus:ring-0 p-0 outline-none leading-relaxed placeholder-outline" rows="6" spellcheck="false">You are an advanced AI assistant retrieving context from a knowledge base.
+Below is the retrieved context relevant to the user's query. 
+If the answer is not contained within the context, state that you do not know.
+
+Context:
+{{context}}
+
+User Query:
+{{query}}
+
+Synthesize a precise, professional response based strictly on the provided context.</textarea>
+</div>
+<div class="p-3 border-t-[0.5px] border-white/5 bg-surface-container-lowest/50 flex justify-end gap-3">
+<button class="px-4 py-2 rounded-lg font-label-md text-label-md bg-white/[0.05] border-[0.5px] border-white/10 text-primary hover:bg-white/[0.1] transition-colors">Reset</button>
+<button class="px-4 py-2 rounded-lg font-label-md text-label-md bg-primary text-on-primary hover:bg-primary-fixed transition-colors shadow-[0_0_10px_rgba(192,193,255,0.2)]">Save Configuration</button>
+</div>
+</section>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 bg-zinc-950/80 backdrop-blur-2xl border-t-[0.5px] border-white/10 shadow-2xl flex justify-around items-center pt-3 pb-6 px-4 w-full">
+<a class="flex flex-col items-center justify-center text-zinc-500 hover:text-zinc-300 transition-all scale-95 active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined mb-1">forum</span>
+<span class="font-inter text-[10px] font-medium uppercase tracking-widest">Chat</span>
+</a>
+<a class="flex flex-col items-center justify-center text-zinc-500 hover:text-zinc-300 transition-all scale-95 active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined mb-1">insights</span>
+<span class="font-inter text-[10px] font-medium uppercase tracking-widest">Insights</span>
+</a>
+<a class="flex flex-col items-center justify-center text-zinc-500 hover:text-zinc-300 transition-all scale-95 active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined mb-1">deployed_code</span>
+<span class="font-inter text-[10px] font-medium uppercase tracking-widest">Artifacts</span>
+</a>
+<a class="flex flex-col items-center justify-center text-indigo-300 drop-shadow-[0_0_8px_rgba(99,102,241,0.5)] hover:text-zinc-300 transition-all scale-95 active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined mb-1">settings</span>
+<span class="font-inter text-[10px] font-medium uppercase tracking-widest">Settings</span>
+</a>
+</nav>
+</body></html>

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Advanced RAG Settings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@600;700&amp;family=Space+Grotesk:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-bright": "#39393b",
+                        "inverse-primary": "#494bd6",
+                        "tertiary-fixed-dim": "#ffb783",
+                        "outline": "#908fa0",
+                        "on-surface": "#e5e1e4",
+                        "on-error-container": "#ffdad6",
+                        "primary-fixed-dim": "#c0c1ff",
+                        "on-primary": "#1000a9",
+                        "surface-container-high": "#2a2a2c",
+                        "on-tertiary": "#4f2500",
+                        "inverse-surface": "#e5e1e4",
+                        "surface-container": "#201f22",
+                        "on-primary-fixed-variant": "#2f2ebe",
+                        "on-tertiary-fixed": "#301400",
+                        "surface-tint": "#c0c1ff",
+                        "surface-dim": "#131315",
+                        "on-tertiary-container": "#452000",
+                        "primary-container": "#8083ff",
+                        "tertiary": "#ffb783",
+                        "on-tertiary-fixed-variant": "#703700",
+                        "surface-container-highest": "#353437",
+                        "on-surface-variant": "#c7c4d7",
+                        "on-error": "#690005",
+                        "on-background": "#e5e1e4",
+                        "tertiary-container": "#d97721",
+                        "on-primary-container": "#0d0096",
+                        "secondary-fixed": "#e4e1e6",
+                        "tertiary-fixed": "#ffdcc5",
+                        "surface-container-lowest": "#0e0e10",
+                        "on-secondary-container": "#b6b4b8",
+                        "error": "#ffb4ab",
+                        "surface": "#131315",
+                        "secondary": "#c8c5ca",
+                        "on-secondary-fixed-variant": "#47464a",
+                        "error-container": "#93000a",
+                        "secondary-container": "#47464a",
+                        "on-secondary": "#303033",
+                        "inverse-on-surface": "#313032",
+                        "primary": "#c0c1ff",
+                        "surface-variant": "#353437",
+                        "background": "#131315",
+                        "primary-fixed": "#e1e0ff",
+                        "on-secondary-fixed": "#1b1b1e",
+                        "on-primary-fixed": "#07006c",
+                        "surface-container-low": "#1c1b1d",
+                        "secondary-fixed-dim": "#c8c5ca",
+                        "outline-variant": "#464554"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "8px",
+                        "safe-margin": "20px",
+                        "xl": "32px",
+                        "unit": "4px",
+                        "gutter": "16px",
+                        "md": "16px",
+                        "xs": "4px",
+                        "lg": "24px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter", "sans-serif"],
+                        "h2": ["Manrope", "sans-serif"],
+                        "label-md": ["Inter", "sans-serif"],
+                        "h1": ["Manrope", "sans-serif"],
+                        "code": ["Space Grotesk", "monospace"],
+                        "body-lg": ["Inter", "sans-serif"]
+                    },
+                    "fontSize": {
+                        "body-md": ["15px", { "lineHeight": "25px", "fontWeight": "400" }],
+                        "h2": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "label-md": ["13px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "h1": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "code": ["14px", { "lineHeight": "22px", "fontWeight": "400" }],
+                        "body-lg": ["17px", { "lineHeight": "26px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 0.5px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 0 2px rgba(255, 255, 255, 0.05);
+        }
+        .glass-card:active {
+            box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen font-body-md antialiased pb-24 md:pb-0">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-zinc-950/70 backdrop-blur-3xl border-b border-white/10 shadow-none">
+<div class="flex justify-between items-center h-16 px-5 w-full">
+<button class="text-zinc-400 hover:bg-white/5 active:scale-95 transition-transform p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-manrope text-sm font-medium tracking-wide text-zinc-100">Settings</h1>
+<button class="text-zinc-400 hover:bg-white/5 active:scale-95 transition-transform p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</header>
+<main class="pt-24 px-safe-margin max-w-4xl mx-auto space-y-lg md:space-y-xl">
+<!-- Header Section -->
+<section class="space-y-sm">
+<h2 class="font-h1 text-h1 text-primary">Advanced RAG Settings</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">Configure knowledge graph extraction, retrieval strategies, and cost management for high-fidelity responses.</p>
+</section>
+<!-- Main Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Knowledge Graph Enable -->
+<div class="md:col-span-12 glass-card rounded-xl p-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-md">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 rounded-lg bg-primary-container/20 flex items-center justify-center border border-primary-container/30">
+<span class="material-symbols-outlined text-primary" data-icon="hub">hub</span>
+</div>
+<div>
+<h3 class="font-h2 text-h2 text-on-surface">Knowledge Graph</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Enable semantic relationship mapping for complex queries.</p>
+</div>
+</div>
+<!-- Toggle Switch -->
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-on-primary after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<!-- Extraction Model Selector -->
+<div class="md:col-span-6 glass-card rounded-xl p-md space-y-md">
+<div class="flex items-center gap-sm text-on-surface">
+<span class="material-symbols-outlined text-outline" data-icon="memory">memory</span>
+<h3 class="font-label-md text-label-md uppercase tracking-wider text-outline">Extraction Model</h3>
+</div>
+<div class="space-y-sm">
+<label class="font-body-md text-body-md text-on-surface-variant">Select the LLM for entity and relation extraction.</label>
+<div class="relative">
+<select class="w-full bg-surface-container-low border-[0.5px] border-outline-variant rounded-lg p-sm font-body-md text-body-md text-on-surface appearance-none focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-colors">
+<option value="gpt-4o">GPT-4 Omni (Recommended)</option>
+<option value="claude-3-opus">Claude 3 Opus</option>
+<option value="gemini-1.5-pro">Gemini 1.5 Pro</option>
+</select>
+<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+</div>
+</div>
+<!-- JIT Micro-Graph -->
+<div class="md:col-span-6 glass-card rounded-xl p-md space-y-md">
+<div class="flex items-center gap-sm text-on-surface">
+<span class="material-symbols-outlined text-outline" data-icon="speed">speed</span>
+<h3 class="font-label-md text-label-md uppercase tracking-wider text-outline">JIT Micro-Graph</h3>
+</div>
+<div class="space-y-sm">
+<div class="flex justify-between items-center">
+<label class="font-body-md text-body-md text-on-surface-variant">Max Chunks</label>
+<span class="font-code text-code text-primary bg-primary/10 px-2 py-1 rounded">128</span>
+</div>
+<input class="w-full h-1 bg-surface-container-highest rounded-lg appearance-none cursor-pointer accent-primary" max="512" min="16" type="range" value="128"/>
+<div class="flex justify-between font-label-md text-label-md text-outline-variant">
+<span>16</span>
+<span>512</span>
+</div>
+</div>
+</div>
+<!-- Cost Strategy -->
+<div class="md:col-span-12 glass-card rounded-xl p-md space-y-md">
+<div class="flex items-center gap-sm text-on-surface">
+<span class="material-symbols-outlined text-outline" data-icon="account_balance_wallet">account_balance_wallet</span>
+<h3 class="font-label-md text-label-md uppercase tracking-wider text-outline">Cost Strategy</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-sm">
+<!-- Option 1 -->
+<label class="relative flex cursor-pointer rounded-lg border-[0.5px] border-outline-variant bg-surface-container-low p-md hover:bg-surface-container-high transition-colors focus-within:ring-1 focus-within:ring-primary">
+<input class="sr-only peer" name="cost_strategy" type="radio" value="summary"/>
+<div class="flex flex-col gap-xs w-full">
+<div class="flex items-center justify-between">
+<span class="font-body-md text-body-md font-medium text-on-surface">Summary</span>
+<span class="material-symbols-outlined text-outline peer-checked:text-primary opacity-0 peer-checked:opacity-100 transition-opacity" data-icon="check_circle">check_circle</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant">Low cost, faster generation.</span>
+</div>
+<div class="absolute inset-0 rounded-lg border border-primary opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity"></div>
+</label>
+<!-- Option 2 -->
+<label class="relative flex cursor-pointer rounded-lg border-[0.5px] border-outline-variant bg-surface-container-low p-md hover:bg-surface-container-high transition-colors focus-within:ring-1 focus-within:ring-primary">
+<input checked="" class="sr-only peer" name="cost_strategy" type="radio" value="on_demand"/>
+<div class="flex flex-col gap-xs w-full">
+<div class="flex items-center justify-between">
+<span class="font-body-md text-body-md font-medium text-on-surface">On-demand</span>
+<span class="material-symbols-outlined text-outline peer-checked:text-primary opacity-0 peer-checked:opacity-100 transition-opacity" data-icon="check_circle">check_circle</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant">Balanced cost and depth.</span>
+</div>
+<div class="absolute inset-0 rounded-lg border border-primary opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity"></div>
+</label>
+<!-- Option 3 -->
+<label class="relative flex cursor-pointer rounded-lg border-[0.5px] border-outline-variant bg-surface-container-low p-md hover:bg-surface-container-high transition-colors focus-within:ring-1 focus-within:ring-primary">
+<input class="sr-only peer" name="cost_strategy" type="radio" value="full_scan"/>
+<div class="flex flex-col gap-xs w-full">
+<div class="flex items-center justify-between">
+<span class="font-body-md text-body-md font-medium text-on-surface">Full-scan</span>
+<span class="material-symbols-outlined text-outline peer-checked:text-primary opacity-0 peer-checked:opacity-100 transition-opacity" data-icon="check_circle">check_circle</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant">Maximum depth, highest cost.</span>
+</div>
+<div class="absolute inset-0 rounded-lg border border-primary opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity"></div>
+</label>
+</div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex justify-end gap-md pt-lg">
+<button class="px-lg py-sm rounded-lg font-body-md text-body-md font-medium text-primary bg-surface-container-low border-[0.5px] border-outline-variant hover:bg-surface-container-high transition-colors">
+                Reset
+            </button>
+<button class="px-lg py-sm rounded-lg font-body-md text-body-md font-medium text-white bg-inverse-primary hover:opacity-90 transition-opacity">
+                Save Changes
+            </button>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 pb-safe bg-zinc-950/80 backdrop-blur-2xl border-t border-white/5 shadow-none">
+<div class="flex justify-around items-center h-20 px-6 w-full">
+<button class="text-zinc-500 p-2 hover:text-zinc-200 active:scale-90 duration-200 flex flex-col items-center">
+<span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
+</button>
+<button class="text-zinc-500 p-2 hover:text-zinc-200 active:scale-90 duration-200 flex flex-col items-center">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+</button>
+<button class="text-zinc-500 p-2 hover:text-zinc-200 active:scale-90 duration-200 flex flex-col items-center">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+</button>
+<button class="text-indigo-400 bg-white/5 rounded-xl p-2 hover:text-zinc-200 active:scale-90 duration-200 flex flex-col items-center">
+<span class="material-symbols-outlined" data-icon="settings" style="font-variation-settings: 'FILL' 1;">settings</span>
+</button>
+</div>
+</nav>
+</body></html>

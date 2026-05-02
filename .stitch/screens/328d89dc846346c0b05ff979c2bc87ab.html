@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nexus AI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&amp;family=Inter:wght@400;500&amp;family=Space+Grotesk:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed-dim": "#c0c1ff",
+                        "primary-fixed": "#e1e0ff",
+                        "inverse-on-surface": "#313032",
+                        "surface-container-highest": "#353437",
+                        "inverse-primary": "#494bd6",
+                        "on-tertiary-fixed": "#301400",
+                        "on-primary-fixed-variant": "#2f2ebe",
+                        "tertiary": "#ffb783",
+                        "secondary-container": "#47464a",
+                        "tertiary-fixed": "#ffdcc5",
+                        "inverse-surface": "#e5e1e4",
+                        "primary-container": "#8083ff",
+                        "outline": "#908fa0",
+                        "surface-variant": "#353437",
+                        "surface-container-lowest": "#0e0e10",
+                        "on-error": "#690005",
+                        "tertiary-fixed-dim": "#ffb783",
+                        "surface-container-low": "#1c1b1d",
+                        "surface-container-high": "#2a2a2c",
+                        "secondary": "#c8c5ca",
+                        "on-primary-container": "#0d0096",
+                        "on-error-container": "#ffdad6",
+                        "background": "#131315",
+                        "secondary-fixed-dim": "#c8c5ca",
+                        "error": "#ffb4ab",
+                        "on-tertiary-container": "#452000",
+                        "on-tertiary-fixed-variant": "#703700",
+                        "on-surface": "#e5e1e4",
+                        "on-secondary-container": "#b6b4b8",
+                        "on-secondary": "#303033",
+                        "tertiary-container": "#d97721",
+                        "on-secondary-fixed-variant": "#47464a",
+                        "secondary-fixed": "#e4e1e6",
+                        "surface": "#131315",
+                        "surface-dim": "#131315",
+                        "on-primary": "#1000a9",
+                        "on-secondary-fixed": "#1b1b1e",
+                        "on-tertiary": "#4f2500",
+                        "error-container": "#93000a",
+                        "on-surface-variant": "#c7c4d7",
+                        "on-background": "#e5e1e4",
+                        "outline-variant": "#464554",
+                        "surface-bright": "#39393b",
+                        "on-primary-fixed": "#07006c",
+                        "surface-container": "#201f22",
+                        "surface-tint": "#c0c1ff",
+                        "primary": "#c0c1ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "safe-margin": "20px",
+                        "lg": "24px",
+                        "unit": "4px",
+                        "sm": "8px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "h1": ["Manrope"],
+                        "code": ["Space Grotesk"],
+                        "body-md": ["Inter"],
+                        "h2": ["Manrope"],
+                        "label-md": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "h1": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "code": ["14px", {"lineHeight": "22px", "fontWeight": "400"}],
+                        "body-md": ["15px", {"lineHeight": "25px", "fontWeight": "400"}],
+                        "h2": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "label-md": ["13px", {"lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                        "body-lg": ["17px", {"lineHeight": "26px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 0.5px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-[#09090b] text-on-background font-body-md text-body-md antialiased overflow-hidden flex flex-col h-screen">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex items-center justify-between px-5 h-16 bg-zinc-950/80 backdrop-blur-xl border-b border-white/10 shadow-none">
+<button class="p-2 -ml-2 text-zinc-400 hover:bg-white/5 transition-colors rounded-full active:scale-95 duration-200">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-['Manrope'] text-sm font-semibold tracking-tight text-indigo-500">Nexus AI</h1>
+<div class="w-8 h-8 rounded-full bg-zinc-800 overflow-hidden border 0.5px border-zinc-700 active:scale-95 duration-200 cursor-pointer">
+<img alt="User profile picture" class="w-full h-full object-cover" data-alt="Portrait of a user for profile avatar, neutral lighting, professional look" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDv6AXBc4V9MUEWEKlLFi0_S3ovdKwYtmZ_BhrpJsut0-yUvGGhV5Ri85414Ow7I_EqXAvLxS26KnwMUvXOcQCzlqSWwZTvnPu-oUCYoqelmNHAW1mZCyqXWVc6yEs4ygy7CSJTeZF858eRZaeu_zHhL2RvBik75RnJOKqO5THP9mwxYujgkTOof1eXaAsirKvRJVIFTA0Y87mCocOSNqI0FTPW-KS7f3DazpN9ZQswVtkTZ_jLhYdrUtZ0Y2o1lIgjvgX3LQKBMkH7"/>
+</div>
+</header>
+<!-- Main Chat Canvas -->
+<main class="flex-1 overflow-y-auto pt-[80px] pb-[100px] px-safe-margin flex flex-col gap-lg">
+<!-- User Message -->
+<div class="flex justify-end">
+<div class="bg-zinc-800 border-[0.5px] border-zinc-700 rounded-2xl rounded-tr-sm px-4 py-3 max-w-[85%] text-white">
+<p>Can you show me the system architecture and the latest performance metrics?</p>
+</div>
+</div>
+<!-- Assistant Message -->
+<div class="flex flex-col gap-md max-w-[95%]">
+<p class="text-zinc-100 px-2">Certainly. Here is the high-level system architecture and the current performance trends.</p>
+<!-- Mermaid Diagram Card -->
+<div class="glass-panel rounded-xl overflow-hidden shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)]">
+<div class="flex items-center justify-between px-4 py-2 border-b-[0.5px] border-white/10 bg-white/5">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-indigo-400 text-[16px]">account_tree</span>
+<span class="font-label-md text-label-md text-zinc-300">System Architecture</span>
+</div>
+<span class="text-[10px] font-code font-bold text-zinc-500 tracking-wider">MERMAID</span>
+</div>
+<div class="p-4 flex justify-center bg-zinc-900/50">
+<img alt="Mermaid diagram flowchart" class="w-full max-w-sm opacity-80" data-alt="Stylized flowchart diagram showing client to API gateway to multiple services, tech aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0-IrMl_l-Xmrmqh67DUW9qOvXMDfVZwfbr1DmV-rbLTeBEDl5z616VVaAHNdAFN5iwJBG9-nVTP3x2AzLtIquPk0C_5IoYfAEJd2n8aoh5-twyZJNHceToKIcQoFCUfTf5X2d3ngVlVc17tLP-QrimQS7ECbb52ROP5IqieiTHn3MmilZD_aTFXMLzCvdQIKQOAFhsLu1276VH25-CQKnXsQ7fTbJsbamskiU2XNMGk6OeSjBQRv_eWBV1-gnLECF4UT9umD7Ci1K"/>
+</div>
+</div>
+<!-- ECharts Diagram Card -->
+<div class="glass-panel rounded-xl overflow-hidden shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)]">
+<div class="flex items-center justify-between px-4 py-2 border-b-[0.5px] border-white/10 bg-white/5">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-indigo-400 text-[16px]">monitoring</span>
+<span class="font-label-md text-label-md text-zinc-300">Performance Metrics</span>
+</div>
+<span class="text-[10px] font-code font-bold text-zinc-500 tracking-wider">ECHARTS</span>
+</div>
+<div class="p-4 bg-zinc-900/50 h-[200px] flex items-center justify-center">
+<img alt="Line chart performance metrics" class="w-full h-full object-cover opacity-80" data-alt="Abstract line chart visualization showing an upward trend, blue and indigo colors, dark background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUxlFgY2PgpsAu7nK84J-0ou-BIf80TCisMVjBZFxHDIvrkJHWs2zHEwuvDasJRNj8-Zdxcrso_2klnK7mlR-SC7e64JMlnXwzO0ELarYMtCTUnjEyplLkJUG0G_ynwB4xrs_qsKwU28DBRJYgKQSXSyAoHlHbv05Jq0fAR8iwcJgA_2JwgwV9JvMZjDuRoMH8nX_Bei_NsKxA7aK84tTYlKcLxocMbKXfPS1ETxrC0hEb6bymNRYfTzLBSpUbMXNnPEpQ_la5_Esy"/>
+</div>
+</div>
+<!-- Processing Indicator -->
+<div class="flex items-center gap-2 px-2 mt-sm">
+<span class="material-symbols-outlined text-emerald-400 text-[14px]">check_circle</span>
+<span class="text-[12px] font-medium text-zinc-400 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">psychology</span> Memory Archived
+                </span>
+</div>
+</div>
+<!-- User Message -->
+<div class="flex justify-end mt-md">
+<div class="bg-zinc-800 border-[0.5px] border-zinc-700 rounded-2xl rounded-tr-sm px-4 py-3 max-w-[85%] text-white">
+<p>That looks good. Optimize Service B for lower latency.</p>
+</div>
+</div>
+<!-- Assistant Thinking -->
+<div class="flex flex-col gap-md max-w-[95%]">
+<div class="flex items-center gap-2 px-2 text-zinc-500">
+<span class="material-symbols-outlined animate-pulse">more_horiz</span>
+</div>
+</div>
+</main>
+<!-- Scroll to Bottom FAB -->
+<button class="fixed bottom-[100px] right-6 w-10 h-10 rounded-full bg-zinc-800 border border-zinc-700 shadow-xl flex items-center justify-center text-zinc-300 hover:text-white transition-colors z-40">
+<span class="material-symbols-outlined text-[20px]">arrow_downward</span>
+</button>
+<!-- Input Area (Docked Bottom above Nav) -->
+<div class="fixed bottom-[80px] w-full px-safe-margin z-40">
+<div class="glass-panel rounded-full p-1 flex items-center gap-2 shadow-2xl">
+<button class="p-2 text-zinc-400 hover:text-zinc-200 transition-colors">
+<span class="material-symbols-outlined">add_circle</span>
+</button>
+<input class="flex-1 bg-transparent border-none text-white focus:ring-0 placeholder:text-zinc-500 text-sm py-3 px-2" placeholder="Message Nexus..." type="text"/>
+<button class="p-2 mr-1 bg-indigo-500 text-white rounded-full flex items-center justify-center hover:bg-indigo-400 transition-colors">
+<span class="material-symbols-outlined text-[18px]">arrow_upward</span>
+</button>
+</div>
+</div>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center h-20 pb-safe px-6 bg-zinc-950/80 backdrop-blur-xl border-t border-white/10 shadow-2xl md:hidden">
+<button class="flex flex-col items-center justify-center w-12 h-12 text-indigo-400 scale-110 active:scale-90 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">chat_bubble</span>
+</button>
+<button class="flex flex-col items-center justify-center w-12 h-12 text-zinc-500 hover:text-zinc-200 active:scale-90 transition-transform">
+<span class="material-symbols-outlined">explore</span>
+</button>
+<button class="flex flex-col items-center justify-center w-12 h-12 text-zinc-500 hover:text-zinc-200 active:scale-90 transition-transform">
+<span class="material-symbols-outlined">history</span>
+</button>
+<button class="flex flex-col items-center justify-center w-12 h-12 text-zinc-500 hover:text-zinc-200 active:scale-90 transition-transform">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</nav>
+</body></html>

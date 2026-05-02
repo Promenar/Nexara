@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nexara - Settings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&amp;family=Manrope:wght@600;700;800&amp;family=Space+Grotesk&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary": "#c0c1ff",
+                    "outline": "#908fa0",
+                    "on-tertiary": "#4f2500",
+                    "on-primary": "#1000a9",
+                    "surface-container-lowest": "#0e0e10",
+                    "surface": "#131315",
+                    "error": "#ffb4ab",
+                    "on-tertiary-fixed-variant": "#703700",
+                    "outline-variant": "#464554",
+                    "on-primary-container": "#0d0096",
+                    "secondary-fixed": "#e4e1e6",
+                    "on-error": "#690005",
+                    "inverse-primary": "#494bd6",
+                    "primary-fixed": "#e1e0ff",
+                    "on-surface-variant": "#c7c4d7",
+                    "surface-dim": "#131315",
+                    "secondary-container": "#47464a",
+                    "on-tertiary-fixed": "#301400",
+                    "surface-variant": "#353437",
+                    "on-tertiary-container": "#452000",
+                    "secondary-fixed-dim": "#c8c5ca",
+                    "inverse-on-surface": "#313032",
+                    "secondary": "#c8c5ca",
+                    "on-surface": "#e5e1e4",
+                    "tertiary": "#ffb783",
+                    "on-error-container": "#ffdad6",
+                    "error-container": "#93000a",
+                    "on-secondary-fixed-variant": "#47464a",
+                    "on-primary-fixed": "#07006c",
+                    "surface-container": "#201f22",
+                    "on-secondary-container": "#b6b4b8",
+                    "on-secondary-fixed": "#1b1b1e",
+                    "tertiary-fixed-dim": "#ffb783",
+                    "primary-container": "#8083ff",
+                    "surface-container-highest": "#353437",
+                    "surface-container-high": "#2a2a2c",
+                    "on-background": "#e5e1e4",
+                    "primary-fixed-dim": "#c0c1ff",
+                    "tertiary-container": "#d97721",
+                    "on-secondary": "#303033",
+                    "surface-tint": "#c0c1ff",
+                    "surface-container-low": "#1c1b1d",
+                    "background": "#131315",
+                    "tertiary-fixed": "#ffdcc5",
+                    "on-primary-fixed-variant": "#2f2ebe",
+                    "inverse-surface": "#e5e1e4",
+                    "surface-bright": "#39393b"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "sm": "8px",
+                    "xs": "4px",
+                    "lg": "24px",
+                    "xl": "32px",
+                    "md": "16px",
+                    "gutter": "16px",
+                    "unit": "4px",
+                    "safe-margin": "20px"
+            },
+            "fontFamily": {
+                    "code": [
+                            "spaceGrotesk"
+                    ],
+                    "body-md": [
+                            "inter"
+                    ],
+                    "label-md": [
+                            "inter"
+                    ],
+                    "h2": [
+                            "manrope"
+                    ],
+                    "body-lg": [
+                            "inter"
+                    ],
+                    "h1": [
+                            "manrope"
+                    ]
+            },
+            "fontSize": {
+                    "code": [
+                            "14px",
+                            {
+                                    "lineHeight": "22px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "body-md": [
+                            "15px",
+                            {
+                                    "lineHeight": "25px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "label-md": [
+                            "13px",
+                            {
+                                    "lineHeight": "18px",
+                                    "letterSpacing": "0.02em",
+                                    "fontWeight": "500"
+                            }
+                    ],
+                    "h2": [
+                            "20px",
+                            {
+                                    "lineHeight": "28px",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "body-lg": [
+                            "17px",
+                            {
+                                    "lineHeight": "26px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "h1": [
+                            "24px",
+                            {
+                                    "lineHeight": "32px",
+                                    "fontWeight": "700"
+                            }
+                    ]
+            }
+    },
+        },
+      }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background antialiased min-h-screen pb-24 md:pb-0">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-zinc-900/60 backdrop-blur-xl border-b-[0.5px] border-white/10 shadow-none">
+<div class="flex justify-between items-center px-5 h-16 w-full">
+<div class="flex items-center gap-4">
+<button class="text-indigo-400 hover:bg-white/5 transition-colors p-2 rounded-full hidden md:block">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<h1 class="font-manrope font-bold tracking-tight text-xl font-extrabold tracking-tighter text-zinc-100">Nexara</h1>
+</div>
+<!-- Web Navigation -->
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-zinc-400 hover:bg-white/5 transition-colors px-3 py-2 rounded-md flex items-center gap-2" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="forum">forum</span> Chat
+                </a>
+<a class="text-zinc-400 hover:bg-white/5 transition-colors px-3 py-2 rounded-md flex items-center gap-2" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="insights">insights</span> Insights
+                </a>
+<a class="text-zinc-400 hover:bg-white/5 transition-colors px-3 py-2 rounded-md flex items-center gap-2" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="deployed_code">deployed_code</span> Artifacts
+                </a>
+<a class="text-indigo-400 hover:bg-white/5 transition-colors px-3 py-2 rounded-md flex items-center gap-2 opacity-80 duration-150" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="settings">settings</span> Settings
+                </a>
+</nav>
+<div class="flex items-center">
+<div class="w-8 h-8 rounded-full bg-surface-container-high border border-outline-variant overflow-hidden flex items-center justify-center">
+<span class="material-symbols-outlined text-sm text-on-surface-variant" data-icon="person">person</span>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="pt-24 px-safe-margin max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-lg pb-10">
+<!-- Sidebar Settings Nav (Web) -->
+<aside class="hidden md:block col-span-3">
+<div class="sticky top-28 bg-white/[0.03] backdrop-blur-[20px] border-[0.5px] border-white/10 rounded-xl p-4 shadow-[inset_0_2px_4px_rgba(255,255,255,0.02)]">
+<h2 class="font-h2 text-h2 text-on-surface mb-md px-2">Settings</h2>
+<nav class="flex flex-col gap-sm">
+<a class="font-label-md text-label-md text-on-surface-variant px-3 py-2 rounded-md hover:bg-white/5 transition-colors" href="#">Profile</a>
+<a class="font-label-md text-label-md text-primary bg-primary/10 px-3 py-2 rounded-md flex items-center justify-between" href="#">Super Assistant <span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span></a>
+<a class="font-label-md text-label-md text-on-surface-variant px-3 py-2 rounded-md hover:bg-white/5 transition-colors" href="#">Integrations</a>
+<a class="font-label-md text-label-md text-on-surface-variant px-3 py-2 rounded-md hover:bg-white/5 transition-colors" href="#">Billing</a>
+</nav>
+</div>
+</aside>
+<!-- Main Settings Area -->
+<div class="col-span-1 md:col-span-9 space-y-lg">
+<div class="mb-xl">
+<h1 class="font-h1 text-h1 text-on-surface mb-sm">Super Assistant Configuration</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Customize your core AI companion's appearance, behavior, and knowledge access.</p>
+</div>
+<!-- Identity Card -->
+<section class="bg-white/[0.03] backdrop-blur-[20px] border-[0.5px] border-white/10 rounded-xl p-lg shadow-[inset_0_2px_4px_rgba(255,255,255,0.02)] transition-all hover:border-white/30">
+<h3 class="font-h2 text-h2 text-on-surface border-b-[0.5px] border-outline-variant pb-sm mb-md flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="badge">badge</span> Identity
+                </h3>
+<div class="space-y-md">
+<div>
+<label class="font-label-md text-label-md text-on-surface-variant block mb-2">Assistant Title</label>
+<input class="w-full bg-surface-container-low border-[0.5px] border-outline-variant rounded-lg px-4 py-3 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary placeholder-zinc-500 shadow-[inset_0_2px_4px_rgba(0,0,0,0.2)]" type="text" value="Nexara Prime"/>
+</div>
+</div>
+</section>
+<!-- FAB Appearance Card -->
+<section class="bg-white/[0.03] backdrop-blur-[20px] border-[0.5px] border-white/10 rounded-xl p-lg shadow-[inset_0_2px_4px_rgba(255,255,255,0.02)] transition-all hover:border-white/30">
+<h3 class="font-h2 text-h2 text-on-surface border-b-[0.5px] border-outline-variant pb-sm mb-md flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="magic_button">magic_button</span> FAB Appearance
+                </h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+<!-- Icon Selection -->
+<div>
+<label class="font-label-md text-label-md text-on-surface-variant block mb-3">Primary Icon</label>
+<div class="grid grid-cols-5 gap-2">
+<button class="aspect-square bg-primary/20 border border-primary rounded-lg flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="smart_toy">smart_toy</span>
+</button>
+<button class="aspect-square bg-surface-container-high border-[0.5px] border-outline-variant rounded-lg flex items-center justify-center text-on-surface-variant hover:border-primary/50 transition-colors">
+<span class="material-symbols-outlined" data-icon="bolt">bolt</span>
+</button>
+<button class="aspect-square bg-surface-container-high border-[0.5px] border-outline-variant rounded-lg flex items-center justify-center text-on-surface-variant hover:border-primary/50 transition-colors">
+<span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
+</button>
+<button class="aspect-square bg-surface-container-high border-[0.5px] border-outline-variant rounded-lg flex items-center justify-center text-on-surface-variant hover:border-primary/50 transition-colors">
+<span class="material-symbols-outlined" data-icon="magic_exchange">magic_exchange</span>
+</button>
+<button class="aspect-square bg-surface-container-high border-[0.5px] border-outline-variant rounded-lg flex items-center justify-center text-on-surface-variant hover:border-primary/50 transition-colors">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+</div>
+</div>
+<!-- Visual Effects -->
+<div class="space-y-4">
+<label class="font-label-md text-label-md text-on-surface-variant block mb-1">Visual Effects</label>
+<div class="flex items-center justify-between p-3 bg-surface-container-low border-[0.5px] border-outline-variant rounded-lg">
+<span class="font-body-md text-body-md text-on-surface">Pulsing Glow</span>
+<button class="w-10 h-6 bg-primary rounded-full relative transition-colors">
+<span class="absolute right-1 top-1 w-4 h-4 bg-white rounded-full"></span>
+</button>
+</div>
+<div class="flex items-center justify-between p-3 bg-surface-container-low border-[0.5px] border-outline-variant rounded-lg">
+<span class="font-body-md text-body-md text-on-surface">Hover Animation</span>
+<button class="w-10 h-6 bg-primary rounded-full relative transition-colors">
+<span class="absolute right-1 top-1 w-4 h-4 bg-white rounded-full"></span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Inference & KG Settings -->
+<section class="bg-white/[0.03] backdrop-blur-[20px] border-[0.5px] border-white/10 rounded-xl p-lg shadow-[inset_0_2px_4px_rgba(255,255,255,0.02)] transition-all hover:border-white/30">
+<h3 class="font-h2 text-h2 text-on-surface border-b-[0.5px] border-outline-variant pb-sm mb-md flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="memory">memory</span> Inference &amp; Context
+                </h3>
+<div class="space-y-md">
+<div class="flex items-start gap-4 p-4 bg-surface-container-low border-[0.5px] border-outline-variant rounded-lg">
+<span class="material-symbols-outlined text-primary mt-1" data-icon="account_tree">account_tree</span>
+<div class="flex-1">
+<h4 class="font-label-md text-label-md text-on-surface mb-1">Knowledge Graph Integration</h4>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm mb-3">Allow the assistant to dynamically map entities and relationships from your conversations.</p>
+<button class="font-label-md text-label-md bg-white/[0.05] border-[0.5px] border-outline-variant text-primary px-4 py-2 rounded-full hover:bg-white/10 transition-colors">Configure Graph Rules</button>
+</div>
+<button class="w-10 h-6 bg-primary rounded-full relative mt-1">
+<span class="absolute right-1 top-1 w-4 h-4 bg-white rounded-full"></span>
+</button>
+</div>
+<div>
+<label class="font-label-md text-label-md text-on-surface-variant block mb-2">Default Model</label>
+<select class="w-full bg-surface-container-low border-[0.5px] border-outline-variant rounded-lg px-4 py-3 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary appearance-none shadow-[inset_0_2px_4px_rgba(0,0,0,0.2)]">
+<option>Nexara Opus (Most Capable)</option>
+<option>Nexara Sonnet (Balanced)</option>
+<option>Nexara Haiku (Fastest)</option>
+</select>
+</div>
+</div>
+</section>
+<!-- Global Knowledge Stats (Bento Grid) -->
+<section>
+<h3 class="font-h2 text-h2 text-on-surface mb-md flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="database">database</span> Global Knowledge
+                </h3>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-md">
+<div class="bg-white/[0.03] backdrop-blur-[20px] border-[0.5px] border-white/10 rounded-xl p-md shadow-[inset_0_2px_4px_rgba(255,255,255,0.02)] flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-primary text-3xl mb-2" data-icon="description">description</span>
+<span class="font-h1 text-h1 text-on-surface">1,204</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Indexed Docs</span>
+</div>
+<div class="bg-white/[0.03] backdrop-blur-[20px] border-[0.5px] border-white/10 rounded-xl p-md shadow-[inset_0_2px_4px_rgba(255,255,255,0.02)] flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-primary text-3xl mb-2" data-icon="history">history</span>
+<span class="font-h1 text-h1 text-on-surface">8,432</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Sessions</span>
+</div>
+<div class="bg-white/[0.03] backdrop-blur-[20px] border-[0.5px] border-white/10 rounded-xl p-md shadow-[inset_0_2px_4px_rgba(255,255,255,0.02)] flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-primary text-3xl mb-2" data-icon="hub">hub</span>
+<span class="font-h1 text-h1 text-on-surface">2.4M</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Vector Embeddings</span>
+</div>
+</div>
+</section>
+<!-- Danger Zone -->
+<section class="bg-error-container/10 border-[0.5px] border-error/20 rounded-xl p-lg mt-xl">
+<h3 class="font-h2 text-h2 text-error mb-sm flex items-center gap-2">
+<span class="material-symbols-outlined" data-icon="warning">warning</span> Danger Zone
+                </h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-md">Actions here are irreversible. Please proceed with caution.</p>
+<div class="flex flex-col sm:flex-row gap-4">
+<button class="font-label-md text-label-md bg-transparent border-[0.5px] border-error text-error px-6 py-3 rounded-lg hover:bg-error/10 transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="mop">mop</span> Clear Memory Context
+                    </button>
+<button class="font-label-md text-label-md bg-error text-on-error px-6 py-3 rounded-lg hover:bg-error/90 transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="delete_forever">delete_forever</span> Delete Assistant
+                    </button>
+</div>
+</section>
+</div>
+</main>
+<!-- BottomNavBar (Mobile) -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 bg-zinc-950/80 backdrop-blur-2xl border-t-[0.5px] border-white/10 shadow-2xl">
+<div class="flex justify-around items-center pt-3 pb-6 px-4 w-full">
+<a class="flex flex-col items-center justify-center text-zinc-500 hover:text-zinc-300 transition-all scale-95 active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="forum">forum</span>
+<span class="font-inter text-[10px] font-medium uppercase tracking-widest">Chat</span>
+</a>
+<a class="flex flex-col items-center justify-center text-zinc-500 hover:text-zinc-300 transition-all scale-95 active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="insights">insights</span>
+<span class="font-inter text-[10px] font-medium uppercase tracking-widest">Insights</span>
+</a>
+<a class="flex flex-col items-center justify-center text-zinc-500 hover:text-zinc-300 transition-all scale-95 active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="deployed_code">deployed_code</span>
+<span class="font-inter text-[10px] font-medium uppercase tracking-widest">Artifacts</span>
+</a>
+<a class="flex flex-col items-center justify-center text-indigo-300 drop-shadow-[0_0_8px_rgba(99,102,241,0.5)] hover:text-zinc-300 transition-all scale-95 active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="settings">settings</span>
+<span class="font-inter text-[10px] font-medium uppercase tracking-widest">Settings</span>
+</a>
+</div>
+</nav>
+</body></html>

@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Model Picker - UI Design</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;family=Space+Grotesk:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error": "#690005",
+                        "inverse-surface": "#e5e1e4",
+                        "background": "#131315",
+                        "surface-dim": "#131315",
+                        "on-surface": "#e5e1e4",
+                        "on-secondary-fixed-variant": "#47464a",
+                        "secondary-container": "#47464a",
+                        "outline-variant": "#464554",
+                        "on-tertiary-fixed-variant": "#703700",
+                        "inverse-primary": "#494bd6",
+                        "on-tertiary-fixed": "#301400",
+                        "surface-container-highest": "#353437",
+                        "tertiary-fixed": "#ffdcc5",
+                        "tertiary": "#ffb783",
+                        "surface-variant": "#353437",
+                        "primary": "#c0c1ff",
+                        "on-error-container": "#ffdad6",
+                        "primary-fixed-dim": "#c0c1ff",
+                        "surface-tint": "#c0c1ff",
+                        "on-primary-fixed": "#07006c",
+                        "error-container": "#93000a",
+                        "surface-container-lowest": "#0e0e10",
+                        "tertiary-fixed-dim": "#ffb783",
+                        "surface-container-high": "#2a2a2c",
+                        "on-secondary-fixed": "#1b1b1e",
+                        "inverse-on-surface": "#313032",
+                        "surface-bright": "#39393b",
+                        "on-primary-container": "#0d0096",
+                        "secondary-fixed-dim": "#c8c5ca",
+                        "on-surface-variant": "#c7c4d7",
+                        "outline": "#908fa0",
+                        "primary-fixed": "#e1e0ff",
+                        "surface-container-low": "#1c1b1d",
+                        "on-background": "#e5e1e4",
+                        "on-secondary-container": "#b6b4b8",
+                        "on-primary": "#1000a9",
+                        "surface": "#131315",
+                        "primary-container": "#8083ff",
+                        "on-primary-fixed-variant": "#2f2ebe",
+                        "tertiary-container": "#d97721",
+                        "error": "#ffb4ab",
+                        "secondary": "#c8c5ca",
+                        "secondary-fixed": "#e4e1e6",
+                        "on-tertiary-container": "#452000",
+                        "on-tertiary": "#4f2500",
+                        "on-secondary": "#303033",
+                        "surface-container": "#201f22"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "unit": "4px",
+                        "gutter": "16px",
+                        "lg": "24px",
+                        "xl": "32px",
+                        "safe-margin": "20px"
+                    },
+                    "fontFamily": {
+                        "h2": ["manrope"],
+                        "label-md": ["inter"],
+                        "body-lg": ["inter"],
+                        "code": ["spaceGrotesk"],
+                        "body-md": ["inter"],
+                        "h1": ["manrope"]
+                    },
+                    "fontSize": {
+                        "h2": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "label-md": ["13px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "body-lg": ["17px", { "lineHeight": "26px", "fontWeight": "400" }],
+                        "code": ["14px", { "lineHeight": "22px", "fontWeight": "400" }],
+                        "body-md": ["15px", { "lineHeight": "25px", "fontWeight": "400" }],
+                        "h1": ["24px", { "lineHeight": "32px", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .inner-shadow-sm {
+            box-shadow: inset 0 2px 4px 0 rgb(255 255 255 / 0.05);
+        }
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background h-screen w-full overflow-hidden relative font-body-md text-body-md antialiased selection:bg-primary/30 selection:text-primary">
+<!-- Top App Bar (From JSON Context) -->
+<header class="fixed top-0 w-full z-40 flex items-center justify-between px-5 h-16 border-b border-white/[0.05] shadow-none bg-zinc-950/70 backdrop-blur-xl transition-all">
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/5 active:scale-95 duration-200 transition-colors text-zinc-400">
+<span class="material-symbols-outlined text-[24px]">menu</span>
+</button>
+<div class="flex-1 flex justify-center">
+<h1 class="font-manrope text-sm tracking-tight font-medium text-zinc-200">Knowledge Base</h1>
+</div>
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/5 active:scale-95 duration-200 transition-colors text-indigo-400">
+<div class="w-8 h-8 rounded-full bg-surface-container-high border border-outline-variant/30 flex items-center justify-center overflow-hidden">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant">person</span>
+</div>
+</button>
+</header>
+<!-- Simulated Canvas Content (Dimmed Background) -->
+<main class="pt-16 pb-24 px-safe-margin h-full overflow-y-auto flex flex-col gap-lg opacity-40 blur-[2px] transition-all duration-500">
+<div class="flex flex-col gap-sm mt-lg">
+<div class="self-end max-w-[80%] bg-surface-container-high border border-outline-variant/30 rounded-2xl rounded-tr-sm p-md inner-shadow-sm">
+<p class="font-body-md text-body-md text-on-surface">Can you summarize the latest architectural changes in the core engine?</p>
+</div>
+<div class="self-start max-w-[90%] bg-transparent p-md">
+<p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">Based on the recent commits, the primary changes involve migrating the state management to a new reactive graph model and decoupling the inference pipeline from the main thread.</p>
+</div>
+</div>
+</main>
+<!-- Overlay Scrim -->
+<div class="absolute inset-0 z-50 bg-black/60 backdrop-blur-sm transition-opacity duration-300"></div>
+<!-- Model Picker Bottom Sheet -->
+<div class="absolute bottom-0 left-0 w-full z-50 bg-surface/80 backdrop-blur-[64px] border-t border-white/[0.08] shadow-[0_-10px_40px_rgba(0,0,0,0.5)] flex flex-col max-h-[751px] rounded-t-[32px] transform transition-transform duration-500 ease-out translate-y-0">
+<!-- Drag Handle Indicator -->
+<div class="w-full flex justify-center pt-xs pb-sm">
+<div class="w-12 h-1.5 rounded-full bg-outline-variant/50"></div>
+</div>
+<!-- Sheet Header -->
+<div class="px-md pb-md flex flex-col gap-sm border-b border-white/[0.05]">
+<h3 class="font-h2 text-h2 text-on-surface flex items-center gap-xs">
+<span class="material-symbols-outlined text-[22px] text-primary" data-weight="fill" style="font-variation-settings: 'FILL' 1;">tune</span>
+                Model Selection
+            </h3>
+<!-- Search Bar -->
+<div class="relative w-full group">
+<div class="absolute inset-y-0 left-0 pl-sm flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-[20px] text-on-surface-variant group-focus-within:text-primary transition-colors">search</span>
+</div>
+<input class="w-full bg-surface-container-highest/50 border border-outline-variant/30 text-on-surface font-body-md text-body-md rounded-xl pl-10 pr-sm py-2.5 focus:outline-none focus:border-primary/50 focus:bg-surface-container-highest/80 transition-all placeholder:text-outline backdrop-blur-md inner-shadow-sm" placeholder="Search models, providers, or capabilities..." type="text"/>
+</div>
+</div>
+<!-- Scrollable List Content -->
+<div class="flex-1 overflow-y-auto px-sm py-sm space-y-xs pb-safe-margin">
+<!-- List Item 1: Selected (Premium/High Capability) -->
+<button class="w-full flex items-start text-left p-md rounded-xl bg-primary/5 border border-primary/20 hover:bg-primary/10 transition-colors relative overflow-hidden group">
+<!-- Inner glow for selected state -->
+<div class="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-50 pointer-events-none"></div>
+<div class="flex items-center justify-center w-8 h-8 rounded-lg bg-primary-container text-on-primary-container mr-sm shrink-0 border border-primary/20">
+<span class="material-symbols-outlined text-[18px]">psychology</span>
+</div>
+<div class="flex-1 flex flex-col gap-1 min-w-0 z-10">
+<div class="flex items-center justify-between gap-2 w-full">
+<div class="flex items-center gap-xs truncate">
+<span class="font-label-md text-[15px] font-bold text-on-surface truncate">GPT-4o Omnimodel</span>
+<span class="px-1.5 py-0.5 rounded text-[10px] font-code font-medium bg-surface-bright text-on-surface-variant border border-outline-variant/30 flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[10px]">dns</span> OpenAI
+                            </span>
+</div>
+<span class="material-symbols-outlined text-[20px] text-primary shrink-0" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="flex items-center gap-xs text-[11px] font-label-md text-on-surface-variant mt-0.5 flex-wrap">
+<span class="flex items-center gap-0.5 text-outline">
+<span class="material-symbols-outlined text-[12px]">history_edu</span> 128k context
+                        </span>
+<span class="w-1 h-1 rounded-full bg-outline-variant/50"></span>
+<span class="px-2 py-0.5 rounded-full bg-primary-container text-on-primary-container border border-primary/20">Reasoning</span>
+<span class="px-2 py-0.5 rounded-full bg-error-container text-on-error-container border border-error/20">Vision</span>
+<span class="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container border border-secondary/20">Web</span>
+</div>
+</div>
+</button>
+<!-- List Item 2: Unselected -->
+<button class="w-full flex items-start text-left p-md rounded-xl bg-transparent border border-transparent hover:bg-white/[0.03] hover:border-white/[0.05] transition-colors group">
+<div class="flex items-center justify-center w-8 h-8 rounded-lg bg-surface-container-high text-on-surface-variant mr-sm shrink-0 border border-outline-variant/30 group-hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-[18px]">bolt</span>
+</div>
+<div class="flex-1 flex flex-col gap-1 min-w-0">
+<div class="flex items-center justify-between gap-2 w-full">
+<div class="flex items-center gap-xs truncate">
+<span class="font-label-md text-[15px] font-semibold text-on-surface truncate group-hover:text-white transition-colors">Claude 3.5 Sonnet</span>
+<span class="px-1.5 py-0.5 rounded text-[10px] font-code font-medium bg-surface-container text-on-surface-variant border border-outline-variant/20 flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[10px]">dns</span> Anthropic
+                            </span>
+</div>
+</div>
+<div class="flex items-center gap-xs text-[11px] font-label-md text-on-surface-variant mt-0.5 flex-wrap opacity-80 group-hover:opacity-100 transition-opacity">
+<span class="flex items-center gap-0.5 text-outline">
+<span class="material-symbols-outlined text-[12px]">history_edu</span> 200k context
+                        </span>
+<span class="w-1 h-1 rounded-full bg-outline-variant/50"></span>
+<span class="px-2 py-0.5 rounded-full bg-primary-container/50 text-on-primary-container border border-primary/10">Reasoning</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-bright text-on-surface border border-outline-variant/30">Chat</span>
+</div>
+</div>
+</button>
+<!-- List Item 3: Unselected (Local/Specialized) -->
+<button class="w-full flex items-start text-left p-md rounded-xl bg-transparent border border-transparent hover:bg-white/[0.03] hover:border-white/[0.05] transition-colors group">
+<div class="flex items-center justify-center w-8 h-8 rounded-lg bg-surface-container-high text-on-surface-variant mr-sm shrink-0 border border-outline-variant/30 group-hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-[18px]">schema</span>
+</div>
+<div class="flex-1 flex flex-col gap-1 min-w-0">
+<div class="flex items-center justify-between gap-2 w-full">
+<div class="flex items-center gap-xs truncate">
+<span class="font-label-md text-[15px] font-semibold text-on-surface truncate group-hover:text-white transition-colors">Llama 3 70B Instruct</span>
+<span class="px-1.5 py-0.5 rounded text-[10px] font-code font-medium bg-surface-container text-on-surface-variant border border-outline-variant/20 flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[10px]">dns</span> Local Server
+                            </span>
+</div>
+</div>
+<div class="flex items-center gap-xs text-[11px] font-label-md text-on-surface-variant mt-0.5 flex-wrap opacity-80 group-hover:opacity-100 transition-opacity">
+<span class="flex items-center gap-0.5 text-outline">
+<span class="material-symbols-outlined text-[12px]">history_edu</span> 8k context
+                        </span>
+<span class="w-1 h-1 rounded-full bg-outline-variant/50"></span>
+<span class="px-2 py-0.5 rounded-full bg-tertiary-container text-on-tertiary-container border border-tertiary/20">Rerank</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-bright text-on-surface border border-outline-variant/30">Chat</span>
+</div>
+</div>
+</button>
+<!-- Divider -->
+<div class="h-[1px] w-full bg-gradient-to-r from-transparent via-white/10 to-transparent my-sm"></div>
+<!-- Empty State Demonstration (Hidden by default in a real app, shown here for design coverage) -->
+<div class="flex flex-col items-center justify-center py-xl px-md text-center opacity-60">
+<div class="w-16 h-16 rounded-full bg-surface-container-highest border border-outline-variant/20 flex items-center justify-center mb-md inner-shadow-sm">
+<span class="material-symbols-outlined text-[32px] text-outline">memory</span>
+</div>
+<h4 class="font-h2 text-[16px] text-on-surface mb-xs">No models available</h4>
+<p class="font-body-md text-[13px] text-on-surface-variant max-w-[250px]">Try adjusting your search criteria or check your provider connections in settings.</p>
+</div>
+</div>
+</div>
+</body></html>

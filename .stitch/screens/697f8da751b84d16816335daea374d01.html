@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Chat Home - Nexara</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary-fixed-dim": "#c0c1ff",
+                        "on-error": "#690005",
+                        "on-surface": "#e5e1e4",
+                        "on-error-container": "#ffdad6",
+                        "on-tertiary-fixed-variant": "#703700",
+                        "on-primary": "#1000a9",
+                        "tertiary": "#ffb783",
+                        "surface-dim": "#131315",
+                        "secondary-fixed-dim": "#c8c5ca",
+                        "surface-tint": "#c0c1ff",
+                        "on-surface-variant": "#c7c4d7",
+                        "surface-container-low": "#1c1b1d",
+                        "secondary": "#c8c5ca",
+                        "outline": "#908fa0",
+                        "on-background": "#e5e1e4",
+                        "on-tertiary": "#4f2500",
+                        "surface-container": "#201f22",
+                        "inverse-surface": "#e5e1e4",
+                        "inverse-primary": "#494bd6",
+                        "surface-container-high": "#2a2a2c",
+                        "on-secondary-fixed": "#1b1b1e",
+                        "tertiary-container": "#d97721",
+                        "on-tertiary-container": "#452000",
+                        "on-primary-container": "#0d0096",
+                        "on-primary-fixed": "#07006c",
+                        "surface": "#131315",
+                        "surface-bright": "#39393b",
+                        "primary": "#c0c1ff",
+                        "on-secondary-fixed-variant": "#47464a",
+                        "on-primary-fixed-variant": "#2f2ebe",
+                        "inverse-on-surface": "#313032",
+                        "surface-container-lowest": "#0e0e10",
+                        "tertiary-fixed-dim": "#ffb783",
+                        "primary-fixed": "#e1e0ff",
+                        "surface-container-highest": "#353437",
+                        "primary-container": "#8083ff",
+                        "on-secondary": "#303033",
+                        "tertiary-fixed": "#ffdcc5",
+                        "error-container": "#93000a",
+                        "secondary-fixed": "#e4e1e6",
+                        "secondary-container": "#47464a",
+                        "on-secondary-container": "#b6b4b8",
+                        "outline-variant": "#464554",
+                        "on-tertiary-fixed": "#301400",
+                        "error": "#ffb4ab",
+                        "background": "#131315",
+                        "surface-variant": "#353437"
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.25rem",
+                        lg: "0.5rem",
+                        xl: "0.75rem",
+                        full: "9999px"
+                    },
+                    spacing: {
+                        sm: "8px",
+                        "safe-margin": "20px",
+                        gutter: "16px",
+                        unit: "4px",
+                        md: "16px",
+                        lg: "24px",
+                        xs: "4px",
+                        xl: "32px"
+                    },
+                    fontFamily: {
+                        h1: ["manrope"],
+                        code: ["spaceGrotesk"],
+                        "body-md": ["inter"],
+                        "body-lg": ["inter"],
+                        h2: ["manrope"],
+                        "label-md": ["inter"]
+                    },
+                    fontSize: {
+                        h1: ["24px", { lineHeight: "32px", fontWeight: "700" }],
+                        code: ["14px", { lineHeight: "22px", fontWeight: "400" }],
+                        "body-md": ["15px", { lineHeight: "25px", fontWeight: "400" }],
+                        "body-lg": ["17px", { lineHeight: "26px", fontWeight: "400" }],
+                        h2: ["20px", { lineHeight: "28px", fontWeight: "600" }],
+                        "label-md": ["13px", { lineHeight: "18px", letterSpacing: "0.02em", fontWeight: "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .fill-icon {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Hide scrollbar for clean look */
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-md min-h-screen overflow-hidden flex flex-col">
+<!-- TopAppBar & GlassHeader Search Combo -->
+<div class="fixed top-0 w-full z-50 flex flex-col bg-zinc-900/60 backdrop-blur-xl border-b-[0.5px] border-white/10 shadow-none text-indigo-400 font-manrope font-bold tracking-tight">
+<!-- TopAppBar Core from JSON -->
+<div class="flex justify-between items-center px-5 h-16 w-full">
+<div class="flex items-center gap-4">
+<button class="md:hidden p-2 -ml-2 rounded-full hover:bg-white/5 transition-colors text-zinc-400">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<span class="text-xl font-extrabold tracking-tighter text-zinc-100">Nexara</span>
+</div>
+<!-- Avatar from JSON -->
+<button class="hover:bg-white/5 transition-colors p-1 rounded-full">
+<div class="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center border border-outline-variant overflow-hidden">
+<span class="material-symbols-outlined text-zinc-400 text-sm">person</span>
+</div>
+</button>
+</div>
+<!-- Integrated Search Bar in GlassHeader -->
+<div class="px-5 pb-4 md:hidden">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-sm">search</span>
+<input class="w-full bg-surface-container-high/50 border-[0.5px] border-outline-variant/50 rounded-lg py-2 pl-9 pr-4 text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition-all placeholder:text-outline" placeholder="Search..." type="text"/>
+</div>
+</div>
+</div>
+<!-- Main Layout Container -->
+<div class="flex flex-1 h-screen pt-[120px] md:pt-16 pb-[80px] md:pb-0 relative w-full">
+<!-- Tabbed Sidebar (Web only) -->
+<aside class="hidden md:flex flex-col w-[72px] h-full border-r-[0.5px] border-white/10 bg-zinc-950/80 backdrop-blur-2xl items-center py-6 shrink-0 z-40">
+<nav class="flex flex-col gap-6 w-full items-center flex-1">
+<!-- Chat (Active) -->
+<button class="group relative flex flex-col items-center justify-center w-12 h-12 rounded-xl bg-white/5 text-indigo-300 shadow-[inset_0_2px_8px_rgba(0,0,0,0.2)] border-[0.5px] border-indigo-500/30 hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined fill-icon">forum</span>
+<!-- Active Indicator -->
+<div class="absolute left-0 w-1 h-6 bg-indigo-400 rounded-r-full"></div>
+</button>
+<!-- Insights (Inactive) -->
+<button class="flex flex-col items-center justify-center w-12 h-12 rounded-xl text-zinc-500 hover:text-zinc-300 hover:bg-white/5 transition-all">
+<span class="material-symbols-outlined">insights</span>
+</button>
+<!-- Artifacts (Inactive) -->
+<button class="flex flex-col items-center justify-center w-12 h-12 rounded-xl text-zinc-500 hover:text-zinc-300 hover:bg-white/5 transition-all">
+<span class="material-symbols-outlined">deployed_code</span>
+</button>
+</nav>
+<!-- Settings (Bottom) -->
+<button class="flex flex-col items-center justify-center w-12 h-12 rounded-xl text-zinc-500 hover:text-zinc-300 hover:bg-white/5 transition-all mt-auto">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 h-full overflow-y-auto px-safe-margin lg:px-12 py-8 relative">
+<!-- Desktop Search Bar within Content Header -->
+<div class="hidden md:flex items-center justify-between mb-10 gap-6">
+<h1 class="font-h1 text-h1 text-on-surface">对话</h1>
+<div class="relative w-96 max-w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full bg-white/[0.03] backdrop-blur-[20px] border-[0.5px] border-white/10 rounded-xl py-2.5 pl-10 pr-4 text-body-md text-on-surface focus:outline-none focus:border-indigo-500/50 focus:bg-white/[0.05] shadow-[inset_0_2px_4px_rgba(0,0,0,0.2)] transition-all placeholder:text-outline" placeholder="Search conversations or agents..." type="text"/>
+</div>
+</div>
+<!-- Content Section: Your Smart Assistant Team -->
+<section class="mb-12">
+<h2 class="font-h2 text-h2 text-on-surface mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">groups</span>
+                    你的智能助手团队
+                </h2>
+<!-- Wide List Layout -->
+<div class="flex flex-col gap-4">
+<!-- Item 1: Super Assistant -->
+<div class="group relative flex items-center p-4 rounded-xl bg-white/[0.03] backdrop-blur-[20px] border-[0.5px] border-white/10 shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)] hover:bg-white/[0.06] hover:border-white/20 transition-all cursor-pointer">
+<div class="w-12 h-12 rounded-lg bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center mr-5 shrink-0">
+<span class="material-symbols-outlined text-indigo-400">psychology</span>
+</div>
+<div class="flex-1 min-w-0">
+<h3 class="font-label-md text-label-md text-on-surface font-semibold mb-1 truncate">超级助手</h3>
+<p class="font-body-md text-body-md text-on-surface-variant truncate text-sm">Advanced logic and complex reasoning capabilities.</p>
+</div>
+<div class="opacity-0 group-hover:opacity-100 transition-opacity pl-4">
+<button class="p-2 rounded-full hover:bg-white/10 text-zinc-400 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Item 2: Standard Chat -->
+<div class="group relative flex items-center p-4 rounded-xl bg-white/[0.03] backdrop-blur-[20px] border-[0.5px] border-white/10 shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)] hover:bg-white/[0.06] hover:border-white/20 transition-all cursor-pointer">
+<div class="w-12 h-12 rounded-lg bg-surface-variant border border-outline-variant/50 flex items-center justify-center mr-5 shrink-0">
+<span class="material-symbols-outlined text-zinc-400">forum</span>
+</div>
+<div class="flex-1 min-w-0">
+<h3 class="font-label-md text-label-md text-on-surface font-semibold mb-1 truncate">日常对话</h3>
+<p class="font-body-md text-body-md text-on-surface-variant truncate text-sm">Quick answers and general assistance.</p>
+</div>
+<div class="opacity-0 group-hover:opacity-100 transition-opacity pl-4">
+<button class="p-2 rounded-full hover:bg-white/10 text-zinc-400 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Item 3: Analysis -->
+<div class="group relative flex items-center p-4 rounded-xl bg-white/[0.03] backdrop-blur-[20px] border-[0.5px] border-white/10 shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)] hover:bg-white/[0.06] hover:border-white/20 transition-all cursor-pointer">
+<div class="w-12 h-12 rounded-lg bg-surface-variant border border-outline-variant/50 flex items-center justify-center mr-5 shrink-0">
+<span class="material-symbols-outlined text-zinc-400">monitoring</span>
+</div>
+<div class="flex-1 min-w-0">
+<h3 class="font-label-md text-label-md text-on-surface font-semibold mb-1 truncate">数据分析师</h3>
+<p class="font-body-md text-body-md text-on-surface-variant truncate text-sm">Upload files for deep insights and charting.</p>
+</div>
+<div class="opacity-0 group-hover:opacity-100 transition-opacity pl-4">
+<button class="p-2 rounded-full hover:bg-white/10 text-zinc-400 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+</main>
+</div>
+<!-- BottomNavBar (Mobile only) -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 bg-zinc-950/80 backdrop-blur-2xl border-t-[0.5px] border-white/10 shadow-2xl flex justify-around items-center pt-3 pb-6 px-4 font-inter text-[10px] font-medium uppercase tracking-widest text-indigo-400">
+<!-- Active Tab: Chat -->
+<button class="flex flex-col items-center justify-center text-indigo-300 drop-shadow-[0_0_8px_rgba(99,102,241,0.5)] scale-95 active:scale-90 duration-200 gap-1">
+<span class="material-symbols-outlined fill-icon">forum</span>
+<span>Chat</span>
+</button>
+<!-- Inactive Tab: Insights -->
+<button class="flex flex-col items-center justify-center text-zinc-500 hover:text-zinc-300 transition-all scale-95 active:scale-90 duration-200 gap-1">
+<span class="material-symbols-outlined">insights</span>
+<span>Insights</span>
+</button>
+<!-- Inactive Tab: Artifacts -->
+<button class="flex flex-col items-center justify-center text-zinc-500 hover:text-zinc-300 transition-all scale-95 active:scale-90 duration-200 gap-1">
+<span class="material-symbols-outlined">deployed_code</span>
+<span>Artifacts</span>
+</button>
+<!-- Inactive Tab: Settings -->
+<button class="flex flex-col items-center justify-center text-zinc-500 hover:text-zinc-300 transition-all scale-95 active:scale-90 duration-200 gap-1">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</button>
+</nav>
+</body></html>

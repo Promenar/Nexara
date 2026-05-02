@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Settings Home Screen</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&amp;family=Manrope:wght@600;700&amp;family=Space+Grotesk:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-bright": "#39393b",
+                        "inverse-primary": "#494bd6",
+                        "tertiary-fixed-dim": "#ffb783",
+                        "outline": "#908fa0",
+                        "on-surface": "#e5e1e4",
+                        "on-error-container": "#ffdad6",
+                        "primary-fixed-dim": "#c0c1ff",
+                        "on-primary": "#1000a9",
+                        "surface-container-high": "#2a2a2c",
+                        "on-tertiary": "#4f2500",
+                        "inverse-surface": "#e5e1e4",
+                        "surface-container": "#201f22",
+                        "on-primary-fixed-variant": "#2f2ebe",
+                        "on-tertiary-fixed": "#301400",
+                        "surface-tint": "#c0c1ff",
+                        "surface-dim": "#131315",
+                        "on-tertiary-container": "#452000",
+                        "primary-container": "#8083ff",
+                        "tertiary": "#ffb783",
+                        "on-tertiary-fixed-variant": "#703700",
+                        "surface-container-highest": "#353437",
+                        "on-surface-variant": "#c7c4d7",
+                        "on-error": "#690005",
+                        "on-background": "#e5e1e4",
+                        "tertiary-container": "#d97721",
+                        "on-primary-container": "#0d0096",
+                        "secondary-fixed": "#e4e1e6",
+                        "tertiary-fixed": "#ffdcc5",
+                        "surface-container-lowest": "#0e0e10",
+                        "on-secondary-container": "#b6b4b8",
+                        "error": "#ffb4ab",
+                        "surface": "#131315",
+                        "secondary": "#c8c5ca",
+                        "on-secondary-fixed-variant": "#47464a",
+                        "error-container": "#93000a",
+                        "secondary-container": "#47464a",
+                        "on-secondary": "#303033",
+                        "inverse-on-surface": "#313032",
+                        "primary": "#c0c1ff",
+                        "surface-variant": "#353437",
+                        "background": "#131315",
+                        "primary-fixed": "#e1e0ff",
+                        "on-secondary-fixed": "#1b1b1e",
+                        "on-primary-fixed": "#07006c",
+                        "surface-container-low": "#1c1b1d",
+                        "secondary-fixed-dim": "#c8c5ca",
+                        "outline-variant": "#464554"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "8px",
+                        "safe-margin": "20px",
+                        "xl": "32px",
+                        "unit": "4px",
+                        "gutter": "16px",
+                        "md": "16px",
+                        "xs": "4px",
+                        "lg": "24px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["inter"],
+                        "h2": ["manrope"],
+                        "label-md": ["inter"],
+                        "h1": ["manrope"],
+                        "code": ["spaceGrotesk"],
+                        "body-lg": ["inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["15px", { "lineHeight": "25px", "fontWeight": "400" }],
+                        "h2": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "label-md": ["13px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "h1": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "code": ["14px", { "lineHeight": "22px", "fontWeight": "400" }],
+                        "body-lg": ["17px", { "lineHeight": "26px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 0.5px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 0 2px rgba(255, 255, 255, 0.05);
+        }
+        .glass-panel:active {
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md text-body-md min-h-screen pb-24 selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-zinc-950/70 backdrop-blur-3xl shadow-none">
+<div class="flex justify-between items-center h-16 px-5 w-full">
+<button class="text-zinc-400 hover:bg-white/5 p-2 rounded-full active:scale-95 transition-transform flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">arrow_back</span>
+</button>
+<h1 class="text-lg font-bold text-zinc-100 font-manrope tracking-wide">Settings</h1>
+<button class="text-zinc-400 hover:bg-white/5 p-2 rounded-full active:scale-95 transition-transform flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">account_circle</span>
+</button>
+</div>
+<!-- Internal App Tabs (not part of TopAppBar definition but requested) -->
+<div class="flex px-5 border-b border-white/10 mt-2 gap-6">
+<button class="pb-3 border-b-2 border-indigo-400 text-indigo-400 font-label-md text-label-md">App</button>
+<button class="pb-3 border-b-2 border-transparent text-zinc-400 font-label-md text-label-md">Provider</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-[120px] px-safe-margin max-w-2xl mx-auto flex flex-col gap-lg">
+<!-- Large Title -->
+<h1 class="font-h1 text-h1 text-on-surface">Settings</h1>
+<!-- User Profile Section -->
+<div class="relative p-[1px] rounded-xl overflow-hidden">
+<!-- Gradient Border Wrapper -->
+<div class="absolute inset-0 bg-gradient-to-br from-primary-container to-tertiary-container opacity-50 z-0"></div>
+<div class="glass-panel rounded-xl p-md flex items-center gap-md relative z-10 bg-surface-container/90">
+<img alt="Profile avatar" class="w-16 h-16 rounded-full object-cover border-2 border-surface" data-alt="A sophisticated close-up portrait of a professional in a modern, subtly lit environment. The lighting is high-key but moody, with soft shadows defining facial features. The background is an abstract, out-of-focus deep metallic gray, reflecting a high-end technological setting. The color palette emphasizes cool tones with a hint of warm, subtle skin highlights, aligning perfectly with a premium glassmorphic dark-mode interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBjtgJYuJ61HC6_2rfeysWqjt4N7XkXy0d1te2k9AZuNiTMgiKqrFA0H5e49I8yXgXTiu0ngy2WoOckMsgmwq1FXq3vXut-yMqmuguP3k4ZRuqAMdTnXGEPZCXi7F_lOsgvb2u4G0a9FMwYhNYlmE_oLG5oaX15FIsvrlA-IApFNXh1N36RcpQIcWjHnWbhVZoxxalcGvzlGsHdCPFyxPelWV75K0Pp9do_HwGonbZuW0uetMELbgjUr0bcGbRtR_sa5OvzU9CAruOu"/>
+<div class="flex-1">
+<h2 class="font-h2 text-h2 text-on-surface">Alex Nova</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Pro Plan • Active</p>
+</div>
+<button class="text-primary hover:bg-white/5 p-2 rounded-full transition-colors">
+<span class="material-symbols-outlined">edit</span>
+</button>
+</div>
+</div>
+<!-- Settings Groups -->
+<div class="flex flex-col gap-sm">
+<!-- Model & Inference -->
+<div class="glass-panel rounded-xl flex items-center justify-between p-md cursor-pointer transition-colors hover:bg-white/[0.05]">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">psychology</span>
+</div>
+<div>
+<h3 class="font-label-md text-label-md text-on-surface">Model &amp; Inference</h3>
+<p class="font-body-md text-sm text-on-surface-variant opacity-70">GPT-4 Turbo, Temp 0.7</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</div>
+<!-- Knowledge Base -->
+<div class="glass-panel rounded-xl flex items-center justify-between p-md cursor-pointer transition-colors hover:bg-white/[0.05]">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">database</span>
+</div>
+<div>
+<h3 class="font-label-md text-label-md text-on-surface">Knowledge Base</h3>
+<p class="font-body-md text-sm text-on-surface-variant opacity-70">3 Active Sources</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</div>
+<!-- Search -->
+<div class="glass-panel rounded-xl flex items-center justify-between p-md cursor-pointer transition-colors hover:bg-white/[0.05]">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">search</span>
+</div>
+<div>
+<h3 class="font-label-md text-label-md text-on-surface">Search</h3>
+<p class="font-body-md text-sm text-on-surface-variant opacity-70">Web &amp; Local Index</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</div>
+<!-- Tools -->
+<div class="glass-panel rounded-xl flex items-center justify-between p-md cursor-pointer transition-colors hover:bg-white/[0.05]">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">build</span>
+</div>
+<div>
+<h3 class="font-label-md text-label-md text-on-surface">Tools</h3>
+<p class="font-body-md text-sm text-on-surface-variant opacity-70">Plugins &amp; Integrations</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</div>
+<!-- System -->
+<div class="glass-panel rounded-xl flex items-center justify-between p-md cursor-pointer transition-colors hover:bg-white/[0.05]">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">settings_system_daydream</span>
+</div>
+<div>
+<h3 class="font-label-md text-label-md text-on-surface">System</h3>
+<p class="font-body-md text-sm text-on-surface-variant opacity-70">Appearance, Sync, About</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</div>
+</div>
+<div class="mt-lg">
+<button class="w-full glass-panel border border-error/30 text-error font-label-md text-label-md py-3 rounded-lg hover:bg-error/10 transition-colors">
+                Sign Out
+            </button>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 pb-safe bg-zinc-950/80 backdrop-blur-2xl shadow-none">
+<div class="flex justify-around items-center h-20 px-6 w-full">
+<button class="flex flex-col items-center justify-center text-zinc-500 p-2 hover:text-zinc-200 active:scale-90 duration-200 group">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 0;">chat_bubble</span>
+<span class="font-manrope text-[10px] uppercase tracking-tighter">chat_bubble</span>
+</button>
+<button class="flex flex-col items-center justify-center text-zinc-500 p-2 hover:text-zinc-200 active:scale-90 duration-200 group">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 0;">explore</span>
+<span class="font-manrope text-[10px] uppercase tracking-tighter">explore</span>
+</button>
+<button class="flex flex-col items-center justify-center text-zinc-500 p-2 hover:text-zinc-200 active:scale-90 duration-200 group">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 0;">analytics</span>
+<span class="font-manrope text-[10px] uppercase tracking-tighter">analytics</span>
+</button>
+<button class="flex flex-col items-center justify-center text-indigo-400 bg-white/5 rounded-xl p-2 active:scale-90 duration-200 group">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">settings</span>
+<span class="font-manrope text-[10px] uppercase tracking-tighter">settings</span>
+</button>
+</div>
+</nav>
+</body></html>

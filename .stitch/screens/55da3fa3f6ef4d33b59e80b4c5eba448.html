@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Knowledge Graph Viewer</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@500;600;700;800;900&amp;family=Space+Grotesk&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed-variant": "#47464a",
+                        "on-primary-fixed": "#07006c",
+                        "surface-container": "#201f22",
+                        "on-secondary-container": "#b6b4b8",
+                        "on-secondary-fixed": "#1b1b1e",
+                        "tertiary-fixed-dim": "#ffb783",
+                        "primary-container": "#8083ff",
+                        "surface-container-highest": "#353437",
+                        "surface-container-high": "#2a2a2c",
+                        "on-background": "#e5e1e4",
+                        "primary-fixed-dim": "#c0c1ff",
+                        "tertiary-container": "#d97721",
+                        "on-secondary": "#303033",
+                        "surface-tint": "#c0c1ff",
+                        "surface-container-low": "#1c1b1d",
+                        "background": "#131315",
+                        "tertiary-fixed": "#ffdcc5",
+                        "on-primary-fixed-variant": "#2f2ebe",
+                        "inverse-surface": "#e5e1e4",
+                        "surface-bright": "#39393b",
+                        "primary": "#c0c1ff",
+                        "outline": "#908fa0",
+                        "on-tertiary": "#4f2500",
+                        "on-primary": "#1000a9",
+                        "surface-container-lowest": "#0e0e10",
+                        "surface": "#131315",
+                        "error": "#ffb4ab",
+                        "on-tertiary-fixed-variant": "#703700",
+                        "outline-variant": "#464554",
+                        "on-primary-container": "#0d0096",
+                        "secondary-fixed": "#e4e1e6",
+                        "on-error": "#690005",
+                        "inverse-primary": "#494bd6",
+                        "primary-fixed": "#e1e0ff",
+                        "on-surface-variant": "#c7c4d7",
+                        "surface-dim": "#131315",
+                        "secondary-container": "#47464a",
+                        "on-tertiary-fixed": "#301400",
+                        "surface-variant": "#353437",
+                        "on-tertiary-container": "#452000",
+                        "secondary-fixed-dim": "#c8c5ca",
+                        "inverse-on-surface": "#313032",
+                        "secondary": "#c8c5ca",
+                        "on-surface": "#e5e1e4",
+                        "tertiary": "#ffb783",
+                        "on-error-container": "#ffdad6",
+                        "error-container": "#93000a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "8px",
+                        "xs": "4px",
+                        "lg": "24px",
+                        "xl": "32px",
+                        "md": "16px",
+                        "gutter": "16px",
+                        "unit": "4px",
+                        "safe-margin": "20px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Inter", "sans-serif"],
+                        "code": ["Space Grotesk", "monospace"],
+                        "body-md": ["Inter", "sans-serif"],
+                        "h1": ["Manrope", "sans-serif"],
+                        "h2": ["Manrope", "sans-serif"],
+                        "body-lg": ["Inter", "sans-serif"]
+                    },
+                    "fontSize": {
+                        "label-md": ["13px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "code": ["14px", { "lineHeight": "22px", "fontWeight": "400" }],
+                        "body-md": ["15px", { "lineHeight": "25px", "fontWeight": "400" }],
+                        "h1": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "h2": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "body-lg": ["17px", { "lineHeight": "26px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: #0e0e10; }
+        .glass-panel {
+            background: rgba(32, 31, 34, 0.4);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 0.5px solid rgba(255, 255, 255, 0.1);
+        }
+        .node-pulse {
+            animation: pulse 3s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: inset 0 0 15px rgba(192, 193, 255, 0.1), 0 0 0 0 rgba(192, 193, 255, 0.2); }
+            70% { box-shadow: inset 0 0 25px rgba(192, 193, 255, 0.2), 0 0 0 15px rgba(192, 193, 255, 0); }
+            100% { box-shadow: inset 0 0 15px rgba(192, 193, 255, 0.1), 0 0 0 0 rgba(192, 193, 255, 0); }
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="text-on-surface h-screen w-full overflow-hidden flex font-body-md">
+<!-- Navigation Drawer (Desktop) -->
+<nav class="hidden md:flex flex-col h-full py-8 px-6 h-full w-80 border-r border-r border-white/10 shadow-2xl shadow-black bg-zinc-950/95 backdrop-blur-3xl transition-all duration-300 ease-in-out relative z-[60]">
+<!-- Header -->
+<div class="flex items-center gap-4 mb-10 pl-2">
+<div class="w-12 h-12 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center overflow-hidden">
+<span class="material-symbols-outlined text-primary text-[28px]" data-icon="account_circle">account_circle</span>
+</div>
+<div>
+<h2 class="font-h2 text-h2 text-indigo-500 font-black">Intelligence Core</h2>
+<p class="font-label-md text-label-md text-on-surface-variant">Premium Tier <span class="text-outline mx-1">•</span> v2.4.0</p>
+</div>
+</div>
+<!-- Links -->
+<ul class="flex flex-col gap-2 flex-1">
+<li>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-zinc-400 hover:text-zinc-100 hover:bg-white/[0.02] transition-all duration-300 ease-in-out font-manrope text-base" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span>Recents</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-zinc-400 hover:text-zinc-100 hover:bg-white/[0.02] transition-all duration-300 ease-in-out font-manrope text-base" href="#">
+<span class="material-symbols-outlined" data-icon="star">star</span>
+<span>Starred</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-zinc-400 hover:text-zinc-100 hover:bg-white/[0.02] transition-all duration-300 ease-in-out font-manrope text-base" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span>Documents</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg bg-white/5 text-indigo-400 border-r-2 border-indigo-500 hover:bg-white/[0.02] transition-all duration-300 ease-in-out font-manrope text-base" href="#">
+<span class="material-symbols-outlined" data-icon="account_tree">account_tree</span>
+<span>Graph View</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-zinc-400 hover:text-zinc-100 hover:bg-white/[0.02] transition-all duration-300 ease-in-out font-manrope text-base" href="#">
+<span class="material-symbols-outlined" data-icon="archive">archive</span>
+<span>Archived</span>
+</a>
+</li>
+</ul>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 relative h-full flex flex-col overflow-hidden bg-surface-container-lowest">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 border-b border-white/[0.05] shadow-none bg-zinc-950/70 backdrop-blur-xl flex items-center justify-between px-5 h-16 md:w-[calc(100%-20rem)] md:left-80">
+<div class="flex items-center gap-4">
+<button class="md:hidden text-zinc-400 hover:bg-white/5 transition-colors active:scale-95 duration-200 p-2 rounded-full">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<div class="flex flex-col">
+<h1 class="font-manrope text-sm tracking-tight font-medium text-indigo-400">Knowledge Base</h1>
+<span class="font-label-md text-[10px] text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">filter_alt</span>
+                        Global Scope Active
+                    </span>
+</div>
+</div>
+<button class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center border border-white/10 hover:bg-white/5 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined text-zinc-400 text-sm" data-icon="account_circle">account_circle</span>
+</button>
+</header>
+<!-- Canvas Area (Node-Link Diagram) -->
+<div class="absolute inset-0 z-0 overflow-hidden pt-16 pb-20 md:pb-0">
+<!-- Background Grid (Subtle) -->
+<div class="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px]"></div>
+<!-- SVG Edges -->
+<svg class="absolute inset-0 w-full h-full pointer-events-none z-0">
+<defs>
+<lineargradient id="edge-grad" x1="0%" x2="100%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#c0c1ff" stop-opacity="0.6"></stop>
+<stop offset="100%" stop-color="#464554" stop-opacity="0.2"></stop>
+</lineargradient>
+</defs>
+<!-- Center to A -->
+<line stroke="url(#edge-grad)" stroke-width="1.5" x1="50%" x2="25%" y1="50%" y2="25%"></line>
+<!-- Center to B -->
+<line stroke="#464554" stroke-dasharray="4 4" stroke-width="1" x1="50%" x2="75%" y1="50%" y2="30%"></line>
+<!-- Center to C -->
+<line stroke="url(#edge-grad)" stroke-width="2" x1="50%" x2="30%" y1="50%" y2="75%"></line>
+<!-- Center to D -->
+<line stroke="#464554" stroke-width="1" x1="50%" x2="80%" y1="50%" y2="65%"></line>
+<!-- B to D -->
+<line opacity="0.5" stroke="#464554" stroke-dasharray="2 2" stroke-width="0.5" x1="75%" x2="80%" y1="30%" y2="65%"></line>
+</svg>
+<!-- Nodes -->
+<!-- Central Node -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 cursor-pointer group">
+<div class="w-20 h-20 rounded-full glass-panel border-primary/50 flex items-center justify-center text-primary shadow-[inset_0_0_20px_rgba(192,193,255,0.2),0_8px_32px_rgba(0,0,0,0.5)] node-pulse transition-transform duration-300 group-hover:scale-110">
+<span class="material-symbols-outlined text-[32px]" data-icon="psychology" style="font-variation-settings: 'FILL' 1;">psychology</span>
+</div>
+<div class="absolute top-full left-1/2 -translate-x-1/2 mt-3 font-label-md text-label-md text-on-surface whitespace-nowrap bg-surface-container-lowest/80 px-3 py-1 rounded-full border border-white/5 backdrop-blur-md">
+                    Nexus Core
+                </div>
+</div>
+<!-- Node A (Top Left) -->
+<div class="absolute top-[25%] left-[25%] -translate-x-1/2 -translate-y-1/2 z-10 cursor-pointer group">
+<div class="w-14 h-14 rounded-full glass-panel flex items-center justify-center text-on-surface-variant transition-all duration-300 group-hover:border-primary/40 group-hover:text-primary group-hover:scale-110">
+<span class="material-symbols-outlined text-[24px]" data-icon="folder_open">folder_open</span>
+</div>
+<div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 font-label-md text-[11px] text-on-surface-variant whitespace-nowrap">
+                    Q3 Research
+                </div>
+</div>
+<!-- Node B (Top Right) -->
+<div class="absolute top-[30%] left-[75%] -translate-x-1/2 -translate-y-1/2 z-10 cursor-pointer group">
+<div class="w-12 h-12 rounded-full glass-panel flex items-center justify-center text-on-surface-variant transition-all duration-300 group-hover:border-primary/40 group-hover:text-primary group-hover:scale-110">
+<span class="material-symbols-outlined text-[20px]" data-icon="description">description</span>
+</div>
+<div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 font-label-md text-[11px] text-on-surface-variant whitespace-nowrap">
+                    Architecture.md
+                </div>
+</div>
+<!-- Node C (Bottom Left) - Selected State -->
+<div class="absolute top-[75%] left-[30%] -translate-x-1/2 -translate-y-1/2 z-30 cursor-pointer">
+<!-- Outer ring for selected state -->
+<div class="absolute inset-[-6px] rounded-full border border-primary/30 animate-[spin_10s_linear_infinite]"></div>
+<div class="w-16 h-16 rounded-full bg-surface-container-high/90 backdrop-blur-xl border border-primary text-primary flex items-center justify-center shadow-[inset_0_0_15px_rgba(192,193,255,0.15)] relative z-10">
+<span class="material-symbols-outlined text-[28px]" data-icon="hub">hub</span>
+</div>
+<div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 font-label-md text-label-md text-primary whitespace-nowrap font-medium">
+                    API Gateway Logic
+                </div>
+</div>
+<!-- Node D (Bottom Right) -->
+<div class="absolute top-[65%] left-[80%] -translate-x-1/2 -translate-y-1/2 z-10 cursor-pointer group">
+<div class="w-10 h-10 rounded-full glass-panel flex items-center justify-center text-on-surface-variant transition-all duration-300 group-hover:border-primary/40 group-hover:text-primary group-hover:scale-110">
+<span class="material-symbols-outlined text-[18px]" data-icon="person">person</span>
+</div>
+<div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 font-label-md text-[10px] text-on-surface-variant whitespace-nowrap opacity-70">
+                    Agent 04
+                </div>
+</div>
+</div>
+<!-- Floating Glass Toolbar (Filters) -->
+<div class="absolute bottom-28 md:bottom-12 left-1/2 -translate-x-1/2 z-40 glass-panel rounded-full p-1.5 flex items-center shadow-2xl">
+<button class="px-4 py-2 rounded-full font-label-md text-label-md bg-primary text-on-primary shadow-sm transition-all">
+                All Nodes
+            </button>
+<button class="px-4 py-2 rounded-full font-label-md text-label-md text-on-surface-variant hover:bg-white/5 transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]" data-icon="description">description</span>
+                Documents
+            </button>
+<button class="px-4 py-2 rounded-full font-label-md text-label-md text-on-surface-variant hover:bg-white/5 transition-all flex items-center gap-2 hidden sm:flex">
+<span class="material-symbols-outlined text-[16px]" data-icon="folder">folder</span>
+                Folders
+            </button>
+<div class="w-[1px] h-4 bg-white/10 mx-1"></div>
+<button class="w-9 h-9 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-white/5 transition-all">
+<span class="material-symbols-outlined text-[20px]" data-icon="search">search</span>
+</button>
+</div>
+<!-- Interaction Popup (GlassBottomSheet) -->
+<div class="absolute bottom-0 left-0 w-full md:w-96 md:left-auto md:right-6 md:bottom-6 z-50 glass-panel border-t md:border border-white/10 rounded-t-[2rem] md:rounded-[2rem] p-6 shadow-2xl transition-transform duration-500 transform translate-y-0 flex flex-col gap-5">
+<!-- Handle (Mobile) -->
+<div class="w-12 h-1.5 bg-white/10 rounded-full mx-auto md:hidden mb-2"></div>
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="hub">hub</span>
+</div>
+<div>
+<h3 class="font-h2 text-h2 text-on-surface">API Gateway Logic</h3>
+<p class="font-label-md text-[12px] text-on-surface-variant mt-0.5">Conceptual Node • 4 Connections</p>
+</div>
+</div>
+<button class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="close">close</span>
+</button>
+</div>
+<div class="glass-panel rounded-xl p-4 border border-white/5 bg-white/[0.02]">
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-3">
+                    Central routing component managing authentication, rate limiting, and traffic distribution across microservices. Historical analysis shows bottleneck potential during peak synchronization events.
+                </p>
+</div>
+<div class="flex gap-3 mt-2">
+<button class="flex-1 bg-indigo-500 hover:bg-indigo-600 text-white font-label-md text-label-md py-3 rounded-xl transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="visibility">visibility</span>
+                    Expand Context
+                </button>
+<button class="w-12 h-12 glass-panel rounded-xl flex items-center justify-center text-indigo-400 hover:bg-white/10 transition-colors border border-white/10">
+<span class="material-symbols-outlined text-[20px]" data-icon="more_horiz">more_horiz</span>
+</button>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-20 pb-safe px-4 bg-zinc-900/60 backdrop-blur-2xl border-t border-white/[0.08] inner-shadow-sm rounded-t-2xl">
+<a class="flex flex-col items-center justify-center text-zinc-500 hover:text-zinc-200 active:scale-90 transition-transform w-16 group" href="#">
+<span class="material-symbols-outlined mb-1 group-hover:text-zinc-300 transition-colors" data-icon="folder_open">folder_open</span>
+<span class="font-manrope text-[10px] font-semibold uppercase tracking-widest">Library</span>
+</a>
+<a class="flex flex-col items-center justify-center text-zinc-500 hover:text-zinc-200 active:scale-90 transition-transform w-16 group" href="#">
+<span class="material-symbols-outlined mb-1 group-hover:text-zinc-300 transition-colors" data-icon="psychology">psychology</span>
+<span class="font-manrope text-[10px] font-semibold uppercase tracking-widest">Memory</span>
+</a>
+<a class="flex flex-col items-center justify-center text-indigo-400 relative after:content-[''] after:absolute after:-bottom-1 after:w-1 after:h-1 after:bg-indigo-500 after:rounded-full hover:text-zinc-200 active:scale-90 transition-transform w-16 group" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="hub">hub</span>
+<span class="font-manrope text-[10px] font-semibold uppercase tracking-widest">Graph</span>
+</a>
+<a class="flex flex-col items-center justify-center text-zinc-500 hover:text-zinc-200 active:scale-90 transition-transform w-16 group" href="#">
+<span class="material-symbols-outlined mb-1 group-hover:text-zinc-300 transition-colors" data-icon="settings">settings</span>
+<span class="font-manrope text-[10px] font-semibold uppercase tracking-widest">Settings</span>
+</a>
+</nav>
+</body></html>

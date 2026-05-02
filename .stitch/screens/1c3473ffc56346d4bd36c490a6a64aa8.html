@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Agent Skills Settings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&amp;family=Manrope:wght@600;700&amp;family=Space+Grotesk:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-bright": "#39393b",
+                      "inverse-primary": "#494bd6",
+                      "tertiary-fixed-dim": "#ffb783",
+                      "outline": "#908fa0",
+                      "on-surface": "#e5e1e4",
+                      "on-error-container": "#ffdad6",
+                      "primary-fixed-dim": "#c0c1ff",
+                      "on-primary": "#1000a9",
+                      "surface-container-high": "#2a2a2c",
+                      "on-tertiary": "#4f2500",
+                      "inverse-surface": "#e5e1e4",
+                      "surface-container": "#201f22",
+                      "on-primary-fixed-variant": "#2f2ebe",
+                      "on-tertiary-fixed": "#301400",
+                      "surface-tint": "#c0c1ff",
+                      "surface-dim": "#131315",
+                      "on-tertiary-container": "#452000",
+                      "primary-container": "#8083ff",
+                      "tertiary": "#ffb783",
+                      "on-tertiary-fixed-variant": "#703700",
+                      "surface-container-highest": "#353437",
+                      "on-surface-variant": "#c7c4d7",
+                      "on-error": "#690005",
+                      "on-background": "#e5e1e4",
+                      "tertiary-container": "#d97721",
+                      "on-primary-container": "#0d0096",
+                      "secondary-fixed": "#e4e1e6",
+                      "tertiary-fixed": "#ffdcc5",
+                      "surface-container-lowest": "#0e0e10",
+                      "on-secondary-container": "#b6b4b8",
+                      "error": "#ffb4ab",
+                      "surface": "#131315",
+                      "secondary": "#c8c5ca",
+                      "on-secondary-fixed-variant": "#47464a",
+                      "error-container": "#93000a",
+                      "secondary-container": "#47464a",
+                      "on-secondary": "#303033",
+                      "inverse-on-surface": "#313032",
+                      "primary": "#c0c1ff",
+                      "surface-variant": "#353437",
+                      "background": "#131315",
+                      "primary-fixed": "#e1e0ff",
+                      "on-secondary-fixed": "#1b1b1e",
+                      "on-primary-fixed": "#07006c",
+                      "surface-container-low": "#1c1b1d",
+                      "secondary-fixed-dim": "#c8c5ca",
+                      "outline-variant": "#464554"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "sm": "8px",
+                      "safe-margin": "20px",
+                      "xl": "32px",
+                      "unit": "4px",
+                      "gutter": "16px",
+                      "md": "16px",
+                      "xs": "4px",
+                      "lg": "24px"
+              },
+              "fontFamily": {
+                      "body-md": ["Inter", "sans-serif"],
+                      "h2": ["Manrope", "sans-serif"],
+                      "label-md": ["Inter", "sans-serif"],
+                      "h1": ["Manrope", "sans-serif"],
+                      "code": ["Space Grotesk", "monospace"],
+                      "body-lg": ["Inter", "sans-serif"]
+              },
+              "fontSize": {
+                      "body-md": ["15px", {"lineHeight": "25px", "fontWeight": "400"}],
+                      "h2": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "label-md": ["13px", {"lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                      "h1": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                      "code": ["14px", {"lineHeight": "22px", "fontWeight": "400"}],
+                      "body-lg": ["17px", {"lineHeight": "26px", "fontWeight": "400"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 0.5px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-panel:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md antialiased pt-16 md:pt-0 pb-safe">
+<!-- TopAppBar (Mobile & Tablet) -->
+<header class="md:hidden bg-zinc-950/70 backdrop-blur-3xl fixed top-0 w-full z-50 shadow-none border-b border-white/10 flex justify-between items-center h-16 px-5">
+<button class="text-indigo-400 hover:bg-white/5 active:scale-95 transition-transform p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="text-lg font-bold text-zinc-100 font-manrope">Settings</h1>
+<button class="text-zinc-400 hover:bg-white/5 active:scale-95 transition-transform p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</header>
+<div class="flex flex-1 w-full max-w-7xl mx-auto md:mt-0">
+<!-- Main Content -->
+<main class="flex-1 px-safe-margin py-lg md:py-xl md:px-xl overflow-y-auto">
+<div class="max-w-4xl mx-auto space-y-xl">
+<!-- Page Header -->
+<div>
+<h2 class="font-h1 text-h1 text-on-surface mb-sm">Agent Skills</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Configure capabilities and external tool connections for your AI agents.</p>
+</div>
+<!-- Loop Limit Stepper -->
+<section class="glass-panel rounded-xl p-md flex flex-col md:flex-row md:items-center justify-between gap-md relative overflow-hidden">
+<div class="flex-1">
+<h3 class="font-h2 text-h2 text-on-surface mb-xs flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary">autorenew</span>
+                            Execution Loop Limit
+                        </h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Maximum consecutive tool calls an agent can make before requiring user confirmation.</p>
+<div class="mt-sm flex items-start gap-xs text-tertiary-container bg-tertiary-container/10 p-sm rounded-lg border border-tertiary-container/20">
+<span class="material-symbols-outlined text-[16px] mt-[2px]">warning</span>
+<p class="font-label-md text-label-md">Setting limit to infinity (∞) may result in high token usage or infinite loops if an agent encounters recurring errors.</p>
+</div>
+</div>
+<div class="flex items-center gap-md bg-surface-container-high rounded-full p-unit border border-outline-variant">
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface hover:bg-white/5 active:scale-95 transition-all">
+<span class="material-symbols-outlined">remove</span>
+</button>
+<span class="font-code text-h2 text-primary w-12 text-center">15</span>
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface hover:bg-white/5 active:scale-95 transition-all">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+</section>
+<!-- Tabs -->
+<div class="border-b border-outline-variant flex gap-md">
+<button class="px-sm py-md font-label-md text-label-md text-on-surface-variant hover:text-on-surface relative">
+                        Preset
+                        <div class="absolute bottom-0 left-0 w-full h-[2px] bg-transparent"></div>
+</button>
+<button class="px-sm py-md font-label-md text-label-md text-on-surface-variant hover:text-on-surface relative">
+                        User
+                        <div class="absolute bottom-0 left-0 w-full h-[2px] bg-transparent"></div>
+</button>
+<button class="px-sm py-md font-label-md text-label-md text-primary relative">
+                        MCP
+                        <div class="absolute bottom-0 left-0 w-full h-[2px] bg-primary rounded-t-full"></div>
+</button>
+</div>
+<!-- MCP Server List Content -->
+<section class="space-y-md">
+<div class="flex items-center justify-between">
+<h3 class="font-h2 text-h2 text-on-surface">Model Context Protocol Servers</h3>
+<button class="bg-primary-container text-on-primary-container font-label-md text-label-md px-md py-sm rounded-full hover:opacity-90 active:scale-95 transition-all flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                            Add Server
+                        </button>
+</div>
+<div class="grid grid-cols-1 gap-md">
+<!-- Server Card 1 -->
+<div class="glass-panel rounded-xl p-md flex flex-col gap-md">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-sm">
+<div class="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_8px_rgba(192,193,255,0.6)]"></div>
+<h4 class="font-h2 text-h2 text-on-surface">GitHub Integration</h4>
+<span class="font-code text-code text-on-surface-variant bg-surface-container px-sm py-xs rounded-md border border-outline-variant">mcp.github.v1</span>
+</div>
+<div class="flex gap-sm">
+<button class="text-on-surface-variant hover:text-primary transition-colors p-unit rounded-md hover:bg-white/5">
+<span class="material-symbols-outlined text-[20px]">sync</span>
+</button>
+<button class="text-on-surface-variant hover:text-error transition-colors p-unit rounded-md hover:bg-white/5">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</div>
+<div class="flex flex-wrap gap-sm">
+<div class="px-sm py-xs rounded-full border border-primary/30 bg-primary/10 text-primary font-label-md text-label-md flex items-center gap-xs">
+<span class="material-symbols-outlined text-[14px]">code</span>
+                                    read_repository
+                                </div>
+<div class="px-sm py-xs rounded-full border border-primary/30 bg-primary/10 text-primary font-label-md text-label-md flex items-center gap-xs">
+<span class="material-symbols-outlined text-[14px]">commit</span>
+                                    create_commit
+                                </div>
+<div class="px-sm py-xs rounded-full border border-primary/30 bg-primary/10 text-primary font-label-md text-label-md flex items-center gap-xs">
+<span class="material-symbols-outlined text-[14px]">merge</span>
+                                    create_pr
+                                </div>
+</div>
+</div>
+<!-- Server Card 2 -->
+<div class="glass-panel rounded-xl p-md flex flex-col gap-md opacity-70">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-sm">
+<div class="w-2 h-2 rounded-full bg-error"></div>
+<h4 class="font-h2 text-h2 text-on-surface">Local File System</h4>
+<span class="font-code text-code text-on-surface-variant bg-surface-container px-sm py-xs rounded-md border border-outline-variant">mcp.local_fs.v2</span>
+</div>
+<div class="flex gap-sm">
+<button class="text-on-surface-variant hover:text-primary transition-colors p-unit rounded-md hover:bg-white/5">
+<span class="material-symbols-outlined text-[20px]">sync</span>
+</button>
+<button class="text-on-surface-variant hover:text-error transition-colors p-unit rounded-md hover:bg-white/5">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</div>
+<div class="text-error font-label-md text-label-md flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">error</span>
+                                Connection refused. Check if the local server is running on port 8080.
+                            </div>
+</div>
+</div>
+</section>
+<div class="h-24 md:h-0 w-full"></div> <!-- Spacing for mobile nav -->
+</div>
+</main>
+</div>
+<!-- BottomNavBar (Mobile) -->
+<nav class="md:hidden bg-zinc-950/80 backdrop-blur-2xl fixed bottom-0 w-full z-50 pb-safe shadow-none border-t border-white/5 flex justify-around items-center h-20 px-6">
+<button class="text-zinc-500 p-2 hover:text-zinc-200 active:scale-90 duration-200 flex flex-col items-center">
+<span class="material-symbols-outlined text-2xl">chat_bubble</span>
+<span class="font-manrope text-[10px] uppercase tracking-tighter mt-1">chat</span>
+</button>
+<button class="text-zinc-500 p-2 hover:text-zinc-200 active:scale-90 duration-200 flex flex-col items-center">
+<span class="material-symbols-outlined text-2xl">explore</span>
+<span class="font-manrope text-[10px] uppercase tracking-tighter mt-1">explore</span>
+</button>
+<button class="text-zinc-500 p-2 hover:text-zinc-200 active:scale-90 duration-200 flex flex-col items-center">
+<span class="material-symbols-outlined text-2xl">analytics</span>
+<span class="font-manrope text-[10px] uppercase tracking-tighter mt-1">stats</span>
+</button>
+<button class="text-indigo-400 bg-white/5 rounded-xl p-2 hover:text-zinc-200 active:scale-90 duration-200 flex flex-col items-center">
+<span class="material-symbols-outlined text-2xl">settings</span>
+<span class="font-manrope text-[10px] uppercase tracking-tighter mt-1">Settings</span>
+</button>
+</nav>
+</body></html>

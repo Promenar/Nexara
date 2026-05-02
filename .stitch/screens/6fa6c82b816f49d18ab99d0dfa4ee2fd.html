@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="zh"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nexara - 智能助手团队</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed-dim": "#c0c1ff",
+                        "on-error": "#690005",
+                        "on-surface": "#e5e1e4",
+                        "on-error-container": "#ffdad6",
+                        "on-tertiary-fixed-variant": "#703700",
+                        "on-primary": "#1000a9",
+                        "tertiary": "#ffb783",
+                        "surface-dim": "#131315",
+                        "secondary-fixed-dim": "#c8c5ca",
+                        "surface-tint": "#c0c1ff",
+                        "on-surface-variant": "#c7c4d7",
+                        "surface-container-low": "#1c1b1d",
+                        "secondary": "#c8c5ca",
+                        "outline": "#908fa0",
+                        "on-background": "#e5e1e4",
+                        "on-tertiary": "#4f2500",
+                        "surface-container": "#201f22",
+                        "inverse-surface": "#e5e1e4",
+                        "inverse-primary": "#494bd6",
+                        "surface-container-high": "#2a2a2c",
+                        "on-secondary-fixed": "#1b1b1e",
+                        "tertiary-container": "#d97721",
+                        "on-tertiary-container": "#452000",
+                        "on-primary-container": "#0d0096",
+                        "on-primary-fixed": "#07006c",
+                        "surface": "#131315",
+                        "surface-bright": "#39393b",
+                        "primary": "#c0c1ff",
+                        "on-secondary-fixed-variant": "#47464a",
+                        "on-primary-fixed-variant": "#2f2ebe",
+                        "inverse-on-surface": "#313032",
+                        "surface-container-lowest": "#0e0e10",
+                        "tertiary-fixed-dim": "#ffb783",
+                        "primary-fixed": "#e1e0ff",
+                        "surface-container-highest": "#353437",
+                        "primary-container": "#8083ff",
+                        "on-secondary": "#303033",
+                        "tertiary-fixed": "#ffdcc5",
+                        "error-container": "#93000a",
+                        "secondary-fixed": "#e4e1e6",
+                        "secondary-container": "#47464a",
+                        "on-secondary-container": "#b6b4b8",
+                        "outline-variant": "#464554",
+                        "on-tertiary-fixed": "#301400",
+                        "error": "#ffb4ab",
+                        "background": "#131315",
+                        "surface-variant": "#353437"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "8px",
+                        "safe-margin": "20px",
+                        "gutter": "16px",
+                        "unit": "4px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "xs": "4px",
+                        "xl": "32px"
+                    },
+                    "fontFamily": {
+                        "h1": ["manrope"],
+                        "code": ["spaceGrotesk"],
+                        "body-md": ["inter"],
+                        "body-lg": ["inter"],
+                        "h2": ["manrope"],
+                        "label-md": ["inter"]
+                    },
+                    "fontSize": {
+                        "h1": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "code": ["14px", { "lineHeight": "22px", "fontWeight": "400" }],
+                        "body-md": ["15px", { "lineHeight": "25px", "fontWeight": "400" }],
+                        "body-lg": ["17px", { "lineHeight": "26px", "fontWeight": "400" }],
+                        "h2": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "label-md": ["13px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 0.5px solid rgba(255, 255, 255, 0.1);
+        }
+        .masonry-grid {
+            column-count: 2;
+            column-gap: 16px;
+        }
+        .masonry-item {
+            break-inside: avoid;
+            margin-bottom: 16px;
+        }
+        @media (max-width: 768px) {
+            .masonry-grid {
+                column-count: 1;
+            }
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background antialiased selection:bg-primary-container selection:text-on-primary-container min-h-screen flex flex-col relative overflow-x-hidden">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-zinc-900/60 backdrop-blur-xl border-b-[0.5px] border-white/10 shadow-none flex justify-between items-center px-5 h-16 transition-colors">
+<button class="text-zinc-400 hover:bg-white/5 transition-colors p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-primary-container">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">menu</span>
+</button>
+<h1 class="font-manrope font-bold tracking-tight text-xl font-extrabold tracking-tighter text-zinc-100">Nexara</h1>
+<button class="text-zinc-400 hover:bg-white/5 transition-colors p-1 rounded-full focus:outline-none focus:ring-2 focus:ring-primary-container">
+<img alt="User Profile" class="w-8 h-8 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8okQv5gvxkVXqjkAs52KRcbdApYLpHmZAiP1D-xindqlJ7ESFQEjCYXBAv0zHIHLjvZo3BEmCUm_cQnUK9QZ5tCBB9OFDtHpfZHmJk9QpkP48-r_FkYBmyBKfhtyR3a9EEBVWAyPjebDDxVXpXgraDw8VzGwMKhE8SlNvPwmuh3Odl5SOMcpQpUzVY8td8tmCNaL9_YcyEnjYZx6fgSn-vW77VIdQzpXDx7Nhxozuz1Fl0So1vt9rY_k1f66SKnONVqnEBJFobbub"/>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-24 pb-32 px-safe-margin w-full max-w-7xl mx-auto flex flex-col md:flex-row gap-lg">
+<!-- Desktop SideNav (Hidden on Mobile) -->
+<nav class="hidden md:flex flex-col h-[calc(100vh-8rem)] w-72 border-r-[0.5px] border-white/5 shadow-[20px_0_40px_rgba(0,0,0,0.4)] bg-zinc-950/95 backdrop-blur-3xl py-8 sticky top-24 rounded-2xl overflow-hidden shrink-0">
+<div class="px-6 pb-6 border-b border-white/5 mb-4">
+<div class="flex items-center gap-3">
+<img alt="User Avatar" class="w-10 h-10 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAz06BudHXajxeR-6ME1M_wjpZDwMMJq5FJRPzgVLdRS6sMawARe_O-FyCZ-w9Mpw_rGIz3YbOERPyVULs_UAi8gbA2UENuMGZoQKZUGe06M42VoMd8lzLPMq2IUIfwn5Hug4HqgsPpPnCc2F3y8pc6Ds1RbbmRfR9NOws-YWTvXptPScbbHsvCdqLc8rRNWhkGBgN2gcw23ob8_wqwCJqGlP9JHx1t_h8oG-r8agPSHFuNAme7FQ5PRZLn-NftSibBk6nV0HVDNCDd"/>
+<div>
+<h2 class="font-manrope font-semibold text-sm text-indigo-500 font-black">Nexara Intelligence</h2>
+<p class="font-inter text-xs text-zinc-500">Pro Researcher</p>
+</div>
+</div>
+</div>
+<ul class="flex flex-col gap-1 w-full font-manrope font-semibold text-sm">
+<li>
+<a class="flex items-center gap-3 bg-white/5 text-indigo-300 border-l-2 border-indigo-500 px-6 py-4 tap-highlight-transparent" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+                        Personal Space
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-3 text-zinc-400 px-6 py-4 hover:bg-white/10 transition-all tap-highlight-transparent" href="#">
+<span class="material-symbols-outlined">group</span>
+                        Team Alpha
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-3 text-zinc-400 px-6 py-4 hover:bg-white/10 transition-all tap-highlight-transparent" href="#">
+<span class="material-symbols-outlined">rocket_launch</span>
+                        Project Nexus
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-3 text-zinc-400 px-6 py-4 hover:bg-white/10 transition-all tap-highlight-transparent" href="#">
+<span class="material-symbols-outlined">archive</span>
+                        Archived
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-3 text-zinc-400 px-6 py-4 hover:bg-white/10 transition-all tap-highlight-transparent" href="#">
+<span class="material-symbols-outlined">delete</span>
+                        Trash
+                    </a>
+</li>
+</ul>
+</nav>
+<!-- Dynamic Content Area -->
+<div class="flex-grow flex flex-col w-full">
+<header class="mb-lg">
+<h2 class="font-h1 text-h1 text-on-surface mb-xs">对话</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">你的智能助手团队</p>
+</header>
+<!-- Floating Masonry Grid -->
+<div class="masonry-grid w-full">
+<!-- Agent Card 1 -->
+<div class="masonry-item glass-panel rounded-xl p-md flex flex-col gap-sm hover:border-white/30 transition-all cursor-pointer group inner-shadow relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="flex items-start justify-between relative z-10">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-primary-fixed-dim">
+<span class="material-symbols-outlined">smart_toy</span>
+</div>
+<div>
+<h3 class="font-h2 text-[18px] leading-[24px] text-on-surface font-semibold">超级助手</h3>
+<p class="font-label-md text-label-md text-on-surface-variant">全能型 AI</p>
+</div>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-xs relative z-10">
+                        处理复杂查询、文本生成和逻辑推理。
+                    </p>
+<div class="mt-auto pt-sm flex justify-end relative z-10">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">arrow_forward</span>
+</div>
+</div>
+<!-- Agent Card 2 (Taller) -->
+<div class="masonry-item glass-panel rounded-xl p-md flex flex-col gap-sm hover:border-white/30 transition-all cursor-pointer group inner-shadow relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-br from-tertiary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="flex items-start justify-between relative z-10">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined">code_blocks</span>
+</div>
+<div>
+<h3 class="font-h2 text-[18px] leading-[24px] text-on-surface font-semibold">代码专家</h3>
+<p class="font-label-md text-label-md text-on-surface-variant">开发辅助</p>
+</div>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-xs relative z-10">
+                        专注于代码审查、架构设计、Bug修复和算法优化。熟练掌握多种编程语言和框架体系。
+                    </p>
+<div class="flex gap-2 mt-2 relative z-10 flex-wrap">
+<span class="px-2 py-1 rounded-full border-[0.5px] border-tertiary-container text-tertiary-container font-label-md text-[10px] bg-tertiary-container/10">Python</span>
+<span class="px-2 py-1 rounded-full border-[0.5px] border-tertiary-container text-tertiary-container font-label-md text-[10px] bg-tertiary-container/10">React</span>
+</div>
+<div class="mt-auto pt-sm flex justify-end relative z-10">
+<span class="material-symbols-outlined text-outline group-hover:text-tertiary transition-colors">arrow_forward</span>
+</div>
+</div>
+<!-- Agent Card 3 -->
+<div class="masonry-item glass-panel rounded-xl p-md flex flex-col gap-sm hover:border-white/30 transition-all cursor-pointer group inner-shadow relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-br from-secondary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="flex items-start justify-between relative z-10">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined">translate</span>
+</div>
+<div>
+<h3 class="font-h2 text-[18px] leading-[24px] text-on-surface font-semibold">翻译官</h3>
+<p class="font-label-md text-label-md text-on-surface-variant">多语言处理</p>
+</div>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-xs relative z-10">
+                        高精度多语言翻译，保留本地化语境。
+                    </p>
+<div class="mt-auto pt-sm flex justify-end relative z-10">
+<span class="material-symbols-outlined text-outline group-hover:text-secondary transition-colors">arrow_forward</span>
+</div>
+</div>
+<!-- Agent Card 4 (Taller) -->
+<div class="masonry-item glass-panel rounded-xl p-md flex flex-col gap-sm hover:border-white/30 transition-all cursor-pointer group inner-shadow relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-br from-error/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="flex items-start justify-between relative z-10">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-error">
+<span class="material-symbols-outlined">draw</span>
+</div>
+<div>
+<h3 class="font-h2 text-[18px] leading-[24px] text-on-surface font-semibold">创意总监</h3>
+<p class="font-label-md text-label-md text-on-surface-variant">文案与设计</p>
+</div>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-xs relative z-10">
+                        提供创新的营销文案、广告语构思以及视觉设计方向建议。善于捕捉品牌核心价值并转化为具有吸引力的表达。
+                    </p>
+<div class="mt-auto pt-sm flex justify-end relative z-10">
+<span class="material-symbols-outlined text-outline group-hover:text-error transition-colors">arrow_forward</span>
+</div>
+</div>
+</div>
+<!-- Expanded Pill FAB -->
+<div class="fixed bottom-24 md:bottom-10 left-1/2 transform -translate-x-1/2 z-40">
+<button class="bg-primary hover:bg-primary-fixed transition-colors text-on-primary font-label-md text-[14px] px-6 py-3 rounded-full flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-1 active:translate-y-0 duration-200">
+<span class="material-symbols-outlined text-[20px]">add</span>
+                    新建对话
+                </button>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 bg-zinc-950/80 backdrop-blur-2xl border-t-[0.5px] border-white/10 shadow-2xl flex justify-around items-center pt-3 pb-6 px-4">
+<button class="flex flex-col items-center justify-center text-indigo-300 drop-shadow-[0_0_8px_rgba(99,102,241,0.5)] scale-95 active:scale-90 duration-200 focus:outline-none">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">forum</span>
+<span class="font-inter text-[10px] font-medium uppercase tracking-widest">Chat</span>
+</button>
+<button class="flex flex-col items-center justify-center text-zinc-500 hover:text-zinc-300 transition-all scale-95 active:scale-90 duration-200 focus:outline-none">
+<span class="material-symbols-outlined mb-1">insights</span>
+<span class="font-inter text-[10px] font-medium uppercase tracking-widest">Insights</span>
+</button>
+<button class="flex flex-col items-center justify-center text-zinc-500 hover:text-zinc-300 transition-all scale-95 active:scale-90 duration-200 focus:outline-none">
+<span class="material-symbols-outlined mb-1">deployed_code</span>
+<span class="font-inter text-[10px] font-medium uppercase tracking-widest">Artifacts</span>
+</button>
+<button class="flex flex-col items-center justify-center text-zinc-500 hover:text-zinc-300 transition-all scale-95 active:scale-90 duration-200 focus:outline-none">
+<span class="material-symbols-outlined mb-1">settings</span>
+<span class="font-inter text-[10px] font-medium uppercase tracking-widest">Settings</span>
+</button>
+</nav>
+</body></html>

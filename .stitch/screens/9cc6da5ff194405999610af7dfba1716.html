@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nexara - Global Components</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&amp;family=Manrope:wght@600;700;800&amp;family=Space+Grotesk:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-variant": "#353437",
+                        "tertiary-fixed-dim": "#ffb783",
+                        "surface-dim": "#131315",
+                        "on-secondary-container": "#b6b4b8",
+                        "secondary-fixed-dim": "#c8c5ca",
+                        "inverse-on-surface": "#313032",
+                        "secondary-container": "#47464a",
+                        "primary-container": "#8083ff",
+                        "inverse-surface": "#e5e1e4",
+                        "surface-bright": "#39393b",
+                        "on-surface-variant": "#c7c4d7",
+                        "surface-container-low": "#1c1b1d",
+                        "primary-fixed-dim": "#c0c1ff",
+                        "on-surface": "#e5e1e4",
+                        "on-tertiary-fixed": "#301400",
+                        "error": "#ffb4ab",
+                        "secondary-fixed": "#e4e1e6",
+                        "tertiary-container": "#d97721",
+                        "error-container": "#93000a",
+                        "on-primary-fixed": "#07006c",
+                        "background": "#131315",
+                        "surface-container-lowest": "#0e0e10",
+                        "tertiary": "#ffb783",
+                        "primary": "#c0c1ff",
+                        "surface-tint": "#c0c1ff",
+                        "outline": "#908fa0",
+                        "on-tertiary": "#4f2500",
+                        "on-error-container": "#ffdad6",
+                        "on-background": "#e5e1e4",
+                        "on-secondary-fixed": "#1b1b1e",
+                        "on-tertiary-container": "#452000",
+                        "secondary": "#c8c5ca",
+                        "on-primary-container": "#0d0096",
+                        "inverse-primary": "#494bd6",
+                        "surface": "#131315",
+                        "on-primary": "#1000a9",
+                        "on-secondary-fixed-variant": "#47464a",
+                        "outline-variant": "#464554",
+                        "surface-container-highest": "#353437",
+                        "tertiary-fixed": "#ffdcc5",
+                        "surface-container-high": "#2a2a2c",
+                        "primary-fixed": "#e1e0ff",
+                        "on-tertiary-fixed-variant": "#703700",
+                        "on-primary-fixed-variant": "#2f2ebe",
+                        "on-error": "#690005",
+                        "on-secondary": "#303033",
+                        "surface-container": "#201f22"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "lg": "24px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "unit": "4px",
+                        "xs": "4px",
+                        "safe-margin": "20px",
+                        "xl": "32px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["inter"],
+                        "code": ["spaceGrotesk"],
+                        "h2": ["manrope"],
+                        "h1": ["manrope"],
+                        "label-md": ["inter"],
+                        "body-lg": ["inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["15px", { "lineHeight": "25px", "fontWeight": "400" }],
+                        "code": ["14px", { "lineHeight": "22px", "fontWeight": "400" }],
+                        "h2": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "h1": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "label-md": ["13px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "body-lg": ["17px", { "lineHeight": "26px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-panel {
+            background-color: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 0.5px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md text-body-md overflow-x-hidden antialiased">
+<!-- TopAppBar (G1) -->
+<header class="bg-zinc-900/60 backdrop-blur-xl fixed top-0 w-full z-50 border-b-[0.5px] border-white/10 shadow-none">
+<div class="flex justify-between items-center px-5 h-16 w-full max-w-4xl mx-auto">
+<button class="w-10 h-10 rounded-full glass-panel flex items-center justify-center text-on-background hover:bg-white/5 transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="font-h1 text-h1 text-zinc-100 tracking-tighter">Global Components</h1>
+<div class="w-10 h-10 rounded-full bg-surface-container overflow-hidden flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">person</span>
+</div>
+</div>
+</header>
+<main class="flex-grow pt-[88px] pb-32 px-safe-margin w-full max-w-4xl mx-auto flex flex-col gap-xl">
+<section class="flex flex-col gap-md">
+<h2 class="font-h2 text-h2 text-primary">Overlays &amp; Dialogs</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg items-start">
+<!-- GlassAlert (G3) -->
+<div class="glass-panel rounded-xl p-lg flex flex-col gap-md relative overflow-hidden group">
+<div class="flex items-center gap-sm text-error">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">warning</span>
+<span class="font-label-md text-label-md">Action Required</span>
+</div>
+<div>
+<h3 class="font-h2 text-h2 mb-sm">Connection Lost</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">The AI substrate has disconnected. Re-establishing secure neural link...</p>
+</div>
+<div class="flex justify-end gap-sm mt-sm">
+<button class="px-md py-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-white/5 transition-colors">Dismiss</button>
+<button class="px-md py-sm rounded-lg font-label-md text-label-md bg-inverse-primary text-white hover:bg-inverse-primary/90 transition-colors">Reconnect</button>
+</div>
+</div>
+<!-- ContextMenu (G5) -->
+<div class="glass-panel rounded-xl p-sm w-48 mx-auto flex flex-col">
+<button class="flex items-center gap-md px-md py-sm rounded-lg hover:bg-white/5 transition-colors text-left">
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]">content_copy</span>
+<span class="font-body-md text-body-md">Copy Text</span>
+</button>
+<button class="flex items-center gap-md px-md py-sm rounded-lg hover:bg-white/5 transition-colors text-left">
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]">share</span>
+<span class="font-body-md text-body-md">Share</span>
+</button>
+<div class="h-[1px] bg-white/5 my-xs"></div>
+<button class="flex items-center gap-md px-md py-sm rounded-lg hover:bg-error/10 text-error transition-colors text-left">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+<span class="font-body-md text-body-md">Delete</span>
+</button>
+</div>
+</div>
+</section>
+<section class="flex flex-col gap-md">
+<h2 class="font-h2 text-h2 text-primary">Data &amp; Artifacts</h2>
+<!-- ArtifactRenderer (G12) -->
+<div class="glass-panel rounded-xl p-0 overflow-hidden">
+<div class="flex items-center justify-between p-md border-b-[0.5px] border-white/10 bg-surface-container-low/50">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-tertiary-container">analytics</span>
+<span class="font-label-md text-label-md uppercase tracking-wider text-tertiary-container">Data Visualization</span>
+</div>
+<button class="p-xs rounded-md hover:bg-white/5 transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]">download</span>
+</button>
+</div>
+<div class="p-lg h-64 flex items-center justify-center relative bg-gradient-to-br from-surface-container-low to-surface">
+<!-- Placeholder for chart -->
+<div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wNSkiLz48L3N2Zz4=')] opacity-50"></div>
+<p class="font-body-md text-body-md text-on-surface-variant text-center z-10">[ Interactive Chart Canvas ]<br/><span class="text-[12px] opacity-70">Rendering substrate...</span></p>
+</div>
+</div>
+</section>
+<section class="flex flex-col gap-md">
+<h2 class="font-h2 text-h2 text-primary">Editors &amp; Views</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+<!-- FloatingCodeEditor Mockup (G10) -->
+<div class="glass-panel rounded-xl overflow-hidden flex flex-col h-80">
+<div class="flex items-center justify-between px-md py-sm bg-surface-container-lowest border-b-[0.5px] border-white/5">
+<span class="font-code text-code text-on-surface-variant text-[12px]">script.js</span>
+<div class="flex gap-2">
+<div class="w-3 h-3 rounded-full bg-white/10"></div>
+<div class="w-3 h-3 rounded-full bg-white/10"></div>
+<div class="w-3 h-3 rounded-full bg-white/10"></div>
+</div>
+</div>
+<div class="flex-grow p-md font-code text-code overflow-y-auto bg-surface-dim">
+<div class="flex">
+<div class="w-8 text-right pr-sm text-white/20 select-none">
+                                1<br/>2<br/>3<br/>4
+                            </div>
+<div class="flex-grow text-primary-fixed-dim">
+<span class="text-tertiary-fixed-dim">const</span> initializeCore <span class="text-white">=</span> () <span class="text-tertiary-fixed-dim">=&gt;</span> {<br/>
+                                  <span class="text-secondary-fixed-dim">console</span>.<span class="text-inverse-primary">log</span>(<span class="text-primary-container">'AI Core Active'</span>);<br/>
+                                  <span class="text-tertiary-fixed-dim">return</span> <span class="text-tertiary-fixed-dim">true</span>;<br/>
+                                };
+                            </div>
+</div>
+</div>
+</div>
+<!-- TokenStatsModal (G7) -->
+<div class="glass-panel rounded-[32px] p-lg flex flex-col items-center justify-center gap-lg">
+<h3 class="font-h2 text-h2 w-full text-left">Usage Metrics</h3>
+<div class="relative w-40 h-40 flex items-center justify-center">
+<svg class="absolute inset-0 w-full h-full -rotate-90" viewbox="0 0 100 100">
+<circle cx="50" cy="50" fill="none" r="45" stroke="rgba(255,255,255,0.1)" stroke-dasharray="4 4" stroke-width="2"></circle>
+<circle class="text-primary" cx="50" cy="50" fill="none" r="45" stroke="currentColor" stroke-dasharray="200 283" stroke-linecap="round" stroke-width="4"></circle>
+</svg>
+<div class="text-center flex flex-col items-center">
+<span class="font-h1 text-h1 text-primary tracking-tighter">8.4k</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Tokens</span>
+</div>
+</div>
+<div class="w-full flex flex-col gap-md">
+<div class="flex flex-col gap-xs">
+<div class="flex justify-between font-label-md text-label-md">
+<span>Prompt</span>
+<span class="text-primary-fixed-dim">45%</span>
+</div>
+<div class="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-primary-fixed-dim w-[45%] rounded-full"></div>
+</div>
+</div>
+<div class="flex flex-col gap-xs">
+<div class="flex justify-between font-label-md text-label-md">
+<span>Completion</span>
+<span class="text-tertiary-fixed-dim">30%</span>
+</div>
+<div class="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-tertiary-fixed-dim w-[30%] rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Toast (G6) - Fixed Bottom -->
+<div class="fixed bottom-safe-margin left-1/2 -translate-x-1/2 z-[100] pointer-events-none">
+<div class="glass-panel rounded-full px-md py-sm flex items-center gap-sm bg-zinc-900/80 pointer-events-auto">
+<span class="material-symbols-outlined text-primary text-[20px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-label-md text-label-md">Component library synchronized.</span>
+</div>
+</div>
+</body></html>

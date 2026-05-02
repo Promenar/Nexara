@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mobile AI Chat Showcase</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&amp;family=Manrope:wght@600;700&amp;family=Space+Grotesk:wght@400&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed-dim": "#c0c1ff",
+                        "primary-fixed": "#e1e0ff",
+                        "inverse-on-surface": "#313032",
+                        "surface-container-highest": "#353437",
+                        "inverse-primary": "#494bd6",
+                        "on-tertiary-fixed": "#301400",
+                        "on-primary-fixed-variant": "#2f2ebe",
+                        "tertiary": "#ffb783",
+                        "secondary-container": "#47464a",
+                        "tertiary-fixed": "#ffdcc5",
+                        "inverse-surface": "#e5e1e4",
+                        "primary-container": "#8083ff",
+                        "outline": "#908fa0",
+                        "surface-variant": "#353437",
+                        "surface-container-lowest": "#0e0e10",
+                        "on-error": "#690005",
+                        "tertiary-fixed-dim": "#ffb783",
+                        "surface-container-low": "#1c1b1d",
+                        "surface-container-high": "#2a2a2c",
+                        "secondary": "#c8c5ca",
+                        "on-primary-container": "#0d0096",
+                        "on-error-container": "#ffdad6",
+                        "background": "#131315",
+                        "secondary-fixed-dim": "#c8c5ca",
+                        "error": "#ffb4ab",
+                        "on-tertiary-container": "#452000",
+                        "on-tertiary-fixed-variant": "#703700",
+                        "on-surface": "#e5e1e4",
+                        "on-secondary-container": "#b6b4b8",
+                        "on-secondary": "#303033",
+                        "tertiary-container": "#d97721",
+                        "on-secondary-fixed-variant": "#47464a",
+                        "secondary-fixed": "#e4e1e6",
+                        "surface": "#131315",
+                        "surface-dim": "#131315",
+                        "on-primary": "#1000a9",
+                        "on-secondary-fixed": "#1b1b1e",
+                        "on-tertiary": "#4f2500",
+                        "error-container": "#93000a",
+                        "on-surface-variant": "#c7c4d7",
+                        "on-background": "#e5e1e4",
+                        "outline-variant": "#464554",
+                        "surface-bright": "#39393b",
+                        "on-primary-fixed": "#07006c",
+                        "surface-container": "#201f22",
+                        "surface-tint": "#c0c1ff",
+                        "primary": "#c0c1ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "safe-margin": "20px",
+                        "lg": "24px",
+                        "unit": "4px",
+                        "sm": "8px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "h1": ["Manrope"],
+                        "code": ["Space Grotesk"],
+                        "body-md": ["Inter"],
+                        "h2": ["Manrope"],
+                        "label-md": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "h1": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "code": ["14px", { "lineHeight": "22px", "fontWeight": "400" }],
+                        "body-md": ["15px", { "lineHeight": "25px", "fontWeight": "400" }],
+                        "h2": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "label-md": ["13px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "body-lg": ["17px", { "lineHeight": "26px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        /* Base settings to ensure smooth rendering */
+        body {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        /* Custom scrollbar hiding for cleaner mobile view */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md text-body-md overflow-x-hidden min-h-screen pb-32 pt-20">
+<!-- Ambient Background Glow -->
+<div class="fixed top-20 left-1/2 -translate-x-1/2 w-[150vw] h-[442px] bg-primary/5 blur-[120px] rounded-full pointer-events-none z-0" data-alt="Smooth radial gradient flowing from deep indigo to transparent with subtle grain texture"></div>
+<!-- SHARED COMPONENT: TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex items-center justify-between px-5 h-16 bg-zinc-950/80 backdrop-blur-xl docked full-width top-0 border-b border-white/10 shadow-none">
+<button class="text-zinc-400 hover:bg-white/5 transition-colors active:scale-95 duration-200 p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-2xl">menu</span>
+</button>
+<div class="font-['Manrope'] text-sm font-semibold tracking-tight text-lg font-bold tracking-tighter text-white">
+            Nexus AI
+        </div>
+<button class="text-zinc-400 hover:bg-white/5 transition-colors active:scale-95 duration-200 p-1 rounded-full flex items-center justify-center">
+<div class="w-8 h-8 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center overflow-hidden">
+<span class="material-symbols-outlined text-sm text-on-surface-variant">person</span>
+</div>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="relative z-10 px-safe-margin flex flex-col gap-lg max-w-2xl mx-auto w-full">
+<!-- TaskMonitor Card -->
+<section class="bg-[rgba(255,255,255,0.03)] backdrop-blur-[20px] border-[0.5px] border-white/10 rounded-xl p-md shadow-[inset_0_1px_2px_rgba(255,255,255,0.05)]">
+<div class="flex items-center justify-between mb-sm">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary text-xl" style="font-variation-settings: 'FILL' 1;">account_tree</span>
+<h2 class="font-h2 text-h2 text-on-surface">Code Refactoring - WebView Migration</h2>
+</div>
+<span class="font-label-md text-label-md text-primary">60%</span>
+</div>
+<p class="font-label-md text-label-md text-on-surface-variant mb-md">Step 4 of 6: Abstracting deeply nested components</p>
+<!-- Progress Steps Indicator -->
+<div class="flex items-center justify-between mb-2">
+<!-- Step 1: Done -->
+<div class="flex-1 flex flex-col items-center gap-xs">
+<div class="w-full h-1 bg-primary rounded-full"></div>
+<span class="material-symbols-outlined text-[12px] text-primary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<!-- Step 2: Done -->
+<div class="flex-1 flex flex-col items-center gap-xs ml-1">
+<div class="w-full h-1 bg-primary rounded-full"></div>
+<span class="material-symbols-outlined text-[12px] text-primary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<!-- Step 3: Done -->
+<div class="flex-1 flex flex-col items-center gap-xs ml-1">
+<div class="w-full h-1 bg-primary rounded-full"></div>
+<span class="material-symbols-outlined text-[12px] text-primary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<!-- Step 4: Active -->
+<div class="flex-1 flex flex-col items-center gap-xs ml-1">
+<div class="w-full h-1 bg-primary/50 rounded-full relative overflow-hidden">
+<div class="absolute top-0 left-0 h-full w-1/2 bg-primary animate-pulse"></div>
+</div>
+<span class="w-3 h-3 rounded-full border-2 border-primary mt-[2px] animate-pulse"></span>
+</div>
+<!-- Step 5: Pending -->
+<div class="flex-1 flex flex-col items-center gap-xs ml-1">
+<div class="w-full h-1 bg-surface-container-high rounded-full"></div>
+<span class="w-2 h-2 rounded-full bg-surface-container-high mt-[4px]"></span>
+</div>
+<!-- Step 6: Pending -->
+<div class="flex-1 flex flex-col items-center gap-xs ml-1">
+<div class="w-full h-1 bg-surface-container-high rounded-full"></div>
+<span class="w-2 h-2 rounded-full bg-surface-container-high mt-[4px]"></span>
+</div>
+</div>
+</section>
+<!-- ToolExecutionTimeline -->
+<section class="flex flex-col gap-sm pl-2">
+<!-- Step 1 (Done) -->
+<div class="flex gap-md relative">
+<!-- Timeline vertical line -->
+<div class="absolute left-[11px] top-6 bottom-[-16px] w-[2px] bg-surface-container-high"></div>
+<div class="flex-shrink-0 w-6 h-6 rounded-full bg-surface-container border border-outline-variant flex items-center justify-center z-10 mt-1">
+<span class="material-symbols-outlined text-[14px] text-on-surface-variant">psychology</span>
+</div>
+<div class="flex-1 pb-4">
+<div class="bg-surface-container-low/50 rounded-lg p-sm border border-outline-variant/30">
+<p class="font-body-md text-body-md text-on-surface-variant">Thought: Analyzing current architecture for tight coupling...</p>
+</div>
+</div>
+</div>
+<!-- Step 2 (Done) -->
+<div class="flex gap-md relative">
+<!-- Timeline vertical line -->
+<div class="absolute left-[11px] top-6 bottom-[-16px] w-[2px] bg-surface-container-high"></div>
+<div class="flex-shrink-0 w-6 h-6 rounded-full bg-surface-container border border-outline-variant flex items-center justify-center z-10 mt-1">
+<span class="material-symbols-outlined text-[14px] text-on-surface-variant">public</span>
+</div>
+<div class="flex-1 pb-4">
+<div class="bg-surface-container-low/50 rounded-lg p-sm border border-outline-variant/30 overflow-hidden">
+<p class="font-label-md text-label-md text-on-surface-variant mb-xs">Using search_internet:</p>
+<pre class="font-code text-code text-primary-fixed-dim bg-surface-container-lowest p-2 rounded border border-outline-variant/20 overflow-x-auto"><code>{
+  "query": "React Native WebView to UIWebView migration patterns latest"
+}</code></pre>
+</div>
+</div>
+</div>
+<!-- Step 3 (Active) -->
+<div class="flex gap-md relative">
+<!-- Timeline vertical line fading out -->
+<div class="absolute left-[11px] top-6 bottom-[-24px] w-[2px] bg-gradient-to-b from-surface-container-high to-transparent"></div>
+<div class="flex-shrink-0 w-6 h-6 rounded-full bg-primary/20 border border-primary flex items-center justify-center z-10 mt-1 animate-pulse">
+<span class="material-symbols-outlined text-[14px] text-primary">terminal</span>
+</div>
+<div class="flex-1 pb-2">
+<div class="flex items-center gap-sm mt-1.5">
+<p class="font-body-md text-body-md text-primary animate-pulse">Thinking...</p>
+</div>
+</div>
+</div>
+</section>
+<!-- ApprovalCard (Action Intervention) -->
+<section class="mt-md bg-tertiary-container/10 backdrop-blur-[20px] border-[0.5px] border-tertiary/30 rounded-xl p-md shadow-[inset_0_1px_2px_rgba(255,255,255,0.05)] relative overflow-hidden">
+<!-- Subtle background accent for intervention -->
+<div class="absolute top-0 right-0 w-32 h-32 bg-tertiary/10 blur-[40px] rounded-full pointer-events-none -translate-y-1/2 translate-x-1/4"></div>
+<div class="flex gap-md relative z-10">
+<div class="flex-shrink-0 mt-1">
+<span class="material-symbols-outlined text-tertiary text-2xl" style="font-variation-settings: 'FILL' 1;">warning</span>
+</div>
+<div class="flex-1">
+<h3 class="font-h2 text-h2 text-tertiary-fixed mb-xs">Action Intervention</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-md">
+                        The agent is requesting permission to write to the protected directory <code class="font-code text-code bg-surface-container px-1 rounded text-on-surface">/src/core/legacy/</code>. Proceed?
+                    </p>
+<div class="flex items-center gap-sm w-full">
+<button class="flex-1 py-2 px-4 rounded-lg bg-surface-container-high hover:bg-surface-container-highest transition-colors font-label-md text-label-md text-on-surface border border-outline-variant/30 flex justify-center items-center">
+                            End Task
+                        </button>
+<button class="flex-1 py-2 px-4 rounded-lg bg-tertiary hover:bg-tertiary-fixed transition-colors font-label-md text-label-md text-on-tertiary flex justify-center items-center shadow-lg shadow-tertiary/20">
+                            Continue
+                        </button>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- SHARED COMPONENT: BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center h-20 pb-safe px-6 bg-zinc-950/80 backdrop-blur-xl docked full-width bottom-0 border-t border-white/10 shadow-2xl md:hidden">
+<!-- Active Tab: Chat (Mapping intent to chat_bubble) -->
+<a class="flex flex-col items-center gap-1 group w-16 text-indigo-400 scale-110 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1;">chat_bubble</span>
+</a>
+<!-- Inactive Tab: Explore -->
+<a class="flex flex-col items-center gap-1 group w-16 text-zinc-500 hover:text-zinc-200 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined text-[24px]">explore</span>
+</a>
+<!-- Inactive Tab: History -->
+<a class="flex flex-col items-center gap-1 group w-16 text-zinc-500 hover:text-zinc-200 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined text-[24px]">history</span>
+</a>
+<!-- Inactive Tab: Settings -->
+<a class="flex flex-col items-center gap-1 group w-16 text-zinc-500 hover:text-zinc-200 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined text-[24px]">settings</span>
+</a>
+</nav>
+</body></html>

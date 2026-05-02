@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="zh"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary": "#ffb783",
+                    "on-primary-fixed-variant": "#2f2ebe",
+                    "on-secondary": "#303033",
+                    "secondary-fixed": "#e4e1e6",
+                    "surface-bright": "#39393b",
+                    "surface-variant": "#353437",
+                    "on-surface": "#e5e1e4",
+                    "on-tertiary-fixed": "#301400",
+                    "error": "#ffb4ab",
+                    "surface-dim": "#131315",
+                    "tertiary-fixed": "#ffdcc5",
+                    "surface-container-lowest": "#0e0e10",
+                    "secondary-container": "#47464a",
+                    "secondary": "#c8c5ca",
+                    "on-tertiary-container": "#452000",
+                    "background": "#131315",
+                    "outline": "#908fa0",
+                    "on-secondary-container": "#b6b4b8",
+                    "surface-container-high": "#2a2a2c",
+                    "tertiary-container": "#d97721",
+                    "on-error-container": "#ffdad6",
+                    "primary-fixed-dim": "#c0c1ff",
+                    "surface-container-low": "#1c1b1d",
+                    "on-primary": "#1000a9",
+                    "secondary-fixed-dim": "#c8c5ca",
+                    "surface-tint": "#c0c1ff",
+                    "on-tertiary-fixed-variant": "#703700",
+                    "inverse-primary": "#494bd6",
+                    "primary-container": "#8083ff",
+                    "on-background": "#e5e1e4",
+                    "inverse-on-surface": "#313032",
+                    "on-primary-fixed": "#07006c",
+                    "on-primary-container": "#0d0096",
+                    "tertiary-fixed-dim": "#ffb783",
+                    "primary-fixed": "#e1e0ff",
+                    "on-secondary-fixed": "#1b1b1e",
+                    "error-container": "#93000a",
+                    "surface-container": "#201f22",
+                    "surface-container-highest": "#353437",
+                    "surface": "#131315",
+                    "on-surface-variant": "#c7c4d7",
+                    "on-error": "#690005",
+                    "primary": "#c0c1ff",
+                    "on-tertiary": "#4f2500",
+                    "on-secondary-fixed-variant": "#47464a",
+                    "outline-variant": "#464554",
+                    "inverse-surface": "#e5e1e4"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "2xl": "1rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "md": "16px",
+                    "xs": "4px",
+                    "gutter": "16px",
+                    "safe-margin": "20px",
+                    "lg": "24px",
+                    "unit": "4px",
+                    "sm": "8px",
+                    "xl": "32px"
+            },
+            "fontFamily": {
+                    "label-md": ["inter"],
+                    "code": ["spaceGrotesk"],
+                    "body-md": ["inter"],
+                    "body-lg": ["inter"],
+                    "h1": ["manrope"],
+                    "h2": ["manrope"]
+            },
+            "fontSize": {
+                    "label-md": ["13px", {"lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                    "code": ["14px", {"lineHeight": "22px", "fontWeight": "400"}],
+                    "body-md": ["15px", {"lineHeight": "25px", "fontWeight": "400"}],
+                    "body-lg": ["17px", {"lineHeight": "26px", "fontWeight": "400"}],
+                    "h1": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "h2": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .glass-surface {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 0.5px solid rgba(255, 255, 255, 0.1);
+        }
+        .inner-shadow-subtle {
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md min-h-screen">
+<!-- Top Navigation Anchor (Shared Component Mapping) -->
+<header class="bg-zinc-900/60 backdrop-blur-xl fixed top-0 w-full z-50 border-b-[0.5px] border-white/10 flex justify-between items-center px-5 h-16 w-full">
+<div class="flex items-center gap-4">
+<button class="w-10 h-10 rounded-full glass-surface flex items-center justify-center hover:bg-white/10 transition-colors active:scale-95">
+<span class="material-symbols-outlined text-on-surface">arrow_back</span>
+</button>
+<div class="flex flex-col">
+<h1 class="font-manrope font-bold text-lg tracking-tight text-zinc-100">代码助手</h1>
+<span class="font-inter text-[10px] uppercase tracking-widest text-indigo-400">24 SESSIONS</span>
+</div>
+</div>
+<div class="w-10 h-10 rounded-full overflow-hidden border-[0.5px] border-white/20">
+<img alt="User Profile" data-alt="A professional close-up of a user profile avatar placeholder with a sleek, minimalist aesthetic. The lighting is soft and directional, highlighting clean lines against a deep, dark glassmorphic background. The overall color palette is dominated by dark zinc and subtle indigo highlights, matching a premium AI interface style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYBIAiku38zULvETnYyuWoh_-GSQXIXGj1c3OFYPYICKcnKx4ds0dVUKW8ZQJGIyge69GTLLDcrccPflXI-micr4ez798A45AFsq-6w_17zYBWr5ep8W5S3-RxxyGkYhvHUYAUGvJeC1ripLFuUpYSxmqa2EN80TTG0usks28HcHJq1iyaS71Ajg22uz0ts6ezELcMcH14bkXFItwl_6R2FDqnscltnSQGHQbamxXLq8jwtndxtFZs9_09pu947wDl8nkjPhMIVcOE"/>
+</div>
+</header>
+<main class="pt-24 pb-32 px-safe-margin max-w-2xl mx-auto">
+<!-- Search Section -->
+<div class="mb-lg">
+<div class="relative glass-surface rounded-2xl p-sm flex items-center inner-shadow-subtle">
+<span class="material-symbols-outlined ml-md text-zinc-500">search</span>
+<input class="bg-transparent border-none focus:ring-0 w-full px-md text-body-md text-zinc-200 placeholder-zinc-500" placeholder="搜索会话..." type="text"/>
+</div>
+</div>
+<!-- Session List -->
+<div class="space-y-md">
+<!-- Session Card 1 -->
+<div class="glass-surface p-lg rounded-2xl hover:bg-white/5 transition-all group cursor-pointer active:scale-[0.98]">
+<div class="flex justify-between items-start mb-xs">
+<h3 class="font-h2 text-body-lg text-zinc-100 font-semibold group-hover:text-indigo-300 transition-colors">React Native WebView 重构</h3>
+<span class="text-[12px] text-zinc-500 font-label-md">2 小时前</span>
+</div>
+<p class="text-zinc-400 text-body-md line-clamp-1">帮我分析一下这个 Bridge 协议...</p>
+<div class="mt-md flex gap-sm">
+<span class="px-sm py-xs rounded-full glass-surface text-[10px] text-indigo-400 border-indigo-500/20 uppercase tracking-wider font-semibold">Development</span>
+<span class="px-sm py-xs rounded-full glass-surface text-[10px] text-zinc-500 border-white/5 uppercase tracking-wider font-semibold">Active</span>
+</div>
+</div>
+<!-- Session Card 2 -->
+<div class="glass-surface p-lg rounded-2xl hover:bg-white/5 transition-all group cursor-pointer active:scale-[0.98]">
+<div class="flex justify-between items-start mb-xs">
+<h3 class="font-h2 text-body-lg text-zinc-100 font-semibold group-hover:text-indigo-300 transition-colors">知识库检索优化</h3>
+<span class="text-[12px] text-zinc-500 font-label-md">昨天</span>
+</div>
+<p class="text-zinc-400 text-body-md line-clamp-1">检索到的 Chunks 数量不对...</p>
+<div class="mt-md flex gap-sm">
+<span class="px-sm py-xs rounded-full glass-surface text-[10px] text-indigo-400 border-indigo-500/20 uppercase tracking-wider font-semibold">AI Logic</span>
+</div>
+</div>
+<!-- Session Card 3 (Bento-style variation) -->
+<div class="glass-surface p-lg rounded-2xl hover:bg-white/5 transition-all group cursor-pointer active:scale-[0.98]">
+<div class="flex justify-between items-start mb-xs">
+<h3 class="font-h2 text-body-lg text-zinc-100 font-semibold group-hover:text-indigo-300 transition-colors">Tailwind Config Debug</h3>
+<span class="text-[12px] text-zinc-500 font-label-md">3 天前</span>
+</div>
+<p class="text-zinc-400 text-body-md line-clamp-1">这里的 custom colors 好像没有生效，请检查一下 extends 逻辑...</p>
+<div class="mt-md flex gap-sm">
+<span class="px-sm py-xs rounded-full glass-surface text-[10px] text-zinc-400 border-white/5 uppercase tracking-wider font-semibold">Styling</span>
+</div>
+</div>
+<!-- More sessions can be listed here -->
+<div class="flex justify-center py-xl">
+<span class="text-zinc-600 text-label-md flex items-center gap-sm">
+<span class="w-1 h-1 rounded-full bg-zinc-700"></span>
+                    已经到底了
+                    <span class="w-1 h-1 rounded-full bg-zinc-700"></span>
+</span>
+</div>
+</div>
+</main>
+<!-- Floating Action Button -->
+<button class="fixed bottom-32 right-safe-margin w-14 h-14 bg-indigo-500 rounded-2xl shadow-[0_8px_32px_rgba(99,102,241,0.4)] flex items-center justify-center text-white active:scale-90 transition-transform z-40">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+<!-- Bottom Navigation Bar (Shared Component Mapping) -->
+<nav class="bg-zinc-950/80 backdrop-blur-2xl fixed bottom-0 w-full z-50 border-t-[0.5px] border-white/10 flex justify-around items-center pt-3 pb-6 px-4 w-full">
+<div class="flex flex-col items-center justify-center text-zinc-500 hover:text-zinc-300 transition-all scale-95 active:scale-90 duration-200 cursor-pointer">
+<span class="material-symbols-outlined">forum</span>
+<span class="font-inter text-[10px] font-medium uppercase tracking-widest mt-1">Chat</span>
+</div>
+<div class="flex flex-col items-center justify-center text-indigo-300 drop-shadow-[0_0_8px_rgba(99,102,241,0.5)] scale-95 active:scale-90 duration-200 cursor-pointer">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">insights</span>
+<span class="font-inter text-[10px] font-medium uppercase tracking-widest mt-1">Insights</span>
+</div>
+<div class="flex flex-col items-center justify-center text-zinc-500 hover:text-zinc-300 transition-all scale-95 active:scale-90 duration-200 cursor-pointer">
+<span class="material-symbols-outlined">deployed_code</span>
+<span class="font-inter text-[10px] font-medium uppercase tracking-widest mt-1">Artifacts</span>
+</div>
+<div class="flex flex-col items-center justify-center text-zinc-500 hover:text-zinc-300 transition-all scale-95 active:scale-90 duration-200 cursor-pointer">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-inter text-[10px] font-medium uppercase tracking-widest mt-1">Settings</span>
+</div>
+</nav>
+</body></html>

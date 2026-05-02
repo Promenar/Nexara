@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nexara - Session Settings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#c0c1ff",
+                        "outline": "#908fa0",
+                        "on-tertiary": "#4f2500",
+                        "on-primary": "#1000a9",
+                        "surface-container-lowest": "#0e0e10",
+                        "surface": "#131315",
+                        "error": "#ffb4ab",
+                        "on-tertiary-fixed-variant": "#703700",
+                        "outline-variant": "#464554",
+                        "on-primary-container": "#0d0096",
+                        "secondary-fixed": "#e4e1e6",
+                        "on-error": "#690005",
+                        "inverse-primary": "#494bd6",
+                        "primary-fixed": "#e1e0ff",
+                        "on-surface-variant": "#c7c4d7",
+                        "surface-dim": "#131315",
+                        "secondary-container": "#47464a",
+                        "on-tertiary-fixed": "#301400",
+                        "surface-variant": "#353437",
+                        "on-tertiary-container": "#452000",
+                        "secondary-fixed-dim": "#c8c5ca",
+                        "inverse-on-surface": "#313032",
+                        "secondary": "#c8c5ca",
+                        "on-surface": "#e5e1e4",
+                        "tertiary": "#ffb783",
+                        "on-error-container": "#ffdad6",
+                        "error-container": "#93000a",
+                        "on-secondary-fixed-variant": "#47464a",
+                        "on-primary-fixed": "#07006c",
+                        "surface-container": "#201f22",
+                        "on-secondary-container": "#b6b4b8",
+                        "on-secondary-fixed": "#1b1b1e",
+                        "tertiary-fixed-dim": "#ffb783",
+                        "primary-container": "#8083ff",
+                        "surface-container-highest": "#353437",
+                        "surface-container-high": "#2a2a2c",
+                        "on-background": "#e5e1e4",
+                        "primary-fixed-dim": "#c0c1ff",
+                        "tertiary-container": "#d97721",
+                        "on-secondary": "#303033",
+                        "surface-tint": "#c0c1ff",
+                        "surface-container-low": "#1c1b1d",
+                        "background": "#131315",
+                        "tertiary-fixed": "#ffdcc5",
+                        "on-primary-fixed-variant": "#2f2ebe",
+                        "inverse-surface": "#e5e1e4",
+                        "surface-bright": "#39393b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "8px",
+                        "xs": "4px",
+                        "lg": "24px",
+                        "xl": "32px",
+                        "md": "16px",
+                        "gutter": "16px",
+                        "unit": "4px",
+                        "safe-margin": "20px"
+                    },
+                    "fontFamily": {
+                        "code": ["Space Grotesk", "sans-serif"],
+                        "body-md": ["Inter", "sans-serif"],
+                        "label-md": ["Inter", "sans-serif"],
+                        "h2": ["Manrope", "sans-serif"],
+                        "body-lg": ["Inter", "sans-serif"],
+                        "h1": ["Manrope", "sans-serif"]
+                    },
+                    "fontSize": {
+                        "code": ["14px", { "lineHeight": "22px", "fontWeight": "400" }],
+                        "body-md": ["15px", { "lineHeight": "25px", "fontWeight": "400" }],
+                        "label-md": ["13px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "h2": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "body-lg": ["17px", { "lineHeight": "26px", "fontWeight": "400" }],
+                        "h1": ["24px", { "lineHeight": "32px", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(32, 31, 34, 0.4);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 0.5px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 0.5px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 0 12px rgba(0,0,0,0.2);
+        }
+        .glass-card:active {
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.4);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .icon-fill {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Hide scrollbar for clean UI */
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen font-body-md overflow-hidden relative">
+<!-- Background Canvas (Simulating the chat interface behind the bottom sheet) -->
+<div class="fixed inset-0 z-0 flex flex-col pt-20 px-safe-margin opacity-30 pointer-events-none">
+<div class="flex justify-end mb-md">
+<div class="bg-surface-container-high rounded-lg px-md py-sm max-w-[80%] border border-surface-variant">
+<p class="font-body-md text-on-surface">Can you analyze this dataset and provide a summary of the key trends?</p>
+</div>
+</div>
+<div class="flex justify-start mb-md">
+<div class="max-w-[90%]">
+<p class="font-body-md text-on-surface">I've analyzed the dataset. Here are the key trends I observed over the last quarter, broken down by region and product category.</p>
+</div>
+</div>
+</div>
+<!-- Scrim / Overlay -->
+<div class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"></div>
+<!-- GlassBottomSheet (70% height, 32px rounded corners) -->
+<div class="fixed bottom-0 left-0 w-full h-[618px] z-50 rounded-t-[32px] glass-panel flex flex-col shadow-[0_-20px_60px_rgba(0,0,0,0.5)] transform transition-transform duration-300 ease-out translate-y-0">
+<!-- Drag Handle & Header -->
+<div class="flex flex-col items-center pt-md pb-sm px-safe-margin border-b border-white/5 relative shrink-0">
+<div class="w-12 h-1 bg-surface-variant rounded-full mb-md"></div>
+<div class="flex justify-between items-center w-full">
+<h2 class="font-h2 text-h2 text-on-surface">Session Settings</h2>
+<button class="w-8 h-8 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-outline">close</span>
+</button>
+</div>
+</div>
+<!-- Tabs Navigation -->
+<div class="flex overflow-x-auto px-safe-margin pt-md pb-sm gap-lg border-b border-white/5 shrink-0 scrollbar-hide">
+<!-- Active Tab: Model -->
+<button class="flex flex-col items-center gap-xs relative pb-sm min-w-max group">
+<span class="font-label-md text-label-md text-primary">Model</span>
+<div class="absolute bottom-0 left-0 w-full h-0.5 bg-primary rounded-t-full"></div>
+</button>
+<!-- Inactive Tabs -->
+<button class="flex flex-col items-center gap-xs relative pb-sm min-w-max group">
+<span class="font-label-md text-label-md text-outline group-hover:text-on-surface transition-colors">Thinking Level</span>
+</button>
+<button class="flex flex-col items-center gap-xs relative pb-sm min-w-max group">
+<span class="font-label-md text-label-md text-outline group-hover:text-on-surface transition-colors">Stats</span>
+</button>
+<button class="flex flex-col items-center gap-xs relative pb-sm min-w-max group">
+<span class="font-label-md text-label-md text-outline group-hover:text-on-surface transition-colors">Tools</span>
+</button>
+</div>
+<!-- Scrollable Content Area -->
+<div class="flex-1 overflow-y-auto px-safe-margin py-lg gap-lg flex flex-col">
+<!-- Tab Panel: Model (Currently Visible based on prompt) -->
+<!-- Search Field -->
+<div class="relative w-full mb-md shrink-0">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline text-lg">search</span>
+<input class="w-full bg-surface-container/50 backdrop-blur-md border-[0.5px] border-surface-variant rounded-lg py-sm pl-10 pr-sm font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all shadow-inner" placeholder="Search models..." type="text"/>
+</div>
+<!-- Model List (Bento Grid Style) -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<!-- Model Card: Active -->
+<button class="glass-card rounded-xl p-md flex flex-col gap-sm text-left relative overflow-hidden border-primary/30 group">
+<div class="absolute top-0 right-0 p-sm opacity-100 transition-opacity">
+<span class="material-symbols-outlined icon-fill text-primary text-sm">check_circle</span>
+</div>
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center border-[0.5px] border-primary/20">
+<span class="material-symbols-outlined text-primary text-lg">smart_toy</span>
+</div>
+<div>
+<h3 class="font-label-md text-label-md text-on-surface">GPT-4o</h3>
+<p class="font-code text-[11px] text-outline">OpenAI • 128k Context</p>
+</div>
+</div>
+<p class="font-body-md text-[13px] text-on-surface-variant leading-relaxed mt-xs">
+                        High-intelligence multi-modal model optimized for complex reasoning and speed.
+                    </p>
+<div class="flex gap-xs mt-auto pt-sm">
+<span class="px-2 py-0.5 rounded-full bg-surface-container border-[0.5px] border-surface-variant font-code text-[10px] text-outline">Vision</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container border-[0.5px] border-surface-variant font-code text-[10px] text-outline">Fast</span>
+</div>
+</button>
+<!-- Model Card: Inactive -->
+<button class="glass-card rounded-xl p-md flex flex-col gap-sm text-left relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-sm opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-outline text-sm">add_circle</span>
+</div>
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center border-[0.5px] border-surface-variant">
+<span class="material-symbols-outlined text-outline text-lg">bolt</span>
+</div>
+<div>
+<h3 class="font-label-md text-label-md text-on-surface">Claude 3.5 Sonnet</h3>
+<p class="font-code text-[11px] text-outline">Anthropic • 200k Context</p>
+</div>
+</div>
+<p class="font-body-md text-[13px] text-on-surface-variant leading-relaxed mt-xs">
+                        Exceptional speed and capability balance, strong at coding and nuanced analysis.
+                    </p>
+<div class="flex gap-xs mt-auto pt-sm">
+<span class="px-2 py-0.5 rounded-full bg-surface-container border-[0.5px] border-surface-variant font-code text-[10px] text-outline">Coding</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container border-[0.5px] border-surface-variant font-code text-[10px] text-outline">Nuance</span>
+</div>
+</button>
+<!-- Model Card: Inactive -->
+<button class="glass-card rounded-xl p-md flex flex-col gap-sm text-left relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-sm opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-outline text-sm">add_circle</span>
+</div>
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center border-[0.5px] border-surface-variant">
+<span class="material-symbols-outlined text-outline text-lg">speed</span>
+</div>
+<div>
+<h3 class="font-label-md text-label-md text-on-surface">Llama 3 70B</h3>
+<p class="font-code text-[11px] text-outline">Meta • 8k Context</p>
+</div>
+</div>
+<p class="font-body-md text-[13px] text-on-surface-variant leading-relaxed mt-xs">
+                        Highly capable open-source model, efficient for standard reasoning tasks.
+                    </p>
+<div class="flex gap-xs mt-auto pt-sm">
+<span class="px-2 py-0.5 rounded-full bg-surface-container border-[0.5px] border-surface-variant font-code text-[10px] text-outline">Open</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container border-[0.5px] border-surface-variant font-code text-[10px] text-outline">Efficient</span>
+</div>
+</button>
+</div>
+</div>
+<!-- Bottom Action Bar -->
+<div class="p-safe-margin border-t border-white/5 bg-surface/50 backdrop-blur-xl shrink-0 rounded-b-[32px]">
+<button class="w-full bg-primary text-on-primary font-label-md text-label-md py-sm rounded-lg flex items-center justify-center gap-xs hover:bg-primary-fixed transition-colors">
+<span class="material-symbols-outlined text-sm">check</span>
+                Apply Changes
+            </button>
+</div>
+</div>
+</body></html>

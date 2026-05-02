@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Workspace GlassBottomSheet</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@400;600;700;800&amp;family=Space+Grotesk:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#c0c1ff",
+                        "outline": "#908fa0",
+                        "on-tertiary": "#4f2500",
+                        "on-primary": "#1000a9",
+                        "surface-container-lowest": "#0e0e10",
+                        "surface": "#131315",
+                        "error": "#ffb4ab",
+                        "on-tertiary-fixed-variant": "#703700",
+                        "outline-variant": "#464554",
+                        "on-primary-container": "#0d0096",
+                        "secondary-fixed": "#e4e1e6",
+                        "on-error": "#690005",
+                        "inverse-primary": "#494bd6",
+                        "primary-fixed": "#e1e0ff",
+                        "on-surface-variant": "#c7c4d7",
+                        "surface-dim": "#131315",
+                        "secondary-container": "#47464a",
+                        "on-tertiary-fixed": "#301400",
+                        "surface-variant": "#353437",
+                        "on-tertiary-container": "#452000",
+                        "secondary-fixed-dim": "#c8c5ca",
+                        "inverse-on-surface": "#313032",
+                        "secondary": "#c8c5ca",
+                        "on-surface": "#e5e1e4",
+                        "tertiary": "#ffb783",
+                        "on-error-container": "#ffdad6",
+                        "error-container": "#93000a",
+                        "on-secondary-fixed-variant": "#47464a",
+                        "on-primary-fixed": "#07006c",
+                        "surface-container": "#201f22",
+                        "on-secondary-container": "#b6b4b8",
+                        "on-secondary-fixed": "#1b1b1e",
+                        "tertiary-fixed-dim": "#ffb783",
+                        "primary-container": "#8083ff",
+                        "surface-container-highest": "#353437",
+                        "surface-container-high": "#2a2a2c",
+                        "on-background": "#e5e1e4",
+                        "primary-fixed-dim": "#c0c1ff",
+                        "tertiary-container": "#d97721",
+                        "on-secondary": "#303033",
+                        "surface-tint": "#c0c1ff",
+                        "surface-container-low": "#1c1b1d",
+                        "background": "#131315",
+                        "tertiary-fixed": "#ffdcc5",
+                        "on-primary-fixed-variant": "#2f2ebe",
+                        "inverse-surface": "#e5e1e4",
+                        "surface-bright": "#39393b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "8px",
+                        "xs": "4px",
+                        "lg": "24px",
+                        "xl": "32px",
+                        "md": "16px",
+                        "gutter": "16px",
+                        "unit": "4px",
+                        "safe-margin": "20px"
+                    },
+                    "fontFamily": {
+                        "code": ["spaceGrotesk"],
+                        "body-md": ["inter"],
+                        "label-md": ["inter"],
+                        "h2": ["manrope"],
+                        "body-lg": ["inter"],
+                        "h1": ["manrope"]
+                    },
+                    "fontSize": {
+                        "code": ["14px", { "lineHeight": "22px", "fontWeight": "400" }],
+                        "body-md": ["15px", { "lineHeight": "25px", "fontWeight": "400" }],
+                        "label-md": ["13px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "h2": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "body-lg": ["17px", { "lineHeight": "26px", "fontWeight": "400" }],
+                        "h1": ["24px", { "lineHeight": "32px", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(19, 19, 21, 0.75);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-top: 0.5px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 0.5px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.02);
+        }
+        .glass-overlay {
+            background: rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen overflow-hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- Mock Background Content -->
+<div class="fixed inset-0 z-0">
+<img alt="Background" class="w-full h-full object-cover opacity-30" data-alt="A sophisticated abstract background featuring flowing digital waves in deep indigo and violet tones. The scene suggests a high-tech data visualization environment with subtle particle effects suspended in the dark void. Lighting is dramatic yet diffused, highlighting the curves of the abstract geometry while maintaining a predominantly dark mode aesthetic perfect for a premium AI interface canvas." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDeRPWqGByQ10Xu_3Wjnh8GFnWcpba1SlMOSfc9UfEvLBtiQ1Fu95ieHVDo_IzcB7Zn2iovtrnsge6tbAjSVmGNPa1mYIowBhkGmlVf0YFfaviEa_phvWorqcDDbycu4eU635DsGeoUN0ifipB3mZxo_gJ3Ya3FNCEz-FQU6u64UljTv01t6R21A4HtWvvSi8HsqCYZi6GXRAfaiP-Ije7q7ZjqbJAFGHuBh-tudcG8_51kzeMSKS8T0v60Mz7u_nw2YZh3PIRvdr5T"/>
+</div>
+<!-- Top Navigation (Mocked from JSON) -->
+<header class="fixed top-0 w-full z-10 bg-zinc-900/60 backdrop-blur-xl border-b-[0.5px] border-white/10 shadow-none flex justify-between items-center px-5 h-16">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-zinc-400 hover:text-zinc-300 transition-colors cursor-pointer" data-icon="menu">menu</span>
+<span class="text-xl font-extrabold tracking-tighter text-zinc-100 font-manrope">Nexara</span>
+</div>
+<div class="flex items-center">
+<div class="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center overflow-hidden border border-white/10">
+<span class="material-symbols-outlined text-sm text-on-surface-variant" data-icon="person">person</span>
+</div>
+</div>
+</header>
+<!-- Bottom Navigation (Mocked from JSON) -->
+<nav class="fixed bottom-0 w-full z-10 bg-zinc-950/80 backdrop-blur-2xl border-t-[0.5px] border-white/10 shadow-2xl flex justify-around items-center pt-3 pb-6 px-4 md:hidden">
+<div class="flex flex-col items-center justify-center text-zinc-500 hover:text-zinc-300 transition-all cursor-pointer">
+<span class="material-symbols-outlined" data-icon="forum">forum</span>
+<span class="font-inter text-[10px] font-medium uppercase tracking-widest mt-1">Chat</span>
+</div>
+<div class="flex flex-col items-center justify-center text-zinc-500 hover:text-zinc-300 transition-all cursor-pointer">
+<span class="material-symbols-outlined" data-icon="insights">insights</span>
+<span class="font-inter text-[10px] font-medium uppercase tracking-widest mt-1">Insights</span>
+</div>
+<div class="flex flex-col items-center justify-center text-indigo-300 drop-shadow-[0_0_8px_rgba(99,102,241,0.5)] cursor-pointer">
+<span class="material-symbols-outlined" data-icon="deployed_code" style="font-variation-settings: 'FILL' 1;">deployed_code</span>
+<span class="font-inter text-[10px] font-medium uppercase tracking-widest mt-1">Artifacts</span>
+</div>
+<div class="flex flex-col items-center justify-center text-zinc-500 hover:text-zinc-300 transition-all cursor-pointer">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-inter text-[10px] font-medium uppercase tracking-widest mt-1">Settings</span>
+</div>
+</nav>
+<!-- Overlay Background for Bottom Sheet -->
+<div class="fixed inset-0 glass-overlay z-40"></div>
+<!-- GlassBottomSheet (C4) -->
+<!-- 85% height, fixed bottom, glass styling -->
+<div class="fixed bottom-0 left-0 right-0 h-[751px] z-50 glass-panel rounded-t-2xl flex flex-col shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+<!-- Drag Handle / Header Area -->
+<div class="flex-shrink-0 pt-sm pb-md px-lg flex flex-col items-center relative">
+<div class="w-12 h-[4px] bg-white/20 rounded-full mb-md"></div>
+<div class="w-full flex justify-between items-center">
+<h2 class="font-h2 text-h2 text-on-surface">Workspace</h2>
+<button class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors border border-white/5">
+<span class="material-symbols-outlined text-on-surface-variant text-sm" data-icon="close">close</span>
+</button>
+</div>
+</div>
+<!-- Tabs -->
+<div class="flex-shrink-0 px-lg border-b-[0.5px] border-white/10">
+<div class="flex gap-lg">
+<button class="pb-sm border-b-2 border-primary text-primary font-label-md text-label-md flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]" data-icon="task_alt">task_alt</span>
+                    Tasks
+                </button>
+<button class="pb-sm border-b-2 border-transparent text-on-surface-variant hover:text-on-surface font-label-md text-label-md flex items-center gap-xs transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="deployed_code">deployed_code</span>
+                    Artifacts
+                </button>
+<button class="pb-sm border-b-2 border-transparent text-on-surface-variant hover:text-on-surface font-label-md text-label-md flex items-center gap-xs transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="folder_open">folder_open</span>
+                    Files
+                </button>
+</div>
+</div>
+<!-- Scrollable Content Area -->
+<div class="flex-grow overflow-y-auto p-lg pb-32">
+<!-- Tasks View (Active) -->
+<div class="flex flex-col gap-md">
+<!-- Progress Header -->
+<div class="glass-card rounded-xl p-md flex items-center justify-between">
+<div>
+<div class="font-body-lg text-body-lg text-on-surface mb-xs">Sprint Pipeline</div>
+<div class="font-body-md text-body-md text-outline">4 of 12 completed</div>
+</div>
+<div class="w-16 h-16 rounded-full border-4 border-surface-container-high border-t-primary flex items-center justify-center">
+<span class="font-label-md text-label-md text-primary">33%</span>
+</div>
+</div>
+<!-- Task List -->
+<div class="flex flex-col gap-sm">
+<!-- Task Item (Completed) -->
+<div class="glass-card rounded-lg p-md flex items-start gap-md opacity-70">
+<span class="material-symbols-outlined text-primary mt-1" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<div class="flex-grow">
+<div class="font-body-md text-body-md text-on-surface line-through decoration-white/30">Data Ingestion Pipeline</div>
+<div class="font-label-md text-label-md text-outline mt-xs">Processed 2.4M records</div>
+</div>
+<span class="font-code text-code text-outline-variant">2h ago</span>
+</div>
+<!-- Task Item (In Progress) -->
+<div class="glass-card rounded-lg p-md flex items-start gap-md border-l-2 border-l-primary bg-primary/5">
+<span class="material-symbols-outlined text-primary mt-1 animate-pulse" data-icon="sync">sync</span>
+<div class="flex-grow">
+<div class="font-body-md text-body-md text-on-surface">Train Embedding Model</div>
+<div class="font-label-md text-label-md text-outline mt-xs">Epoch 4/10 • Loss: 0.042</div>
+<!-- Mini Progress bar -->
+<div class="w-full h-1 bg-surface-container-highest rounded-full mt-sm overflow-hidden">
+<div class="h-full bg-primary w-2/5 rounded-full"></div>
+</div>
+</div>
+<span class="font-code text-code text-primary">Active</span>
+</div>
+<!-- Task Item (Pending) -->
+<div class="glass-card rounded-lg p-md flex items-start gap-md hover:bg-white/5 transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-outline mt-1" data-icon="radio_button_unchecked">radio_button_unchecked</span>
+<div class="flex-grow">
+<div class="font-body-md text-body-md text-on-surface">Generate Vector Index</div>
+<div class="font-label-md text-label-md text-outline mt-xs">Waiting for model training</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant" data-icon="more_vert">more_vert</span>
+</div>
+</div>
+</div>
+<!-- Note: Artifacts and Files views would go here, hidden by default. 
+                 For this single-page static output, we focus on the active 'Tasks' tab 
+                 while demonstrating the UI structure requested. -->
+</div>
+</div>
+<!-- File Preview Modal Overlay (Hidden by default, shown for demonstration of the requirement) -->
+<!-- Added a generic hidden class, remove it to see the modal -->
+<div class="fixed inset-0 z-[60] flex items-center justify-center p-lg hidden">
+<div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+<div class="relative w-full max-w-3xl h-[707px] glass-card rounded-2xl flex flex-col overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+<!-- Modal Header -->
+<div class="flex-shrink-0 h-14 border-b-[0.5px] border-white/10 px-md flex items-center justify-between bg-white/5">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary" data-icon="description">description</span>
+<span class="font-label-md text-label-md text-on-surface">architecture_v2.md</span>
+</div>
+<div class="flex items-center gap-xs">
+<button class="w-8 h-8 rounded-full hover:bg-white/10 flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant text-sm" data-icon="download">download</span>
+</button>
+<button class="w-8 h-8 rounded-full hover:bg-white/10 flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant text-sm" data-icon="close">close</span>
+</button>
+</div>
+</div>
+<!-- Modal Content (Preview) -->
+<div class="flex-grow overflow-y-auto p-lg bg-surface-container-lowest/50">
+<div class="font-code text-code text-on-surface-variant whitespace-pre-wrap">
+# System Architecture V2
+
+## Overview
+The new architecture leverages a distributed microservices approach, focusing on low-latency inference and high-throughput data ingestion...
+
+## Core Components
+- **API Gateway**: Handles routing and auth.
+- **Inference Engine**: GPU-backed worker nodes.
+- **Vector Store**: Distributed graph database.
+
+...
+                </div>
+</div>
+</div>
+</div>
+</body></html>

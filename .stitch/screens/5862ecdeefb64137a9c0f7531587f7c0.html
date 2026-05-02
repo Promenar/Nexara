@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>E6 Token Usage Statistics</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&amp;family=Manrope:wght@600;700&amp;family=Space+Grotesk:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-bright": "#39393b",
+                      "inverse-primary": "#494bd6",
+                      "tertiary-fixed-dim": "#ffb783",
+                      "outline": "#908fa0",
+                      "on-surface": "#e5e1e4",
+                      "on-error-container": "#ffdad6",
+                      "primary-fixed-dim": "#c0c1ff",
+                      "on-primary": "#1000a9",
+                      "surface-container-high": "#2a2a2c",
+                      "on-tertiary": "#4f2500",
+                      "inverse-surface": "#e5e1e4",
+                      "surface-container": "#201f22",
+                      "on-primary-fixed-variant": "#2f2ebe",
+                      "on-tertiary-fixed": "#301400",
+                      "surface-tint": "#c0c1ff",
+                      "surface-dim": "#131315",
+                      "on-tertiary-container": "#452000",
+                      "primary-container": "#8083ff",
+                      "tertiary": "#ffb783",
+                      "on-tertiary-fixed-variant": "#703700",
+                      "surface-container-highest": "#353437",
+                      "on-surface-variant": "#c7c4d7",
+                      "on-error": "#690005",
+                      "on-background": "#e5e1e4",
+                      "tertiary-container": "#d97721",
+                      "on-primary-container": "#0d0096",
+                      "secondary-fixed": "#e4e1e6",
+                      "tertiary-fixed": "#ffdcc5",
+                      "surface-container-lowest": "#0e0e10",
+                      "on-secondary-container": "#b6b4b8",
+                      "error": "#ffb4ab",
+                      "surface": "#131315",
+                      "secondary": "#c8c5ca",
+                      "on-secondary-fixed-variant": "#47464a",
+                      "error-container": "#93000a",
+                      "secondary-container": "#47464a",
+                      "on-secondary": "#303033",
+                      "inverse-on-surface": "#313032",
+                      "primary": "#c0c1ff",
+                      "surface-variant": "#353437",
+                      "background": "#131315",
+                      "primary-fixed": "#e1e0ff",
+                      "on-secondary-fixed": "#1b1b1e",
+                      "on-primary-fixed": "#07006c",
+                      "surface-container-low": "#1c1b1d",
+                      "secondary-fixed-dim": "#c8c5ca",
+                      "outline-variant": "#464554"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "sm": "8px",
+                      "safe-margin": "20px",
+                      "xl": "32px",
+                      "unit": "4px",
+                      "gutter": "16px",
+                      "md": "16px",
+                      "xs": "4px",
+                      "lg": "24px"
+              },
+              "fontFamily": {
+                      "body-md": ["Inter"],
+                      "h2": ["Manrope"],
+                      "label-md": ["Inter"],
+                      "h1": ["Manrope"],
+                      "code": ["Space Grotesk"],
+                      "body-lg": ["Inter"]
+              },
+              "fontSize": {
+                      "body-md": ["15px", {"lineHeight": "25px", "fontWeight": "400"}],
+                      "h2": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "label-md": ["13px", {"lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                      "h1": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                      "code": ["14px", {"lineHeight": "22px", "fontWeight": "400"}],
+                      "body-lg": ["17px", {"lineHeight": "26px", "fontWeight": "400"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        body { background-color: theme('colors.background'); color: theme('colors.on-background'); }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 0.5px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+        }
+        .gauge-circle { stroke-dasharray: 283; stroke-dashoffset: 70; transition: stroke-dashoffset 1s ease-in-out; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="antialiased min-h-screen flex flex-col font-body-md text-body-md overflow-x-hidden">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-zinc-950/70 backdrop-blur-3xl border-b border-white/10 shadow-none flex justify-between items-center h-16 px-5 w-full">
+<div class="flex items-center gap-4">
+<button class="text-zinc-400 hover:bg-white/5 active:scale-95 transition-transform p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="text-lg font-bold text-zinc-100 font-h1 text-h1 tracking-wide">Settings</h1>
+</div>
+<button class="text-zinc-400 hover:bg-white/5 active:scale-95 transition-transform p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-[88px] pb-safe px-safe-margin max-w-7xl mx-auto w-full">
+<!-- Header Section -->
+<div class="mb-lg flex flex-col md:flex-row md:items-end justify-between gap-md">
+<div>
+<h2 class="font-h1 text-h1 text-on-background mb-xs">Token Usage</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Global statistics across all providers and models.</p>
+</div>
+<!-- View Toggle -->
+<div class="flex bg-surface-container-high rounded-full p-1 border border-outline-variant/30 w-max">
+<button class="px-4 py-1.5 rounded-full font-label-md text-label-md bg-surface-container text-on-surface shadow-sm">By Provider</button>
+<button class="px-4 py-1.5 rounded-full font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors">By Model</button>
+</div>
+</div>
+<!-- Dashboard Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-lg mb-xl">
+<!-- Main Gauge Card -->
+<div class="glass-card rounded-xl p-lg lg:col-span-1 flex flex-col items-center justify-center relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent pointer-events-none"></div>
+<h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest absolute top-lg left-lg">Total Usage</h3>
+<div class="relative w-48 h-48 mt-md flex items-center justify-center">
+<svg class="w-full h-full transform -rotate-90" viewbox="0 0 100 100">
+<!-- Background Circle -->
+<circle class="text-surface-container-highest" cx="50" cy="50" fill="none" r="45" stroke="currentColor" stroke-width="8"></circle>
+<!-- Progress Circle -->
+<circle class="text-primary gauge-circle" cx="50" cy="50" fill="none" r="45" stroke="currentColor" stroke-linecap="round" stroke-width="8"></circle>
+</svg>
+<div class="absolute flex flex-col items-center">
+<span class="font-h1 text-[32px] font-bold text-on-surface leading-none">1.2M</span>
+<span class="font-label-md text-label-md text-on-surface-variant mt-1">Tokens</span>
+</div>
+</div>
+</div>
+<!-- Metrics Cards Column -->
+<div class="lg:col-span-2 grid grid-cols-1 sm:grid-cols-3 gap-md">
+<!-- Input Metric -->
+<div class="glass-card rounded-xl p-md flex flex-col justify-between">
+<div class="flex items-center justify-between mb-sm">
+<span class="material-symbols-outlined text-secondary" data-icon="input">input</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Input</span>
+</div>
+<div>
+<div class="font-h2 text-h2 text-on-surface">850K</div>
+<div class="w-full bg-surface-container-highest h-1.5 rounded-full mt-2">
+<div class="bg-secondary h-1.5 rounded-full" style="width: 70%"></div>
+</div>
+</div>
+</div>
+<!-- Output Metric -->
+<div class="glass-card rounded-xl p-md flex flex-col justify-between">
+<div class="flex items-center justify-between mb-sm">
+<span class="material-symbols-outlined text-primary" data-icon="output">output</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Output</span>
+</div>
+<div>
+<div class="font-h2 text-h2 text-on-surface">320K</div>
+<div class="w-full bg-surface-container-highest h-1.5 rounded-full mt-2">
+<div class="bg-primary h-1.5 rounded-full" style="width: 25%"></div>
+</div>
+</div>
+</div>
+<!-- System Metric -->
+<div class="glass-card rounded-xl p-md flex flex-col justify-between">
+<div class="flex items-center justify-between mb-sm">
+<span class="material-symbols-outlined text-tertiary" data-icon="memory">memory</span>
+<span class="font-label-md text-label-md text-on-surface-variant">System</span>
+</div>
+<div>
+<div class="font-h2 text-h2 text-on-surface">30K</div>
+<div class="w-full bg-surface-container-highest h-1.5 rounded-full mt-2">
+<div class="bg-tertiary h-1.5 rounded-full" style="width: 5%"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Expandable Rows List -->
+<div class="mb-xl">
+<h3 class="font-h2 text-h2 text-on-surface mb-md">Usage by Provider</h3>
+<div class="flex flex-col gap-sm">
+<!-- Row 1 -->
+<div class="glass-card rounded-lg overflow-hidden group">
+<div class="p-md flex items-center justify-between cursor-pointer hover:bg-white/5 transition-colors">
+<div class="flex items-center gap-md w-1/3">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-on-surface font-h2 text-h2">O</div>
+<span class="font-body-lg text-body-lg text-on-surface font-medium">OpenAI</span>
+</div>
+<div class="w-1/2 px-md hidden md:block">
+<div class="w-full h-2 rounded-full bg-surface-container-highest flex overflow-hidden">
+<div class="bg-secondary h-full" style="width: 60%"></div>
+<div class="bg-primary h-full" style="width: 30%"></div>
+<div class="bg-tertiary h-full" style="width: 10%"></div>
+</div>
+</div>
+<div class="flex items-center gap-md w-1/4 justify-end">
+<span class="font-code text-code text-on-surface-variant">800K</span>
+<span class="material-symbols-outlined text-on-surface-variant transition-transform group-hover:translate-y-0.5" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Row 2 -->
+<div class="glass-card rounded-lg overflow-hidden group">
+<div class="p-md flex items-center justify-between cursor-pointer hover:bg-white/5 transition-colors">
+<div class="flex items-center gap-md w-1/3">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-on-surface font-h2 text-h2">A</div>
+<span class="font-body-lg text-body-lg text-on-surface font-medium">Anthropic</span>
+</div>
+<div class="w-1/2 px-md hidden md:block">
+<div class="w-full h-2 rounded-full bg-surface-container-highest flex overflow-hidden">
+<div class="bg-secondary h-full" style="width: 80%"></div>
+<div class="bg-primary h-full" style="width: 15%"></div>
+<div class="bg-tertiary h-full" style="width: 5%"></div>
+</div>
+</div>
+<div class="flex items-center gap-md w-1/4 justify-end">
+<span class="font-code text-code text-on-surface-variant">400K</span>
+<span class="material-symbols-outlined text-on-surface-variant transition-transform group-hover:translate-y-0.5" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Danger Zone -->
+<div class="mt-xl pt-lg border-t border-outline-variant/20 flex flex-col md:flex-row items-start md:items-center justify-between gap-md">
+<div>
+<h4 class="font-h2 text-h2 text-error mb-1">Danger Zone</h4>
+<p class="font-label-md text-label-md text-on-surface-variant">Permanently reset all token usage statistics. This action cannot be undone.</p>
+</div>
+<button class="bg-error-container/20 border border-error/30 text-error hover:bg-error-container/40 transition-colors px-6 py-3 rounded-lg font-label-md text-label-md flex items-center gap-2 whitespace-nowrap">
+<span class="material-symbols-outlined text-[18px]" data-icon="delete_forever">delete_forever</span>
+                Reset Statistics
+            </button>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 pb-safe bg-zinc-950/80 backdrop-blur-2xl border-t border-white/5 shadow-none flex justify-around items-center h-20 px-6 w-full md:hidden">
+<a class="text-zinc-500 p-2 flex flex-col items-center hover:text-zinc-200 active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="chat_bubble">chat_bubble</span>
+<span class="font-manrope text-[10px] uppercase tracking-tighter">Chat</span>
+</a>
+<a class="text-zinc-500 p-2 flex flex-col items-center hover:text-zinc-200 active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="explore">explore</span>
+<span class="font-manrope text-[10px] uppercase tracking-tighter">Explore</span>
+</a>
+<a class="text-zinc-500 p-2 flex flex-col items-center hover:text-zinc-200 active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="analytics">analytics</span>
+<span class="font-manrope text-[10px] uppercase tracking-tighter">Analytics</span>
+</a>
+<a class="text-indigo-400 bg-white/5 rounded-xl p-2 flex flex-col items-center hover:text-zinc-200 active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="settings">settings</span>
+<span class="font-manrope text-[10px] uppercase tracking-tighter">Settings</span>
+</a>
+</nav>
+</body></html>

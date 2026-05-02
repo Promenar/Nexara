@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Execution Timeline</title>
+<!-- Google Fonts: Manrope, Inter, Space Grotesk -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@500;600;700;800;900&amp;family=Space+Grotesk:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config from Design System -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-error": "#690005",
+                        "inverse-surface": "#e5e1e4",
+                        "background": "#131315",
+                        "surface-dim": "#131315",
+                        "on-surface": "#e5e1e4",
+                        "on-secondary-fixed-variant": "#47464a",
+                        "secondary-container": "#47464a",
+                        "outline-variant": "#464554",
+                        "on-tertiary-fixed-variant": "#703700",
+                        "inverse-primary": "#494bd6",
+                        "on-tertiary-fixed": "#301400",
+                        "surface-container-highest": "#353437",
+                        "tertiary-fixed": "#ffdcc5",
+                        "tertiary": "#ffb783",
+                        "surface-variant": "#353437",
+                        "primary": "#c0c1ff",
+                        "on-error-container": "#ffdad6",
+                        "primary-fixed-dim": "#c0c1ff",
+                        "surface-tint": "#c0c1ff",
+                        "on-primary-fixed": "#07006c",
+                        "error-container": "#93000a",
+                        "surface-container-lowest": "#0e0e10",
+                        "tertiary-fixed-dim": "#ffb783",
+                        "surface-container-high": "#2a2a2c",
+                        "on-secondary-fixed": "#1b1b1e",
+                        "inverse-on-surface": "#313032",
+                        "surface-bright": "#39393b",
+                        "on-primary-container": "#0d0096",
+                        "secondary-fixed-dim": "#c8c5ca",
+                        "on-surface-variant": "#c7c4d7",
+                        "outline": "#908fa0",
+                        "primary-fixed": "#e1e0ff",
+                        "surface-container-low": "#1c1b1d",
+                        "on-background": "#e5e1e4",
+                        "on-secondary-container": "#b6b4b8",
+                        "on-primary": "#1000a9",
+                        "surface": "#131315",
+                        "primary-container": "#8083ff",
+                        "on-primary-fixed-variant": "#2f2ebe",
+                        "tertiary-container": "#d97721",
+                        "error": "#ffb4ab",
+                        "secondary": "#c8c5ca",
+                        "secondary-fixed": "#e4e1e6",
+                        "on-tertiary-container": "#452000",
+                        "on-tertiary": "#4f2500",
+                        "on-secondary": "#303033",
+                        "surface-container": "#201f22"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "xs": "4px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "unit": "4px",
+                        "gutter": "16px",
+                        "lg": "24px",
+                        "xl": "32px",
+                        "safe-margin": "20px"
+                    },
+                    fontFamily: {
+                        "h2": ["manrope"],
+                        "label-md": ["inter"],
+                        "body-lg": ["inter"],
+                        "code": ["spaceGrotesk"],
+                        "body-md": ["inter"],
+                        "h1": ["manrope"]
+                    },
+                    fontSize: {
+                        "h2": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "label-md": ["13px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "body-lg": ["17px", { "lineHeight": "26px", "fontWeight": "400" }],
+                        "code": ["14px", { "lineHeight": "22px", "fontWeight": "400" }],
+                        "body-md": ["15px", { "lineHeight": "25px", "fontWeight": "400" }],
+                        "h1": ["24px", { "lineHeight": "32px", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Custom inner shadow for glassmorphic depth */
+        .inner-glass {
+            box-shadow: inset 0 2px 10px rgba(255, 255, 255, 0.02);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface antialiased flex flex-col h-screen overflow-hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar (From JSON Shared Components) -->
+<header class="bg-zinc-950/70 backdrop-blur-xl fixed top-0 w-full z-50 border-b border-white/[0.05] shadow-none flex items-center justify-between px-5 h-16">
+<div class="flex items-center gap-4">
+<button class="text-zinc-400 hover:bg-white/5 transition-colors active:scale-95 duration-200 p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="text-indigo-400 font-manrope text-sm tracking-tight font-medium">Knowledge Base</h1>
+</div>
+<div>
+<button class="w-8 h-8 rounded-full bg-surface-container-high border-[0.5px] border-outline-variant flex items-center justify-center overflow-hidden hover:bg-white/5 transition-colors active:scale-95 duration-200">
+<span class="font-h2 text-[12px] text-on-surface">U</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 overflow-y-auto pt-[80px] pb-[100px] px-safe-margin w-full max-w-2xl mx-auto">
+<!-- Screen Title -->
+<h2 class="font-h1 text-h1 text-on-surface mb-md">Execution Timeline</h2>
+<!-- Collapsible BlurView Summary -->
+<div class="bg-surface-variant/30 backdrop-blur-2xl border-[0.5px] border-outline-variant/30 rounded-xl p-md mb-lg flex items-center justify-between cursor-pointer hover:bg-surface-variant/40 transition-colors inner-glass">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-primary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-[18px]">psychology</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Execution Context Active</p>
+<p class="font-body-md text-[13px] text-outline">Thinking 3 rounds, Tools 2 rounds</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline">expand_more</span>
+</div>
+<!-- Timeline ScrollView -->
+<div class="relative pl-[28px] pb-lg">
+<!-- Vertical Connector Line -->
+<div class="absolute left-[13px] top-[16px] bottom-0 w-[2px] bg-outline-variant/20"></div>
+<!-- Step 1: Thinking (Collapsed) -->
+<div class="relative mb-lg">
+<!-- Node Icon -->
+<div class="absolute -left-[28px] w-7 h-7 rounded-full bg-surface border-2 border-primary-container flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-[14px] text-primary-container">psychology</span>
+</div>
+<!-- Content -->
+<div class="pt-1">
+<h3 class="font-label-md text-label-md text-primary-container mb-xs">Reasoning Phase</h3>
+<p class="font-body-md text-[14px] text-on-surface-variant line-clamp-1">Analyzing complex user query to determine optimal workflow...</p>
+</div>
+</div>
+<!-- Step 2: Database / RAG (Expanded) -->
+<div class="relative mb-lg">
+<div class="absolute -left-[28px] w-7 h-7 rounded-full bg-surface border-2 border-[#06b6d4] flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-[14px] text-[#06b6d4]">database</span>
+</div>
+<div class="pt-1">
+<h3 class="font-label-md text-label-md text-[#06b6d4] mb-sm">Querying Knowledge Base</h3>
+<div class="bg-surface-container-low/50 backdrop-blur-xl border-[0.5px] border-outline-variant/30 rounded-lg p-md inner-glass">
+<div class="font-code text-code text-secondary mb-sm bg-surface-container/50 p-2 rounded border border-outline-variant/20">
+<span class="text-[#06b6d4]">SELECT</span> entities <span class="text-[#06b6d4]">FROM</span> graph_v2 <span class="text-[#06b6d4]">WHERE</span> context = 'Q3_Earnings'
+                        </div>
+<div class="flex items-start gap-sm mt-sm">
+<span class="material-symbols-outlined text-outline text-[16px] mt-[2px]">description</span>
+<p class="font-body-md text-[13px] text-on-surface-variant">Retrieved 4 high-relevance nodes regarding Q3 financial projections and strategic adjustments.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Step 3: Tool Call (Terminal) -->
+<div class="relative mb-lg">
+<div class="absolute -left-[28px] w-7 h-7 rounded-full bg-surface border-2 border-[#3b82f6] flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-[14px] text-[#3b82f6]">terminal</span>
+</div>
+<div class="pt-1">
+<h3 class="font-label-md text-label-md text-[#3b82f6] mb-xs">Execute Script</h3>
+<p class="font-body-md text-[14px] text-on-surface-variant">Running data aggregation python module.</p>
+</div>
+</div>
+<!-- Step 4: Intervention (Expanded, High Priority) -->
+<div class="relative mb-lg">
+<div class="absolute -left-[28px] w-7 h-7 rounded-full bg-surface border-2 border-tertiary-container flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-[14px] text-tertiary-container" style="font-variation-settings: 'FILL' 1;">warning</span>
+</div>
+<div class="pt-1">
+<div class="bg-tertiary-container/5 backdrop-blur-xl border-[0.5px] border-outline-variant/30 border-l-[4px] border-l-tertiary-container rounded-r-lg p-md shadow-lg shadow-black/20">
+<div class="flex items-center justify-between mb-sm">
+<h3 class="font-h2 text-h2 text-tertiary-container">Decision Required</h3>
+<span class="font-code text-[11px] text-outline uppercase tracking-wider bg-surface/50 px-2 py-1 rounded border border-outline-variant/20">System_Pause</span>
+</div>
+<div class="mb-md">
+<p class="font-label-md text-label-md text-on-surface mb-xs">Tool: <span class="text-tertiary">Production_DB_Write</span></p>
+<p class="font-body-md text-[14px] text-on-surface-variant">The agent is requesting permission to execute a destructive write operation based on the generated financial summary. Please review the parameters.</p>
+</div>
+<!-- JSON Preview -->
+<div class="bg-surface-container border-[0.5px] border-outline-variant/20 rounded-md p-sm mb-md overflow-x-auto">
+<pre class="font-code text-[12px] text-secondary leading-relaxed">{
+  "action": "UPDATE",
+  "target_table": "financial_summaries",
+  "payload": {
+    "status": "APPROVED",
+    "q3_modifier": 1.15
+  },
+  "force": true
+}
+                            </pre>
+</div>
+<!-- User Input & Actions -->
+<div class="space-y-sm">
+<input class="w-full bg-surface/50 border border-outline-variant/50 rounded-lg px-sm py-2 font-body-md text-[14px] text-on-surface placeholder:text-outline focus:outline-none focus:border-tertiary-container focus:ring-1 focus:ring-tertiary-container/50 transition-all" placeholder="Add directives or constraints (optional)..." type="text"/>
+<div class="flex items-center gap-sm mt-xs">
+<button class="flex-1 bg-surface border border-outline-variant/50 text-on-surface font-label-md text-label-md py-2 rounded-lg hover:bg-surface-container-high transition-colors">
+                                    Reject
+                                </button>
+<button class="flex-1 bg-tertiary-container text-on-tertiary-container font-label-md text-label-md py-2 rounded-lg hover:brightness-110 transition-all shadow-md">
+                                    Approve Execution
+                                </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Step 5: Web Search (Pending) -->
+<div class="relative">
+<div class="absolute -left-[28px] w-7 h-7 rounded-full bg-surface border-2 border-outline-variant flex items-center justify-center z-10 opacity-50">
+<span class="material-symbols-outlined text-[14px] text-outline">public</span>
+</div>
+<div class="pt-1 opacity-50">
+<h3 class="font-label-md text-label-md text-outline mb-xs">External Search</h3>
+<p class="font-body-md text-[14px] text-outline">Awaiting previous step resolution...</p>
+</div>
+</div>
+</div>
+</main>
+<!-- Fixed Command Input Bar -->
+<div class="fixed bottom-0 w-full bg-surface-container/80 backdrop-blur-3xl border-t border-outline-variant/20 px-safe-margin py-md pb-[calc(16px+env(safe-area-inset-bottom))] z-40 inner-glass">
+<div class="max-w-2xl mx-auto relative flex items-center">
+<span class="material-symbols-outlined absolute left-sm text-outline">terminal</span>
+<input class="w-full bg-surface border-[0.5px] border-outline-variant/50 rounded-xl pl-xl pr-xl py-3 font-body-md text-[15px] text-on-surface placeholder:text-outline focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container/30 transition-all shadow-inner" placeholder="Override command or intervene..." type="text"/>
+<button class="absolute right-sm w-8 h-8 bg-primary-container rounded-lg flex items-center justify-center text-on-primary-container hover:brightness-110 transition-all">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">send</span>
+</button>
+</div>
+</div>
+</body></html>

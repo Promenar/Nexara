@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Core Memory</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error": "#690005",
+                        "inverse-surface": "#e5e1e4",
+                        "background": "#131315",
+                        "surface-dim": "#131315",
+                        "on-surface": "#e5e1e4",
+                        "on-secondary-fixed-variant": "#47464a",
+                        "secondary-container": "#47464a",
+                        "outline-variant": "#464554",
+                        "on-tertiary-fixed-variant": "#703700",
+                        "inverse-primary": "#494bd6",
+                        "on-tertiary-fixed": "#301400",
+                        "surface-container-highest": "#353437",
+                        "tertiary-fixed": "#ffdcc5",
+                        "tertiary": "#ffb783",
+                        "surface-variant": "#353437",
+                        "primary": "#c0c1ff",
+                        "on-error-container": "#ffdad6",
+                        "primary-fixed-dim": "#c0c1ff",
+                        "surface-tint": "#c0c1ff",
+                        "on-primary-fixed": "#07006c",
+                        "error-container": "#93000a",
+                        "surface-container-lowest": "#0e0e10",
+                        "tertiary-fixed-dim": "#ffb783",
+                        "surface-container-high": "#2a2a2c",
+                        "on-secondary-fixed": "#1b1b1e",
+                        "inverse-on-surface": "#313032",
+                        "surface-bright": "#39393b",
+                        "on-primary-container": "#0d0096",
+                        "secondary-fixed-dim": "#c8c5ca",
+                        "on-surface-variant": "#c7c4d7",
+                        "outline": "#908fa0",
+                        "primary-fixed": "#e1e0ff",
+                        "surface-container-low": "#1c1b1d",
+                        "on-background": "#e5e1e4",
+                        "on-secondary-container": "#b6b4b8",
+                        "on-primary": "#1000a9",
+                        "surface": "#131315",
+                        "primary-container": "#8083ff",
+                        "on-primary-fixed-variant": "#2f2ebe",
+                        "tertiary-container": "#d97721",
+                        "error": "#ffb4ab",
+                        "secondary": "#c8c5ca",
+                        "secondary-fixed": "#e4e1e6",
+                        "on-tertiary-container": "#452000",
+                        "on-tertiary": "#4f2500",
+                        "on-secondary": "#303033",
+                        "surface-container": "#201f22"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px",
+                        "2xl": "1rem"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "unit": "4px",
+                        "gutter": "16px",
+                        "lg": "24px",
+                        "xl": "32px",
+                        "safe-margin": "20px"
+                    },
+                    "fontFamily": {
+                        "h2": ["Manrope", "sans-serif"],
+                        "label-md": ["Inter", "sans-serif"],
+                        "body-lg": ["Inter", "sans-serif"],
+                        "code": ["Space Grotesk", "monospace"],
+                        "body-md": ["Inter", "sans-serif"],
+                        "h1": ["Manrope", "sans-serif"]
+                    },
+                    "fontSize": {
+                        "h2": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "label-md": ["13px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "body-lg": ["17px", { "lineHeight": "26px", "fontWeight": "400" }],
+                        "code": ["14px", { "lineHeight": "22px", "fontWeight": "400" }],
+                        "body-md": ["15px", { "lineHeight": "25px", "fontWeight": "400" }],
+                        "h1": ["24px", { "lineHeight": "32px", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .inner-shadow-sm { box-shadow: inset 0 1px 2px 0 rgba(255, 255, 255, 0.05); }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 0.5px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background antialiased min-h-screen flex flex-col md:flex-row font-body-md text-body-md overflow-x-hidden">
+<!-- TopAppBar (Mobile & Web Context Header) -->
+<header class="fixed top-0 w-full z-50 bg-zinc-950/70 backdrop-blur-xl border-b border-white/[0.05] shadow-none flex items-center justify-between px-5 h-16 md:hidden">
+<button class="text-indigo-400 hover:bg-white/5 transition-colors active:scale-95 duration-200 p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">menu</span>
+</button>
+<h1 class="font-h1 text-h1 text-indigo-500 tracking-tighter">Knowledge Base</h1>
+<div class="h-8 w-8 rounded-full bg-surface-container-high border border-white/10 flex items-center justify-center overflow-hidden">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="A futuristic, stylized avatar of an AI user profile in dark mode. The avatar is rendered with subtle neon indigo accents against a deep zinc background, conveying a high-tech, premium identity suitable for a sophisticated intelligent system." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-VJnCicP4JUVz-XRUy4C8qw9xT13bHL9tjC_HCtC3g9IkNHnSWh2zTufTk5slLkeQsQ8cAWbPdncULwXpGk0dfYbakkEhNkIJ1BuqJ46Chd0NuZepTtzWass8uZz2-WKK-metB4nJmXbPmIa7xLayex6Nym2CMYoa76IwhUAbM5d0bEG6DRGiTvxcH1_I-cShr3R5vDWEu4MJNtI9-DvUHeSkptiZXU3mv20eOKXzOsM0-10lhEY8E-iDbz1wkQONX1AH7g3-C2rn"/>
+</div>
+</header>
+<!-- Navigation Drawer (Web SideNav) -->
+<nav class="hidden md:flex flex-col h-screen py-8 px-6 bg-zinc-950/95 backdrop-blur-3xl h-full w-80 border-r border-r border-white/10 shadow-2xl shadow-black transition-all duration-300 ease-in-out fixed left-0 z-40">
+<div class="flex items-center gap-4 mb-10">
+<div class="h-12 w-12 rounded-full bg-surface-container-highest border border-white/10 overflow-hidden flex-shrink-0">
+<img alt="User Avatar" class="w-full h-full object-cover" data-alt="A detailed, premium avatar depicting an abstract representation of an 'Intelligence Core' user profile. Rendered in a deep, dark glassmorphic style with subtle glowing indigo highlights, fitting for an advanced AI interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDuNLo9FDWzI5vYYhi0OwQc0yU9gbHIJSy0WgqnfQDVMkbeWKuX7SPNS4bll8ENqc7fq2Ob2th8CRW9lYEdUL3wduiRIHdr8FLUakl88A-faP50qXSb9n3bG5ZRnZO6ZF_eSNUKbGhviujrWAOVuAl_Li1gFbBKpnzYZtWk3nDmDzz5QyZqJZ0nPMxX1cdLch5dtET9lVptzZZ-kdP9MLthpgosyTyLDuM5BeAwhVMyq2LeVDk0QJ6iejc13_0ecEn2ETrWnx5KPZTJ"/>
+</div>
+<div class="flex flex-col">
+<span class="font-h2 text-h2 text-indigo-500 font-black">Intelligence Core</span>
+<span class="font-label-md text-label-md text-zinc-400">Premium Tier • v2.4.0</span>
+</div>
+</div>
+<div class="flex flex-col gap-2 mt-4">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-zinc-400 hover:text-zinc-100 hover:bg-white/[0.02] font-body-md text-body-md transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">history</span>
+                Recents
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-zinc-400 hover:text-zinc-100 hover:bg-white/[0.02] font-body-md text-body-md transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">star</span>
+                Starred
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg bg-white/5 text-indigo-400 border-r-2 border-indigo-500 font-body-md text-body-md transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">description</span>
+                Documents
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-zinc-400 hover:text-zinc-100 hover:bg-white/[0.02] font-body-md text-body-md transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">account_tree</span>
+                Graph View
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-zinc-400 hover:text-zinc-100 hover:bg-white/[0.02] font-body-md text-body-md transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">archive</span>
+                Archived
+            </a>
+</div>
+</nav>
+<!-- Main Canvas -->
+<main class="flex-1 mt-16 md:mt-0 md:ml-80 pb-24 md:pb-8 pt-6 px-safe-margin max-w-4xl mx-auto w-full flex flex-col gap-lg">
+<!-- Header -->
+<div class="flex flex-col gap-2">
+<h1 class="font-h1 text-h1 text-on-background">Core Memory</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Manage your saved preferences, facts, and context for personalized interactions.</p>
+</div>
+<!-- Core Memory List (FlashList equivalent) -->
+<div class="flex flex-col gap-sm">
+<!-- Preference Card -->
+<div class="glass-panel rounded-2xl p-md inner-shadow-sm flex flex-col gap-sm transition-all duration-200 active:scale-[0.98] group hover:border-white/20">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-primary" style="font-variation-settings: 'FILL' 1;">psychology</span>
+<span class="font-label-md text-label-md px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 uppercase">PREFERENCE</span>
+</div>
+<button class="text-on-surface-variant hover:text-error transition-colors p-1 rounded-md hover:bg-error/10 opacity-0 group-hover:opacity-100 focus:opacity-100">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+<p class="font-body-lg text-body-lg text-on-surface">Prefers concise, bulleted responses over long paragraphs for technical explanations.</p>
+</div>
+<!-- Fact Card -->
+<div class="glass-panel rounded-2xl p-md inner-shadow-sm flex flex-col gap-sm transition-all duration-200 active:scale-[0.98] group hover:border-white/20">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-secondary" style="font-variation-settings: 'FILL' 1;">psychology</span>
+<span class="font-label-md text-label-md px-2 py-0.5 rounded-full bg-secondary/10 text-secondary border border-secondary/20 uppercase">FACT</span>
+</div>
+<button class="text-on-surface-variant hover:text-error transition-colors p-1 rounded-md hover:bg-error/10 opacity-0 group-hover:opacity-100 focus:opacity-100">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+<p class="font-body-lg text-body-lg text-on-surface">Primary programming language is TypeScript; currently working on a React Native application.</p>
+</div>
+<!-- Context Card -->
+<div class="glass-panel rounded-2xl p-md inner-shadow-sm flex flex-col gap-sm transition-all duration-200 active:scale-[0.98] group hover:border-white/20">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-tertiary" style="font-variation-settings: 'FILL' 1;">psychology</span>
+<span class="font-label-md text-label-md px-2 py-0.5 rounded-full bg-tertiary/10 text-tertiary border border-tertiary/20 uppercase">CONTEXT</span>
+</div>
+<button class="text-on-surface-variant hover:text-error transition-colors p-1 rounded-md hover:bg-error/10 opacity-0 group-hover:opacity-100 focus:opacity-100">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+<p class="font-body-lg text-body-lg text-on-surface">Working in GMT+1 timezone. Available for deep work sessions between 10:00 AM and 2:00 PM.</p>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Nav) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-20 pb-safe px-4 bg-zinc-900/60 backdrop-blur-2xl rounded-t-2xl border-t border-white/[0.08] inner-shadow-sm">
+<button class="flex flex-col items-center justify-center text-zinc-500 hover:text-zinc-200 active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-[24px]">folder_open</span>
+<span class="font-label-md text-[10px] font-semibold uppercase tracking-widest mt-1">Library</span>
+</button>
+<button class="flex flex-col items-center justify-center text-indigo-400 relative after:content-[''] after:absolute after:-bottom-1 after:w-1 after:h-1 after:bg-indigo-500 after:rounded-full hover:text-zinc-200 active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1;">psychology</span>
+<span class="font-label-md text-[10px] font-semibold uppercase tracking-widest mt-1">Memory</span>
+</button>
+<button class="flex flex-col items-center justify-center text-zinc-500 hover:text-zinc-200 active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-[24px]">hub</span>
+<span class="font-label-md text-[10px] font-semibold uppercase tracking-widest mt-1">Graph</span>
+</button>
+<button class="flex flex-col items-center justify-center text-zinc-500 hover:text-zinc-200 active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-[24px]">settings</span>
+<span class="font-label-md text-[10px] font-semibold uppercase tracking-widest mt-1">Settings</span>
+</button>
+</nav>
+</body></html>

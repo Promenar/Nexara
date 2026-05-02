@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@600;700;800&amp;family=Space+Grotesk:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<title>Welcome to Nexara</title>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed-dim": "#c8c5ca",
+                        "on-background": "#e5e1e4",
+                        "outline": "#908fa0",
+                        "on-secondary": "#303033",
+                        "primary-fixed": "#e1e0ff",
+                        "on-tertiary-fixed-variant": "#703700",
+                        "secondary-fixed": "#e4e1e6",
+                        "on-primary-container": "#0d0096",
+                        "on-tertiary-fixed": "#301400",
+                        "secondary": "#c8c5ca",
+                        "surface-tint": "#c0c1ff",
+                        "on-secondary-container": "#b6b4b8",
+                        "on-primary-fixed-variant": "#2f2ebe",
+                        "on-secondary-fixed-variant": "#47464a",
+                        "on-error-container": "#ffdad6",
+                        "outline-variant": "#464554",
+                        "on-tertiary": "#4f2500",
+                        "on-primary-fixed": "#07006c",
+                        "primary-container": "#8083ff",
+                        "inverse-on-surface": "#313032",
+                        "surface-variant": "#353437",
+                        "error": "#ffb4ab",
+                        "surface-container-low": "#1c1b1d",
+                        "surface": "#131315",
+                        "error-container": "#93000a",
+                        "on-primary": "#1000a9",
+                        "surface-dim": "#131315",
+                        "surface-container-highest": "#353437",
+                        "tertiary-container": "#d97721",
+                        "on-surface": "#e5e1e4",
+                        "surface-container-high": "#2a2a2c",
+                        "on-surface-variant": "#c7c4d7",
+                        "inverse-primary": "#494bd6",
+                        "background": "#131315",
+                        "primary-fixed-dim": "#c0c1ff",
+                        "on-tertiary-container": "#452000",
+                        "tertiary-fixed": "#ffdcc5",
+                        "on-error": "#690005",
+                        "tertiary": "#ffb783",
+                        "primary": "#c0c1ff",
+                        "surface-container": "#201f22",
+                        "secondary-container": "#47464a",
+                        "tertiary-fixed-dim": "#ffb783",
+                        "inverse-surface": "#e5e1e4",
+                        "surface-container-lowest": "#0e0e10",
+                        "surface-bright": "#39393b",
+                        "on-secondary-fixed": "#1b1b1e"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xl": "32px",
+                        "safe-margin": "20px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "xs": "4px",
+                        "sm": "8px",
+                        "unit": "4px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["inter"],
+                        "h2": ["manrope"],
+                        "label-md": ["inter"],
+                        "h1": ["manrope"],
+                        "code": ["spaceGrotesk"],
+                        "body-lg": ["inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["15px", {"lineHeight": "25px", "fontWeight": "400"}],
+                        "h2": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "label-md": ["13px", {"lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                        "h1": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "code": ["14px", {"lineHeight": "22px", "fontWeight": "400"}],
+                        "body-lg": ["17px", {"lineHeight": "26px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 0.5px solid rgba(255, 255, 255, 0.1);
+        }
+        .logo-stroke {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: draw 3s ease forwards;
+        }
+        @keyframes draw {
+            to { stroke-dashoffset: 0; }
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md selection:bg-primary/30 antialiased overflow-hidden">
+<!-- Radial Glow Background -->
+<div class="fixed inset-0 pointer-events-none overflow-hidden">
+<div class="absolute -top-1/4 -left-1/4 w-1/2 h-1/2 bg-primary/10 rounded-full blur-[120px]"></div>
+<div class="absolute -bottom-1/4 -right-1/4 w-1/2 h-1/2 bg-tertiary/5 rounded-full blur-[120px]"></div>
+</div>
+<!-- Main Canvas -->
+<main class="relative z-10 flex flex-col items-center justify-center min-h-screen px-safe-margin w-full max-w-md mx-auto text-center">
+<!-- Animated High-Fidelity Logo Section -->
+<div class="mb-xl flex flex-col items-center">
+<div class="w-48 h-16 relative mb-sm">
+<!-- SVG Logo with Manrope Bold path representation -->
+<svg class="w-full h-full" fill="none" viewbox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+<text class="font-h1 font-extrabold fill-none stroke-primary stroke-[0.8] logo-stroke" style="font-family: 'Manrope', sans-serif; letter-spacing: -0.05em; font-size: 48px;" text-anchor="middle" x="50%" y="45">
+                        Nexara
+                    </text>
+</svg>
+</div>
+<!-- Subtitle -->
+<p class="text-secondary font-label-md tracking-[0.1em] opacity-80">
+                Select Language / 选择语言
+            </p>
+</div>
+<!-- Language Selection Controls -->
+<div class="w-full space-y-md mt-lg">
+<!-- Button: English -->
+<button class="w-full glass-panel group relative flex items-center justify-between px-lg py-md rounded-[18px] active:scale-95 transition-all duration-200">
+<div class="flex items-center gap-md">
+<div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px] text-primary">language</span>
+</div>
+<span class="font-h2 text-on-background">English</span>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">arrow_forward_ios</span>
+</button>
+<!-- Button: Chinese -->
+<button class="w-full glass-panel group relative flex items-center justify-between px-lg py-md rounded-[18px] active:scale-95 transition-all duration-200">
+<div class="flex items-center gap-md">
+<div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px] text-primary">translate</span>
+</div>
+<span class="font-h2 text-on-background">中文 (简体)</span>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">arrow_forward_ios</span>
+</button>
+</div>
+<!-- Footer / Ambient Graphic -->
+<div class="absolute bottom-12 left-0 right-0 flex flex-col items-center opacity-40">
+<div class="h-[1px] w-24 bg-gradient-to-r from-transparent via-outline to-transparent mb-md"></div>
+<p class="font-label-md text-outline uppercase tracking-widest">Intelligence Reimagined</p>
+</div>
+</main>
+<!-- Content Background Image for Aesthetic Depth -->
+<div class="fixed inset-0 -z-20 opacity-20 mix-blend-overlay">
+<img alt="Background Atmosphere" class="w-full h-full object-cover" data-alt="A dark and sophisticated abstract background featuring fluid, dark-matter like shapes with subtle indigo and violet light reflections. The composition is clean and minimalist, evoking a sense of deep intelligence and professional precision. High-fidelity glassmorphic blurs and fine digital grain textures add to the premium, technical aesthetic of the interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBn3ITJZb9IJtxFM8OhdU5K9820YAjSUDMfDgurUzBfEJU4zmi1A9psi_a0T25LgUWQmwSFmAKJhEag_JtoxYbnS6Hox78qOC-G2a1cOZCZCWiRAWAOJRFJ045vFX2CT_4LpfVra9oUGsH9zxNurbwio0DfNJ_jJztmkuMWdMQqEperWYDTjwoKNvG2Uo_8Re6myXhQcyYelil8Qin0gFdo4ae2njmBx3b-YWhBkwiz42FL_KdoyVHfmsqFu6v5z2qiqSP0Ni1roJBG"/>
+</div>
+</body></html>
