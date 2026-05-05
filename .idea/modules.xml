@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/NeuralFlow.iml" filepath="$PROJECT_DIR$/.idea/NeuralFlow.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/Nexara.iml" filepath="$PROJECT_DIR$/.idea/Nexara.iml" />
     </modules>
   </component>
 </project>

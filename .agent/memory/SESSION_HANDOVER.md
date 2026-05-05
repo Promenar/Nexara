@@ -1,8 +1,52 @@
-# SESSION HANDOVER (2026-04-22)
+# SESSION HANDOVER (2026-05-04)
 
 ---
 
-## Agent 全自动测试框架建设 (已完成)
+## Done (已完成)
+
+### 功能迁移对齐审计
+- ✅ `.agent/docs/audits/functional-migration-alignment-audit-2026-05-04.md` — RN→Kotlin 逐页对比审计 (原对齐度 25%)
+
+### 修复方案规划
+- ✅ `.agent/docs/plans/fix-functional-gaps-plan.md` — 6 Session 规划 + 工作量估算
+- ✅ 6 个 OpenCode 指令模板 (G0–G5)
+
+### OpenCode 6-Session 执行 & 审计
+- ✅ **G0**: 23 个全局组件 (超额)
+- ✅ **G1**: 导航参数修复 + 3 Tab 结构
+- ✅ **G2**: Agent 编辑器/B3 完整
+- ✅ **G3**: 会话设置弹窗/C3 + 聊天增强
+- ✅ **G4**: 设置首页重写 + 零硬编码
+- ✅ **G5**: 知识图谱/D4 + 文档编辑器/D3
+- ✅ **编译通过**: 22.9MB APK (2026/5/4 17:56)
+- ✅ `.agent/docs/audits/opencode-delivery-audit-2026-05-04.md` — 交付审计报告
+
+### 迁移进度
+- 功能对齐度: **25% → ~85%**
+- P0/P1 问题: **全部修复**
+- 代码量: **新增 ~16000+ 行**，69 个 .kt 文件
+
+---
+
+## Next Steps
+
+1. **模拟器验收测试**: 走通 Agent 创建→编辑→会话→聊天→设置 完整流程
+2. **知识库流程测试**: 上传文档→RAG 配置→高级检索→知识图谱
+3. **提供商管理测试**: 添加→编辑→管理模型→Token 统计
+4. **Markdown 渲染库集成**: 替换自主实现的 MarkdownText
+
+---
+
+## Risks
+
+- KnowledgeGraph 使用模拟数据，需后续接入真实 VectorStore
+- MarkdownText 为基础实现，复杂语法支持有限
+- 部分 import 重复 (ChatScreen.kt) 需清理
+- **i18n 审计已出，~585 条字符串需外部化** (见 `i18n-multilingual-audit-2026-05-04.md`)，5 个 OpenCode Session 模板已就绪 (I0-I4)
+
+---
+
+## (已归档) Agent 全自动测试框架建设 (已完成)
 
 ### 已完成 (2026-04-22)
 - **Phase 1: 单元测试编写**
@@ -267,3 +311,66 @@ src/store/__tests__/
 ## Model Recommendation
 - **GLM-5**: 适合后续 Phase 1 验证和 Phase 2 决策
 - **DeepSeek V3.2**: 适合 Phase 2 WebView 原型开发（复杂架构设计）
+
+---
+
+## 本次会话 (2026-05-04) — B1-D3 迁移完整性审计 + 对接规划
+
+### Done
+- ✅ **B1-D3 完整性审计**: 对比原 TS 源码，逐模块评估对齐度
+  - B 阶段 (SSE 解析): **92分 A**
+  - C 阶段 (三协议 Provider): **90分 A**
+  - D 阶段 (集成+RAG+数据): **82分 B**
+  - **后端逻辑总分: 88分 A-**
+  - 前后端对接: 15分 F（ViewModel 层缺失）
+- ✅ **关键缺陷识别**:
+  - C1: 双状态系统 (NexaraStateStore vs ChatStore)
+  - C2: 无 ViewModel 层
+  - C3: RAG UI 静态骨架
+  - C4: PostProcessor.archiveToRag() 空实现
+  - C5: image-service.ts 未迁移
+- ✅ **对接规划**: 5 Phase 对接路线图
+  - Phase 1: ViewModel 桥梁搭建
+  - Phase 2: 消除双状态系统
+  - Phase 3: ChatScreen 接入真实管线 ← MVP 里程碑
+  - Phase 4: RAG UI 激活
+  - Phase 5: 补齐缺失模块
+- ✅ **审计报告**: `.agent/docs/audits/b1-d3-migration-completeness-audit.md`
+
+### Next Steps
+- [x] ~~OpenCode Session A~~: Phase 1+2 ✅ 已完成 (4 ViewModel + 双状态消除)
+- [x] ~~OpenCode Session B~~: 通用 UI 组件 ✅ 已完成 (9 个组件)
+- [x] ~~OpenCode Session C~~: 设置页面 ✅ 已完成 (6 页面 + 导航)
+- [x] ~~OpenCode Session D~~: RAG UI 激活 ✅ 已完成
+- [x] ~~OpenCode 审计 + 修复 F1/F2/F3~~ ✅ 已完成
+
+### 全量迁移数据 (2026-05-04 12:40)
+- **119 主源码 + 24 测试 = 143 Kotlin 文件**
+- 后端逻辑 88 分 A- | 前后端对接 ~85 分
+- 14 导航路由 | 5 ViewModel | 18 Screen | 11 通用组件
+- 仅剩 2 个低优先级遗留项
+- **可进入 Android Studio 模拟器实时测试**
+
+### Risks
+- Windows 环境 JAVA_HOME 未配置，需先安装 JDK 17
+- LLM 调用需在 Settings→Provider Form 填入真实 API Key
+- ProviderModels/TokenUsage/Skills 三个设置页数据仍为硬编码 (P2)
+- ChatViewModel 集成测试未创建 (P3)
+
+### Active Plan
+- 分支: `native-kotlin-refactor`
+- 模块: `native-ui/` (独立 Android 项目)
+- 阶段: **M1 — Android Studio 模拟器验证**
+- [ ] **OpenCode Session 4-5**: Phase 5 (补齐缺失模块)
+
+### Risks
+- Manager 层为"死代码"，需 ViewModel 串联才能验证端到端流程
+- 三协议实际 API 调用未经实机验证（需 MiniMax/VertexAI 密钥）
+- Room v1 无 Migration 策略，后续 schema 变更会丢数据
+- 旧 Models.kt (Agent/ChatSession/ChatMessage) 删除前需确认所有引用已清理
+
+### Active Plan
+- 分支: `native-kotlin-refactor`
+- 模块: `native-ui/` (独立 Android 项目)
+- 审计报告: `.agent/docs/plans/b1-d3-migration-completeness-audit.md`
+- OpenCode 指令模板: `.agent/docs/plans/opencode-migration-templates.md`
