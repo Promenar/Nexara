@@ -10,7 +10,10 @@
   - 在 `RagViewModel` 中实现了 `SharedPreferences` 存储，覆盖了 30+ 项 RAG 配置参数。
   - 移除了 `RagAdvancedScreen` 中的 mock 抽取模型列表，改为从 `nexara_settings` 动态加载已配置模型。
   - 修复了抽取模型选择器点击后列表为空及显示名称不匹配的问题。
-- **文档同步**: 更新了 `CHANGELOG.md` 至 v1.3.0，并增加了 RAG 专项说明。
+- **知识图谱可视化真实对接**: 修复了知识图谱可视化界面使用 Mock 数据的问题，现已对接数据库真实实体数据。
+  - 实现了 `KnowledgeGraphViewModel` 用于管理图谱状态与随机坐标布局生成。
+  - 在顶栏新增了“注入测试数据”与“清空图谱”调试按钮。
+- **文档同步**: 更新了 `CHANGELOG.md` 至 v1.3.0，并更新了交接文档与 DAO 接口。
 
 ## Next Steps
 - 持续观察 RAG 设置在复杂场景下的持久化稳定性（如系统低内存回收后的恢复）。
@@ -21,8 +24,8 @@
 - `kgExtractionModel` ID 在对应的 Provider 被删除时，UI 目前仅显示“未选择”，需引导用户重新选择。
 
 ## DIA Status
-- **CHANGELOG.md**: 已更新。
-- **handover.md**: 已更新。
+- **CHANGELOG.md**: 已更新图谱对接说明。
+- **handover.md**: 已同步最新进度。
 - **registry.md**: 无变更。
 - **ARCHITECTURE.md**: 本项目暂无此文件。
 - **strings.xml**: 已补全缺失的国际化字符串。
