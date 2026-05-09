@@ -26,6 +26,7 @@
 
 | ID | 任务名称 | 完成时间 | 实施方案 (Archive) | 验证结论 |
 | :--- | :--- | :--- | :--- | :--- |
+| **---** | **原生 UI 高度与一致性优化** | 2026-05-09 | N/A | 全站 Modal 高度限制 (70%)，消息气泡全宽化，设置界面精简，模型持久化修复。 |
 | **---** | **移动端视觉与性能审计** | 2026-02-17 | [mobile-visual-performance-audit-2026-02-17.md](docs/plans/mobile-visual-performance-audit-2026-02-17.md) | 16项修复完成，6项跳过。版本 v1.2.64-v1.2.73 |
 | **008** | **Markdown 预处理器修复** | 2026-02-11 | [markdown-preprocessing-guide.md](docs/archive/markdown-preprocessing-guide.md) | 7 条幂等正则，DeepSeek/Gemini 双模型验证通过。 |
 | **003** | **全局动画升级** | 2026-02-03 | [003_global_animation_upgrade_done.md](docs/archive/003_global_animation_upgrade_done.md) | 全面回归原生 (System Default/Fade)，移除 JS 动画。 |

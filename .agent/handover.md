@@ -1,35 +1,49 @@
-# 跨会话交接
+# 交接文档 (Handover)
 
-## Done
-- **模型过滤逻辑修复**: 彻底解决了原生 Android 设置页面中功能模型选择器（摘要、图像、嵌入、重排）列表为空的问题。
-  - 通过在 `UserSettingsHomeScreen` 整合模型的 `type` 与 `capabilities` 字段，确保所有功能模型在 UI 映射层都能获得正确的 `ModelCapability` 标签。
-  - 修复了 `ModelItem` 映射过程中 `contextLength` 丢失的问题。
-- **UI 增强**: 在原生版本 `ProviderModelsScreen` 中补充了缺失的“图片”、“嵌入”、“重排”功能标签，防止在编辑过程中丢失元数据，并支持手动配置。
-- **规格库更新**: 补全了 `native-ui` 中 `ModelSpecs.kt` 的常用模型规格，与 Web 端对齐。
-- **Native RAG 持久化与动态模型修复**: 解决了原生 Android 版本高级 RAG 设置无法保存和抽取模型 mock 数据的问题。
-  - 在 `RagViewModel` 中实现了 `SharedPreferences` 存储，覆盖了 30+ 项 RAG 配置参数。
-  - 移除了 `RagAdvancedScreen` 中的 mock 抽取模型列表，改为从 `nexara_settings` 动态加载已配置模型。
-  - 修复了抽取模型选择器点击后列表为空及显示名称不匹配的问题。
-- **知识图谱可视化真实对接**: 修复了知识图谱可视化界面使用 Mock 数据的问题，现已对接数据库真实实体数据。
-  - 实现了 `KnowledgeGraphViewModel` 用于管理图谱状态与随机坐标布局生成。
-  - 在顶栏新增了“注入测试数据”与“清空图谱”调试按钮。
-- **会话设置面板重构**: 彻底修复了 `SessionSettingsSheet` 的 Mock 数据和视觉 Bug。
-  - 修复了顶部标签栏的“紫色色块”渲染问题，优化了指示器表现。
-  - 实现了模型选择、思考等级（温度控制）、Token 统计以及工具开关的全量后端对接。
-- **文档同步**: 更新了 `CHANGELOG.md` 至 v1.3.0，并更新了交接文档与 DAO 接口。
+## 项目状态
+- **当前版本**: v1.1.0-alpha
+- **核心目标**: 全链路断链修复已完成
 
-## Next Steps
-- 持续观察 RAG 设置在复杂场景下的持久化稳定性（如系统低内存回收后的恢复）。
-- 已修复 `AgentEditScreen` 的布局崩溃问题，重构了头像设置 UI 以支持动态折叠与自定义图片，并完成了所有字段的前后端对接与持久化。
-- 建议未来考虑将 RAG 配置统一化存储，避免多屏重复定义 persistence key（当前已通过 ViewModel 统一管理，风险较低）。
+## 已完成事项 (Done)
 
-## Risks
-- 如果用户手动清除了应用数据，RAG 设置将重置为全局默认。
-- `kgExtractionModel` ID 在对应的 Provider 被删除时，UI 目前仅显示“未选择”，需引导用户重新选择。
+### 断链修复（全部通过验收）
+| 会话 | 任务 | 状态 |
+|------|------|------|
+| S1 | RAG 检索接入主链路 | ✅ 已完成 |
+| S2 | 记忆归档 + KG 注入 | ✅ 已完成 |
+| S3 | Tools 注入 + Agent Loop | ✅ 已完成 |
+| S4 | SkillRegistry 基础实现 | ✅ 已完成 |
+| S5 | ChatViewModel 杂项修复 | ✅ 已完成 |
 
-## DIA Status
-- **CHANGELOG.md**: 已更新图谱对接说明。
-- **handover.md**: 已同步最新进度。
-- **registry.md**: 无变更。
-- **ARCHITECTURE.md**: 本项目暂无此文件。
-- **strings.xml**: 已补全缺失的国际化字符串。
+### 新增文件
+- `data/rag/MemoryManagerRagAdapter.kt` — RAG 适配层
+- `data/rag/MicroGraphKgAdapter.kt` — KG 适配层
+- `ui/chat/manager/DefaultSkillRegistry.kt` — Skill 注册中心
+- `ui/chat/manager/skills/CurrentTimeSkill.kt` — 内置时间 Skill
+- `ui/chat/manager/skills/CalculatorSkill.kt` — 内置计算 Skill
+
+### 之前已完成
+- 全局 Modal 高度限制、启动界面逻辑、设置界面精简、消息气泡优化、模型管理清洗、流式传输修复
+
+## 下一步计划 (Next Steps)
+1. **Markdown 富文本渲染大修**（5 个独立会话，详见 `.agent/plans/20260510-MD-S*.md`）
+   - MD-S1: 依赖集成 + MarkdownText 重写 + ChatBubble 接入
+   - MD-S2: 代码块增强（语法高亮 + 复制按钮 + 语言标签）
+   - MD-S3: WebView 沙箱基座 + LaTeX 数学公式渲染
+   - MD-S4: Mermaid 流程图 + ECharts 图表渲染
+   - MD-S5: 流式渲染优化 + ThinkingBlock 接入
+2. **编译验证**: 在 Android Studio 中执行完整编译，确认无编译错误
+3. **集成测试**: 测试 RAG 记忆检索 + KG 图谱注入的实际效果
+4. **MCP 客户端实现**: 当前 MCP 仍为 Mock UI，需实现协议客户端
+5. **更多内置 Skills**: 扩展文件操作、网络搜索等实用 Skill
+6. **文档同步**: 更新 ARCHITECTURE.md 和 CHANGELOG.md
+
+## 风险与阻塞 (Risks)
+- Agent Loop 最终轮回复不参与 archiveToRag（设计取舍，可后续优化）
+- `buildToolList` 中使用 `as? DefaultSkillRegistry` cast，如果后续有其他 SkillRegistry 实现需要调整
+- `microGraphExtractor` 的 `protocol` 依赖 `llmProvider.protocol`，provider 切换后需要重建
+
+## DIA 状态
+- **handover.md**: ✅ 已更新
+- **ARCHITECTURE.md**: 待更新（新增 5 个文件需记录）
+- **CHANGELOG.md**: 待更新（断链修复需记录）
