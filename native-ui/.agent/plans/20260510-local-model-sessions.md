@@ -770,18 +770,7 @@ import kotlinx.coroutines.flow.*
 
 enum class SlotType { MAIN, EMBEDDING, RERANK }
 
-data class LoadConfig(
-    val contextSize: Int = 2048,
-    val nThreads: Int = GpuDetector.recommendedThreadCount(),
-    val useGpu: Boolean = GpuDetector.supportsVulkan()
-)
-
-data class GenerateConfig(
-    val maxTokens: Int = 512,
-    val temperature: Float = 0.7f,
-    val topP: Float = 0.9f,
-    val stopSequences: List<String> = emptyList()
-)
+// LoadConfig / GenerateConfig 已在 InferenceBackend.kt 中定义（S-1 产出），直接 import 即可
 
 data class SlotState(
     val modelPath: String? = null,
@@ -817,10 +806,11 @@ class LlamaCppBackend : InferenceBackend {
     override suspend fun loadModel(path: String, config: LoadConfig): Result<Unit> {
         return withContext(Dispatchers.IO) {
             try {
+                // 注意: S-1 产出的 LoadConfig 字段名为 threadCount（非 nThreads）
                 val loadedCtx = LlamaContext.load(
                     modelPath = path,
                     contextSize = config.contextSize,
-                    nThreads = config.nThreads,
+                    nThreads = config.threadCount,
                     useGpu = config.useGpu
                 ) ?: throw IllegalStateException("Failed to load model: $path")
                 
@@ -833,28 +823,18 @@ class LlamaCppBackend : InferenceBackend {
         }
     }
 
-    override fun generate(prompt: String, config: GenerateConfig): Flow<String> = flow {
+    /**
+     * 流式生成。
+     * S-1 的 LlamaContext.generate() 已修正生成流程:
+     *   clear() → tokenize → ingestPrompt → sample(首个token) → 循环 decode
+     * 消除了原方案 decode(promptTokens.last()) 重复处理最后一个 token 的 bug。
+     *
+     * 注意: 当前 native 层采样策略固定为 greedy。
+     * GenerateConfig.temperature/topP/topK/repeatPenalty 字段保留供远期扩展。
+     */
+    override fun generate(prompt: String, config: GenerateConfig): Flow<String> {
         val context = ctx ?: throw IllegalStateException("No model loaded")
-        
-        val promptTokens = context.tokenize(prompt, addBos = true)
-        if (promptTokens.isEmpty()) throw IllegalStateException("Failed to tokenize")
-        
-        context.ingestPrompt(promptTokens)
-        
-        val eosToken = context.getEosToken()
-        var currentToken = promptTokens.last()
-        var tokenCount = 0
-        
-        while (tokenCount < config.maxTokens) {
-            val nextToken = context.decode(currentToken)
-            if (nextToken < 0 || nextToken == eosToken) break
-            
-            val text = context.detokenize(intArrayOf(nextToken))
-            if (text.isNotEmpty()) emit(text)
-            
-            currentToken = nextToken
-            tokenCount++
-        }
+        return context.generate(prompt, config.maxTokens)
     }
 
     override suspend fun embed(text: String): Result<FloatArray> {
@@ -1074,11 +1054,14 @@ class LocalInferenceEngine(private val appContext: Context) {
 7. **架构验证**: 代码中不存在 `LlamaContext` 的直接引用（全部通过 `InferenceBackend` 接口）
 
 【关键设计决策】
+- **生成流程修正**：S-1 新增了 `nativeSample`/`nativeClear`，generate 改为 `clear→tokenize→ingest→sample→decode` 循环。`LlamaCppBackend.generate()` 直接委托给 `ctx.generate()`，消除原方案 decode(promptTokens.last()) 重复处理末尾 token 的 bug
+- **采样限制**：当前 native 层固定 greedy 采样。`GenerateConfig.temperature/topP/topK` 字段保留供远期扩展，当前不生效
 - Reranker 简化实现：使用 embedding 余弦相似度 fallback（无需专用 reranker 模型即可工作）
 - backendType 字段替代旧的 gpuAccelerated boolean，为 NPU 类型预留扩展空间
 - 未来新增后端实现类时：只需新建 `XxxBackend : InferenceBackend`，引擎代码零改动
 - GPU 加速默认启用（如果设备支持 Vulkan），通过 LoadConfig.useGpu 可关闭
 - 所有模型加载在 IO 线程，状态通过 StateFlow 暴露给 UI 层
+- **注意字段名**：S-1 产出的 `LoadConfig` 字段名为 `threadCount`，非原方案的 `nThreads`
 ```
 
 ---

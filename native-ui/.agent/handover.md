@@ -2,39 +2,30 @@
 
 ## 会话概况
 - **时间**: 2026-05-10
-- **核心任务**: 审计 native-ui 端侧本地模型功能完整性，确认占位符状态并规划补完实施方案
+- **核心任务**: RAG 体验细化与流式会话稳定性优化
 
 ## Done
-- [x] **审计完成**: 确认 `LocalModelsScreen` 及全套端侧推理链路为 100% 占位符（零 ML 依赖、零推理代码、零模型文件）
-- [x] **技术选型**: llama.cpp + JNI 绑定 + GGUF 格式 + Vulkan GPU 加速
-- [x] **方案文档**: 创建 `.agent/plans/20260510-local-model-implementation.md`，含 6 阶段 14-22 天实施计划
-- [x] **文档同步**: 更新 `AGENTS.md`、`ARCHITECTURE.md`、`CHANGELOG.md`、`handover.md`
-
-## TS 原版参考对照表
-
-| 模块 | TS 原版 | Kotlin 待实现 |
-|------|---------|---------------|
-| 推理状态管理 | `LocalModelServer.ts` | `LocalInferenceEngine.kt` |
-| 模型文件管理 | `ModelStorageManager.ts` | `ModelStorageManager.kt` |
-| LLM 协议适配 | `local-llm.ts` | `LocalProtocol.kt` |
-| JNI 桥接 | `llama.rn` npm 包 | `cpp/native-lib.cpp` |
-| 本地 Embedding | `embedding.ts:embedLocal()` | `LocalInferenceEngine.embed()` |
-| 本地 Reranker | `reranker.ts` | `LocalInferenceEngine.rerank()` |
-| 设置开关 | `settings-store.ts:localModelsEnabled` | `SettingsViewModel.localModelsEnabled` |
+- [x] **RAG 设置标准化**:
+    - 统一使用 `ModelPicker` 替换手动模型选择器。
+    - 在 KG 抽取模型选择中实装 `filterTag="chat"` 过滤。
+    - 重命名“连接知识服务器”为“启用混合搜索”，实装可观测性开关。
+- [x] **流式 UI 优化**:
+    - `ThinkingBlock` 增加 `LaunchedEffect` 实现内容流式输出时自动展开。
+    - 引入 `MarkdownText` 渲染思考内容。
+- [x] **网络协议层加固**:
+    - `OpenAIProtocol` 增加 30s 读超时保护（`withTimeoutOrNull`）。
+    - 宽松 SSE 解析逻辑，支持 `data:` 无空格格式。
+    - 修复 `ThinkingDetector` 的边界提取逻辑，增加 `flush` 机制确保内容完整性。
+- [x] **文档同步**: 更新 `CHANGELOG.md` 及相关代码文档。
 
 ## Next Steps
-- [ ] **Phase 1**: 引入 llama.cpp 依赖 + 编译 JNI 桥接层 + 冒烟测试
-- [ ] **Phase 2**: 实现 `LocalInferenceEngine` 三槽位推理引擎
-- [ ] **Phase 3**: 实现 `ModelStorageManager` GGUF 文件管理
-- [ ] **Phase 4**: 实现 `LocalProtocol` 并集成到现有 Provider 架构
-- [ ] **Phase 5**: 改造 `LocalModelsScreen` + `SettingsViewModel`
-- [ ] **Phase 6**: `NexaraApplication` 集成 + 生命周期管理
+- [ ] **RAG 向量检索验证**: 测试“启用混合搜索”开启后的实际检索链路连通性。
+- [ ] **流式内容截断处理**: 针对超长思考内容增加最大显示高度 and 滚动支持。
+- [ ] **本地模型 Phase 1**: 启动 llama.cpp 依赖引入与 JNI 桥接层编译。
 
 ## Risks
-- **JNI 稳定性**：llama.cpp JNI 层崩溃调试困难，需充分单元测试覆盖
-- **OOM 风险**：7B 模型在 4GB RAM 设备上可能 OOM，需实现内存监控和自动降级
-- **Vulkan 兼容性**：部分设备 Vulkan 驱动不完整，需自动检测降级 CPU NEON
-- **依赖选型风险**：当前使用社区维护的 llama-android AAR，需定期追踪上游变更
+- **SSE 厂商差异**: 虽增加了宽松解析，但部分非标准 Provider 可能仍有特殊结束符。
+- **内存压力**: 流式读取超大 buffer 结合 Markdown 频繁重组可能对低端机造成 GC 压力。
 
 ## DIA Status
-- **DIA: 已完成**。已更新 `AGENTS.md`（排除范围 → 待开发）、`ARCHITECTURE.md`（新增本地推理模块架构图）、`CHANGELOG.md`（记录审计与方案），方案文档已存档。
+- **DIA: 已完成**。更新了 `strings.xml`、`AdvancedRetrievalScreen`、`ChatInlineComponents`、`OpenAIProtocol`。CHANGELOG 已同步。
