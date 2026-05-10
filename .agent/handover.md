@@ -58,19 +58,32 @@
 |------|------|
 | 设置清理 (移除 Workbench, 优化技能页) | ✅ 已完成 |
 | 备份系统重构 (JSON + SAF + WebDAV) | ✅ 已完成 |
+| 模型管理优化 (名称显示、标签去重、闪退修复) | ✅ 已完成 |
+| UI 细节优化 (按钮高度、提供商图标修复) | ✅ 已完成 |
 
-### 新增文件
-- `data/repository/BackupRepository.kt` — 备份核心逻辑（压缩/解压/WebDAV）
-- `ui/settings/BackupViewModel.kt` — 备份业务 ViewModel
+### Done
+- **智能上下文管理系统核心逻辑**: 完成了滑动窗口、自动 RAG 归档、自动摘要触发以及 ContextBuilder 的摘要注入逻辑。
+- **聊天 UI 增强**: 
+    - 实现了输入栏上方的 Token 指示器（TokenIndicator），展示活跃上下文、摘要、RAG 等详细统计。
+    - 实现了手动触发摘要的功能，并集成在 Token 指示器的气泡菜单中。
+    - 聊天气泡增加了时间戳和模型标签（Model Badge）。
+    - 修复了思考块（Thinking Block）无法展开的问题，并美化了展示效果。
+    - 增加了消息操作菜单（复制、编辑、删除、重发/重新生成）。
+- **会话设置面板**:
+    - 在设置面板中增加了请求超时（Request Timeout）、自动摘要阈值（Auto-Summary Threshold）和活跃上下文窗口（Active Context Window）的调节滑块。
+    - 增加了被动 RAG（长期记忆/Rerank）的开关逻辑。
+- **文档同步**: 更新了 CHANGELOG.md 和 handover.md。
 
-## 下一步计划 (Next Steps)
-1. **本地模型推理实现**: 当前 `LocalModelsScreen` 为纯占位符，已创建完整实施方案（`native-ui/.agent/plans/20260510-local-model-implementation.md`），技术选型 llama.cpp + JNI + GGUF，6 阶段 14-22 天。Phase 1 可立即启动（引入依赖 + JNI 桥接层）
-2. **MCP 客户端实现**: 当前 MCP 仍为 Mock UI，需实现协议客户端
-3. **更多内置 Skills**: 扩展文件操作、网络搜索等实用 Skill
-4. **性能监控**: 监控 WebView 频繁加载对内存的影响并优化复用逻辑
-5. **单元测试**: 为 `splitRichSegments` 等正则解析逻辑添加 Unit Test
-6. **WebDAV 文件列表**: 当前 WebDAV 恢复功能需手动指定文件名，未来可增加远端文件列表选择。
-7. **自动化备份**: 接入 WorkManager 实现定时静默备份。
+## Next Steps
+1. **精确 Token 计算**: 目前 Token 计数基于估算（如 1 个汉字 = 1.5 token），需接入 tiktoken 或类似库实现精确计算。
+2. **模型参数动态联动**: 目前部分 maxTokens 为硬编码，需从模型配置中动态获取上限。
+3. **性能优化**: 在极长对话中，摘要生成的异步处理需要进一步观察稳定性。
+4. **测试验证**: 验证长对话在多轮触发摘要后的上下文保持能力。
+5. **更多内置 Skills**: 扩展文件操作、网络搜索等实用 Skill
+6. **性能监控**: 监控 WebView 频繁加载对内存的影响并优化复用逻辑
+7. **单元测试**: 为 `splitRichSegments` 等正则解析逻辑添加 Unit Test
+8. **WebDAV 文件列表**: 当前 WebDAV 恢复功能需手动指定文件名，未来可增加远端文件列表选择。
+9. **自动化备份**: 接入 WorkManager 实现定时静默备份。
 
 ## 风险与阻塞 (Risks)
 - Agent Loop 最终轮回复不参与 archiveToRag（设计取舍，可后续优化）
