@@ -72,7 +72,14 @@
 - **会话设置面板**:
     - 在设置面板中增加了请求超时（Request Timeout）、自动摘要阈值（Auto-Summary Threshold）和活跃上下文窗口（Active Context Window）的调节滑块。
     - 增加了被动 RAG（长期记忆/Rerank）的开关逻辑。
-- **文档同步**: 更新了 CHANGELOG.md 和 handover.md。
+- **缺陷修复**:
+    - 修复了第一个消息气泡“重发”导致消息清空的 P0 级 Bug。
+    - 修复了主会话模型选择器中包含 Embedding/Rerank 模型的筛选逻辑 Bug。
+- **聊天会话管理功能重构 (2026-05-11)**:
+    - 实现了“清除历史”、“重命名”和“删除会话”的核心业务逻辑与 UI 交互。
+    - 修复了 TopBar 菜单位置偏移问题。
+    - 完成了会话管理相关功能的国际化补全。
+- **文档同步**: 更新了 CHANGELOG.md、handover.md 并存档了实施计划。
 
 ## Next Steps
 1. **精确 Token 计算**: 目前 Token 计数基于估算（如 1 个汉字 = 1.5 token），需接入 tiktoken 或类似库实现精确计算。
