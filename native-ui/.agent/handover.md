@@ -1,32 +1,41 @@
 # Nexara 交接文档
 
-## 状态摘要 (2026-05-10)
-本次会话完成了 Nexara 原生 UI 的**聊天体验深度优化**，重点解决了消息管理、元数据展示及流式稳定性配置。
+## 状态摘要 (2026-05-12)
+本次会话完成了对 native-ui **提供商管理—模型管理—全站模型选择器**三大模块的深度审计，并制定了可分阶段并行执行的系统升级方案。
 
 ## 已完成工作 (Done)
-- **消息元数据**：
-    - 在消息气泡中实装了**时间戳**。
-    - 为 AI 消息增加了**模型 ID 标签**，方便追溯热切换模型后的推理来源。
-- **消息管理功能**：
-    - 实装了**长按消息菜单**（ModalBottomSheet），支持：**复制、删除、编辑、重新发送/生成**。
-    - 逻辑闭环：编辑用户历史消息时，自动删除该点之后的所有对话并重新开始。
-- **UI 细节打磨**：
-    - 移除了顶部的红色错误 Snackbar，改为气泡底部简洁的小字提醒。
-    - 修复了 `ChatBubble` 长按手势检测。
-- **超时控制体系**：
-    - 在会话设置的“推理参数”页增加了**请求超时滑块**（30s - 300s，默认 120s）。
-    - 协议层（OpenAIProtocol）已同步对接该配置，支持动态调整 SSE 流的读取超时。
+- **深度架构审计**：系统性分析了 ProviderFormScreen、SettingsViewModel、ModelSpecs、ModelPicker、各协议实现层的 5 大缺陷
+- **并行升级方案**：产出 `20260512-provider-model-parallel-audit.md`，包含 1 个基石阶段 + 3 个并行阶段 + 1 个集成验证阶段的详细拆分
+- **每个阶段包含完整提示词**：可直接在 Gemini 3 Flash 独立会话中执行
+
+## 已完成工作 (Done)
+- **Phase 0 (2026-05-12) — 基石层 ✅**：ProviderManager、ProtocolType sealed class、ModelSpecs 刷新、SettingsViewModel/NexaraApplication 重构
+- **Phase 1A/1B/1C (2026-05-12) — 并行执行 ✅** (Gemini 3 Flash, 2分钟)：
+  - 1A: ProviderFormScreen 编辑回填 + ProtocolSelector 组件 + 动态标题
+  - 1B: 4协议多模态升级 + GenericOpenAICompatProtocol + ProtocolFactory
+  - 1C: UserSettingsHomeScreen/ModelPicker/ProviderModelsScreen/NavGraph 同步修复
+- **Phase 2 (2026-05-12) — 集成收尾 ✅**：编译修复(3处import缺失+WEB→INTERNET回退)、协议残留搜索(0主代码)、CHANGELOG/handover更新
+- **总计**：12 个新/改文件（含3个新文件），290+行净增，BUILD SUCCESSFUL
+
+## 已知残留问题 (Known Issues)
+- **测试文件 ProtocolId 引用**：3个测试文件(LlmProtocolSerializationTest/LlmProviderTest/ChatViewModelTest)仍引用 `ProtocolId.OPENAI` 等deprecated别名，通过typealias编译兼容但建议后续统一迁移为 `ProtocolType.OpenAI_ChatCompletions`
+- **ModelInfo.capabilities 映射不完整**：`addCustomModel()` 和 `refreshModels()` 中的 capability 字符串映射仅覆盖 chat/vision/internet/reasoning，新增的 audio/video/structured_output 等维度暂未映射（需同步更新 SettingsViewModel 中的 mapping 逻辑）
 
 ## 待办事项 (Next Steps)
-- **多模态预览**：目前的编辑菜单仅支持纯文本，未来需支持图片等多模态消息的编辑与重发。
-- **局部重刷**：目前的删除/编辑逻辑会清除后续所有消息，可以考虑支持“仅重新生成特定 AI 气泡”而不清除后续（如果上下文允许）。
-- **引用跳转**：点击消息中的 RAG 引用时，应支持高亮跳转至知识库对应的片段。
+- [P2] 测试文件 ProtocolId → ProtocolType 迁移
+- [P2] ModelInfo capabilities 字符串映射补完（audio/video/structured_output 等6维度）
+- [P3] 协议选择器 UI 增强：为每种 ProtocolType 添加专属图标
+- [P3] ProviderManager 单元测试
 
 ## 风险与注意点 (Risks)
-- **手势冲突**：目前的 `MarkdownText` 中包含链接点击逻辑，与气泡整体的 `pointerInput` 长按手势可能存在微小竞争，需在不同设备上验证。
-- **数据库一致性**：`deleteMessagesAfter` 依赖时间戳，若系统时间不准确可能导致逻辑异常，建议后续改为基于 Index 的删除。
+- **Phase 0 上下文可能过大**：建议拆为 0A（数据模型）和 0B（基础设施+数据库）两个 Flash 会话
+- **ModelSpecs 匹配顺序**：精确匹配必须在泛模式之前，否则 `gpt-4o` 会被 `gpt-4` 误匹配
+- **SharedPreferences 协议类型迁移**：旧 `protocol_id` 键需兼容 `ProtocolId → ProtocolType` 映射
+- **向后兼容必须严格保证**：所有新增数据类字段必须有默认值
 
-## DIA 状态
-- **CHANGELOG.md**: 已同步。
-- **ARCHITECTURE.md**: 本次主要为组件内部逻辑更新，架构图暂无重大变动。
-- **task.md**: 已更新。
+## DIA Status
+- **registry.md**: 待 Phase 2 更新
+- **CHANGELOG.md**: 待 Phase 2 更新
+- **ARCHITECTURE.md**: 待 Phase 2 更新（架构有重大变更：引入 ProviderManager 单例 + ProtocolType sealed class）
+
+
