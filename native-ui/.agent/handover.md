@@ -1,41 +1,31 @@
 # Nexara 交接文档
 
 ## 状态摘要 (2026-05-12)
-本次会话完成了对 native-ui **提供商管理—模型管理—全站模型选择器**三大模块的深度审计，并制定了可分阶段并行执行的系统升级方案。
+本次会话完成了品牌图标系统实装、UI 布局优化以及 Custom 协议闪退修复，显著提升了提供商管理模块的视觉一致性与稳定性。
 
 ## 已完成工作 (Done)
-- **深度架构审计**：系统性分析了 ProviderFormScreen、SettingsViewModel、ModelSpecs、ModelPicker、各协议实现层的 5 大缺陷
-- **并行升级方案**：产出 `20260512-provider-model-parallel-audit.md`，包含 1 个基石阶段 + 3 个并行阶段 + 1 个集成验证阶段的详细拆分
-- **每个阶段包含完整提示词**：可直接在 Gemini 3 Flash 独立会话中执行
 
-## 已完成工作 (Done)
-- **Phase 0 (2026-05-12) — 基石层 ✅**：ProviderManager、ProtocolType sealed class、ModelSpecs 刷新、SettingsViewModel/NexaraApplication 重构
-- **Phase 1A/1B/1C (2026-05-12) — 并行执行 ✅** (Gemini 3 Flash, 2分钟)：
-  - 1A: ProviderFormScreen 编辑回填 + ProtocolSelector 组件 + 动态标题
-  - 1B: 4协议多模态升级 + GenericOpenAICompatProtocol + ProtocolFactory
-  - 1C: UserSettingsHomeScreen/ModelPicker/ProviderModelsScreen/NavGraph 同步修复
-- **Phase 2 (2026-05-12) — 集成收尾 ✅**：编译修复(3处import缺失+WEB→INTERNET回退)、协议残留搜索(0主代码)、CHANGELOG/handover更新
-- **总计**：12 个新/改文件（含3个新文件），290+行净增，BUILD SUCCESSFUL
+### 1. 品牌资产与 UI 优化
+- **品牌图标实装**：为所有 9 种协议（OpenAI, DeepSeek, Anthropic, Gemini, Mistral, Cohere, Local, Custom）实装了本地单色矢量图标。
+- **UI 对齐修复**：修正了全局 `NexaraPageLayout` 及主页面的标题对齐问题（对齐 20.dp 正文边距）。
+- **崩溃修复**：修复了 `ProtocolSelector` 在 `Custom` 提供商配置下由于嵌套垂直滚动导致的 `IllegalStateException` 闪退。
+- **预设重构**：统一了 `ProviderFormScreen` 的 `PROVIDER_PRESETS` 数据结构，彻底移除远程 URL 依赖。
 
-## 已知残留问题 (Known Issues)
-- **测试文件 ProtocolId 引用**：3个测试文件(LlmProtocolSerializationTest/LlmProviderTest/ChatViewModelTest)仍引用 `ProtocolId.OPENAI` 等deprecated别名，通过typealias编译兼容但建议后续统一迁移为 `ProtocolType.OpenAI_ChatCompletions`
-- **ModelInfo.capabilities 映射不完整**：`addCustomModel()` 和 `refreshModels()` 中的 capability 字符串映射仅覆盖 chat/vision/internet/reasoning，新增的 audio/video/structured_output 等维度暂未映射（需同步更新 SettingsViewModel 中的 mapping 逻辑）
+### 2. 基石阶段升级
+- **Phase 0/1/2 完结**：成功迁移至 `ProtocolType` 密封类架构，实现多模态协议升级与 Generic OpenAI 兼容。
+- **发行版 APK 构建**：正在执行 `assembleRelease`，已配置 `secure_env` 签名。
 
 ## 待办事项 (Next Steps)
-- [P2] 测试文件 ProtocolId → ProtocolType 迁移
-- [P2] ModelInfo capabilities 字符串映射补完（audio/video/structured_output 等6维度）
-- [P3] 协议选择器 UI 增强：为每种 ProtocolType 添加专属图标
-- [P3] ProviderManager 单元测试
+- [P2] **测试文件重构**：统一将测试代码中的 `ProtocolId` 别名迁移为 `ProtocolType` 显式调用。
+- [P2] **模型能力维度补完**：在 `SettingsViewModel` 中补全 audio/video 等新维度的字符串映射。
+- [P3] **多模态 UI 交互**：实装对话界面的多媒体附件选择与预览逻辑。
+- [P4] **本地推理 (Llama.cpp)**：启动 JNI 层与本地模型管理器的实现。
 
 ## 风险与注意点 (Risks)
-- **Phase 0 上下文可能过大**：建议拆为 0A（数据模型）和 0B（基础设施+数据库）两个 Flash 会话
-- **ModelSpecs 匹配顺序**：精确匹配必须在泛模式之前，否则 `gpt-4o` 会被 `gpt-4` 误匹配
-- **SharedPreferences 协议类型迁移**：旧 `protocol_id` 键需兼容 `ProtocolId → ProtocolType` 映射
-- **向后兼容必须严格保证**：所有新增数据类字段必须有默认值
+- **嵌套滚动约束**：在 Compose 中继续警惕 `LazyColumn` 与 `verticalScroll` 的嵌套，优先使用 `item {}` 包装或改为 `Column`。
+- **资源缺失**：添加新协议时必须同步在 `res/drawable` 添加对应图标并更新 `ProtocolType` 映射。
 
 ## DIA Status
-- **registry.md**: 待 Phase 2 更新
-- **CHANGELOG.md**: 待 Phase 2 更新
-- **ARCHITECTURE.md**: 待 Phase 2 更新（架构有重大变更：引入 ProviderManager 单例 + ProtocolType sealed class）
-
-
+- **registry.md**: 已检查
+- **CHANGELOG.md**: 已同步 (根目录 & native-ui)
+- **ARCHITECTURE.md**: 架构图需更新以包含 `ProtocolFactory` 与新图标资产。
