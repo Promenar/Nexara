@@ -9,6 +9,9 @@
 - docs/ARCHITECTURE.md — 架构全景（如有）
 - docs/API.md — 接口文档（如有）
 - docs/DEPLOY.md — 部署运维手册（如有）
+- docs/MARKDOWN_RENDERING_AUDIT.md — Markdown 渲染能力审计与行业对齐方案
+- docs/IMPLEMENTATION_PLAN.md — 分阶段实施计划（含独立 Agent 提示词）
 
 ## 补充说明
-- 无
+- MARKDOWN_RENDERING_AUDIT.md 于 2026-05-12 创建，记录当前渲染能力与 LobeChat/Cherry Studio 的差异矩阵及优化路线图
+- IMPLEMENTATION_PLAN.md 于 2026-05-12 创建，11 个 Agent 任务的详细方案，含并行策略和复制即用提示词
