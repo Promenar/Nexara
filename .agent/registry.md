@@ -15,6 +15,9 @@
 - docs/CLEANUP_PLAN.md — 项目目录清理方案（RN 残余清理记录）
 - docs/DOCUMENT_GOVERNANCE.md — 文档治理方案
 - docs/ADR/ — 架构决策记录（每项一个文件）
+  - ADR-001: 取消 Super Assistant 概念
+  - ADR-002: Embedding/Rerank 配置回退策略
+  - ADR-003: 图像生成工具设计 (image-generation-tool.md)
 - docs/API.md — 接口文档（如有）
 - docs/DEPLOY.md — 部署运维手册（如有）
 
