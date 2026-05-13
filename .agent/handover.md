@@ -13,15 +13,19 @@
   - 建立统一文档结构：`docs/`（公共）+ `.agent/`（工作区）
   - 废弃 Worktree 发行分支模式（原生 Kotlin + AS Build Variant 无环境污染）
 - **README.md** 重写为原生版，`.gitignore` 精简。
+- **模型选择器标准化**: 统一接入 `ModelPicker`，支持 `multimodal` 能力标签，修复了 SPA 设置页模型切换 Bug 并补全了 `SpaViewModel` 持久化。
+- **RAG 重构**: 全量替换 `RagAdvancedScreen` 模型列表，接入统一筛选协议。
+- **分支与缓存清理**: 
+    - 清理了所有冗余 Git 分支，手动切换主分支。
+    - 解决了 VS Code Java 插件缓存导致的 `worktree` 目录自动恢复问题（需清理 Java LS Cache）。
 
 ## Next Steps
-- **架构债修复（Phase 2 补齐）**:
-  - P0: 补全 AgentRepository（当前 ViewModel 直接操作 DAO）
-  - P0: Embedding 本地降级方案
-  - P1: PDF/Word/HTML 文档导入
-  - P1: 混合检索集成（向量 + FTS5）
+- **Domain + Repository 层实施（Phase 2a，4 个并行会话）**:
+  - Session A（先执行）: 创建 Domain 模型 + Repository 接口（13 个文件，零 Android 依赖）
+  - Session B/C/D（A 完成后并行）: 实现 Agent/Document/Vector/KG/Provider Repositories + 对齐现有 Session/Message
+  - 详细方案见 `.agent/plans/20260513-domain-repository-implementation.md`
 - **Super Assistant 清理（Phase 3）**: 移除 `isSuperAssistant` 检查、重命名 `spa_settings`、清理硬编码 `"super"` ID 逻辑、更新字符串资源
-- **MarkdownText.kt 拆分**: 该文件已承担过多职责，后续建议按组件职责进行重构拆分。
+- **Phase 2b 后续**: Embedding 本地降级、PDF/Word/HTML 导入、混合检索集成
 
 ## Risks
 - **架构债积累**: Domain 层缺失 + Repository 覆盖率不足（37.5%）若不及时修复，将加速代码腐化 — 建议 Phase 2 优先补齐
