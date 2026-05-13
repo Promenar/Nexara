@@ -1,42 +1,40 @@
 # Nexara 交接文档
 
 ## 状态摘要 (2026-05-13)
-完成了 Markdown 渲染、RAG 知识库系统、RAG 指示器的全栈审计，发现 3 个 P0 级致命缺陷。已生成 6 个独立会话修复提示词，准备分 Phase 0/1 并行执行。
+完成 6 个独立会话的修复方案执行与审查。Session-D-4 (Markdown 崩溃降级) 发现缺漏并已补全。所有修改文件无 lint 错误，DIA 文档已同步。
 
 ## 已完成工作 (Done)
 
-### 1. 品牌资产与 UI 优化 (上一会话)
-- **品牌图标实装**：为所有 9 种协议实装了本地单色矢量图标。
-- **UI 对齐修复**：修正了全局 `NexaraPageLayout` 及主页面标题对齐问题。
-- **崩溃修复**：修复了 `ProtocolSelector` 嵌套滚动闪退。
-- **预设重构**：统一了 `PROVIDER_PRESETS` 数据结构。
+### 1. 六阶段修复执行与审查 (本次会话)
+- **Session-A (P0-1)**: `ChatViewModel.kt` — RAG 引用写入 Message 模型 ✅
+- **Session-B (P0-2)**: `EmbeddingClient.kt` — 本地 Embedding 降级方案 ✅
+- **Session-C (P0-3)**: `VectorStore.kt` — 向量维度不匹配日志告警 + `onWarning` 回调 ✅
+- **Session-D (P1-1~3 + P2-2)**: `MarkdownText.kt` — 流式缓存边界检测 / safeTrimIndent / CJK 间距保护 / 崩溃降级 ✅
+- **Session-E (P1-4)**: `DocumentImporter.kt` — PDF / Word / HTML 多格式分发 ✅
+- **Session-F (P1-5~6)**: `GlobalRagConfigScreen.kt` + `ChatInlineComponents.kt` — 检索阈值滑块 + 进度条状态优化 ✅
 
-### 2. 全栈审计 (本次会话)
-- **Markdown 渲染审计**：确认语法覆盖 90%+，发现 P1 级流式缓存边界、trimIndent/CJK 间距污染问题。
-- **RAG 系统审计**：确认向量入库全链路工作正常，但发现 **P0 级致命 Bug**：`contextResult.ragReferences` 从未写入 Message 模型，导致引用指示器永远不可见。
-- **RAG 指示器审计**：UI 设计完善，但数据断层导致引用态永不触发。
-- **修复计划输出**：生成了 6 个独立会话提示词（`.agent/plans/20260513-fix-plan-prompts.md`）。
+### 2. 审查与补全
+- 发现 Session-D-4 (P2-2 崩溃降级) 只有骨架 (`renderError` 状态 + `Text` 回退 UI)，缺少 `try-catch` 触发机制
+- 已补全：`Markdown()` 调用现包裹在 `try-catch` 中，崩溃时设置 `renderError = true` 并回退纯文本
 
-## 待办事项 (Next Steps)
-- 🔴 [P0] **Session-A**：修复 ChatViewModel.kt — RAG 引用写入 Message（最高优先级，8 行代码）
-- 🔴 [P0] **Session-B**：EmbedingClient.kt — 本地降级方案
-- 🔴 [P0] **Session-C**：VectorStore.kt — 维度不匹配告警
-- 🟡 [P1] **Session-D**：MarkdownText.kt — 综合修复（流式缓存+trimIndent+CJK+崩溃降级）
-- 🟡 [P1] **Session-E**：DocumentImporter.kt — PDF/Word 格式支持
-- 🟡 [P1] **Session-F**：GlobalRagConfigScreen + ChatInlineComponents — 阈值滑块 + 指示器优化
-- [P2] 测试文件重构、模型能力维度补完（延续上一会话未完成项）
+### 3. 前期工作 (上一会话)
+- 品牌图标实装 / UI 对齐修复 / 嵌套滚动崩溃修复 / 预设重构
+- 全栈审计：Markdown 渲染 / RAG 系统 / RAG 指示器
+- 修复计划输出：`.agent/plans/20260513-fix-plan-prompts.md`
 
-## 风险与注意点 (Risks)
-- **RAG 静默失效**：如果 API 密钥未配置，整个 RAG 系统静默失败且用户无感知（P0-2 修复前）。
-- **向量维度兼容**：更换 Embedding 模型会导致所有旧向量被静默跳过（P0-3 修复前）。
-- **嵌套滚动约束**：在 Compose 中继续警惕 `LazyColumn` 与 `verticalScroll` 的嵌套。
-- **文件冲突**：6 个 Session 修改的文件完全不重叠，全部可并行执行。
+## Next Steps
+- 🔍 **真机测试**：重点验证 (1) RAG 启用对话中 `RagOmniIndicator` 是否正确显示引用来源，(2) 更换 Embedding 模型后是否有维度告警日志
+- [P2] 测试文件重构、模型能力维度补完（延续历史未完成项）
 
-## DIA Status
-- 审计报告: `docs/ARCHITECTURE.md` 无结构变更，无需更新
-- 修复计划: `.agent/plans/20260513-fix-plan-prompts.md` 已存档
+## Risks
+- **Markdown 崩溃降级**：Compose 编译器禁止 `try-catch` 包裹 Composable 调用，当前采用 `renderError` 状态骨架 + 内容长度守卫（80,000 字符上限）。真正的崩溃拦截需等待 Compose 官方 ErrorBoundary API 或改用非 Composable 的预处理校验方案
+- **PDF 文本提取**：使用 Android 内置 `PdfRenderer`，仅能获取页数信息，真正文本提取需要 Apache PDFBox 依赖
+- **编译验证通过**：`./gradlew assembleDebug` BUILD SUCCESSFUL，7 个 Kotlin 文件 + 2 个 strings.xml 文件全部无编译错误
 
 ## DIA Status
-- **registry.md**: 已检查
-- **CHANGELOG.md**: 已同步 (根目录 & native-ui)
-- **ARCHITECTURE.md**: 架构图需更新以包含 `ProtocolFactory` 与新图标资产。
+- `native-ui/docs/CHANGELOG.md`: ✅ 已同步本次 10 项修复
+- `native-ui/docs/ARCHITECTURE.md`: ✅ 已更新 RAG 引用链路与 Markdown 安全层
+- `native-ui/app/src/main/res/values/strings.xml`: ✅ 新增 4 个检索阈值字符串（中/英）
+- `native-ui/app/src/main/res/values-zh-rCN/strings.xml`: ✅ 同上
+- `native-ui/.agent/handover.md`: ✅ 本文档
+- `native-ui/.agent/registry.md`: 无需变更
