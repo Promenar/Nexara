@@ -19,12 +19,13 @@
 - docs/DEPLOY.md — 部署运维手册（如有）
 
 ## 活跃实施计划（.agent/plans/）
-- .agent/plans/20260513-domain-repository-implementation.md — Domain + Repository 层系统性实施方案（4 个并行会话）
+- .agent/plans/20260513-domain-repository-implementation.md — Domain + Repository 层实施方案（4 个并行会话，已完成）
+- .agent/plans/20260513-viewmodel-migration-tests.md — ViewModel 迁移至 Repository + 单元测试（3 个并行会话，已完成）
+- .agent/plans/20260513-phase2c-remaining-vm-migration.md — 剩余 3 个 ViewModel 迁移（Chat/Settings/Rag，3 个并行会话）
 
 ## 补充说明
 - PRD.md / ARCHITECTURE_DESIGN.md / IMPLEMENTATION_ANALYSIS.md 于 2026-05-13 创建，为 Kotlin 原生时代核心三文档
 - 超级助手（Super Assistant）决策见 ARCHITECTURE.md ADR-001
-- MARKDOWN_RENDERING_AUDIT.md 与 IMPLEMENTATION_PLAN.md 于 2026-05-12 创建
-- DOCUMENT_GOVERNANCE.md 于 2026-05-13 创建，记录文档体系清理与统一
-- RN 时代的 `.agent/docs/PRODUCT_REQUIREMENTS.md`、`.qoder/repowiki/` 等已清理
+- Domain 层 + Repository 层已于 2026-05-13 实施完成（28 个文件，编译通过）
+- Repository 覆盖率：7/7（100%），架构债 AD-2 已消除
 - 不再使用 Qoder repowiki 自动文档生成系统；DIA 机制 + 手工维护即足够
