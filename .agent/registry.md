@@ -21,7 +21,11 @@
 ## 活跃实施计划（.agent/plans/）
 - .agent/plans/20260513-domain-repository-implementation.md — Domain + Repository 层实施方案（4 个并行会话，已完成）
 - .agent/plans/20260513-viewmodel-migration-tests.md — ViewModel 迁移至 Repository + 单元测试（3 个并行会话，已完成）
-- .agent/plans/20260513-phase2c-remaining-vm-migration.md — 剩余 3 个 ViewModel 迁移（Chat/Settings/Rag，3 个并行会话）
+- .agent/plans/20260513-phase2c-remaining-vm-migration.md — 剩余 3 个 ViewModel 迁移（已完成）
+- .agent/plans/20260513-phase3-super-assistant-cleanup.md — Super Assistant 清理（ADR-001，已完成）
+- .agent/plans/20260513-phase4-engine-enhancement.md — Phase 4 核心引擎增强（已完成）
+- .agent/plans/20260513-phase5-usecase-extraction.md — Phase 5 UseCase 层抽取（已完成）
+- .agent/plans/20260514-phase6-features-tests.md — Phase 6 测试补缺 + 功能增强（已完成）
 
 ## 补充说明
 - PRD.md / ARCHITECTURE_DESIGN.md / IMPLEMENTATION_ANALYSIS.md 于 2026-05-13 创建，为 Kotlin 原生时代核心三文档
