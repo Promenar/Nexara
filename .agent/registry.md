@@ -29,6 +29,7 @@
 - .agent/plans/20260513-phase4-engine-enhancement.md — Phase 4 核心引擎增强（已完成）
 - .agent/plans/20260513-phase5-usecase-extraction.md — Phase 5 UseCase 层抽取（已完成）
 - .agent/plans/20260514-phase6-features-tests.md — Phase 6 测试补缺 + 功能增强（已完成）
+- .agent/plans/20260514-输入持久化后台生成思考自动展开.md — 输入持久化 + 后台生成 + 思考自动展开方案（Phase I 已完成，Phase II 待定）
 
 ## 补充说明
 - PRD.md / ARCHITECTURE_DESIGN.md / IMPLEMENTATION_ANALYSIS.md 于 2026-05-13 创建，为 Kotlin 原生时代核心三文档

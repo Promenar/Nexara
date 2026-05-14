@@ -54,33 +54,41 @@
 - 新增 3 个测试类: `EmbeddingClientTest` (21), `VectorizationQueueTest` (23), `RagViewModelTest` 扩展 (6)
 - 总计 50 个新测试用例，101 tests 98% 通过率 (2 预存失败)
 
+## ✅ 已完成 — 工具管理与聊天交互 UI 优化 (2026-05-14)
+- **工具管理**:
+    - `SkillsScreen.kt`: `ScrollableTabRow` -> `TabRow` 居中对齐；美化 Tab 指示器
+    - 统一标题为 "工具管理" (zh-CN) / "Tool Management" (en)
+    - `UserSettingsHomeScreen.kt`: 移除未实装的"外观设置"条目
+- **聊天界面布局**:
+    - `ChatScreen.kt`: 输入框底部间距 `20.dp` -> `8.dp`
+    - `TokenIndicator`: 气泡样式美化（圆角 24dp + NexaraGlassCard），通过 `DpOffset` 修正偏右问题，实现正上方对齐
+    - **模型名称转换**: 将输入栏及消息底部的模型 ID (如 `gemini-3-flash`) 替换为易读名称 (如 `Gemini 3 Flash`)
+
+## ✅ 已完成 — 思考容器自动展开修复 (2026-05-14)
+- **时空竞态修复**: `PipelineBubble.kt:123` — `isThinkingStreaming` 判定从 `status == THINKING` 改为 `streamingContent.isEmpty()`
+- **原理**: 思考步骤首次渲染时机总是晚于 THINKING 窗口，正文开始后 `streamingContent` 非空自动折叠显示"思考完成"
+- **副作用**: 无（正文开始瞬间折叠，不会持续"正在思考"）
+
+## ✅ 已完成 — 输入栏草稿持久化 (2026-05-14)
+- `ChatViewModel.loadSession()`: 缓存 + DB 两条路径均恢复 `Session.draft` → `_inputText`
+- `ChatViewModel.saveCurrentDraft()`: 新增方法，写入 DB 草稿
+- `ChatScreen.kt`: `DisposableEffect(sessionId) { onDispose { saveCurrentDraft() } }`
+- `ChatViewModel.sendMessage()`: 发送后异步清空 DB `draft = null`
+
+## ✅ 已完成 — 思考容器文本颜色修复 (2026-05-14)
+- **根因**: `nexaraMarkdownColors().text` 硬编码 `OnBackground`，第三方库不读取 CompositionLocal
+- **修复**: `nexaraMarkdownColors(textColor=)` 参数化，`MarkdownSafe(textColor=)` 透传 `effectiveColor`
+- **影响**: `NexaraMarkdownTheme.kt`, `MarkdownText.kt`，同步修复 InlineThinkingRow + ThinkingBlock
+
 ## 🚀 下一步
-- **P0**: 实机测试 PipelineBubble 渲染 — 发起多步工具调用验证气泡合并、思考/工具折叠交互、连接线渲染、深色模式表格边框
-- **P0**: 用户需配置 Provider 后实机测试嵌入/重排/图像生成全链路
-- **P0**: 实机测试 Fallback 解析器 — 切换至 MiniMax-M2.7 模型发起工具调用，验证 JSON 剥离完整性
-- **P1**: `describeImageInternal()` 占位实现 → 接入真正 Vision API
-- **P1**: `WeatherSkill` 桩实现 → 接入真实天气 API
+- **P0**: 实现后台生成能力 — 新建 GenerationService (Foreground Service)，将 SSE 流式逻辑从 viewModelScope 迁移到 Service，实现离开 App 后生成任务继续完成并持久化（工时 2 天，见 .agent/plans/20260514-输入持久化后台生成思考自动展开.md §2）
 
 ## ⚠️ 风险
-- `disallowKotlinSourceSets=false` 实验性警告无法消除（AGP 上游问题，KSP 用户需等待 AGP 更新）
-- VectorizationQueueTest 剩余 2 个失败为 `TrigramTextSplitter` 短文本边界条件，非生产代码问题
-- **架构教训**: Kotlin `Mutex` 默认不可重入，**绝对不要**用它包裹含递归路径的函数体。Agent 循环的递归 `generateMessage()` 遇到 `withLock` 会永久死锁（表现伪装成"速度慢"）。单一 `cancelActiveGeneration()` 即足够防并发
-
-## ✅ 已完成 — 流式死锁根因修复 + Smart Follow + 交互审计 (2026-05-14)
-- **🔴 Agent 循环死锁定位**: `Mutex.withLock` 不可重入 → Agent 递归调用 `generateMessage()` 在此永久挂起 → 外观伪装成"速度极慢"。已移除 `withLock` 恢复 `cancelActiveGeneration()` 单一防并发机制
-- **Smart Follow**: `autoFollowEnabled` 状态机，手势锁定/FAB 恢复
-- **双光标**: PipelineBubble 光标仅 TTFT 期渲染
-- **思考层级**: 字号 -3 + alpha 0.55
-- **发送按钮误报**: `_error` 每轮强制清除
-- **锚定**: `latestUserMsgId` 替代竞态条件
-
-## ✅ 已完成 — 智能视角追踪 v3 + 流式加速 (2026-05-14)
-- Pin-to-Bottom 追踪：新消息滚底 + 20Hz 自动跟随 + 用户手势切断 + FAB 恢复
-- 底部定义统一 150dp（contentPadding + FAB）
-- CPS 6000: 消除 38 CPS 积压爆发问题
-- 思考容器 LaunchedEffect 同步展开
+- 后台生成涉及 Android Foreground Service + 通知权限，需在 API 34+ 上处理 POST_NOTIFICATIONS 运行时权限
+- DB 写入竞态：GenerationService 和 ChatViewModel 不应同时操作同一消息，需 ChatState.currentGeneratingSessionId 互斥
 
 ## DIA Status
-- `CHANGELOG.md` ✅ 已更新
+- `CHANGELOG.md` ✅ 已更新 (2026-05-14 三项修复)
+- `docs/MARKDOWN_RENDERING_AUDIT.md` ✅ 已更新 (颜色管线修复)
 - `docs/ARCHITECTURE.md` → 无结构变更
 - 见 `.agent/registry.md`
