@@ -110,6 +110,25 @@
 - 后台生成：Android Foreground Service + POST_NOTIFICATIONS 权限（API 34+）
 - DB 竞态：GenerationService / ChatViewModel 互斥（`currentGeneratingSessionId`）
 
+## ✅ 已完成 — Phase 9 发布冲刺 + 测试补全 (2026-05-15)
+- **5 会话并行执行**，23 项变更全部检查通过，零失败
+- **多模态**: 图片选择/预览/发送 + OpenAI Vision + Anthropic 双协议适配
+- **Token 仪表盘**: GlobalStatsCard + SessionRanking + Canvas 趋势图 + 费用计算
+- **HTML Artifacts**: HtmlArtifactCard WebView 预览 + 全屏分屏 + PNG 导出
+- **测试**: 10 个新测试文件（22 用例），52 个测试文件全覆盖
+- 计划文件: `.agent/plans/20260515-phase9-polish-and-tests.md`
+- 总体进度: 84% → 92%
+
+## ✅ 已完成 — Phase 8 Agent 工具系统重构与增强 (2026-05-15)
+- **3 会话并行执行**，19 项变更全部检查通过，零失败
+- **工具分类**: CurrentTimeSkill 退役为被动注入，主动/注入/MCP 三轨并行
+- **生图暴露**: ImageGenerationSkill 出现在设置界面，用户可控
+- **MCP 同步**: 修复 McpSkillRegistry→SettingsViewModel 闭链，动态工具可被 LLM 调用
+- **文件工具**: 4 个新增（read/write/list/search），工作区绑定 + 逃逸检查
+- **JS 沙箱**: exec_js 基于 WebView，5s 超时，供 LLM 执行确定性计算
+- **审批增强**: 工具级审批跳过 + 通过后执行
+- 计划文件: `.agent/plans/20260514-phase8-agent-tools-enhancement.md`
+
 ## ✅ 已完成 — Phase 7 知识库系统修复与增强 (2026-05-14)
 - **5 会话并行执行**，27 项变更全部检查通过，零失败
 - **PDF/Word**: Apache PDFBox + POI 集成，真实文本提取
