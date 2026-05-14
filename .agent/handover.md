@@ -138,10 +138,16 @@
 - **UI 补全**: Memory 视图、KG ECharts 可视化、FTS5 全文搜索
 - 计划文件: `.agent/plans/20260514-phase7-knowledge-base-repair.md`
 
-## DIA Status
-- `CHANGELOG.md` ✅ 已更新 (2026-05-14)
-- `docs/MARKDOWN_RENDERING_AUDIT.md` ✅ 已更新
-- `docs/ARCHITECTURE.md` ✅ 已更新 (ADR-004, Domain层, Repository覆盖率)
-- `docs/IMPLEMENTATION_ANALYSIS.md` ✅ 已更新 (v2.0.0-beta, 进度74%)
+## DIA Status (2026-05-15 全面更新)
+- ✅ `CHANGELOG.md` — Phase 7/8/9 完整记录
+- ✅ `README.md` — v2.0.0-beta, 92%, 功能描述全面刷新
+- ✅ `docs/PRD.md` — §3 进度百分比全部更新
+- ✅ `docs/IMPLEMENTATION_ANALYSIS.md` — 进度 92%
+- ✅ `docs/ARCHITECTURE_DESIGN.md` — §2.4.1 KG 双模式策略
+- ✅ `.agent/registry.md` — 重写
+- ✅ 归档: `CLEANUP_PLAN.md` → `docs/archive/`, 26 计划 → `.agent/plans/archive/`
+
+## 🚀 Next — Phase 10 发布准备
+- 编译 warning 清零 → Release 签名 → E2E 测试 → 发布 (3.5h)
 - `.agent/registry.md` ✅ 已更新 (18文件归档)
 - 详见 `.agent/registry.md`
