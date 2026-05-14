@@ -74,7 +74,13 @@
 - **发送按钮误报**: `_error` 每轮强制清除
 - **锚定**: `latestUserMsgId` 替代竞态条件
 
+## ✅ 已完成 — 智能视角追踪 v3 + 流式加速 (2026-05-14)
+- Pin-to-Bottom 追踪：新消息滚底 + 20Hz 自动跟随 + 用户手势切断 + FAB 恢复
+- 底部定义统一 150dp（contentPadding + FAB）
+- CPS 6000: 消除 38 CPS 积压爆发问题
+- 思考容器 LaunchedEffect 同步展开
+
 ## DIA Status
-- `CHANGELOG.md` ✅ 已更新（死锁修复 + Smart Follow + 双光标 + 思考层级）
-- `docs/ARCHITECTURE.md` → 无结构变更，无需更新
+- `CHANGELOG.md` ✅ 已更新
+- `docs/ARCHITECTURE.md` → 无结构变更
 - 见 `.agent/registry.md`
