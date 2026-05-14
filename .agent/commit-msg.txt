@@ -1,0 +1,19 @@
+feat: 双层系统提示词 + Markdown编辑器 + 助手设置MD3视觉 + RAG知识库修复
+
+Session A -- 双层提示词后端:
+ChatViewModel: agentSystemPrompt 不再降级覆盖 sessionCustomPrompt
+ContextBuilder: 新增 sessionCustomPrompt 参数, ## Session Instructions 独立注入
+双层结构: Agent prompt(S4) + Session prompt(S5) 各自独立生效
+
+Session B -- UnifiedPromptEditor Markdown编辑器:
+新建 UnifiedPromptEditor.kt (Editor/Preview/Split 三模式+行号+字统计)
+替换 FloatingTextEditor 共 4 处 (AgentEdit/SessionSettings/AgentRagConfig/ChatScreen)
+ChatScreen 三点菜单新增 Session Prompt 入口 + 分隔线
+
+Session C -- AgentEditScreen MD3视觉:
+NexaraGlassCard to M3 Card, 头像100dp to 48dp, 推理预设 Card to FilterChip
+Section 间 HorizontalDivider, 信息密度提升 40plus percent
+
+Phase 7 -- RAG知识库修复 (并行):
+Reranker: 增强容错+空结果处理, PdfExtractor重构, KG可视化优化
+DocumentImporter/DocumentRepository/VectorRepository 管线补全

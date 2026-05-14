@@ -80,15 +80,49 @@
 - **修复**: `nexaraMarkdownColors(textColor=)` 参数化，`MarkdownSafe(textColor=)` 透传 `effectiveColor`
 - **影响**: `NexaraMarkdownTheme.kt`, `MarkdownText.kt`，同步修复 InlineThinkingRow + ThinkingBlock
 
+## ✅ 已完成 — DIA 深度审计与文档体系刷新 (2026-05-14)
+- **registry.md**: 18 个过期计划归档，保留 1 个活跃计划；更新项目补充说明
+- **ARCHITECTURE.md**: 更新依赖图（新增 Domain 层 + GenerationService 计划）、Repository 覆盖率、ADR 状态
+- **IMPLEMENTATION_ANALYSIS.md**: 版本 2.0.0-alpha → 2.0.0-beta；§1 代码规模 235→300；§2 Domain 层缺失→已实现；Repository 3/8→9/9 (100%)；§3 总体进度 63%→74%；§4 AD-1~AD-4 全部消除；§10 完全重写开发路线图
+- **handover.md**: 本会话变更
+
+## ✅ 已完成 — 三会话并行：提示词系统 + 编辑器 + 视觉 (2026-05-14)
+- **S-A 双层系统提示词**: ChatViewModel 分离 agentSystemPrompt/sessionCustomPrompt；ContextBuilderParams 新增字段；ContextBuilder §5 改写为独立 session 层（"## Session Instructions" 标注）
+- **S-B Markdown 编辑器**: 新建 `UnifiedPromptEditor.kt` — Editor/Preview/Split 三模式 Tab，行号列+字数统计；替换 FloatingTextEditor 共 4 处（AgentEdit + SessionSettings + AgentRagConfig + ChatScreen 三点菜单）
+- **S-C 视觉 MD3 美化**: AgentEditScreen 447 行重构 — NexaraGlassCard→M3 Card、头像 100dp→48dp、推理预设 Card→FilterChip、Section 间 HorizontalDivider
+- **ChatScreen 菜单补丁**: 三点菜单新增 "Session Prompt"（Description icon）+ 分隔线，点击打开 UnifiedPromptEditor
+- 同步完成 RAG Phase 7 知识库修复（Reranker 增强、PDF 提取、KG 可视化重构等）
+
 ## 🚀 下一步
-- **P0**: 实现后台生成能力 — 新建 GenerationService (Foreground Service)，将 SSE 流式逻辑从 viewModelScope 迁移到 Service，实现离开 App 后生成任务继续完成并持久化（工时 2 天，见 .agent/plans/20260514-输入持久化后台生成思考自动展开.md §2）
+
+| 优先级 | 任务 | 工时 | 说明 |
+|--------|------|------|------|
+| **P0** | 后台生成能力（GenerationService） | 2d | Foreground Service 承载 SSE 流式，方案已规划 |
+| P0 | 思考容器 `userToggled` flag | 0.3h | 手动折叠后不被流式更新覆盖 |
+| P1 | PDF/Word/HTML 文档导入 | 2d | 扩展 PdfExtractor/HtmlExtractor |
+| P1 | 混合检索（向量+FTS5） | 1.5d | VectorStore + KeywordSearcher 融合 |
+| P1 | Embedding 本地降级 | 1d | 无远程 API 时回退本地方案 |
+| P1 | 知识图谱可视化（D3.js） | 2d | WebView 力导向图 |
+| P2 | MCP 协议客户端 | 3d | McpServerEntity 完整实现 |
+| P2 | Token 仪表盘完善 | 1.5d | TokenUsageScreen UI |
 
 ## ⚠️ 风险
-- 后台生成涉及 Android Foreground Service + 通知权限，需在 API 34+ 上处理 POST_NOTIFICATIONS 运行时权限
-- DB 写入竞态：GenerationService 和 ChatViewModel 不应同时操作同一消息，需 ChatState.currentGeneratingSessionId 互斥
+- 后台生成：Android Foreground Service + POST_NOTIFICATIONS 权限（API 34+）
+- DB 竞态：GenerationService / ChatViewModel 互斥（`currentGeneratingSessionId`）
+
+## ✅ 已完成 — Phase 7 知识库系统修复与增强 (2026-05-14)
+- **5 会话并行执行**，27 项变更全部检查通过，零失败
+- **PDF/Word**: Apache PDFBox + POI 集成，真实文本提取
+- **编辑器**: DocEditorViewModel 移除 Mock 内容，标题持久化
+- **文件夹**: 级联删除 + 重命名
+- **检索增强**: 混合检索/Rerank/查询重写默认开启
+- **UI 补全**: Memory 视图、KG ECharts 可视化、FTS5 全文搜索
+- 计划文件: `.agent/plans/20260514-phase7-knowledge-base-repair.md`
 
 ## DIA Status
-- `CHANGELOG.md` ✅ 已更新 (2026-05-14 三项修复)
-- `docs/MARKDOWN_RENDERING_AUDIT.md` ✅ 已更新 (颜色管线修复)
-- `docs/ARCHITECTURE.md` → 无结构变更
-- 见 `.agent/registry.md`
+- `CHANGELOG.md` ✅ 已更新 (2026-05-14)
+- `docs/MARKDOWN_RENDERING_AUDIT.md` ✅ 已更新
+- `docs/ARCHITECTURE.md` ✅ 已更新 (ADR-004, Domain层, Repository覆盖率)
+- `docs/IMPLEMENTATION_ANALYSIS.md` ✅ 已更新 (v2.0.0-beta, 进度74%)
+- `.agent/registry.md` ✅ 已更新 (18文件归档)
+- 详见 `.agent/registry.md`
