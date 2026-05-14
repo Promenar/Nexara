@@ -25,6 +25,19 @@
   - 修复: 注入 `rerankClient: RerankClient?` → 去重后、类型过滤前插入 rerank 调用
 - **🟡**: `Reranker.kt` — 新增空配置前置检查
 
+## ✅ 已完成 — PipelineBubble 气泡合并 + 容器重构 (2026-05-14)
+- **新增 `PipelineBubble.kt`**: 将 Agent 多步 ASSISTANT+TOOL 消息合并为单一线性气泡，内部以思考→工具→正文的流水线排列，步骤间以竖线连接器串联
+- **`buildPipelineGroups()`**: 相邻 ASSISTANT/TOOL 消息合并为一组，USER 消息独立成组
+- **`InlineThinkingRow`**: 替代旧版 `ThinkingBlock`，紧凑内联布局（Primary 色系），进行中脉冲圆点 + "正在思考"，完成后对勾 + "思考完成"，默认折叠
+- **`InlineToolRow`**: 替代旧版 `ToolExecutionTimeline`，紧凑内联布局（Tertiary 色系），显示工具名 + 状态（脉冲/对勾/红叉），展开后显示参数和结果摘要，默认折叠
+- **`PipelineConnector`**: 竖线连接器（灰色圆点 + 细线），串联各步骤
+- **锚定修复** (`ChatScreen.kt`): `LaunchedEffect(latestUserMsgId)` 替代 `isGenerating + streamingContent.isEmpty()` 竞态条件
+- **IME 键盘联动** (`ChatScreen.kt`): `WindowInsets.isImeVisible` 检测 + 分组索引滚动
+- **Agent Fallback 解析器** (`ChatViewModel.kt`): `extractToolCallsFromText()` 支持 `name/function/tool/tool_name` 多字段约定 + OpenAI `function.arguments` 嵌套 + 代码块/裸JSON 双模式
+- **JSON 剥离增强** (`ChatViewModel.kt`): `stripToolCallJsonBlocks()` 双重匹配 — Markdown 代码块 + 裸 JSON 对象行
+- **流式速度**: `StreamSpeed.BALANCED` 38→120 CPS, FAST 800 CPS
+- **表格深色模式**: `NexaraTableWidget` 新增行间分隔线
+
 ## ✅ 已完成 — 图像生成工具 (2026-05-14)
 - **新增文件**:
   - `ImageGenClient.kt` — OpenAI-compatible 图像生成客户端
@@ -42,18 +55,26 @@
 - 总计 50 个新测试用例，101 tests 98% 通过率 (2 预存失败)
 
 ## 🚀 下一步
+- **P0**: 实机测试 PipelineBubble 渲染 — 发起多步工具调用验证气泡合并、思考/工具折叠交互、连接线渲染、深色模式表格边框
 - **P0**: 用户需配置 Provider 后实机测试嵌入/重排/图像生成全链路
+- **P0**: 实机测试 Fallback 解析器 — 切换至 MiniMax-M2.7 模型发起工具调用，验证 JSON 剥离完整性
 - **P1**: `describeImageInternal()` 占位实现 → 接入真正 Vision API
 - **P1**: `WeatherSkill` 桩实现 → 接入真实天气 API
-- **P2**: 修复 Mappers.kt/SessionManager.kt 2 个预存编译错误 (`SessionOptions?` type mismatch)
 
 ## ⚠️ 风险
 - `disallowKotlinSourceSets=false` 实验性警告无法消除（AGP 上游问题，KSP 用户需等待 AGP 更新）
 - VectorizationQueueTest 剩余 2 个失败为 `TrigramTextSplitter` 短文本边界条件，非生产代码问题
+- **架构教训**: Kotlin `Mutex` 默认不可重入，**绝对不要**用它包裹含递归路径的函数体。Agent 循环的递归 `generateMessage()` 遇到 `withLock` 会永久死锁（表现伪装成"速度慢"）。单一 `cancelActiveGeneration()` 即足够防并发
+
+## ✅ 已完成 — 流式死锁根因修复 + Smart Follow + 交互审计 (2026-05-14)
+- **🔴 Agent 循环死锁定位**: `Mutex.withLock` 不可重入 → Agent 递归调用 `generateMessage()` 在此永久挂起 → 外观伪装成"速度极慢"。已移除 `withLock` 恢复 `cancelActiveGeneration()` 单一防并发机制
+- **Smart Follow**: `autoFollowEnabled` 状态机，手势锁定/FAB 恢复
+- **双光标**: PipelineBubble 光标仅 TTFT 期渲染
+- **思考层级**: 字号 -3 + alpha 0.55
+- **发送按钮误报**: `_error` 每轮强制清除
+- **锚定**: `latestUserMsgId` 替代竞态条件
 
 ## DIA Status
-- `CHANGELOG.md` ✅ 已更新（嵌入/重排修复 + 图像生成新功能）
-- `docs/ARCHITECTURE.md` ✅ 已更新（新增 ImageGenClient/ImageGenerationSkill 模块）
-- `docs/IMPLEMENTATION_ANALYSIS.md` ✅ 已更新（RAG 管线状态）
-- `docs/ADR/image-generation-tool.md` ✅ 新增（图像生成工具设计决策）
+- `CHANGELOG.md` ✅ 已更新（死锁修复 + Smart Follow + 双光标 + 思考层级）
+- `docs/ARCHITECTURE.md` → 无结构变更，无需更新
 - 见 `.agent/registry.md`
