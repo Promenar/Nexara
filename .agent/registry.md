@@ -34,11 +34,11 @@
 ## 归档计划（.agent/plans/archive/）
 已完成的所有 Phase 2-6 计划文件（22 个），留存备查。
 
-## 关键指标 (2026-05-15)
-- Kotlin 源文件: ~300 个
-- Room Entity: 17 个（移除 DocumentEntity、FolderEntity）
-- Repository 覆盖率: 11/11 (100%)（新增 WorkspaceRepository、FileOperationRepository）
-- 内置 Skill: 13 个
+## 关键指标 (2026-05-16)
+- Kotlin 源文件: ~310 个
+- Room Entity: 18 个（TaskNodeEntity）
+- Repository 覆盖率: 12/12 (100%)（新增 TaskRepository）
+- 内置 Skill: 17 个（新增 4 个任务规划 Skill）
 - 测试文件: 44 个
-- 总体进度: 93%
+- 总体进度: 95%
 - 剩余: Phase 10 发布准备（编译清零/APK 签名/E2E 测试）

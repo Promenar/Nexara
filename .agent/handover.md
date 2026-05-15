@@ -137,8 +137,8 @@
 - **检索增强**: 混合检索/Rerank/查询重写默认开启
 - **UI 补全**: Memory 视图、KG ECharts 可视化、FTS5 全文搜索
 - 计划文件: `.agent/plans/20260514-phase7-knowledge-base-repair.md`
-- **RAG 术语标准化 (2026-05-15)**: 将“向量检索”更名为“长期记忆”，解耦“会话 RAG”与“跨会话检索”，统一“上下文自动压缩阈值”等专业术语。
-- **UI 布局优化 (2026-05-15)**: 调整长期记忆设置项顺序，将“检索重排序”提升至“知识图谱”上方；重构上下文功能区标题为“上下文管理”，精简阈值名称。
+- **RAG 术语标准化 (2026-05-15)**: 将"向量检索"更名为"长期记忆"，解耦"会话 RAG"与"跨会话检索"，统一"上下文自动压缩阈值"等专业术语。
+- **UI 布局优化 (2026-05-15)**: 调整长期记忆设置项顺序，将"检索重排序"提升至"知识图谱"上方；重构上下文功能区标题为"上下文管理"，精简阈值名称。
 - **字体设置修复 (2026-05-15)**: 修复了 SessionSettingsSheet 中字体大小滑动条步骤不匹配 (8->7 steps) 与持久化失效问题，确保设置即时生效并跨会话保存。
 
 ## DIA Status (2026-05-15 全面更新)
@@ -184,6 +184,56 @@
 - **跨模型审计**: 4 工具全部兼容 OpenAI/Anthropic/VertexAI 三协议
 - **执行计划**: `.agent/plans/20260515-task-planner-execution.md`
 - **设计规范**: `.agent/plans/20260515-task-planning-tool-architecture.md` v3.4 终稿
+## ✅ 已完成 — NexaraPageLayout 架构重构与稳定性增强 (2026-05-16)
+- **架构重构 (NexaraPageLayout)**: 彻底重写了全局页面基类，将根容器从手动 `Column` 迁移至 `androidx.compose.material3.Scaffold`。
+    - **Scaffold 适配**: 利用 `contentWindowInsets` 自动处理系统栏间距，内容区域采用 Column + `innerPadding` 布局。
+    - **按需键盘避让**: 移除根容器全局 `imePadding`，改为在内容区域内根据 `imePadding` 参数（默认 `true`）局部应用。
+    - **崩溃预防**: 对内容区域应用 `Modifier.weight(1f)` 约束，强制赋予滚动容器有限高度，从物理层面上消除了 `LazyColumn` 嵌套引发的 `IllegalStateException`（无限高度测量）崩溃。
+    - **API 清理**: 移除了全站多处冗余的 `navigationBarsPadding()`（已由 Scaffold 自动处理）。
+- **崩溃修复 (ProtocolType NPE)**: 彻底解决了 `ProtocolType` 静态初始化导致的 NPE 竞态条件。
+    - 将 `entries` 修改为带有非空过滤逻辑的 `get()` 计算属性。
+    - 在 `ProtocolSelector.kt` 中增加防御性编程，确保预设项切换时的稳定性。
+- **全量兼容性验证**:
+    - `SkillsScreen`: 移除冗余间距，验证 `TabRow` 滚动正常。
+    - `ProviderModelsScreen`: 移除冗余 `imePadding`。
+    - `RagFolderScreen`: 为内部 `LazyColumn` 添加 `weight(1f)`，确保布局紧凑且高度受限。
+    - `ProviderFormScreen`: 验证表单保存按钮在键盘弹出时可被滚动查看。
+
+## ✅ 已完成 — 知识库文档管理页 FilesPanel 迁移 (2026-05-16)
+- **问题根因**: 统一资源 OS 执行计划 Session 6 要求将 RagHomeScreen 的 DOCUMENTS Tab 替换为 FilesPanel 文件树，但实际只改了 TabRow 按钮样式，内容区仍然是旧版"集合/文件夹/最近文档" UI。`importDocuments` 为桩实现，上传无作用。
+- **修复 RagViewModel.kt**:
+  - `importDocuments()` 从桩实现重写为完整的 ContentResolver → FileEntry 流程（读 URI、解析文件名、写物理文件、创建 DB 记录）
+  - 新增 `ragWorkspaceRoot`（`app.filesDir/rag_workspace`）作为 RAG 知识库物理根目录
+  - 新增 `ensureRagWorkspaceRoot()` 在 init 中自动创建根目录 FileEntry
+  - 新增 `_workspaceRootUuid` StateFlow + `getWorkspaceRepo()` 供 FilesPanel 使用
+  - 修复 `createFolder()` 的 `physicalRootPath`（之前错误地使用 matPath 而非真实文件系统路径）
+- **修复 RagHomeScreen.kt**:
+  - DOCUMENTS Tab 内容完全重写：移除"集合"小标题、文件夹列表、上传大卡片、"最近文档"功能区
+  - 替换为紧凑工具栏（新建文件夹 + 上传文件） + FilesPanel 文件资源管理器
+  - 移除死代码：DocListItem (157 行)、formatFileSize、formatBytes 及 6 个未使用 import
+  - FilesPanel 集成通过 `viewModel.getWorkspaceRepo()` + `searchQuery` 实时搜索
+- **编译验证**: `compileDebugKotlin` BUILD SUCCESSFUL，零 lint 错误
+
+## ✅ 已完成 — 任务规划器全链路集成修复 (2026-05-16)
+- **审计发现**: 任务规划器 22 项检查仅 12 项完整 (55%)。4 个 Skill 文件和 TaskFloatingPanel UI 均已实现但全部集成连接点缺失
+- **🔴 MIGRATION_9_10**: 新增 `task_nodes` 表 + `sessions.active_task_tree_id` 列 + 3 个索引，注册到 NexaraApplication.addMigrations
+- **🔴 Skill 注册**: 在 NexaraApplication 实例化 TaskRepository + 注册 InitializePlanSkill/UpdatePlanSkill/GetPlanSkill/DropPlanSkill
+- **🟡 数据模型**: SessionEntity 新增 `activeTaskTreeId`；SessionOptions 新增 `economyMode`；ExecutionStep 新增 `taskStepId`；Session 新增 `workspaceRootUuid` + `activeTaskTreeId`；Mappers.kt 全量同步
+- **🟡 ContextBuilder**: 从 3 行占位扩展为 full/economy 双模式任务树注入（完整树形文本渲染、lea progress 统计、断点重连提示、next todos 预览），通过预取 plan 解决 suspend 调用时序
+- **🟡 ChatScreen**: 集成 TaskFloatingPanel（在输入栏上方，自动折叠/展开，递归任务节点 + 进度条）
+- **🟡 ToolExecutor**: 注入 taskRepository，ExecutionStep 自动挂载 `currentFocusStepId`
+- **🟡 SessionSettingsSheet**: 新增 "Token 节约模式" 开关 (economyMode)，接入 `toggleTool("economyMode")`
+- **🟢 SettingsViewModel + SkillsScreen**: 补全 initialize_plan/update_plan/get_plan/drop_plan + file_diff/file_patch 技能开关和图标
+- **总计**: 15 个文件变更，BUILD SUCCESSFUL (仅 deprecation warning)
+
+## ✅ 已完成 — 崩溃修复 + Phase 7 知识库修复补齐 (2026-05-16)
+- **🔴 崩溃修复 (agents.use_inherited_config)**: AgentEntity `defaultValue="1"` 与实际 DB schema 不匹配导致 Room migration 验证失败。移除注解（Kotlin 默认值 `= true` 已够）
+- **🔴 PdfExtractor 接入**: `importDocuments()` 新增 MIME type 判断 — PDF 调用 `PdfExtractor.extract()` 真实提取文本
+- **🔴 DocumentImporter 实现**: 新建 `DocumentImporter.kt`，Apache POI `XWPFDocument` 提取 .docx 段落+表格文本
+- **🟡 renameFolder 实现**: 从 no-op 桩重写为通过 `FileEntryDao.update()` 更新名称和物化路径
+- **🟡 deleteCollection 级联**: 增加显式子树遍历删除作为双重保障
+- **🟡 DocEditor 标题持久化**: `updateTitle()` 通过 `FileEntryDao.update()` 写回 DB；Factory 增加 Application 参数
+- **编译验证**: BUILD SUCCESSFUL，零错误
 
 ## 🚀 Next — Phase 10 发布准备
 - 编译 warning 清零 → Release 签名 → E2E 测试 → 发布 (3.5h)
