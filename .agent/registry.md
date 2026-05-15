@@ -28,6 +28,8 @@
 - .agent/plans/20260515-phase9-polish-and-tests.md — Phase 9 发布冲刺 + 测试 ✅
 - .agent/plans/20260514-prompt-editor-agentvisual.md — 会话提示词编辑器 + Agent 视觉美化（待实施）
 - .agent/plans/20260515-unified-resource-os-execution.md — 统一资源 OS 多会话并行执行计划 ✅
+- .agent/plans/20260515-task-planning-tool-architecture.md — 任务规划器完整架构设计 v3.4 ✅
+- .agent/plans/20260515-task-planner-execution.md — 任务规划器多会话并行执行计划 ✅
 
 ## 归档计划（.agent/plans/archive/）
 已完成的所有 Phase 2-6 计划文件（22 个），留存备查。

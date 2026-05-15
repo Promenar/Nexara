@@ -175,6 +175,16 @@
 - **清理过期测试**: 删除引用已移除类的 10 个测试文件
 - **编译验证**: 主代码 + 测试代码全量编译通过（仅剩 deprecation 警告）
 
+## ✅ 已完成 — 任务规划器实施 + 全量测试修复 (2026-05-16)
+- **6 会话并行执行**: TaskNodeEntity/DAO/Repository + 4 Skill + TaskFloatingPanel + ContextBuilder 注入 + economyMode 开关
+- **全量测试修复**: 14→0 失败，ChatViewModel/ThinkingDetector/Calculator/CurrentTime/RagConfig/ContextBuilder 全部修复
+- **数据库**: v9→v10，新增 task_nodes 表 + TaskNodeDao + MIGRATION_9_10
+- **ChatModels**: TaskStep 扩展 9 字段 (parentId/children/sortOrder/note/isCollapsed 等)，TaskState 新增 2 字段
+- **系统功能**: Token 节约模式 (SessionOptions.economyMode) 作为项目级长期伏笔记入 ARCHITECTURE_DESIGN.md §6.3
+- **跨模型审计**: 4 工具全部兼容 OpenAI/Anthropic/VertexAI 三协议
+- **执行计划**: `.agent/plans/20260515-task-planner-execution.md`
+- **设计规范**: `.agent/plans/20260515-task-planning-tool-architecture.md` v3.4 终稿
+
 ## 🚀 Next — Phase 10 发布准备
 - 编译 warning 清零 → Release 签名 → E2E 测试 → 发布 (3.5h)
 - 验证 RAG 分离逻辑在真实长会话中的稳定性
