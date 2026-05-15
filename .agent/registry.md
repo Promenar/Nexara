@@ -27,15 +27,16 @@
 - .agent/plans/20260514-phase8-agent-tools-enhancement.md — Phase 8 Agent 工具重构 ✅
 - .agent/plans/20260515-phase9-polish-and-tests.md — Phase 9 发布冲刺 + 测试 ✅
 - .agent/plans/20260514-prompt-editor-agentvisual.md — 会话提示词编辑器 + Agent 视觉美化（待实施）
+- .agent/plans/20260515-unified-resource-os-execution.md — 统一资源 OS 多会话并行执行计划 ✅
 
 ## 归档计划（.agent/plans/archive/）
 已完成的所有 Phase 2-6 计划文件（22 个），留存备查。
 
 ## 关键指标 (2026-05-15)
 - Kotlin 源文件: ~300 个
-- Room Entity: 19 个
-- Repository 覆盖率: 9/9 (100%)
+- Room Entity: 17 个（移除 DocumentEntity、FolderEntity）
+- Repository 覆盖率: 11/11 (100%)（新增 WorkspaceRepository、FileOperationRepository）
 - 内置 Skill: 13 个
-- 测试文件: 52 个
-- 总体进度: 92%
+- 测试文件: 44 个
+- 总体进度: 93%
 - 剩余: Phase 10 发布准备（编译清零/APK 签名/E2E 测试）

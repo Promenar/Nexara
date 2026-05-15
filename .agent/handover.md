@@ -142,13 +142,38 @@
 - **字体设置修复 (2026-05-15)**: 修复了 SessionSettingsSheet 中字体大小滑动条步骤不匹配 (8->7 steps) 与持久化失效问题，确保设置即时生效并跨会话保存。
 
 ## DIA Status (2026-05-15 全面更新)
-- ✅ `CHANGELOG.md` — Phase 7/8/9 完整记录
-- ✅ `README.md` — v2.0.0-beta, 92%, 功能描述全面刷新
+- ✅ `CHANGELOG.md` — Phase 7/8/9 完整记录 + 统一资源 OS 条目
+- ✅ `README.md` — v2.0.0-beta, 93%, 功能描述全面刷新
 - ✅ `docs/PRD.md` — §3 进度百分比全部更新
-- ✅ `docs/IMPLEMENTATION_ANALYSIS.md` — 进度 92%
-- ✅ `docs/ARCHITECTURE_DESIGN.md` — §2.4.1 KG 双模式策略
-- ✅ `.agent/registry.md` — 重写
+- ✅ `docs/IMPLEMENTATION_ANALYSIS.md` — 进度 93%
+- ✅ `docs/ARCHITECTURE_DESIGN.md` — §2.4.1 KG 双模式策略 + FileEntry/WorkspaceRepository 模块列表
+- ✅ `docs/ARCHITECTURE.md` — Repository 计数器更新 (9→11)
+- ✅ `.agent/registry.md` — 更新（统一资源 OS 执行计划 ✅，指标刷新）
 - ✅ 归档: `CLEANUP_PLAN.md` → `docs/archive/`, 26 计划 → `.agent/plans/archive/`
+
+## ✅ 已完成 — 统一资源 OS 方案设计与执行计划 (2026-05-15)
+- **方案文档**: 统一资源操作系统设计规范 v2.3，含架构/数据/回收站/UI/门户导航全设计
+- **架构决策**: UUID 锚定协议（文件+目录双级）、物化路径 O(1) 路径计算、每工作区独立 `.recycle_bin/`（Windows 回收站模型）、Hash-Triggered 自动重索引、乐观锁冲突解决
+- **数据模型**: FileEntry Entity（23 字段）、workspace_seq 原子序号表、Vector/KG Entity 扩展（stale/version/file_uuid）
+- **工具链**: 6 个文件操作 Skill（read/write/diff/patch/search/list），分页读取 + JSON diff/patch + 错误回馈矩阵
+- **UI 设计**: 5 个新增 Composable + 1 个改造（RagHomeScreen 三门户 TabRow 精简），零新增原子组件
+- **执行计划**: 7 个独立会话，5 批并行，每会话附带完整 GLM-5.1 提示词指令
+- **计划文件**: `.agent/plans/20260515-unified-resource-os-execution.md`
+- **设计规范 Artifact**: `20260515-unified-resource-os-design-spec.md` v2.3
+
+## ✅ 已完成 — 统一资源 OS 收尾：旧系统清理 + 测试 + DIA (2026-05-15, Session 7)
+- **旧系统清理**: 移除 documents/folders 旧系统的全部 Room Entity/DAO/Repository/Mapper 层（12 个文件删除）
+- **数据库迁移**: 新增 MIGRATION_8_9（DROP TABLE documents/folders），版本 8→9
+- **FK 解耦**: VectorEntity、KgEdgeEntity、VectorizationTaskEntity、DocumentTagEntity 移除对 DocumentEntity 的 ForeignKey 引用
+- **RagViewModel 重构**: 替换 IDocumentRepository/IFolderRepository/DeleteDocumentUseCase → IWorkspaceRepository/IFileOperationRepository
+- **DocEditorViewModel 重构**: 替换 IDocumentRepository → IFileOperationRepository（基于 UUID 的文件编辑）
+- **VectorizationQueue 解耦**: 移除 DocumentDao 依赖，processDocumentTask 移除（仅保留 memory 任务处理）
+- **KnowledgeGraphRepository 重构**: extractFromDocument → extractFromContent（接受内容参数而非文档 ID）
+- **VectorStore 清理**: 移除未使用的 documentDao 构造参数
+- **BackupRepository 适配**: DocumentEntity → BackupFileEntry（独立序列化数据类，避免 Room Entity 序列化问题）
+- **测试**: 新增 WorkspaceSeqDaoTest（4 测试，含并发原子递增验证）+ FileOperationRepositoryTest（5 测试，含乐观锁写入/冲突/NotFound），全部通过
+- **清理过期测试**: 删除引用已移除类的 10 个测试文件
+- **编译验证**: 主代码 + 测试代码全量编译通过（仅剩 deprecation 警告）
 
 ## 🚀 Next — Phase 10 发布准备
 - 编译 warning 清零 → Release 签名 → E2E 测试 → 发布 (3.5h)
