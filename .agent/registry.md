@@ -9,7 +9,7 @@
 - docs/PRD.md — 产品需求文档 v2.0（进度已更新至 2026-05-15）
 - docs/ARCHITECTURE_DESIGN.md — 全局架构设计（含 §2.4.1 KG 双模式策略）
 - docs/IMPLEMENTATION_ANALYSIS.md — 当前实现分析（总体 92%）
-- docs/ARCHITECTURE.md — 架构快速参考（含 ADR 索引）
+- docs/ARCHITECTURE.md — 架构快速参考（含 ADR 索引，已至 ADR-011）
 - docs/IMPLEMENTATION_PLAN.md — Markdown 渲染分阶段实施计划（P0+P1 已完成）
 - docs/MARKDOWN_RENDERING_AUDIT.md — Markdown 渲染能力审计（6 项 ❌→✅）
 - docs/DOCUMENT_GOVERNANCE.md — 文档治理方案
@@ -18,6 +18,12 @@
   - ADR-002: Embedding/Rerank 配置回退策略
   - ADR-003: 图像生成工具设计
   - ADR-004: 工具分类体系（被动注入/主动调用/MCP 动态三轨）
+  - ADR-010: Provider 管理多路保存
+  - ADR-011: 模型能力数据库 2026-04 更新
+- docs/audit/ — 专项审计报告
+  - RAG_SETTINGS_AUDIT_20260516.md — RAG 四页设置全量审计
+  - PROVIDER_MANAGEMENT_AUDIT_20260516.md — 提供商管理系统全量审计
+  - MODEL_DATABASE_RESEARCH_20260516.md — 模型能力数据库调研报告
 
 ## 已归档文档（docs/archive/）
 - docs/archive/CLEANUP_PLAN.md — RN 残余清理记录（2026-05-13 已完成）
@@ -30,6 +36,9 @@
 - .agent/plans/20260515-unified-resource-os-execution.md — 统一资源 OS 多会话并行执行计划 ✅
 - .agent/plans/20260515-task-planning-tool-architecture.md — 任务规划器完整架构设计 v3.4 ✅
 - .agent/plans/20260515-task-planner-execution.md — 任务规划器多会话并行执行计划 ✅
+- C:/Users/lengz/.gemini/antigravity/brain/60254fc1-1574-4eae-ab08-36869e9a2b5d/implementation_plan.md — UI 细节微调（间距、图标颜色、菜单精简） ✅
+- C:/Users/lengz/.gemini/antigravity/brain/66582369-ade2-4501-879a-f732188a092b/implementation_plan.md — 高级 RAG 重命名为知识图谱 ✅
+
 
 ## 归档计划（.agent/plans/archive/）
 已完成的所有 Phase 2-6 计划文件（22 个），留存备查。
@@ -40,5 +49,5 @@
 - Repository 覆盖率: 12/12 (100%)（新增 TaskRepository）
 - 内置 Skill: 17 个（新增 4 个任务规划 Skill）
 - 测试文件: 44 个
-- 总体进度: 95%
+- 总体进度: 96%
 - 剩余: Phase 10 发布准备（编译清零/APK 签名/E2E 测试）

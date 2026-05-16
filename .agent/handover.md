@@ -1,6 +1,11 @@
-# 交接文档 (2026-05-14 会话完成)
+# 交接文档 (2026-05-16 会话完成)
 
-## ✅ 已完成 — AGP 构建警告消除 (2026-05-14)
+## ✅ 已完成 — UI 导航与术语对齐 (2026-05-16)
+- **高级 RAG 重命名**: 将“高级 RAG”页面 Header 标题更名为“知识图谱”（Knowledge Graph），以消除与上一级“高级检索”页面的名称冗余。
+- **UI 冗余清理**: 移除 `RagAdvancedScreen` 中重复的“知识图谱”部分小标题，使页面结构更加紧凑。
+- **资源更新**: 同步更新 `values-zh-rCN/strings.xml` 与 `values/strings.xml` 中的 `rag_advanced_title` 资源。
+
+## ✅ 已完成 — RAG 向量化全线修复与可观测性增强 (2026-05-16)
 - `build.gradle.kts`: 删除冗余 `sourceSets { jniLibs.srcDir(...) }` 块，`src/main/jniLibs` 是 AGP 默认目录
 - `gradle.properties`: `disallowKotlinSourceSets=false` 保留（KSP Room compiler 必需），注释说明原因
 
@@ -235,8 +240,81 @@
 - **🟡 DocEditor 标题持久化**: `updateTitle()` 通过 `FileEntryDao.update()` 写回 DB；Factory 增加 Application 参数
 - **编译验证**: BUILD SUCCESSFUL，零错误
 
-## 🚀 Next — Phase 10 发布准备
-- 编译 warning 清零 → Release 签名 → E2E 测试 → 发布 (3.5h)
-- 验证 RAG 分离逻辑在真实长会话中的稳定性
-- `.agent/registry.md` ✅ 已更新 (18文件归档)
-- 详见 `.agent/registry.md`
+## ✅ 已完成 — RAG 知识库现代化与编辑器升级 (2026-05-16)
+- **多选批处理**: `FilesPanel` 支持多选模式（Shift/长按），同步状态至 `RagHomeScreen` 底部操作栏。
+- **批量索引**: 实现 `reindexDocuments(uuids)` 批量向量化接口，支持一键修复 Stale/Not-Indexed 文档。
+- **现代化编辑器**: `DocEditorScreen` 升级为 **编辑/预览/分屏** 三模式架构，采用 `MarkdownText` 引擎提供高保真渲染。
+- **交互增强**: 选中的文件行应用 `NexaraColors.Primary` 浅色背景高亮；FilesPanel 增加 `onFileClick` 回调实现编辑器跳转。
+
+## ✅ 已完成 — UI 细节打磨与视觉一致性增强 (2026-05-16)
+- **资源列表间距**: 优化了 `FilesPanel.kt` 树状目录布局，通过在 `FileTreeNode` 内部引入 `Column` 并设置 `spacedBy(8.dp)`，解决了父子节点之间以及同级子节点之间的边框粘连问题。
+- **文件夹图标**: 全站颜色统一改为 `NexaraColors.Primary` (淡紫色)。
+- **界面优化**: `FilesPanel` 右键菜单、`ChatScreen` 顶部菜单及 `RagHomeScreen` 顶部标签页全部移除图标，仅保留文字。通过减少组件高度（如 TabRow）释放了更多垂直空间。
+
+## 🚀 下一步 (Phase 10 发布准备)
+
+| 优先级 | 任务 | 工时 | 说明 |
+|--------|------|------|------|
+| **P0** | 批量索引管线校验 | 0.5h | 验证 `reindexDocuments` 能否正确触发背景 Worker 并更新 FilesPanel 状态 |
+| P0 | 编译 warning 清零 | 1h | 消除 deprecation 与类型警告，准备 Release 签名 |
+| P1 | UI 细节打磨 | 1h | `Split` 模式比例调整或增加分隔线拖拽；多选模式退出动效 |
+| P1 | E2E 完整路径验证 | 1h | 导入 -> 批量索引 -> 编辑 -> 重新索引 -> 聊天引用 |
+| P2 | 发布打包 | 1h | APK 签名与包体积优化 |
+
+## ⚠️ 风险
+- `MarkdownText` 在极长文档分屏模式下的性能表现（内存占用与打字机延迟）。
+- 批量索引在高并发下的 Worker 调度竞争。
+
+## ✅ 已完成 — Provider 管理系统全线修复 (2026-05-16)
+- **🔴 P0 多提供商**: `NavGraph.onSave` 三路分发 — 新增→`addProvider()`、编辑主→`updateProvider()`、编辑额外→`updateExtraProvider()`（新增方法）
+- **🔴 P0 模型作用域**: `ProviderModelsScreen` 新增 `scopedModels` 按 providerId/Name 过滤
+- **🔴 P0 自动拉取**: 删除 `NavGraph.LaunchedEffect` + `addProvider` 中的 `refreshModels()`
+- **🟡 模型数据库**: `ModelSpec` 新增 `maxOutputTokens`/`knowledgeCutoff`，+42 模型（117+ 总计），+20 定价
+- **🟡 僵尸配置**: 从全链路删除 `RagConfiguration.contextWindow`/`summaryThreshold`
+- **审计文档**: `docs/audit/RAG_SETTINGS_AUDIT_20260516.md`、`PROVIDER_MANAGEMENT_AUDIT_20260516.md`、`MODEL_DATABASE_RESEARCH_20260516.md`
+- **编译**: BUILD SUCCESSFUL，零错误
+
+## DIA Status (2026-05-16 最终更新)
+- ✅ `CHANGELOG.md` — 新增 Provider 修复/模型数据库/RAG 重构/RAG 僵尸清理 四条目
+- ✅ `ARCHITECTURE.md` — 新增 ADR-010(Provider 多路保存) + ADR-011(模型数据库 2026 更新)
+- ✅ `handover.md` — 本会话变更已同步（Provider 修复 + 模型数据库 + RAG 重构）
+- ✅ `registry.md` — 指标刷新（总体进度 96%），新增 3 个审计文档
+
+## ✅ 已完成 — RAG 全链路可观测性与体验修复 (2026-05-16)
+- **进度动画**: `IndexingProgressBar` — `animateFloatAsState` 平滑过渡 + `AnimatedVisibility` 入场/退场
+- **向量化状态修复**: `VectorizationQueue.processNext()` — 移除过早 `vectorizing` 预设，分步推进；失败后保留进度不归零；延迟 2s 移除确保错误可见
+- **错误 UI**: `RagHomeScreen` — 错误卡片支持点击关闭（`dismissQueueError()`），`isError=true` 红色样式
+- **全链路日志**: 25+ 个静默 catch 全部接入 NexaraLogger
+  - `VectorizationQueue`: 7 个日志点（开始/切块/向量化/保存/提取/重试/失败）
+  - `MemoryManager`: 5 个日志点（embedQuery/memory/summary/doc/rerank）
+  - `MicroGraphExtractor`: 6 个日志点（cache read/write/extraction/JSON parse/background merge）
+  - `GraphExtractor`: 4 个日志点（node upsert/edge create/extraction/JSON fallback parse）
+  - `ContextBuilder`: 4 个日志点（KG extract/task plan/Web search/RAG retrieval）
+- **文件系统**: `NexaraApplication.onCreate()` 创建 `filesDir/WorkSpace` 目录；RagViewModel 移除强制"知识库"根文件夹
+- **模型设置**: RagConfiguration 新增 `embedDimension`/`maxEmbedTokensPerCall`/`rerankMaxPerCall` + GlobalRagConfigScreen UI 滑块
+
+## 🚀 下一步 (Phase 10 发布准备)
+
+| 优先级 | 任务 | 工时 | 说明 |
+|--------|------|------|------|
+| **P0** | 批量索引管线校验 | 0.5h | 验证 `reindexDocuments` 能否正确触发背景 Worker 并更新 FilesPanel 状态 |
+| P0 | 编译 warning 清零 | 1h | 消除 deprecation 与类型警告，准备 Release 签名 |
+| P1 | UI 细节打磨 | 1h | `Split` 模式比例调整或增加分隔线拖拽；多选模式退出动效 |
+| P1 | E2E 完整路径验证 | 1h | 导入 → 批量索引 → 编辑 → 重新索引 → 聊天引用 |
+| P2 | 发布打包 | 1h | APK 签名与包体积优化 |
+
+## ⚠️ 风险
+- `MarkdownText` 在极长文档分屏模式下的性能表现（内存占用与打字机延迟）。
+- 批量索引在高并发下的 Worker 调度竞争。
+
+## ✅ 已完成 — 提示词编辑器标准化与知识图谱重命名 (2026-05-16)
+- **术语对齐**: 将 "高级 RAG" 页面及其子项统一更名为 "知识图谱" (Knowledge Graph)，消除了与 "高级检索" 的重复标题，更准确地反映了 KG 核心功能。
+- **组件标准化**:
+    - 全站推广 `UnifiedPromptEditor` 原子组件，替换了原有的异构、基础文本框。
+    - **RagAdvancedScreen.kt**: 抽取提示词、摘要模板编辑现已支持 预览/编辑/分屏 三模式。
+    - **AgentEditScreen.kt**: 移除旧版 `FloatingTextEditor.kt`，系统提示词编辑体验与全站对齐。
+    - **AgentHubScreen.kt**: Agent 创建弹窗中的系统提示词输入替换为预览卡片 + `UnifiedPromptEditor` 联动的专业模式。
+- **清理与优化**:
+    - 彻底移除过时组件 `FloatingTextEditor.kt`。
+    - 移除了 `RagAdvancedScreen` 中冗余的内部章节标题，优化页面视觉重心。
+- **文档同步**: 更新了 CHANGELOG.md 并新增了 ADR-009 架构决策记录。
