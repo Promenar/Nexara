@@ -63,6 +63,8 @@
 - .agent/plans/20260517-dialog-unification.md — 统一危险操作删除二次确认弹窗实施计划（从 native-ui 合并）
 - .agent/plans/20260518-agent-tool-fallback-and-workspace-icon-refactoring.md — Agent工具Fallback兜底防线与工作区图标优化方案 ✅
 - .agent/plans/AUDIT_AGENT_TOOL_FALLBACK_20260518.md — Agent工具Fallback解析方案设计与DeepSeek审计存档 ✅
+- .agent/plans/20260518-CherryStudio-ToolCall-Transplant-Design.md — Cherry-Studio 工具调用系统移植设计方案（从用户 globalStorage 同步）
+- .agent/plans/20260518-Parallel-Session-Implementation-Plan.md — 工具调用系统并行独立会话实施方案（4 会话 + 共享契约）
 
 
 ## 归档计划（.agent/plans/archive/）

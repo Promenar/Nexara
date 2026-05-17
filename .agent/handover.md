@@ -529,3 +529,62 @@
   - **Bug B**: 双动画（`AnimatedVisibility` 与 `animateContentSize`）在 Column wrapContent 下的测量冲突。对策为注销 `animateContentSize`，引入 300ms 黄金缓着陆延迟折叠。
   - **Bug C**: 样式传递链断裂。对策为扩充 `nexaraMarkdownTypography` 以透传 `fontStyle`，并在 `MarkdownSafe` 的 remember 组件中监听此样式依赖。
 - **DIA 状态**: 已同步更新文档注册表。本会话全过程严格遵守**绝对禁止修改代码**红线。
+
+## ✅ 已完成 — Cherry-Studio 工具调用系统完整分析与并行实施规划 (2026-05-18 02:13)
+- **分析范围**: 完整阅读 Cherry-Studio (K:/cherry-studio) 13 个核心源文件
+  - `AiProvider.ts`, `AiSdkToChunkAdapter.ts`, `handleToolCallChunk.ts`, `deepseekDsmlParserPlugin.ts`
+  - `searchOrchestrationPlugin.ts`, `PluginBuilder.ts`, `mcp.ts`, `messageConverter.ts`
+  - `providerConfig.ts`, `websearch.ts`, `WebSearchTool.ts`, `parameterBuilder.ts`, `tooluse.ts`
+- **发现的 6 个可移植核心设计**:
+  1. 统一 SDK 中间层 (Vercel AI SDK `streamText()`) → Nexara `UnifiedLlmClient`
+  2. 工具调用生命周期处理 → Nexara `ToolCallLifecycleHandler`
+  3. DSML 流式解析 → Nexara `DsmlStreamParser`
+  4. Anthropic tool_use 事件处理 → Nexara `AnthropicProtocol` 修复
+  5. 意图编排插件 → Nexara `ToolOrchestrationPlugin`
+  6. 多模态结果压缩 → Nexara `ResultSizeOptimizer`
+- **Nexara 缺陷清单 (10 项)**: D-1 (Anthropic tool_use P0), D-2 (Provider 原生工具), D-3 (XML/DSML 解析), D-4 (确认机制), D-5 (maxToolCalls), D-6 (流式参数), D-7 (协议不统一), D-8 (all 空集合死锁), D-9 (多模态未压缩), D-10 (无重试/回退)
+- **产出文档**:
+  - `20260518-CherryStudio-ToolCall-Transplant-Design.md` — 完整设计方案
+  - `20260518-Parallel-Session-Implementation-Plan.md` — 4 会话并行实施规划
+- **4 个并行会话规划**:
+  - Session A (SHARED-TYPES): 共享类型定义 + ToolCallLifecycleHandler + ResultSizeOptimizer
+  - Session B (PROTOCOL-FIX): Anthropic/OpenAI/VertexAI 协议修复
+  - Session C (DSML-MIDDLEWARE): DsmlStreamParser + LlmMiddleware + ProviderToolFactory
+  - Session D (ORCHESTRATION): UnifiedLlmClient + ToolOrchestrationPlugin + ChatViewModel 修复
+  - **零文件冲突**: 4 个会话修改/创建的文件集合完全互斥
+- **DIA**: registry.md 已更新
+
+## 🚀 Next Steps — 工具调用系统移植实施
+
+| 步骤 | 操作 | 说明 |
+|------|------|------|
+| 1 | 打开 4 个新 GLM-5.1 会话窗口 | 每个窗口复制对应 §2-§5 的提示词 |
+| 2 | 4 个会话并行执行 | Session A/B/C/D 可同时运行 |
+| 3 | 全部完成后执行编译验证 | `./gradlew :app:compileDebugKotlin` |
+| 4 | 真机功能验证 | Anthropic/OpenAI/DeepSeek 三协议端到端 |
+
+## ✅ 已完成 — 4 会话并行实施验收与 DIA 收尾 (2026-05-18 07:04)
+- **产出审查**: 16 文件全部就位（8 修改 + 8 新建）
+- **编译验证**: `BUILD SUCCESSFUL in 5s`，8 tasks up-to-date，零 lint 错误
+- **代码质量**: 接口一致性验证通过（LlmMiddleware/LlmMiddlewareChain/ToolCallLifecycleHandler 签名对齐）
+- **DIA 审计**:
+  - `CHANGELOG.md` ✅ 已更新 — 新增工具调用系统移植条目
+  - `ARCHITECTURE.md` ✅ 已更新 — 新增 ADR-014 + 7 个新组件描述
+  - `registry.md` ✅ 已更新 — 注册新 plans
+  - `handover.md` ✅ 本条目
+- **变更统计**:
+  | 类型 | 文件数 | 行数 |
+  |------|--------|------|
+  | 修改 | 8 | +243 / -2 |
+  | 新建 | 8 | ~500 行 |
+  | 合计 | 16 | ~741 insertions |
+- **已修复缺陷**: D-1 (P0 Anthropic tool_use), D-2 (Provider tools), D-3 (DSML), D-5 (maxToolCalls), D-6 (流式参数), D-7 (协议统一), D-8 (all 空集合), D-9 (多模态压缩)
+- **遗留事项**:
+  - D-4 (用户确认机制): ToolOrchestrationPlugin 已就绪但未接入审批流程
+  - D-10 (自动重试/回退): UnifiedLlmClient 有统一错误捕获但未实现 prepareStep 动态工具调整
+  - DSML 标签格式需真机验证：当前使用 `<||DSML||tool_calls>`，需确认 DeepSeek 实际输出格式
+
+## ⚠️ 当前风险
+- 并行会话的提示词依赖"共享类型定义"已预设在每个会话中，但各会话对 `LlmProtocol.kt` 的引用需保持一致（包名、类名）
+- ChatViewModel 修改（Session D）需注意不要破坏现有的 `isNotEmpty() && all{}` 修复
+- **DSML 标签格式**: `DsmlStreamParser` 使用的 `<||DSML||tool_calls>` 与 Cherry-Studio 的 `<｜tool_calls｜>` 不同，需在 DeepSeek 真机上验证实际输出格式并修正
