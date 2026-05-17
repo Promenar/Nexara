@@ -33,6 +33,10 @@
   - RAG_MEMORY_STORAGE_GAP_AUDIT_20260517.md — RAG 记忆存储链路缺口审计（G-1~G-4）
   - RAG_CONFIG_ARCHITECTURE_GAP_AUDIT_20260517.md — 高级检索配置架构缺口全链路审计（P0 配置断链 + 22 死字段）
   - 20260517-Gemini-Chat-UI-Audit-Consolidated-Execution-Report.md — 聊天界面渲染缺陷多维联合审计终极整合与无侵入重构执行报告
+  - 20260517-Gemini+Opus4.6-Chat-UI-Audit.md — Gemini+Opus4.6 联合审计原始报告（从 native-ui 合并）
+  - DeepSeekV4-RENDER_DEFECT_AUDIT_20260517.md — DeepSeekV4 渲染缺陷审计报告（从 native-ui 合并）
+  - 20260515-rag-parameter-audit.md — RAG 参数全链路审计报告（从 native-ui 合并）
+  - XML_RENDERER_BUG_AUDIT_20260518.md — XML/HTML 预览卡片自适应失效与按钮未上移故障诊断报告
 - docs/plans/RAG_INDICATOR_MULTI_SESSION_EXECUTION.md — RAG 指示器 6 会话并行执行方案
 
 ## 已归档文档（docs/archive/）
@@ -44,13 +48,17 @@
 - .agent/plans/20260515-phase9-polish-and-tests.md — Phase 9 发布冲刺 + 测试 ✅
 - .agent/plans/20260514-prompt-editor-agentvisual.md — 会话提示词编辑器 + Agent 视觉美化（待实施）
 - .agent/plans/20260515-unified-resource-os-execution.md — 统一资源 OS 多会话并行执行计划 ✅
+- .agent/plans/20260515-ResourceManagerArchitecture.md — 全局资源管理器架构设计方案（从 native-ui 合并）
 - .agent/plans/20260515-task-planning-tool-architecture.md — 任务规划器完整架构设计 v3.4 ✅
+- .agent/plans/20260515-TaskPlanningToolArchitecture.md — 任务规划工具 V2 架构设计方案（从 native-ui 合并）
 - .agent/plans/20260515-task-planner-execution.md — 任务规划器多会话并行执行计划 ✅
+- .agent/plans/20260515-protocol-refactor-plan.md — 协议参数透传与 RAG UX 修复执行方案（从 native-ui 合并）
 - C:/Users/lengz/.gemini/antigravity/brain/60254fc1-1574-4eae-ab08-36869e9a2b5d/implementation_plan.md — UI 细节微调（间距、图标颜色、菜单精简） ✅
 - C:/Users/lengz/.gemini/antigravity/brain/66582369-ade2-4501-879a-f732188a092b/implementation_plan.md — 高级 RAG 重命名为知识图谱 ✅
 - C:/Users/lengz/.gemini/antigravity/brain/616233d1-033a-45c9-8e1d-10e80c343e3d/implementation_plan.md — Embedding 跨提供商配置加载与响应式同步 ✅
 - .agent/plans/20260517-skills-i18n-icons-fix.md — 工具管理国际化与 UI 细节深度优化减法 ✅
 - .agent/plans/20260517-rag-neon-microrail.md — 方案二多段极细霓虹导电轨 RAG 指示器重构 💡
+- .agent/plans/20260517-dialog-unification.md — 统一危险操作删除二次确认弹窗实施计划（从 native-ui 合并）
 - .agent/plans/20260518-agent-tool-fallback-and-workspace-icon-refactoring.md — Agent工具Fallback兜底防线与工作区图标优化方案 ✅
 - .agent/plans/AUDIT_AGENT_TOOL_FALLBACK_20260518.md — Agent工具Fallback解析方案设计与DeepSeek审计存档 ✅
 
@@ -58,11 +66,17 @@
 ## 归档计划（.agent/plans/archive/）
 已完成的所有 Phase 2-6 计划文件（22 个），留存备查。
 
-## 关键指标 (2026-05-17)
+## 关键指标 (2026-05-18)
 - Kotlin 源文件: ~310 个
 - Room Entity: 18 个（TaskNodeEntity）
-- Repository 覆盖率: 12/12 (100%)（新增 TaskRepository）
+- Repository 覆盖率: 12/12 (100%)
 - 内置 Skill: 17 个（新增 4 个任务规划 Skill）
 - 测试文件: 44 个
 - 总体进度: 97%
 - 剩余: Phase 10 发布准备（编译清零/APK 签名/E2E 测试）
+
+## 2026-05-18 DIA 全站清理记录
+- **合并 native-ui/.agent/** → 根 `.agent/plans/`：5 个 unique plans + 3 个 audit 文档迁移至 `docs/audit/`
+- **合并 native-ui/docs/** → 根 `CHANGELOG.md`：追加 7 条唯一变更记录
+- **删除** `native-ui/.agent/` 和 `native-ui/docs/` 目录（共 13 文件）
+- **结果**：全站文档统一为根级 `.agent/` + `docs/` + `CHANGELOG.md` 三根体系，零重复

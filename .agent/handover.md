@@ -1,4 +1,18 @@
-# 交接文档 (2026-05-17 21:55 思考完毕折叠、首条消息 RAG 故障根治及知识图谱大文本分段提取)
+# 交接文档 (2026-05-18 DIA 全站文档清理合并)
+
+## ✅ 已完成 — 全站 DIA 检查与过时重复文档清理合并 (2026-05-18 01:22)
+- **全站 DIA 扫描**：发现 4 处文档丛林（根 `.agent/` 43 文件 + 根 `docs/` 29 文件 + `native-ui/.agent/` 11 文件 + `native-ui/docs/` 2 文件 = 85 文件）
+- **native-ui/.agent/ → 根合并**：
+  - 5 个 unique plans 迁移至根 `.agent/plans/`：ResourceManagerArchitecture / TaskPlanningToolArchitecture / protocol-refactor-plan / dialog-unification / AUDIT_AGENT_TOOL_FALLBACK
+  - 3 个 audit 型文档归类至 `docs/audit/`：Gemini+Opus4.6 联合审计 / DeepSeekV4 渲染缺陷审计 / RAG 参数审计
+- **native-ui/docs/ → 根合并**：
+  - CHANGELOG.md：追加 7 条唯一变更记录至根 CHANGELOG（Token用量更名/向量清空同步/记忆设置去噪/用户卡片去噪/弹窗确认统一/删除按钮深红/KG Mock清理）
+  - ARCHITECTURE.md：确认根版本已覆盖全部内容，无需追加
+- **清理删除**：`native-ui/.agent/`（11 文件）+ `native-ui/docs/`（2 文件）整个目录
+- **registry.md 更新**：补充 5 个 plans + 3 个 audit 条目 + DIA 清理记录 + 指标更新至 2026-05-18
+- **handover.md 更新**：本会话 DIA 记录
+- **最终结构**：全站文档统一为根级三根体系 — `.agent/`（handover + registry + plans + checklists） + `docs/`（ARCHITECTURE + ADR + audit + plans + ...） + `CHANGELOG.md`
+- **DIA 门禁状态**：`CHANGELOG.md`（已更新），`registry.md`（已更新），`handover.md`（已更新），`docs/ARCHITECTURE.md`（无需变更），无 ADR 新增
 
 ## ✅ 已完成 — Agent 工具 Fallback 解析器重构与工作区图标优化 (2026-05-18 00:45)
 - **🔴 P0 — 修复 Kotlin `Collection.all` 导致的 Fallback 解析锁死 Bug**：
