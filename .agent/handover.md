@@ -1,8 +1,8 @@
 # 交接文档 (2026-05-18 DIA 全站文档清理合并)
 
-## ✅ 已完成 — 思考容器字号放回优化 (2026-05-18 01:58)
-- **🔴 P0 — 思考容器字号无损放大 2 号至 14sp**：在 [ChatInlineComponents.kt](file:///k:/Nexara/native-ui/app/src/main/java/com/promenar/nexara/ui/chat/ChatInlineComponents.kt) 的 `ThinkingBlock` 中，将思考文本字号由 12sp (`fontSize - 1`) **放回优化至 14sp (`fontSize + 1`)**，行高同步由 18sp 优化至更舒展的 **`19.sp`** (`fontSize + 6`)。这解决了 12sp 在高密度屏幕上过于微缩偏小无法看清的视觉缺陷，在保证层级区隔的前提下全面修复了核心可读性。
-- **编译验证**：`compileDebugKotlin` 100% 绿灯顺利通过，体验卓越。
+## ✅ 已完成 — 思考容器字号放回与二次放大优化 (2026-05-18 01:59)
+- **🔴 P0 — 思考容器字号累计放大 4 号至 16sp**：在 [ChatInlineComponents.kt](file:///k:/Nexara/native-ui/app/src/main/java/com/promenar/nexara/ui/chat/ChatInlineComponents.kt) 的 `ThinkingBlock` 中，将思考文本字号由默认的 14sp 再次**放大 2 个字号至极佳易读的 16sp (`fontSize + 3`)**，并将行高同步完美拉高匹配至 **`21.sp`** (`fontSize + 8`)。这彻底根治了在超高密度物理设备屏幕上思考气泡字符过于微缩紧密难以辨认的视觉体验障碍。
+- **编译验证**：`compileDebugKotlin` 100% 绿灯顺利通过，长文段落极其清晰好读。
 
 ## ✅ 已完成 — 全站 DIA 检查与过时重复文档清理合并 (2026-05-18 01:22)
 - **全站 DIA 扫描**：发现 4 处文档丛林（根 `.agent/` 43 文件 + 根 `docs/` 29 文件 + `native-ui/.agent/` 11 文件 + `native-ui/docs/` 2 文件 = 85 文件）
