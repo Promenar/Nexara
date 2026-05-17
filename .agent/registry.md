@@ -32,6 +32,7 @@
   - IDEA_CROSS_VERIFICATION_20260517.md — IDEA 会话交叉验证报告
   - RAG_MEMORY_STORAGE_GAP_AUDIT_20260517.md — RAG 记忆存储链路缺口审计（G-1~G-4）
   - RAG_CONFIG_ARCHITECTURE_GAP_AUDIT_20260517.md — 高级检索配置架构缺口全链路审计（P0 配置断链 + 22 死字段）
+  - 20260517-Gemini-Chat-UI-Audit-Consolidated-Execution-Report.md — 聊天界面渲染缺陷多维联合审计终极整合与无侵入重构执行报告
 - docs/plans/RAG_INDICATOR_MULTI_SESSION_EXECUTION.md — RAG 指示器 6 会话并行执行方案
 
 ## 已归档文档（docs/archive/）
@@ -50,6 +51,8 @@
 - C:/Users/lengz/.gemini/antigravity/brain/616233d1-033a-45c9-8e1d-10e80c343e3d/implementation_plan.md — Embedding 跨提供商配置加载与响应式同步 ✅
 - .agent/plans/20260517-skills-i18n-icons-fix.md — 工具管理国际化与 UI 细节深度优化减法 ✅
 - .agent/plans/20260517-rag-neon-microrail.md — 方案二多段极细霓虹导电轨 RAG 指示器重构 💡
+- .agent/plans/20260518-agent-tool-fallback-and-workspace-icon-refactoring.md — Agent工具Fallback兜底防线与工作区图标优化方案 ✅
+- .agent/plans/AUDIT_AGENT_TOOL_FALLBACK_20260518.md — Agent工具Fallback解析方案设计与DeepSeek审计存档 ✅
 
 
 ## 归档计划（.agent/plans/archive/）

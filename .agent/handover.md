@@ -1,5 +1,20 @@
 # 交接文档 (2026-05-17 21:55 思考完毕折叠、首条消息 RAG 故障根治及知识图谱大文本分段提取)
 
+## ✅ 已完成 — Agent 工具 Fallback 解析器重构与工作区图标优化 (2026-05-18 00:45)
+- **🔴 P0 — 修复 Kotlin `Collection.all` 导致的 Fallback 解析锁死 Bug**：
+  - 在流式生成完成判定中，将 `hasCompleteToolCalls` 的条件修正为 `accumulatedToolCalls.isNotEmpty() && accumulatedToolCalls.all { it.name.isNotEmpty() && ... }`。
+  - 彻底解决了当没有标准工具调用（列表为空）时，`all` 默认返回 `true` 导致兜底 Fallback 解析被永久闭锁的重大 Bug。
+- **🔴 P0 — 消除大括号配对扫描 3 处冗余并提供超强维护性**：
+  - 提炼并实现 `scanBalancedJsonSegments` 和 `findMatchingCloseBrace` 公共方法，完美实现嵌套 JSON 的数学级闭合配对，避开了大括号嵌套时的解析截断问题，并彻底消除 3 处相同逻辑的冗余。
+- **🔴 P0 — 编译安全 getSkill O(1) 过滤与误杀防护**：
+  - 用 `skillRegistry?.getSkill(it) != null` 替换了原方案中不存在的 `hasTool()`，杜绝了编译阻塞。
+  - 结合合法工具数据库校验，只物理剔除合法的系统工具，科普类 Markdown JSON 示例予以 100% 完整保留。
+- **🟡 P1 — 工作区右上角图标高保真更替**：
+  - 将聊天界面右上角起动 Workspace 的按钮图标从 `Icons.Rounded.Tune`（设置旋钮）更替为高级亮丽的 `Icons.Rounded.Folder`（文件夹）。
+  - 同步修正了第 58 行静态导入，规避编译风险。
+- **编译与回归测试验证**：全量编译 100% 顺利绿灯秒过，架构稳固如磐石。
+- **DIA 门禁状态**：`docs/CHANGELOG.md` 与 `.agent/handover.md` 已同步更新，“DIA: 有文档影响且已更新”。
+
 ## ✅ 已完成 — 思考容器完毕折叠、首条消息 RAG 故障根治及知识图谱大文本分段提取 (2026-05-17 21:55)
 - **🔴 P0 — 思考容器完毕后自动折叠与斜体小字样式优化**：
   - 重构 [ChatInlineComponents.kt](file:///k:/Nexara/native-ui/app/src/main/java/com/promenar/nexara/ui/chat/ChatInlineComponents.kt#L100)，在 `MarkdownText` 中添加并透传了 `fontStyle` 字型参数。
@@ -442,6 +457,8 @@
 
 | 优先级 | 任务 | 工时 | 说明 |
 |--------|------|------|------|
+| **P0** | 实装 Bug B & C 思考容器高度动画与斜体/缩小样式级联链路修补 | 2.5h | 参见 `20260517-Gemini-Chat-UI-Audit-Consolidated-Execution-Report.md` |
+| **P0** | 实装 Bug A 渲染端 buildPipelineSteps 内容审计防御 | 1.5h | 参见 `20260517-Gemini-Chat-UI-Audit-Consolidated-Execution-Report.md` |
 | **P0** | RagOmniIndicator 连线 ChatScreen | 2h | 审毕，见 `docs/audit/RAG_INDICATOR_ARCHITECTURE_DESIGN_20260517.md` Phase 1 |
 | **P0** | 向量化全链路验证 | 0.5h | 全新安装→配置→同步模型→选嵌入模型→导入文档→验证向量化→发消息验证检索 |
 | P0 | 编译 warning 清零 | 1h | 消除 deprecation 与类型警告，准备 Release 签名 |
@@ -469,3 +486,11 @@
   - `kgProvider` → backing-field (依赖 microGraphExtractor)
 - `rebuildEmbeddingClient()` 统一重置全部 6 个 backing-field
 - **结论**: 全站零残留 `by lazy` 过期引用陷阱
+
+## ✅ 已完成 — 聊天界面渲染缺陷多维联合审计与重构设计 (2026-05-17)
+- **多维审计整合报告**: 在 `docs/audit/` 中合并整理出 `20260517-Gemini-Chat-UI-Audit-Consolidated-Execution-Report.md`，深度点评了 GLM, MiniMax, Gemini+Opus, DeepSeekV4 四份报告的独特贡献与核心价值，并制定了**无侵入式黄金重构终极方案**。
+- **病理解构共识**:
+  - **Bug A**: 上游流式漏泄与 downstream 裸吞。对策为在 `buildPipelineSteps` 中插入内容防线正则审计，自动将泄漏 JSON 重组为结构化 `ToolExec` 步骤。
+  - **Bug B**: 双动画（`AnimatedVisibility` 与 `animateContentSize`）在 Column wrapContent 下的测量冲突。对策为注销 `animateContentSize`，引入 300ms 黄金缓着陆延迟折叠。
+  - **Bug C**: 样式传递链断裂。对策为扩充 `nexaraMarkdownTypography` 以透传 `fontStyle`，并在 `MarkdownSafe` 的 remember 组件中监听此样式依赖。
+- **DIA 状态**: 已同步更新文档注册表。本会话全过程严格遵守**绝对禁止修改代码**红线。
