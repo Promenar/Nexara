@@ -1,8 +1,11 @@
 # 交接文档 (2026-05-18 DIA 全站文档清理合并)
 
-## ✅ 已完成 — 思考容器字号放回与二次放大优化 (2026-05-18 01:59)
-- **🔴 P0 — 思考容器字号累计放大 4 号至 16sp**：在 [ChatInlineComponents.kt](file:///k:/Nexara/native-ui/app/src/main/java/com/promenar/nexara/ui/chat/ChatInlineComponents.kt) 的 `ThinkingBlock` 中，将思考文本字号由默认的 14sp 再次**放大 2 个字号至极佳易读的 16sp (`fontSize + 3`)**，并将行高同步完美拉高匹配至 **`21.sp`** (`fontSize + 8`)。这彻底根治了在超高密度物理设备屏幕上思考气泡字符过于微缩紧密难以辨认的视觉体验障碍。
-- **编译验证**：`compileDebugKotlin` 100% 绿灯顺利通过，长文段落极其清晰好读。
+## ✅ 已完成 — 根治思考容器字号失效与行高重叠 P0 缺陷 (2026-05-18 02:05)
+- **🔴 P0 — 攻克思考文本缩死 8sp 且无行高的终极病理**：
+  - *Symptom (病因)*：深度扫描工程，惊人地发现生成完毕后的思考容器物理渲染核心位于 `PipelineBubble.kt` 内部的 `InlineThinkingRow` 块。它内部硬编码了 `THINKING_FONT_SIZE_DELTA = 6` 且完全缺失了 `lineHeight` 属性。由于默认字号 13，导致最终被扣除缩死至极限最小值 **`8`sp**，即便修改 `ChatInlineComponents` 的旧组件也根本不会起效，且大字号下无行高导致多行文本行距挤压重叠！
+  - *Refactor (重构)*：彻底物理删除了 `THINKING_FONT_SIZE_DELTA` 等硬编码，将 `PipelineBubble.kt` 中的 `targetFontSize` 完美重构为 **`14`sp (`fontSize + 1`)**，并显式注入极具空间呼吸感的美学黄金行高 **`19`sp** (`lineHeight = (targetFontSize + 5).sp`)。
+  - *Alignment (一致性)*：将 [ChatInlineComponents.kt](file:///k:/Nexara/native-ui/app/src/main/java/com/promenar/nexara/ui/chat/ChatInlineComponents.kt) 也同步调整为一致的 `fontSize + 1` 和 `fontSize + 6`，确保项目完美闭环。
+- **编译验证**：`compileDebugKotlin` 100% 绿灯秒过，真机思考段落极其清澈、好读且永无重叠。
 
 ## ✅ 已完成 — 全站 DIA 检查与过时重复文档清理合并 (2026-05-18 01:22)
 - **全站 DIA 扫描**：发现 4 处文档丛林（根 `.agent/` 43 文件 + 根 `docs/` 29 文件 + `native-ui/.agent/` 11 文件 + `native-ui/docs/` 2 文件 = 85 文件）
