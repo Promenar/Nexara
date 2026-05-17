@@ -20,6 +20,8 @@
   - ADR-004: 工具分类体系（被动注入/主动调用/MCP 动态三轨）
   - ADR-010: Provider 管理多路保存
   - ADR-011: 模型能力数据库 2026-04 更新
+  - ADR-012: Embedding 跨提供商配置解析架构
+  - ADR-013: WebView 生命周期管理 — 测高 WebViewClient 前置绑定（2026-05-18）
 - docs/audit/ — 专项审计报告
   - RAG_SETTINGS_AUDIT_20260516.md — RAG 四页设置全量审计
   - PROVIDER_MANAGEMENT_AUDIT_20260516.md — 提供商管理系统全量审计

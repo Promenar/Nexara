@@ -1,11 +1,25 @@
 # 交接文档 (2026-05-18 DIA 全站文档清理合并)
 
+## ✅ 已完成 — XML 代码预览卡片渲染缺陷根治 (2026-05-18 01:39)
+- **🔴 P0 — 4 项叠根因诊断与修复**：
+  - *根因 #1（修改目标错误）*：`HtmlArtifactCard`（第 79-105 行）从未包含按钮；Fullscreen + Download 一直在 `CodeBlockHeader.kt` Header Row。用户删除/新增均为空操作。
+  - *根因 #2（时序竞态）*：`RichContentWebView` 中 `LaunchedEffect` 设置的测高 `WebViewClient` 落后于 `AndroidView.update` 的 `loadDataWithBaseURL`；简单 HTML <1ms 完成加载，测高回调永远赶不上。辅因：`layoutParams.height = WRAP_CONTENT` 使 `scrollHeight` 测量无约束视口高度。
+  - *根因 #3（死代码）*：`isLikelyRenderableHtml` 定义但从未调用，所有 ` ```xml ` 均被当作 HTML artifact。
+  - *根因 #4（变体隔离）*：Debug `applicationIdSuffix = ".debug"` 使 Debug/Release 成为两个应用。
+- *修复*：
+  - `RichContentWebView.kt`：WebViewClient 前置至 `remember { acquire() }` 块；`rememberUpdatedState` 保持参数新鲜度；`lastLoadedHtml` 去重；归还池前重置 WebViewClient
+  - `CodeBlockHeader.kt`：`isRenderableHtml = isHtmlArtifact(language) && isLikelyRenderableHtml(code)`
+  - `RichContentWebViewPool.kt`：`layoutParams.height` 从 `WRAP_CONTENT` 改为 `MATCH_PARENT`
+- *ADR*：新建 `docs/ADR/ADR-013-webview-lifecycle-compose-race.md`
+- *DIA*：更新 `CHANGELOG.md` / `ARCHITECTURE.md` / `handover.md` / `docs/audit/XML_RENDERER_BUG_AUDIT_20260518.md`
+- *编译验证*：零 lint 错误（3 文件）
+
 ## ✅ 已完成 — 根治思考容器字号失效与行高重叠 P0 缺陷 (2026-05-18 02:05)
-- **🔴 P0 — 攻克思考文本缩死 8sp 且无行高的终极病理**：
-  - *Symptom (病因)*：深度扫描工程，惊人地发现生成完毕后的思考容器物理渲染核心位于 `PipelineBubble.kt` 内部的 `InlineThinkingRow` 块。它内部硬编码了 `THINKING_FONT_SIZE_DELTA = 6` 且完全缺失了 `lineHeight` 属性。由于默认字号 13，导致最终被扣除缩死至极限最小值 **`8`sp**，即便修改 `ChatInlineComponents` 的旧组件也根本不会起效，且大字号下无行高导致多行文本行距挤压重叠！
-  - *Refactor (重构)*：彻底物理删除了 `THINKING_FONT_SIZE_DELTA` 等硬编码，将 `PipelineBubble.kt` 中的 `targetFontSize` 完美重构为 **`14`sp (`fontSize + 1`)**，并显式注入极具空间呼吸感的美学黄金行高 **`19`sp** (`lineHeight = (targetFontSize + 5).sp`)。
-  - *Alignment (一致性)*：将 [ChatInlineComponents.kt](file:///k:/Nexara/native-ui/app/src/main/java/com/promenar/nexara/ui/chat/ChatInlineComponents.kt) 也同步调整为一致的 `fontSize + 1` 和 `fontSize + 6`，确保项目完美闭环。
-- **编译验证**：`compileDebugKotlin` 100% 绿灯秒过，真机思考段落极其清澈、好读且永无重叠。
+- **🔴 P0 — 攻克思考文本缩死 8sp 且无行高、与字体大小设置对接（始终小 2 号）的终极重构**：
+  - *Symptom (病因)*：深度扫描工程，惊人地发现生成完毕后的思考容器物理渲染核心位于 `PipelineBubble.kt` 内部的 `InlineThinkingRow` 块。它内部原硬编码了 `THINKING_FONT_SIZE_DELTA = 6` 且完全缺失了 `lineHeight` 属性。由于默认字号 13，导致最终被扣除缩死至极限最小值 **`8`sp**，即便修改 `ChatInlineComponents` 的旧组件也根本不会起效，且大字号下无行高导致多行文本行距挤压重叠！同时字号变动无法与系统字体大小设置联动。
+  - *Refactor (重构)*：彻底物理删除了 `THINKING_FONT_SIZE_DELTA` 等硬编码，将 `PipelineBubble.kt` 中的 `targetFontSize` 完美重构为 **始终比正文小 2 号，即 `(fontSize - 2).coerceAtLeast(10)`**，并显式注入匹配黄金比例、极具空间呼吸感的美学行高 **`(targetFontSize + 5).sp`**（在默认字号 13 时呈现为 11sp 字体搭配 16sp 行高），从而完美与设置中的字体大小选项联动！
+  - *Alignment (一致性)*：将 [ChatInlineComponents.kt](file:///k:/Nexara/native-ui/app/src/main/java/com/promenar/nexara/ui/chat/ChatInlineComponents.kt) 也同步调整为一致的 `(fontSize - 2).coerceAtLeast(10)` 和 `(fontSize + 3).sp` 行高，确保项目组件字号逻辑完全闭环。
+- **编译验证**：`compileDebugKotlin` 100% 绿灯秒过，真机思考段落极其清澈、好读、自适应字体大小且永无重叠。
 
 ## ✅ 已完成 — 全站 DIA 检查与过时重复文档清理合并 (2026-05-18 01:22)
 - **全站 DIA 扫描**：发现 4 处文档丛林（根 `.agent/` 43 文件 + 根 `docs/` 29 文件 + `native-ui/.agent/` 11 文件 + `native-ui/docs/` 2 文件 = 85 文件）
