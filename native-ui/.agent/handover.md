@@ -1,6 +1,9 @@
 # 跨会话交接
 
 ## Done
+- **MemoryManager 文档检索匹配修复**：彻底解决了由于 parseType 判定与入库写入标签不匹配（`"doc"` vs `"document"`）导致所有文档检索结果在后处理时被静默丢弃的严重 P0 Bug，现在文档 RAG 结果能被正确返回并在会话中渲染。
+- **知识图谱 Mock 数据与动作清理**：按用户指示删除了知识图谱界面上用于调试/Mock 的 Mock 数据注入（AutoFixHigh）与清空图谱（DeleteSweep）按钮，并在 `KnowledgeGraphViewModel` 中删除了对应的 `injectMockData` 及 `clearGraph` 逻辑，移除未使用的 `IdGenerator` 等 imports。现在知识图谱完全专注于真实数据的拓扑渲染。
+- **自动化构建验证**：运行 `./gradlew assembleDebug`，编译完美通过，代码无任何编译缺陷。
 - **Nexara RAG 配置系统重构**：将"思考级别"标签页重命名为"参数"，整合了所有生成参数。
 - **参数标准化**：在 `InferenceParams` 和 `PromptRequest` 中新增了 `topK` 和 `repetitionPenalty`。
 - **协议层支持**：所有 LLM 协议（OpenAI, Anthropic, VertexAI, Local, GenericOpenAICompat）均已支持透传新增的生成参数。
@@ -11,38 +14,22 @@
 - **自动化测试**：
     - 编写并运行了 `ProtocolParamTest.kt`，验证了各协议对新增参数的 Payload 封装。
     - 更新了 `LlmProtocolSerializationTest.kt` 验证序列化一致性。
-- **2026-05-15 全链路审计**：完成 RAG 配置与参数控制系统的最终审计，发现关键问题：参数透传不一致（4/5 协议各有缺失）、RAG 全局关闭无反馈。审计报告与修复方案已存档至 `.agent/plans/20260515-rag-parameter-audit.md`。
-- **2026-05-15 分会话修复执行**：按 `.agent/plans/20260515-protocol-refactor-plan.md` 执行 5 个会话的全部任务：
-    - Session A: 新建 `ProtocolParamAdapter`（62 行 + 122 行测试）
-    - Session B: `GenerateConfig` 扩展 7 字段 + `LlamaCppBackend` JNI 修复 + 极端值裁剪
-    - Session C: RAG 关闭反馈 UI + 思考级别联动 + 小屏动画优化
-    - Session D: `LlmProvider` 工厂路由修复（4 协议 → `GenericOpenAICompatProtocol`）
-    - Session E: 5 协议全部迁移至 Adapter + `CrossProtocolParamAuditTest` (5 测试) + 扩展 `ProtocolParamTest` (2 测试)
-- **22 文件变更**：843 +, 176 -，全部 19 单元测试通过，编译无错误
-- **DIA 收尾**：CHANGELOG.md ✅ / ARCHITECTURE.md ✅ / handover.md ✅
-- **2026-05-15 知识审计系统验收**：完成 UX/数据模型/可扩展性三维审查，验收结论：准予通过。报告存档于同会话 artifacts 目录 `20260515-知识审计系统验收.md`
-- [x] RAG 逻辑解耦与术语标准化 (长期记忆、会话 RAG)
-- [x] 生成参数扩展与持久化修复 (Top K, Repetition Penalty)
-- [x] 知识审计系统 `RagDetailsSheet` 实装
-- [x] **任务规划工具 (Task Planner) V2 方案设计论证通过**
 
 ## Next Steps
-1.  **内置任务规划工具 (P0)**: 按照 `.agent/plans/20260515-TaskPlanningToolArchitecture.md` 开始执行开发。
+1.  **实际数据测试知识图谱**: 配合后端在真实环境下进一步测试 RAG 文档导入和图谱的实时提取与渲染。
+2.  **内置任务规划工具 (P0)**: 按照 `.agent/plans/20260515-TaskPlanningToolArchitecture.md` 开始执行开发。
     - 第一阶段：数据库迁移与基础 Entity 实现。
     - 第二阶段：Skill 工具集成与 ContextBuilder 注入。
     - 第三阶段：输入框 HUD UI 开发。
-2.  **全局资源管理器 (P0)**: 按照 `.agent/plans/20260515-ResourceManagerArchitecture.md` 执行，将知识库升级为统一文件操作系统。
-3.  **细节完善**: 针对 `RagDetailsSheet` 在极端长文本下的滚动适配进行打磨。
+3.  **全局资源管理器 (P0)**: 按照 `.agent/plans/20260515-ResourceManagerArchitecture.md` 执行，将知识库升级为统一文件操作系统。
 
 ## Risks
-- **UUID 迁移风险**: 在全面转向 UUID 锚定协议时，需确保存量数据的 `isGlobal` 与 `folder_id` 转换逻辑不破坏现有的 RAG 引用。
-- **并发状态竞争**: `MessageManager` 在高频更新 `kgPaths` 时需关注内存占用与 UI 帧率。
+- **存量向量库的维度与标签兼容**: 之前写入的向量若有维度冲突应通过 `VectorStore.search` 抛出 Warning 引导重新向量化，需确认更新后的系统运行体验。
 
 ## DIA Status
-- **CHANGELOG.md**: ✅ 已更新（新增：任务规划工具 V2 方案论证通过）
-- **ARCHITECTURE.md**: ✅ 已更新（新增：TaskPlannerTool 逻辑节点）
+- **CHANGELOG.md**: ✅ 已更新（新增：P0 文档检索丢失修复、KG Mock 数据与按钮移除）
+- **ARCHITECTURE.md**: ✅ 无架构级变更
 - **registry.md**: ✅ 已同步
-- **`.agent/plans/`**: ✅ 已更新任务规划架构方案 V2
 
-## 2026-05-15 会话交接摘要
-本次会话完成了 **RAG 检索深度可视化（知识审计）** 的开发工作，并制定了后续两个核心系统（资源管理器、任务规划器）的架构方案。目前项目处于从功能堆砌向“系统级生产力工具”转型的关键节点。已通过单元测试验证了核心数据链路的稳定性。
+## 2026-05-17 会话交接摘要
+本次会话定位并解决了 RAG 文档数据检索静默失效的严重隐患，同时遵照用户指示彻底清除了知识图谱界面上仅用于测试/调试的 Mock 数据相关按钮与 ViewModel 触发点（包括 Mock 注入和清空按键），使图谱渲染全面聚焦实际数据的生成与解析。目前系统已通过 Gradle 编译验证，可立即投入实际场景的端到端 RAG/KG 测试。

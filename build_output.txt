@@ -1,5 +1,3 @@
-To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.4.1/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
-Daemon will be stopped at the end of the build 
 
 > Configure project :app
 WARNING: The option setting 'android.disallowKotlinSourceSets=false' is experimental.
@@ -13,11 +11,9 @@ The current default is 'true'.
 > Task :app:processDebugNavigationResources UP-TO-DATE
 > Task :app:parseDebugLocalResources UP-TO-DATE
 > Task :app:generateDebugRFile UP-TO-DATE
-> Task :app:kspDebugKotlin
+> Task :app:kspDebugKotlin UP-TO-DATE
+> Task :app:compileDebugKotlin UP-TO-DATE
 
-> Task :app:compileDebugKotlin
-w: file:///K:/Nexara/native-ui/app/src/main/java/com/promenar/nexara/ui/chat/components/FilesPanel.kt:558:31 'val Icons.Rounded.InsertDriveFile: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.InsertDriveFile.
-
-BUILD SUCCESSFUL in 10s
-8 actionable tasks: 2 executed, 6 up-to-date
+BUILD SUCCESSFUL in 1s
+8 actionable tasks: 8 up-to-date
 Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.4.1/userguide/configuration_cache_enabling.html
