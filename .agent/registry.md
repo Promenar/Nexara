@@ -26,6 +26,7 @@
   - ADR-015: Nexara Metro 调试桥系统 (Phase 1)（2026-05-18）
   - ADR-016: CancellationException 传播模式与 channelFlow 生命周期规范（2026-05-18）
   - ADR-017: 知识图谱可视化 176+ 大数据量防崩溃与性能优化（2026-05-18）
+  - ADR-018: 极致原生化 Jetpack Compose Canvas 知识图谱引擎演进（2026-05-18）
 - docs/audit/ — 专项审计报告
   - RAG_SETTINGS_AUDIT_20260516.md — RAG 四页设置全量审计
   - PROVIDER_MANAGEMENT_AUDIT_20260516.md — 提供商管理系统全量审计
@@ -65,19 +66,19 @@
 - .agent/plans/20260517-skills-i18n-icons-fix.md — 工具管理国际化与 UI 细节深度优化减法 ✅
 - .agent/plans/20260517-rag-neon-microrail.md — 方案二多段极细霓虹导电轨 RAG 指示器重构 💡
 - .agent/plans/20260517-dialog-unification.md — 统一危险操作删除二次确认弹窗实施计划（从 native-ui 合并）
+- .agent/plans/20260519-toolchain-argument-double-accumulation-fix.md — 工具链参数双重累积与错误处理审计修复（P0-1+P0-2+P1-1+P1-2） ✅
 - .agent/plans/20260518-agent-tool-fallback-and-workspace-icon-refactoring.md — Agent工具Fallback兜底防线与工作区图标优化方案 ✅
 - .agent/plans/AUDIT_AGENT_TOOL_FALLBACK_20260518.md — Agent工具Fallback解析方案设计与DeepSeek审计存档 ✅
 - .agent/plans/20260518-CherryStudio-ToolCall-Transplant-Design.md — Cherry-Studio 工具调用系统移植设计方案（从用户 globalStorage 同步）
 - .agent/plans/20260518-Parallel-Session-Implementation-Plan.md — 工具调用系统并行独立会话实施方案（4 会话 + 共享契约）
 - .agent/plans/20260518-NexaraMetroDebuggerFix.md — 调试桥诊断与 Ktor-OkHttp 超时及日志不完整性的终极修复实施方案
 - .agent/plans/20260518-NexaraDynamicTimeoutFix.md — 知识图谱抽取超时时间可配置化与 RAG 全链路动态超时穿透设计方案
-
-
+- C:/Users/lengz/.gemini/antigravity/brain/d8c20b3e-a41f-4c5c-afd0-ba01f5ac1f1a/implementation_plan.md — 提供商自定义模型参数配置保存缺陷与会话 RAG 指示器内联排版美化修复 ✅
 ## 归档计划（.agent/plans/archive/）
 已完成的所有 Phase 2-6 计划文件（22 个），留存备查。
 
-## 关键指标 (2026-05-18)
-- Kotlin 源文件: ~310 个
+## 关键指标 (2026-05-19)
+- Kotlin 源文件: ~315 个
 - Room Entity: 18 个（TaskNodeEntity）
 - Repository 覆盖率: 12/12 (100%)
 - 内置 Skill: 17 个（新增 4 个任务规划 Skill）
