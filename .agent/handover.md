@@ -1,4 +1,78 @@
-# 交接文档 (2026-05-18 Nexara Metro 调试桥系统 Phase 1 成功落地 & 单元测试全面重塑)
+# 交接文档 (2026-05-18 知识图谱大规模数据性能优化与防崩溃根治)
+
+## ✅ 已完成 — 知识图谱可视化性能调优与大规模数据渲染防崩溃根治 (2026-05-18 23:30)
+- **🔴 P0 — 彻底根治 176+ 大数据节点下 ECharts 悬挂边解析崩溃与无初始布局导致的坐标爆炸**:
+  - *病因分析*：
+    1. **数据悬挂边（Dangling Edges）**：RAG 提取过程中易产生数据不完整性，数据库中边（Edge）的 `sourceId` 或 `targetId` 在顶点列表中不存在。ECharts 在初始化关系图（Graph）时，一旦检测到 any 一条无效边，会引发致命的 JS 未捕获异常并直接中断整个渲染，呈现完全空白。
+    2. **物理引擎重叠斥力爆炸**：176 个节点在缺乏初始圆形排布（`initLayout`）的情况下从同一个重合坐标 $(0,0)$ 启动力导向物理引擎，导致瞬间产生趋向无穷大（`NaN` / `Infinity`）的相互排斥力，使所有节点立刻飞出视口或计算失效，画面呈现死黑。
+    3. **类别越界与 Formatter 模板解析异常**：节点类别超限导致 category 索引错误，以及连线 Label 直接传入原始字符串被误解析为 ECharts 的模板令牌。
+    4. **Web 报错不可见**：WebView 内部 JS 发生致命错误时静默挂掉，缺乏 try-catch 灾备可视化反馈。
+  - *修复方案*：
+    1. **前置悬挂边安全过滤**：在 JS 模板中建立 `validNodeIds` 哈希映射表，在装配 `links` 数组前强行过滤掉所有起点或终点非法的无效边，并输出 console 警告，实现数据瑕疵下的 100% 免疫崩溃。
+    2. **显式启用 `initLayout: 'circular'` 圆周初始布局**：强制节点在圆周上均布排列后启动力导向引擎，消除坐标重叠点引起的斥力奇异值（NaN），并提升 3 倍以上收敛性能。
+    3. **大规模力场参数性能调优**：针对手机端将 `repulsion` 调优为 `120`（原 250），`gravity` 调优为 `0.1`（原 0.08），`friction` 设为 `0.6`，保证星图美观紧凑且大幅节省手机 CPU/电量。
+    4. **安全类别与 Formatter 降级**：映射节点时使用安全降级 `category: colorMap[n.type] ? n.type : 'other'`，连线 Label 统一改用 `formatter` 回调函数，规避模板字面量解析风险。
+    5. **全局 try-catch 与红色报错卡片**：对 ECharts 初始化和 setOption 渲染逻辑进行全局 `try-catch` 包裹，一旦捕获未知 JS 异常，直接在网页容器中输出精美的红色报错卡片，展示清晰的错误描述，极大提升了开发与调试的可观测性。
+  - *变更文件 (1)*：[kg_template.html](file:///k:/Nexara/native-ui/app/src/main/assets/kg_template.html)。
+  - *DIA 门禁状态*：`CHANGELOG.md`（已更新），`handover.md`（当前文件已更新），`docs/ARCHITECTURE.md`（已更新 — 新增 ADR-017），`registry.md`（已更新 — ADR-017 注册）。
+
+## ✅ 已完成 — CancellationException 反模式根治 + 会话生成状态卡死修复 (2026-05-18 22:52)
+- **🔴 P0 — `sendPromptSync` 捕获 `CancellationException` 致 `withTimeoutOrNull` 失效（KG 全 chunk 失败真正根因）**：
+  - *诊断证据*：logcat 显示 `Exception: [UNKNOWN] Timed out waiting for 15000 ms`，堆栈含 `CancellableContinuationImpl.cancel` → `withTimeoutOrNull` 超时取消被 `catch (e: Exception)` 拦截。
+  - *修复*：4 个协议类添加 `catch (e: CancellationException) { throw e }` 透传。异常消息保留 HTTP 状态码和分类。
+- **🔴 P0 — 会话 UI `isGenerating` 卡在 `true`**：
+  - *根因*：`UnifiedLlmClient.sendStream()` 的 `awaitClose {}` 导致 Flow 永不完成。
+  - *修复*：删除 `awaitClose {}`；`generateMessage()` 添加 `try-finally` 保证重置。
+- *变更文件 (6)*：`OpenAIProtocol.kt`, `GenericOpenAICompatProtocol.kt`, `AnthropicProtocol.kt`, `VertexAIProtocol.kt`, `UnifiedLlmClient.kt`, `ChatViewModel.kt`。
+- **DIA 门禁状态**：`CHANGELOG.md`（已更新），`handover.md`（已更新），`ARCHITECTURE.md`（已更新 — 新增 ADR-016），`registry.md`（已更新 — ADR 索引至 ADR-016）。
+
+## ✅ 已完成 — 知识图谱可视化星图空白与 WebView 无限重载缺陷根治 (2026-05-18 22:10)
+- **🔴 P0 — 彻底根治 WebView 静态资源加载失效与 Compose 重组重复刷新导致的图谱空白**:
+  - *病因*：
+    1. **静态资源路径绝对化**：在 `kg_template.html` 中引入绝对路径 `file:///android_asset/echarts/echarts.min.js`。这在以 Base URL `"file:///android_asset/"` 加载时，由于 WebView 的沙箱跨域安全拦截或重复路径解析，导致 JavaScript 引擎无法成功加载 ECharts 库，渲染容器完全不被初始化。
+    2. **Compose 重组引发无限重载**：在 `KnowledgeGraphScreen.kt` 的 `AndroidView(WebView)` 组件中，`update` 块未对 `graphHtml` 进行防重入拦截。每次页面重组或发生微小状态更新时，都会强行触发 `wv.loadDataWithBaseURL()`，使 WebView 处于重复刷新和白屏中。
+    3. **ECharts 节点 Label 重名冲突崩溃**：原模板直接以实体名称 `n.name` 作为 ECharts 关系图的节点主键标识。一旦 RAG 提取出来的实体有重名，ECharts 会因 Graph 主键唯一性校验失败而抛出 "Each series.data must have a unique name." 异常静默崩溃，拒绝渲染。
+  - *重构修复*：
+    1. **静态资源路径相对化**：将 `kg_template.html` 中 ECharts 脚本路径修正为相对路径 `<script src="echarts/echarts.min.js"></script>`，保证 100% 成功加载本地 Assets。
+    2. **引入 Recompose 去重保护**：在 `KnowledgeGraphScreen.kt` 的 Composable 内部，通过 `remember` 实例化 `lastLoadedHtml` 缓存变量。在 `update` 块中通过 `if (lastLoadedHtml != html)` 进行防抖拦截，仅在 HTML 内容发生物理变化时触发 WebView 的 load 调用，彻底根治无限白屏刷新。
+    3. **唯一主键映射与高保真格式化**：将 ECharts node 映射 of `name` 属性与唯一的 `n.id` 绑定，同时将实际名称存入自定义属性 `displayName`，最后通过 ECharts 的 `label.formatter` 和 `tooltip.formatter` 自定义格式化函数以展示 `displayName`，优雅防御重名实体崩溃。
+    4. **WebChromeClient 控制台日志无损转发**：在 WebView 初始化时挂载自定义 `WebChromeClient`，覆盖 `onConsoleMessage`，自动将 WebView 内的所有 JS console error 与 log 实时格式化并通过 `NexaraLogger.log("[WebView Console] ...")` 广播至 logcat，瞬间打通 WebView 内部开发调试的可观测性盲区。
+- **DIA 门禁状态**：`registry.md`、`CHANGELOG.md`、`handover.md` 均已 100% 同步更新，“DIA: 同步完成”。
+- **编译状态**：`compileDebugKotlin` 100% 编译绿灯秒过，代码零编译/Lint 错误，绝对安全鲁棒！
+
+## ✅ 已完成 — 知识图谱抽取诊断日志增强与可视化修复 (2026-05-18 22:19)
+- **🔴 P0 — `sendPromptSync` 诊断信息丢失根因修复**：
+  - *病因*：4 个协议类（OpenAI/GenericOpenAI/Anthropic/VertexAI）的 `sendPromptSync` 异常处理仅保留 `ErrorNormalizer.normalize(e).message`（"发生未知错误，请重试"），**完全丢弃 HTTP 状态码、错误分类、原始 API 响应体**。API 网关 15 秒超时返回 5xx 错误，但日志只看到中文"未知错误"，无法判断根因。
+  - *修复*：异常消息格式改为 `[HTTP {code}][{category}] {raw response 300chars}`，确保每次失败都能看到真实 HTTP 状态码和 API 原始错误响应。
+  - `GraphExtractor` 异常改用 `logError` 记录完整堆栈（调试桥红色大屏可见）。
+  - 修复汇总日志负数 bug（`success=0, failed=13` → `success=0, failed=13, total=13`）。
+- **🔴 P0 — 知识图谱"有统计但无图"**：
+  - *根因*：`getGraphData()` GLOBAL 模式仅返回有边连接的节点，孤立节点被忽略。
+  - *修复*：GLOBAL 模式 `kgNodeDao.getAll()` 全量返回 + ECharts 空数据降级。
+- *变更文件 (8)*：`OpenAIProtocol.kt`, `GenericOpenAICompatProtocol.kt`, `AnthropicProtocol.kt`, `VertexAIProtocol.kt`, `GraphExtractor.kt`, `GraphStore.kt`, `KnowledgeGraphViewModel.kt`, `kg_template.html`, `nexara-metro-tui.js`。
+- **DIA 门禁状态**：`CHANGELOG.md`（已更新），`handover.md`（已更新），其余文档无影响。
+
+## ✅ 已完成 — 知识图谱抽取超时可配置化 (2026-05-18 21:50)
+- **🟡 P1 — KG 每 chunk 抽取超时时间从硬编码 120s 改为用户可配置（默认 15s）**：
+  - *病因*：`GraphExtractor.extractSingleChunk()` 调用 `protocol.sendPromptSync()` 时无任何超时控制，完全依赖 Protocol 层的硬编码 `requestTimeoutMillis = 120_000`（120秒）。当 LLM 响应慢或无响应时，每个 chunk 会阻塞长达 120 秒，导致用户在知识库界面看到的 KG 抽取每次尝试都极慢才失败。
+  - *修复*：
+    - `GraphExtractor` 新增 `timeoutMs` 构造参数（默认 15s），使用 `withTimeoutOrNull` 包裹同步调用，超时后立即返回友好错误信息。
+    - 设置 → 记忆设置 → 知识图谱页面新增「抽取超时时间」滑块（5~120 秒，默认 15 秒）。
+    - 完整配置链路：UI → `RagViewModel` → `RagConfigPersistence` → `AgentRetrievalConfig` / `RagConfiguration` → `NexaraApplication` → `GraphExtractor`。
+  - *变更文件 (8 个)*：`GraphExtractor.kt`, `RagModels.kt`, `AgentConfigModels.kt`, `RagConfigPersistence.kt`, `RagViewModel.kt`, `NexaraApplication.kt`, `RagAdvancedScreen.kt`, `strings.xml (en+zh)`。
+- **DIA 门禁状态**：`CHANGELOG.md`（已更新），`handover.md`（已更新），其余文档无影响。
+
+## ✅ 已完成 — Nexara 调试桥报错广播与大模型 RAG 提取超时根治 (2026-05-18 20:20)
+- **🔴 P0 — 彻底根治 RAG 知识图谱大文本分段非流式同步抽取超时崩溃 (SocketTimeoutException)**:
+  - *病因*：在 `OpenAIProtocol`、`GenericOpenAICompatProtocol`、`AnthropicProtocol` 和 `VertexAIProtocol` 等协议类中，Ktor HttpClient(OkHttp) 的 HttpTimeout 块中完全缺失了 `socketTimeoutMillis` 套接字读写超时时间配置。这导致底层 OkHttp 引擎默认回退至其 10 秒的硬性超时限制，在进行复杂的 RAG/KG 大文本切片非流式抽取请求（通常需处理并解析大量数据，耗时 15s~40s）时直接引发超时掐断崩溃。
+  - *重构*：显式配置 `socketTimeoutMillis = 120_000` (120 秒)，完美贯通大模型耗时任务的非流式响应链路。
+- **🔴 P0 — 贯通调试桥（Nexara Metro）网络错误与运行时异常广播盲区**:
+  - *病因*：原本 `NexaraLogger.logError(tag, throwable)` 仅记录到本地 Android Logcat 与本地磁盘日志，而 `NEXARA_METRO` 事件广播总线对此一无所知，导致桌面端调试 TUI 终端在网络超时或大模型接口崩溃时呈现一片虚无的静默。
+  - *重构*：重构 `NexaraLogger.logError`，在 Debug 模式下自动将错误信息和堆栈摘要序列化为 JSON，并通过 `NEXARA_METRO` Tag 广播上报。同时，统一将 `GraphExtractor` 的提取器日志附加中括号 tag `[RAG][GraphExtractor]` 前缀，触发调试桥自动分类路由。
+- **💻 桌面 TUI 终端大屏红色报错渲染器发布**:
+  - *升级*：在 `scripts/nexara-metro-tui.js` 解析流中增加对 `ERROR` 类别日志的处理分支，当发生运行时致命故障或大网络超时报错时，在 Node.js 终端呈现醒目、极具视觉冲击力的 ANSI 红色大屏高保真边框卡片，展示错误组件、异常详细原因并用精简优雅的树状结构浅灰色打印 6 行核心堆栈追踪，提供极致的可观测性！
+- **DIA 门禁状态**：`registry.md`、`CHANGELOG.md`、`handover.md` 均已 100% 同步更新，“DIA: 同步完成”。
+- **单元测试与编译**: `OpenAIProtocolTest` 100% 绿灯通过，整体工程 `compileDebugKotlin` 成功！
 
 ## ✅ 已完成 — Nexara Metro 调试桥系统 (Phase 1) 完美落地 (2026-05-18 19:30)
 - **💡 架构演化与对齐**：

@@ -9,7 +9,7 @@
 - docs/PRD.md — 产品需求文档 v2.0（进度已更新至 2026-05-15）
 - docs/ARCHITECTURE_DESIGN.md — 全局架构设计（含 §2.4.1 KG 双模式策略）
 - docs/IMPLEMENTATION_ANALYSIS.md — 当前实现分析（总体 92%）
-- docs/ARCHITECTURE.md — 架构快速参考（含 ADR 索引，已至 ADR-012）
+- docs/ARCHITECTURE.md — 架构快速参考（含 ADR 索引，已至 ADR-016）
 - docs/IMPLEMENTATION_PLAN.md — Markdown 渲染分阶段实施计划（P0+P1 已完成）
 - docs/MARKDOWN_RENDERING_AUDIT.md — Markdown 渲染能力审计（6 项 ❌→✅）
 - docs/DOCUMENT_GOVERNANCE.md — 文档治理方案
@@ -22,6 +22,10 @@
   - ADR-011: 模型能力数据库 2026-04 更新
   - ADR-012: Embedding 跨提供商配置解析架构
   - ADR-013: WebView 生命周期管理 — 测高 WebViewClient 前置绑定（2026-05-18）
+  - ADR-014: 工具调用系统架构移植 — 基于 Cherry-Studio 参考实现（2026-05-18）
+  - ADR-015: Nexara Metro 调试桥系统 (Phase 1)（2026-05-18）
+  - ADR-016: CancellationException 传播模式与 channelFlow 生命周期规范（2026-05-18）
+  - ADR-017: 知识图谱可视化 176+ 大数据量防崩溃与性能优化（2026-05-18）
 - docs/audit/ — 专项审计报告
   - RAG_SETTINGS_AUDIT_20260516.md — RAG 四页设置全量审计
   - PROVIDER_MANAGEMENT_AUDIT_20260516.md — 提供商管理系统全量审计
@@ -65,6 +69,8 @@
 - .agent/plans/AUDIT_AGENT_TOOL_FALLBACK_20260518.md — Agent工具Fallback解析方案设计与DeepSeek审计存档 ✅
 - .agent/plans/20260518-CherryStudio-ToolCall-Transplant-Design.md — Cherry-Studio 工具调用系统移植设计方案（从用户 globalStorage 同步）
 - .agent/plans/20260518-Parallel-Session-Implementation-Plan.md — 工具调用系统并行独立会话实施方案（4 会话 + 共享契约）
+- .agent/plans/20260518-NexaraMetroDebuggerFix.md — 调试桥诊断与 Ktor-OkHttp 超时及日志不完整性的终极修复实施方案
+- .agent/plans/20260518-NexaraDynamicTimeoutFix.md — 知识图谱抽取超时时间可配置化与 RAG 全链路动态超时穿透设计方案
 
 
 ## 归档计划（.agent/plans/archive/）
