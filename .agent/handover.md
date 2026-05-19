@@ -1,5 +1,17 @@
 # 交接文档 (2026-05-20)
 
+## ✅ 已完成 — 跨页面 Header 窄版 TopAppBar 一致性重构与对齐 (2026-05-20 11:35)
+- **🟡 P1 — 助手会话列表与主会话界面 Header 高度与元素对齐调优**：
+  - *问题根因*：原“助手的会话列表页面”与“主会话界面”采用了不同的 Header 栏组件（前者为自定义大标题 Row，后者为窄版 TopAppBar），导致标题字号不一致（大字号 VS 窄版中字号）、返回按钮在切换时产生高度和左右位置跳跃，违和感强烈。
+  - *重构对齐方案*：
+    - 将 `AgentSessionsScreen.kt` 的自定义 Row Header 彻底重构为标准的窄版 `TopAppBar` 布局，采用一模一样的字体样式（大标题对应 `NexaraTypography.titleMedium`，副标题“1个会话”对应 `NexaraTypography.labelSmall`）。
+    - 将重构后的 `AgentSessionHeader` 组件挂载在 `Scaffold` 的 `topBar` 参数中，与主会话界面挂载方式 100% 对齐。
+    - 移除原本 `Column` 顶部的 `AgentSessionHeader` 调用，并调整 `LazyColumn` 顶部间距 `top = 8.dp` 以防局促感。
+    - 在切换页面时，实现了返回按钮和标题栏位置、文字大小的像素级完美重合，消除了任何物理跳跃。
+  - *变更文件 (1)*：
+    - 修改: [AgentSessionsScreen.kt](file:///Users/promenar/Codex/Nexara/native-ui/app/src/main/java/com/promenar/nexara/ui/hub/AgentSessionsScreen.kt)
+  - *DIA 门禁状态*：`CHANGELOG.md`（已更新），`handover.md`（当前文件已更新），`registry.md`（已更新），“DIA: 完美对齐”。
+
 ## ✅ 已完成 — Room 数据库 v16 全面统合与 task_nodes 闪退热修复根治 (2026-05-19 23:59)
 - **🔴 P0 — 根治由于 `9e8f2bb` 对 `task_nodes` 表做出的默认值与索引改动导致的第二次闪退**：
   - *问题根因*：在合并远程最新提交 `9e8f2bb` 后，Room 数据库抛出 `java.lang.IllegalStateException: Migration didn't properly handle: task_nodes` 致命崩溃。远程实体对 `task_nodes` 表增加了多个 `defaultValue = ...` 属性并修改了部分索引名称，而本地的老旧表物理上不包含这些 Room 校验所预期的定义。
