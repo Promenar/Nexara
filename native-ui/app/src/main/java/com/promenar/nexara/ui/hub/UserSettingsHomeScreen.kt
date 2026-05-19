@@ -106,6 +106,14 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.promenar.nexara.data.remote.protocol.ProtocolType
 import java.io.File
+import dev.chrisbanes.haze.rememberHazeState
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.hazeEffect
+import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import com.promenar.nexara.ui.common.LocalHazeState
+import androidx.compose.runtime.CompositionLocalProvider
 
 private enum class SettingsTab(val labelRes: Int) {
     APP(R.string.settings_tab_app),
@@ -178,23 +186,100 @@ fun UserSettingsHomeScreen(
         }
     }
 
-    Scaffold(
-        containerColor = NexaraColors.CanvasBackground,
-        contentWindowInsets = WindowInsets.statusBars,
-        topBar = {
-                TopAppBar(
-                    title = {
-                        Box(modifier = Modifier.padding(start = 4.dp)) {
-                            Text(stringResource(R.string.settings_title), style = NexaraTypography.headlineLarge)
+    val cardHazeState = rememberHazeState()
+    val headerHazeState = rememberHazeState()
+
+    CompositionLocalProvider(LocalHazeState provides cardHazeState) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            // Layer 0: 纯极光背景
+            NexaraGlowBackground(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .hazeSource(state = cardHazeState)
+            ) {}
+
+            // Layer 1: 内容采样区
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .hazeSource(state = headerHazeState)
+            ) {
+                Scaffold(
+                    containerColor = Color.Transparent,
+                    contentWindowInsets = WindowInsets.statusBars,
+                    topBar = {
+                        val glowBorderBrush = Brush.linearGradient(
+                            colors = listOf(
+                                Color(0xFF8083FF).copy(alpha = 0.55f),
+                                Color(0xFFD97721).copy(alpha = 0.45f),
+                                Color(0xFF8083FF).copy(alpha = 0.55f)
+                            )
+                        )
+
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clipToBounds()
+                                .drawBehind {
+                                    val strokeWidth = 1.dp.toPx()
+                                    val y = size.height - strokeWidth / 2
+                                    drawLine(
+                                        brush = glowBorderBrush,
+                                        start = Offset(0f, y),
+                                        end = Offset(size.width, y),
+                                        strokeWidth = strokeWidth
+                                    )
+                                }
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .matchParentSize()
+                                    .hazeEffect(state = headerHazeState) {
+                                        blurRadius = 28.dp
+                                        noiseFactor = 0.012f
+                                        backgroundColor = Color(0xFF121115).copy(alpha = 0.52f)
+                                    }
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .matchParentSize()
+                                        .background(
+                                            Brush.linearGradient(
+                                                colors = listOf(
+                                                    Color(0xFF8083FF).copy(alpha = 0.08f),
+                                                    Color(0xFFD97721).copy(alpha = 0.05f)
+                                                )
+                                            )
+                                        )
+                                )
+                                Box(
+                                    modifier = Modifier
+                                        .matchParentSize()
+                                        .background(
+                                            Brush.linearGradient(
+                                                colors = listOf(
+                                                    Color.White.copy(alpha = 0.06f),
+                                                    Color.Transparent
+                                                )
+                                            )
+                                        )
+                                )
+                            }
+
+                            TopAppBar(
+                                title = {
+                                    Box(modifier = Modifier.padding(start = 4.dp)) {
+                                        Text(stringResource(R.string.settings_title), style = NexaraTypography.headlineLarge)
+                                    }
+                                },
+                                colors = TopAppBarDefaults.topAppBarColors(
+                                    containerColor = Color.Transparent,
+                                    titleContentColor = NexaraColors.OnSurface
+                                )
+                            )
                         }
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = Color.Transparent,
-                        titleContentColor = NexaraColors.OnSurface
-                    )
-                )
-            }
-        ) { paddingValues ->
+                    }
+                ) { paddingValues ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -355,6 +440,9 @@ fun UserSettingsHomeScreen(
             onDismiss = { showLanguageDialog = false }
         )
     }
+}
+}
+}
 }
 
 @Composable
