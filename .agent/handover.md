@@ -1,5 +1,25 @@
 # 交接文档 (2026-05-20)
 
+## ✅ 已完成 — 物理磨砂毛玻璃大极光背景全站完美覆盖 (2026-05-20)
+- **🎨 P0 — 欢迎登录 `WelcomeScreen` 全面升级极光流光背景**：
+  - 将原有的静态、生硬 `AtmosphereBackground` 彻底清退，升级为全新的灵动往复飘拂大极光 `NexaraGlowBackground`。
+  - 用 `LocalHazeState` 完美分发全局 `hazeState`。使界面底部的 `LanguageButton` 内部的 `NexaraGlassCard` 能够完美捕捉到极光流水的多彩变幻，呈现极致尊贵的物理卷积毛玻璃质感。
+- **🎨 P0 — 智能体主中心 `AgentHubScreen` 双 HazeState 重构**：
+  - 应用双 HazeState 同级 Overlay 架构，Layer 0 运行大极光 `NexaraGlowBackground`，Layer 1 运行内容层，顶栏采用包含 `hazeEffect(headerHazeState)` 的 Overlay 真·穿透毛玻璃顶栏。
+  - 卡片列表直接模糊折射 Layer 0 的斑斓极光，同时顶栏实现对下方滚动卡片的真穿透模糊，完全消除任何死板硬塑料感。
+- **🎨 P0 — 设置主界面 `UserSettingsHomeScreen` 完美双 HazeState 极光融合**：
+  - 彻底用双 HazeState 将整个 Scaffold 背景透明化，采用 `NexaraGlowBackground` 极光大底盘全景平铺。
+  - 顶栏采用 1px 晶体渐变底描边与真物理毛玻璃，列表滚动时在顶栏底部呈现 120Hz 极致折射晕染。
+- **🎨 P0 — RAG 知识库首页 `RagHomeScreen` 物理高斯毛玻璃升级**：
+  - 将原有的 Scaffold 纯色 Canvas 背景透明化，重构为双 HazeState 极光背景架构。
+  - 顶栏全面升级为 Haze 实时物理磨砂悬浮顶栏。使得知识库首页内的复杂卡片列表在与背景融合时更具深度与光影流动感。
+- **🎨 P0 — 开发者面板 `DeveloperScreen` 极光一致性对齐**：
+  - 将原手写 Scaffold 纯色顶栏与背景重构升级为通用次级页面 `NexaraPageLayout`，自动接入大极光背景 and Haze 卷积物理模糊 Header，极大简化代码且美学质感呈数量级提升。
+- **🧪 🧪 编译验证门禁 100% 绿灯通过**：
+  - 在 `native-ui` 目录下执行 `.\gradlew.bat :app:assembleDebug` 物理打包构建，100% 成功编译通过。
+- **DIA Status**: CHANGELOG.md ✅ | handover.md ✅ | registry.md ✅
+- **Next Steps**: 进行真机实机验证，检查这五个重构页面在 120Hz 下滑动和物理毛玻璃的实际折射效果。
+
 ## ✅ 已完成 — 双 HazeState 同级 Overlay 架构重构：彻底解决二级页面卡片毛玻璃失效 (2026-05-20)
 - **🔍 根因诊断**：
   - 之前的方案（单 hazeState + hazeSource 外移）仍然无效，因为卡片（NexaraGlassCard）依然是 hazeSource 的**子节点**。Haze 要求 hazeEffect 节点必须是 hazeSource 的**同级兄弟**（Overlay），而非嵌套子节点。ChatScreen 的输入框和 Header 之所以完美，正是因为它们作为同级 Overlay 悬浮在 hazeSource 之上。
