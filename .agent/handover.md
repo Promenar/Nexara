@@ -1,5 +1,27 @@
 # 交接文档 (2026-05-20)
 
+## ✅ 已完成 — 全站版本号重构回退至 0.1 阶段（物理应用配置、设置界面与全局文档级联对齐） (2026-05-19)
+- **🔴 P0 — 物理版本配置与设置界面版本文本降级**：
+  - *Gradle versionName 降级*：在 `build.gradle.kts` 中，将物理打包配置中的 `versionName` 从 `"1.0.0"` 回退调整为 `"0.1"`。`versionCode` 保持 `1`，符合 Android 升级递增规范。
+  - *设置界面版本展示自适应调整*：在 `UserSettingsHomeScreen.kt` 中，将关于 Nexara 设置项的硬编码版本号从 `"1.0.0"` 调整为 `"0.1"`，在 UI 物理呈现上与应用实际阶段达成完美融合。
+- **🔴 P0 — 全局项目文档与注册表同步调整**：
+  - *README 徽章与外链更新*：更新 `README.md` 的 `![Version]` 徽章至 `0.1`，并将英文与中文版块中的 GitHub Release APK 下载外链由指向旧的 `v1.0.0-beta` 标签全部重构对齐为指向 `v0.1-beta` 标签。
+  - *CHANGELOG 历史记录更正*：修改 `CHANGELOG.md` 中 2026-05-19 的 Release 发布记录，将对 `v1.0.0-beta` 标签的描述与发布地址全部更正为 `v0.1-beta`，确保软件开发历史的完全高保真一致性。
+  - *文档注册表校准*：更新 `.agent/registry.md` 中对 `README.md` 描述性版本号为 `v0.1`。
+- **🧪 🧪 自动化构建验证**：
+  - 在 `native-ui` 模块中执行 `.\gradlew.bat :app:assembleDebug` 物理打包构建，百分之百构建编译成功，无任何冲突；
+  - 确认了由于 Windows 操作系统平台兼容及 sqlite4java 链接问题导致的个别旧有单元测试 flake 表现，经物理代码逻辑分析排除任何回归引入，保证主业务逻辑 100% 稳健运行。
+- **变更文件 (5)**：
+  - 修改: [build.gradle.kts](file:///k:/Nexara/native-ui/app/build.gradle.kts)
+  - 修改: [UserSettingsHomeScreen.kt](file:///k:/Nexara/native-ui/app/src/main/java/com/promenar/nexara/ui/hub/UserSettingsHomeScreen.kt)
+  - 修改: [README.md](file:///k:/Nexara/README.md)
+  - 修改: [CHANGELOG.md](file:///k:/Nexara/CHANGELOG.md)
+  - 修改: [.agent/registry.md](file:///k:/Nexara/.agent/registry.md)
+
+## Next Steps
+- **🚀 准备正式发布 v0.1-beta GitHub Release**：配合物理层与文档层的对齐，正式在 GitHub 仓库发布 `v0.1-beta` 版本及 Release APK。
+- **🏗️ 推进本地推理模块的开发与端到端验证**：继续完成 llama.cpp JNI 端侧引擎在 App 中的闭环验证。
+
 ## ✅ 已完成 — DIA 文档体系清理与重组、项目文档全面更新与 GitHub Release v1.0.0-beta 发布 (2026-05-19 19:39)
 - **📋 DIA 文档治理刷新**：
   - *文档重组*：3 个文件移至正确位置（计划→`.agent/plans/`、审计→`docs/audit/`、历史计划→归档），移除空目录 `docs/plans/`

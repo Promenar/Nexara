@@ -2,7 +2,7 @@
 
 ## 核心文档（始终同步，不可跳过）
 - CHANGELOG.md — 版本变更记录
-- README.md — 项目概览（v1.0.0, 98% 完成度）
+- README.md — 项目概览（v0.1, 98% 完成度）
 - .agent/handover.md — 跨会话交接
 - AGENTS.md — 开发者与 AI Agent 协同开发规范
 
