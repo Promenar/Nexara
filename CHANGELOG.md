@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### 提升最低 API 要求至 Android 12 (API 31) 并物理集成 GPU 实时高斯模糊 (2026-05-20)
+- **🔴 P0 — 最低 API (minSdk) 全量升级至 31 (Android 12)**：
+  - *系统级升级*：正式将项目最低 SDK 版本要求由 `API 26 (Android 8.0)` 跃升至最新的 `API 31 (Android 12)`；
+  - *性能与架构释放*：彻底摆脱低版本 Android 设备老旧 Skia 渲染引擎的兼容性包袱，全量采用 Android 12 最新高性能 GPU 硬件加速管线；
+  - *级联更新*：同步更新了项目根目录下 `README.md` 中的中英运行环境要求描述。
+- **🎨 🎨 P0 — NexaraGlassCard 完美重构物理标配原生高斯模糊 (RenderEffect)**：
+  - *GPU 硬件高斯模糊*：重写 `NexaraGlassCard.kt`，采用系统级原生 `RenderEffect.createBlurEffect`（双向 35px 像素采样）极速渲染底层像素，提供极其惊艳、清澈的拟真磨砂/毛玻璃卡片视觉效果；
+  - *前背景渲染分离*：采用底层模糊渲染层与上层前景内容层独立堆叠架构，确保上层文本、图标、按钮保持 100% 的极高锐度与辨识度，完美消除卡片内容一同变模糊的视觉弊端。
+
 ### DIA 文档体系清理与重组、项目文档全面更新至 98% 进度与 GitHub Release v0.1-beta 发布 (2026-05-19)
 - **📋 DIA 文档治理更新**：
   - *文档重组*：将 `docs/IMPLEMENTATION_PLAN.md`（已完成历史计划）移至 `.agent/plans/archive/`；将 `docs/MARKDOWN_RENDERING_AUDIT.md`（已修复审计）移至 `docs/audit/`；将 `docs/plans/RAG_INDICATOR_MULTI_SESSION_EXECUTION.md` 移至 `.agent/plans/`，统一计划文档位置

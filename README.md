@@ -56,7 +56,7 @@ Foreground Service for uninterrupted AI generation when switching apps. Architec
 
 | Requirement | Minimum |
 |---|---|
-| Android Version | Android 8.0 (API 26) |
+| Android Version | Android 12 (API 31) |
 | Recommended | Android 13+ (API 33+) for full Material You theming |
 | Storage | ~200 MB free space (model files additional) |
 | Network | Active internet connection for cloud API providers |
@@ -111,7 +111,7 @@ HTML/CSS/JS/SVG 代码块 WebView 实时预览，全屏分屏模式，PNG 导出
 
 | 项目 | 最低要求 |
 |---|---|
-| Android 版本 | Android 8.0 (API 26) |
+| Android 版本 | Android 12 (API 31) |
 | 推荐版本 | Android 13+ (API 33+)，以获得完整 Material You 主题体验 |
 | 存储空间 | ~200 MB 可用空间（模型文件另需） |
 | 网络 | 使用云端 API 需保持网络连接 |
