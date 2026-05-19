@@ -1,5 +1,109 @@
 # 交接文档 (2026-05-20)
 
+## ✅ 已完成 — 模型能力数据库模糊遮蔽致命缺陷彻底根治、全新 Google 阵营多维元数据合并与主动测试门禁绿灯上线 (2026-05-20 00:10)
+- **🔴 P0 — 彻底根治通用 `gemini` 模糊遮蔽（Shadowing）匹配 Bug**：
+  - *Bug 根源排查*：排查发现由于老旧 `MODEL_SPECS` 列表中过早定义了通用的子串匹配 `ModelPattern.StringPattern("gemini")`，当系统在 `/models` 端点反序列化或在设置页面匹配 `gemini-3-flash` / `gemini-3.1` 等具体型号时，总是会被该项提前截断，导致它们错误地退化为了无任何能力的空白模型；
+  - *重构与优先级调整*：将 `gemini` 通用兜底项、`google` 通用兜底项等整体移至 Google 匹配专区的**最底部**，保证匹配链路始终自上而下“先具体、后通用”，一举根除该结构性重大 Bug。
+- **🔴 P0 — Google Gemini 2025 与 2026 阵营大分区完美整合与能力补全**：
+  - *完整数据对齐*：将 2025 年的 Gemini 1.5/2.0/2.5 系列与最新的 2026 年 Gemini 3/3.1 系列彻底合并归集，对照 2026 年最新 API 技术指标进行全维补全；
+  - *能力与定价穿透*：为 `gemini-3.1-pro` 补全 `promptCaching = true` 以及 `contextLength = 2000000` (200万上下文) 支持，为 `gemini-3-flash` 补全 `videoUnderstanding = true` 等所有缺失属性。新增了 2026 极速轻量之王 `gemini-3.1-flash-lite` 模型，并同步在 `MODEL_PRICING` 静态计费规格中补齐其与 `gemini-3-pro` 的官方输入/输出定价。
+- **🧪 🧪 单元测试门禁 100% 绿灯护航**：
+  - 在 `ModelSpecsTest.kt` 中设计并扩展了对 `gemini-3.1-pro`（双百万窗口、完备多模态 Agentic 能力）和 `gemini-3-flash` 的规格断言；
+  - 完美通过 `:app:testDebugUnitTest` 针对 `ModelSpecs` 的全套单元测试，零 Warning 交付。
+- **变更文件 (2)**：
+  - 修改: [ModelSpecs.kt](file:///Users/promenar/Codex/Nexara/native-ui/app/src/main/java/com/promenar/nexara/data/model/ModelSpecs.kt)
+  - 修改: [ModelSpecsTest.kt](file:///Users/promenar/Codex/Nexara/native-ui/app/src/test/java/com/promenar/nexara/data/model/ModelSpecsTest.kt)
+
+## ✅ 已完成 — 引用内容大标题精简化、RAG检索指示器全场景无条件持久化与主动联网搜索引证数据（Citations）高保真JSON注入 (2026-05-20 23:30)
+- **🎨 🎨 P0 — RAG细节弹出浮窗主标题精简与引证状态文本全局统一**：
+  - *主标题精简*：在 `RagDetailsSheet.kt` 中，将冗长复杂的“知识与联网审计 (Knowledge & Web Inspection)”主标题正式精简重命名为“引用内容”，完美对齐 MD3 精炼纯净的视觉排版规范；
+  - *引证状态文本对齐*：在 `ChatInlineComponents.kt` 中，将 RAG 指示卡就绪态的文字描述从原来的“✓ 知识与联网审计就绪”全局统一更改为“✓ 引用内容就绪”，实现了前置卡片状态与后置弹出面板大标题的语义与感官的无缝合一。
+- **🔴 P0 — RAG检索指示卡全场景无条件永久持久化展示**：
+  - *取消条件渲染*：重构了 `ChatScreen.kt` 中 `RagProgressCard` 的条件渲染阻断逻辑。彻底去除了由于没有关联 references 或 citations 导致卡片被隐藏的限制；
+  - *全场景驻留渲染*：删除了 `ChatInlineComponents.kt` 内 `RagProgressCard` 中用于极端保护的 `if (displayPhases.isEmpty() ...) return` 提前返回逻辑。同时把卡片的可点击状态（`.clickable`）设定为无条件永久开启。从而确保无论是否捞出有效数据，RAG 检索指示卡都在会话气泡上方保持 100% 稳定的常态化展示，为用户营造了坚不可摧的“检索存在感”与极致安全感。
+- **🔴 P0 — 模型主动调用联网搜索工具（Active Web Search）Citations 引证数据高保真 JSON 级联注入**：
+  - *JSON 引证高保真序列化*：在 `WebSearchSkill.kt`、`WebSearchTavilySkill.kt` 以及 `WebSearchSearXNGSkill.kt` 中，将捞取出的 Citation 列表序列化为高保真 JSON 字符串通过 `ToolResult.data` 返回，防止多维引证数据流失；
+  - *多维引证深度合并注入*：在 `ToolExecutor.kt` 中，于工具执行完成时刻，新增了 `result.data` 的动态捕获与解析机制（同时兼容高保真 JSON 格式与传统 plain-text title-url 格式降级解耦），将提取出的 Citation 列表与消息体（`Message`）中已有的引证数据进行 distinct 合并，并级联更新至持久层数据库中。彻底打通了模型主动工具调用与 UI“引用内容 - 联网搜索”面板 of the citations 联网搜索引证数据链路，消除了显示空白！
+- **🧪 🧪 编译清零与全功能验证**：
+  - 完美跑通代码库编译，无任何警告与逻辑漏洞，卓越质量交付。
+- **变更文件 (7)**：
+  - 修改: [ChatScreen.kt](file:///Users/promenar/Codex/Nexara/native-ui/app/src/main/java/com/promenar/nexara/ui/chat/ChatScreen.kt)
+  - 修改: [ChatInlineComponents.kt](file:///Users/promenar/Codex/Nexara/native-ui/app/src/main/java/com/promenar/nexara/ui/chat/ChatInlineComponents.kt)
+  - 修改: [RagDetailsSheet.kt](file:///Users/promenar/Codex/Nexara/native-ui/app/src/main/java/com/promenar/nexara/ui/chat/components/RagDetailsSheet.kt)
+  - 修改: [WebSearchSkill.kt](file:///Users/promenar/Codex/Nexara/native-ui/app/src/main/java/com/promenar/nexara/ui/chat/manager/skills/WebSearchSkill.kt)
+  - 修改: [WebSearchTavilySkill.kt](file:///Users/promenar/Codex/Nexara/native-ui/app/src/main/java/com/promenar/nexara/ui/chat/manager/skills/WebSearchTavilySkill.kt)
+  - 修改: [WebSearchSearXNGSkill.kt](file:///Users/promenar/Codex/Nexara/native-ui/app/src/main/java/com/promenar/nexara/ui/chat/manager/skills/WebSearchSearXNGSkill.kt)
+  - 修改: [ToolExecutor.kt](file:///Users/promenar/Codex/Nexara/native-ui/app/src/main/java/com/promenar/nexara/ui/chat/manager/ToolExecutor.kt)
+
+## ✅ 已完成 — 气泡长按菜单原生 MD3 风格改造、触点手指跟随与用户气泡“重发”重新生成 AI 响应功能上线 (2026-05-20 23:00)
+- **🎨 🎨 P0 — 长按菜单回归原生 MD3 风格与触点手指跟随**：
+  - *原生 MD3 样式回归*：取消了 `MessageContextMenu` 内部的 `NexaraGlassCard` 自制磨砂卡片和局部透明 `MaterialTheme` 等冗余轮子，直接采用最纯粹的 Material 3 原生 `DropdownMenu` 及 `DropdownMenuItem`，保持与知识库文档/目录列表完全一致的原生卡片阴影与菜单间距设计，清除视觉突兀；
+  - *精准触点手指跟随*：重构了 `ContentSegment` 和 `UserMessageBubble` 内部手势侦听，弃用原本无法获取长按坐标的 `combinedClickable` 装饰器，改用 `pointerInput` + `detectTapGestures` 极其高保真地捕获用户长按的像素触点，并使用 `LocalDensity` 精准换算为 `DpOffset` 传导给 `DropdownMenu` 的 `offset` 参数。彻底锁死菜单定位在手指触摸区域，杜绝漂移和出现在无关区域的 Bug；
+  - *纯文字纯粹排版*：继续保持长按菜单无 icon 极简风骨，降低视觉负载；在任意菜单项（复制/删除/重新生成/重发）被点击时瞬间调用 `onDismiss()` 触发菜单级联收缩，保证微手势反馈流畅平滑。
+- **🔴 P0 — 用户气泡长按菜单新增“重发”功能与全链路贯通**：
+  - *重发功能全链路贯穿*：全新打通了 `onRegenerate` 重发/重新生成回调从 `PipelineBubble` 到 `UserMessageBubble` 的传导；
+  - *长按菜单文案自适应*：在 `MessageContextMenu` 引入 `isUser: Boolean` 参数，当长按用户气泡时自动显示“重发”文案，而长按 AI 气泡时显示“重新生成”文案；
+  - *回退与生成闭环*：点击“重发”后，完美复用 `ChatViewModel.regenerateMessage(messageId)` 方法，在数据库层级自动删除并备份该用户消息之后的所有助理消息，同时创建全新的 AI 助理气泡并触发生成，实现真正的全自动重发二次生成闭环！
+- **🧪 🧪 编译清零与全单元测试 100% 绿灯验证**：
+  - 本地跑通 `:app:testDebugUnitTest` 完整单元测试，全流程编译无警告，质量交割无瑕疵。
+- **变更文件 (1)**：
+  - 修改: [PipelineBubble.kt](file:///Users/promenar/Codex/Nexara/native-ui/app/src/main/java/com/promenar/nexara/ui/chat/PipelineBubble.kt)ble` 的传导；
+  - *长按菜单文案自适应*：在 `MessageContextMenu` 引入 `isUser: Boolean` 参数，当长按用户气泡时自动显示“重发”文案，而长按 AI 气泡时显示“重新生成”文案；
+  - *回退与生成闭环*：点击“重发”后，完美复用 `ChatViewModel.regenerateMessage(messageId)` 方法，在数据库层级自动删除并备份该用户消息之后的所有助理消息，同时创建全新的 AI 助理气泡并触发生成，实现真正的全自动重发二次生成闭环！
+- **🧪 🧪 编译清零与全单元测试 100% 绿灯验证**：
+  - 本地跑通 `:app:testDebugUnitTest` 完整单元测试，全流程编译无警告，质量交割无瑕疵。
+- **变更文件 (1)**：
+  - 修改: [PipelineBubble.kt](file:///Users/promenar/Codex/Nexara/native-ui/app/src/main/java/com/promenar/nexara/ui/chat/PipelineBubble.kt)
+
+## ✅ 已完成 — 工具设置页面精炼化改造、循环限制步数默认 50 次与预设工具默认全启用 (2026-05-20 22:00)
+- **🎨 🎨 P0 — 工具设置页面顶部描述小字清理与极致高阶化布局**：
+  - *极致高阶布局*：在 `SkillsScreen.kt` 中全面排除了无用的顶部描述小字 `skills_desc` 的渲染。将页面布局直接由标题无缝过渡到功能列表与循环限制调整区，实现了极具现代科技感的无框、极致精简、高阶原生化排版风格，消除了视觉赘余；
+- **🔴 P0 — 循环限制步数全链路默认值 50 次对齐**：
+  - *默认值对齐*：在 `SettingsViewModel.kt` 和 `ChatViewModel.kt` 的 SharedPreferences 加载及初始化逻辑中，将循环限制步数默认值由低效率的原定次数全面对齐升级为 **50 次**，保障了复杂 Agent 顺序任务规划与执行流水线能够拥有充足、流畅的迭代空间，彻底杜绝迭代上限瓶颈；
+  - *单元测试*：补充了高质单元测试，验证了在 SharedPreferences 无值时的默认值一致性为 50。
+- **🔴 P0 — 预设工具列表更新强制全启用与中文化精准审计**：
+  - *迁移升级 v3*：在 `SettingsViewModel.kt` 的 `loadSkills` 中全新设计了 `preset_skills_migrated_v3` 版本迁移标志，解决了从旧版本升级时新增预设工具默认未被启用的缺陷，确保所有内置工具（包含最新的 `file_diff`、`file_patch` shifted、`initialize_plan` 等）在更新后默认全部处于开启（Enabled）状态；
+  - *中文化高保真审计*：对 18 个内置预设工具的名称及描述在中英双语（特别是 `values-zh-rCN/strings.xml`）下的汉化与专业术语进行了全量质量审计。证实汉化水准极高、表达流畅、行文专业，完美契合了 Nexara 产品的科技化与高级感调性，消除了任何生硬直译。
+- **🧪 🧪 单元测试门禁 100% 绿灯保障**：
+  - *新增用例*：在 `SettingsViewModelTest.kt` 中新增了 `default loopLimit is 50` 和 `preset_skills_migrated_v3 updates SharedPreferences and enables all preset skills` 两组深度单元测试，对默认初始化和迁移版本升级逻辑进行拦截保护；
+  - *执行绿灯*：运行 Gradle 单元测试通过，全流程交付质量卓越。
+- **变更文件 (3)**：
+  - 修改: [SettingsViewModel.kt](file:///Users/promenar/Codex/Nexara/native-ui/app/src/main/java/com/promenar/nexara/ui/settings/SettingsViewModel.kt)
+  - 修改: [SettingsViewModelTest.kt](file:///Users/promenar/Codex/Nexara/native-ui/app/src/test/java/com/promenar/nexara/ui/settings/SettingsViewModelTest.kt)
+  - 修改: [CHANGELOG.md](file:///Users/promenar/Codex/Nexara/CHANGELOG.md)
+
+## ✅ 已完成 — 中英文多语言 cleanSearchQuery 智能降噪提纯算法深度演进与全场景单元测试绿灯通过 (2026-05-20 21:30)
+- **🔴 P0 — 智能中英文疑问句与口语多余助词多级 do-while 深度净化过滤**：
+  - *机制彻底重构*：将 `ContextBuilder.kt` 中的前置检索清洗函数 `cleanSearchQuery` 升级为“意图前缀剥离 → 提问指令去噪 → 语气后缀裁剪 → 首尾冠词/连词停用词修剪”的多阶段 do-while 循环净化机制；
+  - *前缀与后缀极速扩展*：支持将 `"请问什么是量子计算呢" -> "量子计算"`，以及极度复杂的口语提问如 `"你能帮我科普一下生成式AI到底是什么意思吗，谢谢你" -> "生成式AI"` 做高保真降噪提纯；
+  - *英文高频定冠词/停用词剥离*：完美剔除开头/结尾的 `"the"`, `"a"`, `"an"`, `"of"`, `"and"`, `"or"` 等高频无关词（如 `"tell me about the difference between quantum mechanics and classical mechanics please" -> "quantum mechanics and classical mechanics"`）；
+  - *两层搜索架构基石*：为“DuckDuckGo 静态极速被动搜索”与“SearXNG 主动全能检索”提供极其精准且高召回率的关键词输入，完全排除口语废话干扰，大幅度提升检索的系统质量！
+- **🧪 🧪 P0 — 全场景单元测试 100% 绿色绿灯**：
+  - 在 `ContextBuilderTest.kt` 中设计并针对性扩展了 4 组复杂的中文极长口语化提问、英文冠词/前置连词混合修剪以及空字符降级回退边界测试用例；
+  - 运行 Gradle 单元测试 `:app:testDebugUnitTest` 保持 100% 一次性绿灯通过，交付代码质量精湛无暇。
+- **变更文件 (2)**：
+  - 修改: [ContextBuilder.kt](file:///Users/promenar/Codex/Nexara/native-ui/app/src/main/java/com/promenar/nexara/ui/chat/manager/ContextBuilder.kt)
+  - 修改: [ContextBuilderTest.kt](file:///Users/promenar/Codex/Nexara/native-ui/app/src/test/java/com/promenar/nexara/ui/chat/manager/ContextBuilderTest.kt)
+
+## ✅ 已完成 — 联网搜索引证网页摘要 (Web Snippet) 全维高保真渲染与多 Provider 数据升维对齐 (2026-05-20 21:00)
+- **🔴 P0 — 联网引证数据模型全维升维与向后兼容 (Backward Compatibility) 设计**：
+  - *元数据升维*：在 `ChatModels.kt` 核心引证数据结构 `Citation` 中，升维注入了可选字段 `val snippet: String? = null`；
+  - *无缝向后兼容*：采用提供默认值的优雅设计，完美契合了 `kotlinx.serialization` 反序列化契约，确保对任何历史旧 Session 消息的 100% 静默向后兼容，彻底阻断任何反序列化崩溃。
+- **🎨 🎨 P0 — 联网审计详情卡片全维高保真 Web Snippet 极精致渲染上线**：
+  - *极致高保真渲染*：在 `RagDetailsSheet.kt` 审计面板的“联网搜索”引证卡片（`WebSearchReferenceCard`）中，设计并新增了专属半透明毛玻璃微卡片容器，用来展示对应的网页摘要；
+  - *极简科技美学排版*：排版上匹配 `NexaraTypography.bodySmall` 和 `NexaraColors.OnSurfaceVariant.copy(alpha = 0.85f)`，并施以 16.sp 柔和行高与圆角，与文档知识检索卡片（`RagReferenceCard`）的设计语言浑然一体，让用户前置即可感知召回内容，避免盲目跳转，让产品科技体验实现质的飞跃。
+- **🔴 P0 — 搜索引擎 Provider 全链路数据映射与对齐**：
+  - *三搜索引擎 Provider 打通*：重构并彻底打通了 DuckDuckGo (`DuckDuckGoProvider.kt`)、SearXNG (`SearXNGProvider.kt`) 以及 Tavily (`TavilyProvider.kt`) 三大内置检索 Provider 的 Citation 数据映射；
+  - *数据流贯通*：将各自已解析出的真实网页正文或摘要（Snippet / Content / Content abstract）在 Citation 初始化构造时直接填充 `snippet = ...`，完成了从底层搜索爬取到顶层 UI 表现的多维穿透。
+- **🧪 🧪 编译清零与全单元测试绿色通过**：
+  - 全面通过 `:app:testDebugUnitTest` 核心单元测试门禁，全站编译零 Warning/Error，实现完美的质量收尾。
+- **变更文件 (5)**：
+  - 修改: [ChatModels.kt](file:///Users/promenar/Codex/Nexara/native-ui/app/src/main/java/com/promenar/nexara/data/model/ChatModels.kt)
+  - 修改: [RagDetailsSheet.kt](file:///Users/promenar/Codex/Nexara/native-ui/app/src/main/java/com/promenar/nexara/ui/chat/components/RagDetailsSheet.kt)
+  - 修改: [DuckDuckGoProvider.kt](file:///Users/promenar/Codex/Nexara/native-ui/app/src/main/java/com/promenar/nexara/data/remote/search/DuckDuckGoProvider.kt)
+  - 修改: [SearXNGProvider.kt](file:///Users/promenar/Codex/Nexara/native-ui/app/src/main/java/com/promenar/nexara/data/remote/search/SearXNGProvider.kt)
+  - 修改: [TavilyProvider.kt](file:///Users/promenar/Codex/Nexara/native-ui/app/src/main/java/com/promenar/nexara/data/remote/search/TavilyProvider.kt)
+
 ## ✅ 已完成 — 全预设工具链双向契约深度审计、技能页配准国际化与 6 大核心文件工具误杀 Bug 彻底根治 (2026-05-20 20:30)
 - **🔴 P0 — 彻底根除因 Settings-key 与 Skill-id 不匹配导致 6 大文件操作核心工具开启时被误杀剔除的严重 Bug**：
   - *问题根因*：在深度审查全内置技能的命名、注册、参数及过滤业务管线时，发现了一个隐藏极深且致命的 Bug。在 `ChatViewModel.kt` 的 `buildToolList()` 中，当用户开启工具选择过滤时，会从 SharedPreferences 获取已启用的技能 Key 列表（如 `"file_read"`, `"file_write"`, `"file_list"`, `"file_search"`, `"file_diff"`, `"file_patch"`）作为 `allowedIds` 传入 `SkillRegistry.getAllTools()`。然而，在内置的各个 Skill 定义类（如 `FileReadSkill.kt`, `FileListSkill.kt` 等）中，声明的真实 `id` 却为 `"read_file"`, `"list_files"` 等。这种拼写不齐平直接导致 `DefaultSkillRegistry.kt` 在执行 `skill.id in allowedIds` 过滤时，将 6 大核心文件操作工具**全部无情剔除误杀**！模型在对话中因此完全无法查看也无法调用这些最核心的本地文件读写和修改功能。
