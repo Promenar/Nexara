@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### 🎨 共享极光底座大一统与全站二级页面沉浸式毛玻璃安全落地 (2026-05-20)
+- **🎨 P0 — 共享物理大底座与物理毛玻璃大一统**：
+  - *全局极光大底盘*：重构多标签页框架 `MainTabScaffold.kt`，在最外层引入唯一的全屏大底座 `NexaraGlowBackground` 和共享采样源 `mainHazeState`，彻底解除了原先三大主页面各自独立渲染极光所造成的内存高占用与 GPU 重合渲染开销；
+  - *消隐独立极光底色*：彻底重构智能体中心 `AgentHubScreen.kt`、知识库主页 `RagHomeScreen.kt` 和设置主页 `UserSettingsHomeScreen.kt`，精简多余的局部 `NexaraGlowBackground` 以及卡片专属 of `cardHazeState`，完美融入最外层共享极光底盘；
+- **🎨 P0 — 主页三大 Header 沉浸式透明毛玻璃融合**：
+  - *剥离粗底边线*：彻底拆除三大主页面 Header 顶栏的 `drawBehind` 发光亮边细线与渐变线条，破除视觉边界阻隔，让头部与全屏极光大背景无缝合体；
+  - *微调超高透光*：剥离 Header 背景中叠加的半透明装饰层，并将 `hazeEffect` 遮罩底色 `backgroundColor` 的不透明度降低至极其通透的 `0.15f`，完美呈现轻若薄纱的通透感，使顶栏下方滚动的内容展现出绝美的 120Hz 穿透折射；
+- **🎨 P0 — 二级页面物理毛玻璃全站覆盖与安全嵌套滚动**：
+  - *一键接入 `NexaraPageLayout`*：重构“编辑助手” `AgentEditScreen.kt`、“本地模型” `LocalModelsScreen.kt` 和“备份与恢复” `BackupSettingsScreen.kt` 这三个遗漏的二级页面，用高奢通用的 `NexaraPageLayout` 替换手写 Scaffold，达成全站视觉大一统；
+  - *坚固防御嵌套滚动崩溃*：考虑到三大二级页面均以 `LazyColumn` 动态列表渲染，在接入 `NexaraPageLayout` 时显式指定参数 `scrollable = false`，从而对 Android 原生 Jetpack Compose 列表的外部滚动修饰符进行了 100% 防御隔离，彻底根治了嵌套滚动带来的崩溃隐患，兼具无瑕的美学享受与顶级的工程鲁棒性。
+
 ### 🎨 物理磨砂毛玻璃大极光背景全站完美覆盖 (2026-05-20)
 - **🎨 P0 — 欢迎登录 `WelcomeScreen` 全面升级极光流光背景**：
   - 将原有的静态、生硬 `AtmosphereBackground` 彻底清退，升级为全新的灵动往复飘拂大极光 `NexaraGlowBackground`。
