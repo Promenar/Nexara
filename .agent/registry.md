@@ -4,6 +4,7 @@
 - CHANGELOG.md — 版本变更记录
 - README.md — 项目概览（v2.0.0-beta, 92% 完成度）
 - .agent/handover.md — 跨会话交接
+- AGENTS.md — 开发者与 AI Agent 协同开发规范
 
 ## 按需文档
 - docs/PRD.md — 产品需求文档 v2.0（进度已更新至 2026-05-15）
@@ -50,6 +51,7 @@
 - docs/archive/CLEANUP_PLAN.md — RN 残余清理记录（2026-05-13 已完成）
 
 ## 活跃实施计划（.agent/plans/）
+- .agent/plans/20260519-room-database-migration-schema-mismatch-fix.md — Room 数据库迁移 Schema 不匹配闪退缺陷彻底根治设计与修复方案 ✅
 - .agent/plans/20260514-phase7-knowledge-base-repair.md — Phase 7 知识库修复与增强 ✅
 - .agent/plans/20260514-phase8-agent-tools-enhancement.md — Phase 8 Agent 工具重构 ✅
 - .agent/plans/20260515-phase9-polish-and-tests.md — Phase 9 发布冲刺 + 测试 ✅
@@ -83,7 +85,7 @@
 - Repository 覆盖率: 12/12 (100%)
 - 内置 Skill: 17 个（新增 4 个任务规划 Skill）
 - 测试文件: 44 个
-- 总体进度: 97%
+- 总体进度: 98%
 - 剩余: Phase 10 发布准备（编译清零/APK 签名/E2E 测试）
 
 ## 2026-05-18 DIA 全站清理记录

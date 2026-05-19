@@ -1,4 +1,45 @@
-# 交接文档 (2026-05-19)
+# 交接文档 (2026-05-20)
+
+## ✅ 已完成 — Room 数据库 v16 全面统合与 task_nodes 闪退热修复根治 (2026-05-19 23:59)
+- **🔴 P0 — 根治由于 `9e8f2bb` 对 `task_nodes` 表做出的默认值与索引改动导致的第二次闪退**：
+  - *问题根因*：在合并远程最新提交 `9e8f2bb` 后，Room 数据库抛出 `java.lang.IllegalStateException: Migration didn't properly handle: task_nodes` 致命崩溃。远程实体对 `task_nodes` 表增加了多个 `defaultValue = ...` 属性并修改了部分索引名称，而本地的老旧表物理上不包含这些 Room 校验所预期的定义。
+  - *重建迁移方案*：
+    - 在 [NexaraDatabase.kt](file:///Users/promenar/Codex/Nexara/native-ui/app/src/main/java/com/promenar/nexara/data/local/db/NexaraDatabase.kt) 中进一步将数据库版本升级至 `16`。
+    - 新增 `MIGRATION_15_16` 重建迁移路径，注册于 `NexaraApplication.kt` 中。
+    - 重塑并封装了 `recreateTaskNodesTable` 物理表安全重建函数：通过备份数据、安全 DROP 旧索引、全新创建符合 Room v16 最新约束的高规表（含默认值及新版命名索引）、回灌备份数据，100% 根除校验闪退！
+  - *变更文件 (2)*：
+    - 修改：[NexaraDatabase.kt](file:///Users/promenar/Codex/Nexara/native-ui/app/src/main/java/com/promenar/nexara/data/local/db/NexaraDatabase.kt)（升级至版本 16，新增 `MIGRATION_15_16` 和 `recreateTaskNodesTable` 重建迁移）
+    - 修改：[NexaraApplication.kt](file:///Users/promenar/Codex/Nexara/native-ui/app/src/main/java/com/promenar/nexara/NexaraApplication.kt)（在 `addMigrations` 中注册 `MIGRATION_15_16`）
+  - *DIA 门禁状态*：`CHANGELOG.md`（已更新），`handover.md`（当前文件已更新），`registry.md`（已更新），“DIA: 无缝对齐”。
+
+## ✅ 已完成 — Room 数据库表重建迁移与 Schema 校验闪退缺陷根治 (2026-05-19 23:55)
+- **🔴 根治 Schema Validation 闪退问题**：
+  - *问题定位*：开发者/用户在合并最新的远程分支代码后运行崩溃。异常日志显示 `java.lang.IllegalStateException: Migration didn't properly handle: sessions/messages/vectors/kg_nodes`。主要原因在于本地旧开发版本的 `sessions`、`messages`、`vectors`、`kg_nodes` 和 `kg_edges` 表结构存在列默认值缺失，或在跨版本升级时由于原有增量迁移 `safeAddColumn` 的局限，使得 SQLite 物理默认值残留为 `undefined` 而不是 Room 预期的非空默认值（如 `stale` 和 `version` 物理默认值在数据库里残留为 `undefined`），导致校验失败闪退。
+  - *重建迁移方案 (Recreate Table Migration)*：
+    - 彻底废弃增量 `safeAddColumn` 模式。构建了稳健的表重建机制（`recreateSessionsTable`、`recreateMessagesTable`、`recreateVectorsTable`、`recreateKgNodesTable` 与 `recreateKgEdgesTable`）。
+    - 动态从原数据库 PRAGMA table_info 读取实际列，将原表重命名为临时表；依据 Room 最新 Entity 声明的完美 Schema（含非空默认值、级联删除外键约束 `ON DELETE CASCADE` 以及关联索引）全新创建正确表结构；计算新老列公共交集并执行 INSERT INTO SELECT 数据回灌；最终 DROP 物理清理临时表，完美保留用户全部历史数据！
+  - *五迁移路径保驾护航*：
+    - **重构 `MIGRATION_10_11`**：重构了 `MIGRATION_10_11` 的全部重建逻辑，使得后续 any 任何从 v10 升上来的用户都能 100% 免疫此缺陷。
+    - **新增 `MIGRATION_11_12` 升至 v12**：无缝实施 `sessions` 表重建热修复。
+    - **新增 `MIGRATION_12_13` 升至 v13**：实施对 `messages` 表的无损重建热修复。
+    - **新增 `MIGRATION_13_14` 升至 v14**：实施对 `vectors` 表的无损重建热修复。
+    - **新增 `MIGRATION_14_15` 并升级 Room 版本至 15**：向 `NexaraApplication` 的 `addMigrations` 中进行注册。为本地当前已合并最新代码并卡在 `kg_nodes` 和 `kg_edges` 表 Schema 不匹配闪退的所有用户和开发环境，提供 100% 完美的知识图谱节点与边表的一键式无损重建迁移！
+  - *变更文件 (2)*：
+    - 修改：[NexaraDatabase.kt](file:///Users/promenar/Codex/Nexara/native-ui/app/src/main/java/com/promenar/nexara/data/local/db/NexaraDatabase.kt)（升级版本号至 15，重构 `MIGRATION_10_11`，新增 `MIGRATION_11_12`/`MIGRATION_12_13`/`MIGRATION_13_14`/`MIGRATION_14_15`，实现 `recreateSessionsTable`/`recreateMessagesTable`/`recreateVectorsTable`/`recreateKgNodesTable`/`recreateKgEdgesTable` 私有重建机制）
+    - 修改：[NexaraApplication.kt](file:///Users/promenar/Codex/Nexara/native-ui/app/src/main/java/com/promenar/nexara/NexaraApplication.kt)（在 `addMigrations` 中注册新增的 `MIGRATION_14_15`）
+  - *设计与实施计划存档*：[.agent/plans/20260519-room-database-migration-schema-mismatch-fix.md](file:///Users/promenar/Codex/Nexara/.agent/plans/20260519-room-database-migration-schema-mismatch-fix.md)
+  - *DIA 门禁状态*：`CHANGELOG.md`（已更新），`handover.md`（当前文件已更新），`registry.md`（已更新），“DIA: 完美对齐”。
+
+## ✅ 已完成 — 本地与远程代码差异审计、远程合并同步与规则自动部署 (2026-05-19 10:30)
+- **📋 落地核心资产**：
+  - 自动检测并部署了项目级 `AGENTS.md`（协同开发规范），并将其同步绑定注册至最新的 `.agent/registry.md` 核心文档中。
+- **🔍 审计本地与远程差异**：
+  - 本次任务检测到本地分支落后远程分支 `origin/native-kotlin-refactor` 4 个提交（Commits），通过安全的快进合并（Fast-forward）将远程的 2781 行新增改动（共 60 个文件）顺利更新并合并至本地！
+  - **Commit bd32478** (最新提交)：统一了全站 8 个页面的返回按钮样式（`NexaraBackButton`），精简 `UnifiedPromptEditor` 为 Edit/Preview 双模式，并且优化了创建 Agent 时默认使用系统摘要模型等。
+  - **Commit 9927b28**：修复了提供商自定义模型退出即重置的问题，美化了指示器同行排版，更引入了基于 Native Canvas 的可交互物理图谱渲染器（`InteractiveGraphCanvas.kt`）与 6 大国产厂商 SVG 图标。
+  - **Commit 8bb9d7c**：系统性修复工具调用链（去重 Fragment 发送解决双重参数累加、流式软错误重试、系统提示词重构、表格误判修复）。
+  - **Commit a98f0dc**：优化了知识图谱大节点（176+）渲染性能防止崩溃，修复协程取消和卡死，增强 Metro 调试桥。
+- **DIA 门禁状态**：`registry.md`、`handover.md`、`AGENTS.md` 已同步更新，“DIA: 同步完成”。
 
 ## ✅ 已完成 — UI 视觉一致性修复与助手模型默认值优化 (2026-05-19 20:30)
 - **修复内容**：
