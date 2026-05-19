@@ -1,5 +1,26 @@
 # 交接文档 (2026-05-19)
 
+## ✅ 已完成 — 提供商模型配置持久化与会话 RAG 指示器内联排版美化 (2026-05-19 18:20)
+- **问题分析与定位**：
+  1. **自定义模型参数退出即重置缺陷**：
+     - *病因*：在“提供商管理-模型管理”中修改模型参数并保存后，再次进入时设置值被强制还原为系统默认初始值。
+     - *根因*：在 [ProviderManager.kt](file:///k:/Nexara/native-ui/app/src/main/java/com/promenar/nexara/data/manager/ProviderManager.kt) 的 `loadModels()` 中，系统加载每种模型时，都会无条件调用 `migrateModelIfNeeded` 进行默认数据迁移。而旧版该方法缺乏对 SharedPreferences 中已持久化键的有效探测，粗暴地使用内置 `ModelSpec` 默认值进行了覆写覆盖。
+  2. **会话 RAG 与 Summary 任务指示器换行排版不合理**：
+     - *病因*：RAG 检索、系统摘要等后处理状态被展示在 `PostProcessBar` 中，它被放置于输入框顶部浮岛的模型胶囊和 Token 胶囊下方并强制换行，非常丑陋且白白浪费了大量宝贵的聊天垂直显示空间。
+- **解决方案与实施细节**：
+  1. **元数据升级探测与 SharedPreferences 自定义参数存活防御 (`ProviderManager.kt`)**：
+     - 重写 `migrateModelIfNeeded` 函数。我们通过对 `settingsPrefs` 的 SharedPreferences 前置进行键探测（包含 `hasStoredCaps` 和 `hasStoredContext` 的状态探测）。
+     - 仅当模型初次加载、或者检测到用户从未对该模型的修饰能力及上下文窗口进行自定义修改且确实缺失时，才进行 `ModelSpec` 默认值元数据迁移填充。
+     - 完美根除了对用户自定义偏好参数的粗暴强制覆盖，实现用户修改 100% 永久落地！
+  2. **任务指示器极致胶囊化并拉至同行并排 (`ChatInlineComponents.kt` & `ChatScreen.kt`)**：
+     - 移除了 `ChatInlineComponents.kt` 中 `PostProcessChip` 的 `private` 修饰符，将其向外部包直接提权公开。
+     - 重新升级了 `ChatInputTopBar` 的入参，让它直接承载 `postProcessTasks`。
+     - 在 `ChatInputTopBar` 内部的 Row 排列中，优雅地把所有 `PostProcessChip` 顺次横向塞入到模型胶囊和 Token 胶囊的理侧，作为同行第 3 和第 4 胶囊，紧致无瑕。
+     - 彻底在浮岛的外部删掉了会多占一行的 `PostProcessBar` 换行容器，极大释放垂直视口空间！
+- **变更文件 (3)**：`ProviderManager.kt`, `ChatInlineComponents.kt`, `ChatScreen.kt`
+- **本地编译验证**：`./gradlew assembleDebug` 一次性完美通过，`BUILD SUCCESSFUL`，零 warning，零 error！
+- **DIA 门禁状态**：`CHANGELOG.md`（已更新），`handover.md`（当前文件已更新），`registry.md`（已更新）。
+
 ## ✅ 已完成 — 工具调用链全面审计与系统性修复 (2026-05-19 01:43)
 - **问题背景**：大量先进模型（DeepSeek-v4/MiniMax-M2.7 等）工具调用均出现参数格式错误，部分模型多次尝试修正却一直无法成功，部分模型一次调用错误即被系统停止会话循环。
 - **全面审计范围**（12 个核心文件）：
