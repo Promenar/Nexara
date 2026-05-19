@@ -1,5 +1,24 @@
 # 交接文档 (2026-05-20)
 
+## ✅ 已完成 — DIA 文档体系清理与重组、项目文档全面更新与 GitHub Release v1.0.0-beta 发布 (2026-05-19 19:39)
+- **📋 DIA 文档治理刷新**：
+  - *文档重组*：3 个文件移至正确位置（计划→`.agent/plans/`、审计→`docs/audit/`、历史计划→归档），移除空目录 `docs/plans/`
+  - *注册表补全*：`registry.md` 新增遗漏的 5 个文档注册，更新关键指标（58 测试文件、18 Skill、98% 进度）
+  - *治理文档更新*：`docs/DOCUMENT_GOVERNANCE.md` 升级至 v2.0，移除过时的清理步骤，反映当前文档结构
+- **📚 架构与进度文档全面刷新**：
+  - *实现分析大更新*：`IMPLEMENTATION_ANALYSIS.md` 规模统计更新（~342 Kotlin 文件 / 58 测试 / 117+ 模型规格）、模块进度（92%→98%）、Agent/KG 评级刷新、移除对标产品比较表
+  - *架构设计文档*：`ARCHITECTURE_DESIGN.md` 升级至 v2.1.0，`ARCHITECTURE.md` 日期更新
+- **📖 README 门面重写**：
+  - 去对标化、基于项目愿景编写、开发中功能标注（本地推理🚧、后台生成🚧）、新增运行环境要求、移除 Quick Start
+- **🚀 GitHub Release v1.0.0-beta 发布**：
+  - 标签 `v1.0.0-beta`，上传 APK (38 MB)，Release 地址: https://github.com/NarcisWL/Nexara/releases/tag/v1.0.0-beta
+- **变更文件 (9)**：
+  - 移动: `docs/IMPLEMENTATION_PLAN.md` → `.agent/plans/archive/20260512-markdown-rendering-plan.md`
+  - 移动: `docs/MARKDOWN_RENDERING_AUDIT.md` → `docs/audit/20260512-markdown-rendering-audit.md`
+  - 移动: `docs/plans/RAG_INDICATOR_MULTI_SESSION_EXECUTION.md` → `.agent/plans/20260517-rag-indicator-execution.md`
+  - 修改: `.agent/registry.md`, `docs/DOCUMENT_GOVERNANCE.md`, `docs/ARCHITECTURE_DESIGN.md`, `docs/ARCHITECTURE.md`, `CHANGELOG.md`
+  - 重写: `docs/IMPLEMENTATION_ANALYSIS.md`, `README.md`
+
 ## ✅ 已完成 — 模型能力数据库模糊遮蔽致命缺陷彻底根治、全新 Google 阵营多维元数据合并与主动测试门禁绿灯上线 (2026-05-20 00:10)
 - **🔴 P0 — 彻底根治通用 `gemini` 模糊遮蔽（Shadowing）匹配 Bug**：
   - *Bug 根源排查*：排查发现由于老旧 `MODEL_SPECS` 列表中过早定义了通用的子串匹配 `ModelPattern.StringPattern("gemini")`，当系统在 `/models` 端点反序列化或在设置页面匹配 `gemini-3-flash` / `gemini-3.1` 等具体型号时，总是会被该项提前截断，导致它们错误地退化为了无任何能力的空白模型；
@@ -1299,3 +1318,25 @@
 - 并行会话的提示词依赖"共享类型定义"已预设在每个会话中，但各会话对 `LlmProtocol.kt` 的引用需保持一致（包名、类名）
 - ChatViewModel 修改（Session D）需注意不要破坏现有的 `isNotEmpty() && all{}` 修复
 - **DSML 标签格式**: `DsmlStreamParser` 使用的 `<||DSML||tool_calls>` 与 Cherry-Studio 的 `<｜tool_calls｜>` 不同，需在 DeepSeek 真机上验证实际输出格式并修正
+
+---
+
+## 📋 Next Steps (2026-05-19 DIA 全面刷新后)
+
+1. **后台生成服务 (GenerationService)**: P0 最高优先级。Foreground Service 承载 SSE 流式，实现离开 App 不中断。ADR-004 已规划方案。
+2. **本地推理端到端调通**: llama.cpp 引擎代码已完成（7 文件、811 行 LocalModelsScreen），需在实际 Android 设备上验证三槽位推理全流程。
+3. **Embedding 本地降级**: 无远程 Embedding API 时回退到本地方案。
+4. **Compose Canvas 原生 KG 可视化**: ADR-018 已规划，替代当前 ECharts WebView 方案，获得更原生性能。
+
+## 📊 DIA Status (2026-05-19)
+
+| 检查项 | 状态 | 说明 |
+|--------|:---:|------|
+| CHANGELOG.md | ✅ | 新增 DIA 文档清理与 v1.0.0-beta 发布条目 |
+| README.md | ✅ | 全面重写，去对标化、增加运行环境、标注开发中功能 |
+| ARCHITECTURE.md | ✅ | 日期更新至 2026-05-19 |
+| ARCHITECTURE_DESIGN.md | ✅ | v2.1.0 更新 |
+| IMPLEMENTATION_ANALYSIS.md | ✅ | 大规模更新，进度 92%→98% |
+| DOCUMENT_GOVERNANCE.md | ✅ | v2.0 更新 |
+| .agent/registry.md | ✅ | 补全注册、更新指标 |
+| .agent/handover.md | ✅ | 本文件已更新 |
