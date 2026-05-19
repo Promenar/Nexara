@@ -29,9 +29,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.graphics.Brush
 import com.promenar.nexara.R
 import com.promenar.nexara.ui.theme.NexaraColors
 import com.promenar.nexara.ui.theme.NexaraTypography
+import dev.chrisbanes.haze.rememberHazeState
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.hazeEffect
+import com.promenar.nexara.ui.common.LocalHazeState
+import com.promenar.nexara.ui.common.NexaraGlowBackground
 
 enum class AppTab(@StringRes val titleRes: Int, val icon: ImageVector) {
     CHAT(R.string.nav_tab_chat, Icons.Rounded.ChatBubble),
@@ -47,38 +54,50 @@ fun MainTabScaffold(
     onNavigateToChat: (String) -> Unit
 ) {
     var selectedTab by rememberSaveable { mutableStateOf(AppTab.CHAT) }
+    val mainHazeState = rememberHazeState()
 
-    Scaffold(
-        containerColor = NexaraColors.CanvasBackground,
-        contentWindowInsets = WindowInsets(0, 0, 0, 0),
-        bottomBar = {
-            NexaraBottomNavigationBar(
-                selectedTab = selectedTab,
-                onTabSelected = { selectedTab = it }
-            )
-        }
-    ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            when (selectedTab) {
-                AppTab.CHAT -> com.promenar.nexara.ui.hub.AgentHubScreen(
-                    onNavigateToSessionList = onNavigateToSessionList,
-                    onNavigateToAgentEdit = onNavigateToAgentEdit
-                )
-                AppTab.LIBRARY -> com.promenar.nexara.ui.rag.RagHomeScreen(
-                    onNavigateToFolder = { folderId, folderName ->
-                        onNavigateToSecondary(com.promenar.nexara.navigation.NavDestinations.ragFolder(folderId, folderName))
-                    },
-                    onNavigateToConfig = { onNavigateToSecondary("rag_global_config") },
-                    onNavigateToGraph = { onNavigateToSecondary("knowledge_graph") },
-                    onNavigateToDocEditor = { docId ->
-                        onNavigateToSecondary(com.promenar.nexara.navigation.NavDestinations.docEditor(docId))
+    CompositionLocalProvider(LocalHazeState provides mainHazeState) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            // Layer 0: 全屏大极光底座
+            NexaraGlowBackground(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .hazeSource(state = mainHazeState)
+            ) {}
+
+            Scaffold(
+                containerColor = Color.Transparent,
+                contentWindowInsets = WindowInsets(0, 0, 0, 0),
+                bottomBar = {
+                    NexaraBottomNavigationBar(
+                        selectedTab = selectedTab,
+                        onTabSelected = { selectedTab = it }
+                    )
+                }
+            ) { paddingValues ->
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                ) {
+                    when (selectedTab) {
+                        AppTab.CHAT -> com.promenar.nexara.ui.hub.AgentHubScreen(
+                            onNavigateToSessionList = onNavigateToSessionList,
+                            onNavigateToAgentEdit = onNavigateToAgentEdit
+                        )
+                        AppTab.LIBRARY -> com.promenar.nexara.ui.rag.RagHomeScreen(
+                            onNavigateToFolder = { folderId, folderName ->
+                                onNavigateToSecondary(com.promenar.nexara.navigation.NavDestinations.ragFolder(folderId, folderName))
+                            },
+                            onNavigateToConfig = { onNavigateToSecondary("rag_global_config") },
+                            onNavigateToGraph = { onNavigateToSecondary("knowledge_graph") },
+                            onNavigateToDocEditor = { docId ->
+                                onNavigateToSecondary(com.promenar.nexara.navigation.NavDestinations.docEditor(docId))
+                            }
+                        )
+                        AppTab.SETTINGS -> com.promenar.nexara.ui.hub.UserSettingsHomeScreen(onNavigateToSecondary = onNavigateToSecondary)
                     }
-                )
-                AppTab.SETTINGS -> com.promenar.nexara.ui.hub.UserSettingsHomeScreen(onNavigateToSecondary = onNavigateToSecondary)
+                }
             }
         }
     }
@@ -89,22 +108,53 @@ private fun NexaraBottomNavigationBar(
     selectedTab: AppTab,
     onTabSelected: (AppTab) -> Unit
 ) {
+    val mainHazeState = LocalHazeState.current
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .windowInsetsPadding(WindowInsets.navigationBars)
+            .clipToBounds()
     ) {
+        // Haze 物理高斯模糊背景层（与顶栏及卡片效果完全对齐，28.dp 极致毛玻璃磨砂感）
         Box(
             modifier = Modifier
                 .matchParentSize()
-                .background(NexaraColors.CanvasBackground.copy(alpha = 0.8f))
-        )
+                .hazeEffect(state = mainHazeState) {
+                    blurRadius = 28.dp
+                    noiseFactor = 0.012f
+                    backgroundColor = Color(0xFF121115).copy(alpha = 0.40f) // 极致高档清透偏光
+                }
+        ) {
+            // 水晶微光折射层
+            Box(
+                modifier = Modifier
+                    .matchParentSize()
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(
+                                Color.White.copy(alpha = 0.04f),
+                                Color.Transparent
+                            )
+                        )
+                    )
+            )
+        }
 
+        // 顶边超细发光亮边（0.5.dp 晶莹质感）
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(0.5.dp)
-                .background(NexaraColors.GlassBorder)
+                .background(
+                    Brush.horizontalGradient(
+                        colors = listOf(
+                            Color(0xFF8083FF).copy(alpha = 0.35f),
+                            Color(0xFFD97721).copy(alpha = 0.25f),
+                            Color(0xFF8083FF).copy(alpha = 0.35f)
+                        )
+                    )
+                )
                 .align(Alignment.TopCenter)
         )
 
@@ -126,6 +176,7 @@ private fun NexaraBottomNavigationBar(
         }
     }
 }
+
 
 @Composable
 private fun TabItem(

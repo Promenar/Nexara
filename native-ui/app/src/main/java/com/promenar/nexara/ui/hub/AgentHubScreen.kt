@@ -55,189 +55,135 @@ fun AgentHubScreen(
     var showAddDialog by remember { mutableStateOf(false) }
     var agentToDelete by remember { mutableStateOf<String?>(null) }
 
-    // 双 HazeState 架构
-    val cardHazeState = rememberHazeState()
+    // 专门给悬浮顶栏做物理采样的 HazeState
     val headerHazeState = rememberHazeState()
 
-    CompositionLocalProvider(LocalHazeState provides cardHazeState) {
-        Box(modifier = Modifier.fillMaxSize()) {
-
-            // Layer 0: 纯极光背景（给卡片模糊做物理采样源）
-            NexaraGlowBackground(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .hazeSource(state = cardHazeState)
-            ) {}
-
-            // Layer 1: 内容区（给 Header 模糊做物理采样源）
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .hazeSource(state = headerHazeState)
-            ) {
-                Scaffold(
-                    containerColor = Color.Transparent,
-                    contentWindowInsets = WindowInsets.statusBars,
-                    topBar = {
-                        val glowBorderBrush = Brush.linearGradient(
-                            colors = listOf(
-                                Color(0xFF8083FF).copy(alpha = 0.55f),
-                                Color(0xFFD97721).copy(alpha = 0.45f),
-                                Color(0xFF8083FF).copy(alpha = 0.55f)
-                            )
-                        )
-
+    Box(modifier = Modifier.fillMaxSize()) {
+        // Layer 1: 内容区（给 Header 模糊做物理采样源）
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .hazeSource(state = headerHazeState)
+        ) {
+            Scaffold(
+                containerColor = Color.Transparent,
+                contentWindowInsets = WindowInsets.statusBars,
+                topBar = {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clipToBounds()
+                    ) {
+                        // Haze 真·全融合物理毛玻璃 Header 背景层
                         Box(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .clipToBounds()
-                                .drawBehind {
-                                    val strokeWidth = 1.dp.toPx()
-                                    val y = size.height - strokeWidth / 2
-                                    drawLine(
-                                        brush = glowBorderBrush,
-                                        start = Offset(0f, y),
-                                        end = Offset(size.width, y),
-                                        strokeWidth = strokeWidth
+                                .matchParentSize()
+                                .hazeEffect(state = headerHazeState) {
+                                    blurRadius = 28.dp
+                                    noiseFactor = 0.012f
+                                    backgroundColor = Color(0xFF121115).copy(alpha = 0.15f) // 轻若薄纱的通透感，完美融合背景
+                                }
+                        )
+
+                        TopAppBar(
+                            title = {
+                                Box(modifier = Modifier.padding(start = 4.dp)) {
+                                    Text(stringResource(R.string.hub_title), style = NexaraTypography.headlineLarge)
+                                }
+                            },
+                            actions = {
+                                IconButton(onClick = { showAddDialog = true }) {
+                                    Icon(
+                                        imageVector = Icons.Rounded.Add,
+                                        contentDescription = stringResource(R.string.hub_btn_add_agent),
+                                        tint = NexaraColors.OnSurface,
+                                        modifier = Modifier.size(28.dp)
                                     )
                                 }
-                        ) {
-                            // Haze 真·穿透毛玻璃 Header 背景层
+                            },
+                            colors = TopAppBarDefaults.topAppBarColors(
+                                containerColor = Color.Transparent,
+                                titleContentColor = NexaraColors.OnSurface
+                            )
+                        )
+                    }
+                }
+            ) { paddingValues ->
+                if (showAddDialog) {
+                    AddAgentDialog(
+                        onDismiss = { showAddDialog = false },
+                        onConfirm = { name, desc, model, systemPrompt ->
+                            viewModel.createAgent(name, desc, model, systemPrompt)
+                            showAddDialog = false
+                        }
+                    )
+                }
+
+                ConfirmDialog(
+                    show = agentToDelete != null,
+                    onDismiss = { agentToDelete = null },
+                    onConfirm = {
+                        agentToDelete?.let { viewModel.deleteAgent(it) }
+                        agentToDelete = null
+                    },
+                    title = stringResource(R.string.agent_edit_delete_title),
+                    description = stringResource(R.string.agent_edit_delete_message),
+                    confirmLabel = stringResource(R.string.agent_edit_delete_confirm),
+                    destructive = true
+                )
+
+                if (agents.isEmpty() && searchQuery.isEmpty()) {
+                    EmptyAgentState(
+                        onCreateAgent = { showAddDialog = true },
+                        modifier = Modifier.padding(paddingValues)
+                    )
+                } else {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues),
+                        contentPadding = PaddingValues(
+                            start = 20.dp, end = 20.dp,
+                            top = 8.dp, bottom = 24.dp
+                        ),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+
+                        stickyHeader {
                             Box(
                                 modifier = Modifier
-                                    .matchParentSize()
-                                    .hazeEffect(state = headerHazeState) {
-                                        blurRadius = 28.dp
-                                        noiseFactor = 0.012f
-                                        backgroundColor = Color(0xFF121115).copy(alpha = 0.52f)
-                                    }
+                                    .fillMaxWidth()
+                                    .background(Color.Transparent)
+                                    .padding(bottom = 12.dp)
                             ) {
-                                Box(
-                                    modifier = Modifier
-                                        .matchParentSize()
-                                        .background(
-                                            Brush.linearGradient(
-                                                colors = listOf(
-                                                    Color(0xFF8083FF).copy(alpha = 0.08f),
-                                                    Color(0xFFD97721).copy(alpha = 0.05f)
-                                                )
-                                            )
-                                        )
-                                )
-                                Box(
-                                    modifier = Modifier
-                                        .matchParentSize()
-                                        .background(
-                                            Brush.linearGradient(
-                                                colors = listOf(
-                                                    Color.White.copy(alpha = 0.06f),
-                                                    Color.Transparent
-                                                )
-                                            )
-                                        )
+                                NexaraSearchBar(
+                                    value = searchQuery,
+                                    onValueChange = { viewModel.updateSearchQuery(it) },
+                                    placeholder = stringResource(R.string.hub_search_placeholder)
                                 )
                             }
-
-                            TopAppBar(
-                                title = {
-                                    Box(modifier = Modifier.padding(start = 4.dp)) {
-                                        Text(stringResource(R.string.hub_title), style = NexaraTypography.headlineLarge)
-                                    }
-                                },
-                                actions = {
-                                    IconButton(onClick = { showAddDialog = true }) {
-                                        Icon(
-                                            imageVector = Icons.Rounded.Add,
-                                            contentDescription = stringResource(R.string.hub_btn_add_agent),
-                                            tint = NexaraColors.OnSurface,
-                                            modifier = Modifier.size(28.dp)
-                                        )
-                                    }
-                                },
-                                colors = TopAppBarDefaults.topAppBarColors(
-                                    containerColor = Color.Transparent,
-                                    titleContentColor = NexaraColors.OnSurface
-                                )
-                            )
                         }
-                    }
-                ) { paddingValues ->
-                    if (showAddDialog) {
-                        AddAgentDialog(
-                            onDismiss = { showAddDialog = false },
-                            onConfirm = { name, desc, model, systemPrompt ->
-                                viewModel.createAgent(name, desc, model, systemPrompt)
-                                showAddDialog = false
-                            }
-                        )
-                    }
 
-                    ConfirmDialog(
-                        show = agentToDelete != null,
-                        onDismiss = { agentToDelete = null },
-                        onConfirm = {
-                            agentToDelete?.let { viewModel.deleteAgent(it) }
-                            agentToDelete = null
-                        },
-                        title = stringResource(R.string.agent_edit_delete_title),
-                        description = stringResource(R.string.agent_edit_delete_message),
-                        confirmLabel = stringResource(R.string.agent_edit_delete_confirm),
-                        destructive = true
-                    )
-
-                    if (agents.isEmpty() && searchQuery.isEmpty()) {
-                        EmptyAgentState(
-                            onCreateAgent = { showAddDialog = true },
-                            modifier = Modifier.padding(paddingValues)
-                        )
-                    } else {
-                        LazyColumn(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(paddingValues),
-                            contentPadding = PaddingValues(
-                                start = 20.dp, end = 20.dp,
-                                top = 8.dp, bottom = 24.dp
-                            ),
-                            verticalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-
-                            stickyHeader {
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .background(Color.Transparent)
-                                        .padding(bottom = 12.dp)
-                                ) {
-                                    NexaraSearchBar(
-                                        value = searchQuery,
-                                        onValueChange = { viewModel.updateSearchQuery(it) },
-                                        placeholder = stringResource(R.string.hub_search_placeholder)
-                                    )
-                                }
+                        itemsIndexed(agents, key = { _, agent -> agent.id }) { _, agent ->
+                            val parsedColor = try {
+                                Color(agent.color.toColorInt())
+                            } catch (_: Exception) {
+                                NexaraColors.Primary
                             }
 
-                            itemsIndexed(agents, key = { _, agent -> agent.id }) { _, agent ->
-                                val parsedColor = try {
-                                    Color(agent.color.toColorInt())
-                                } catch (_: Exception) {
-                                    NexaraColors.Primary
-                                }
+                            val iconVector = agentIconVector(agent.icon)
 
-                                val iconVector = agentIconVector(agent.icon)
-
-                                AgentCardItem(
-                                    icon = iconVector,
-                                    title = agent.name,
-                                    subtitle = agent.description,
-                                    iconContainerColor = parsedColor,
-                                    isPinned = agent.isPinned,
-                                    onPin = { viewModel.togglePin(agent.id) },
-                                    onDelete = { agentToDelete = agent.id },
-                                    onEdit = { onNavigateToAgentEdit(agent.id) },
-                                    onClick = { onNavigateToSessionList(agent.id) }
-                                )
-                            }
+                            AgentCardItem(
+                                icon = iconVector,
+                                title = agent.name,
+                                subtitle = agent.description,
+                                iconContainerColor = parsedColor,
+                                isPinned = agent.isPinned,
+                                onPin = { viewModel.togglePin(agent.id) },
+                                onDelete = { agentToDelete = agent.id },
+                                onEdit = { onNavigateToAgentEdit(agent.id) },
+                                onClick = { onNavigateToSessionList(agent.id) }
+                            )
                         }
                     }
                 }

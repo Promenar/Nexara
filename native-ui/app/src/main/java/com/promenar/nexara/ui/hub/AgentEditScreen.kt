@@ -120,25 +120,13 @@ fun AgentEditScreen(
         destructive = true
     )
 
-    Scaffold(
-        containerColor = NexaraColors.CanvasBackground,
-        contentWindowInsets = WindowInsets.systemBars,
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.agent_edit_title), style = NexaraTypography.headlineLarge) },
-                navigationIcon = {
-                    NexaraBackButton(onClick = onNavigateBack)
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = NexaraColors.CanvasBackground.copy(alpha = 0.8f)
-                )
-            )
-        }
-    ) { paddingValues ->
+    NexaraPageLayout(
+        title = stringResource(R.string.agent_edit_title),
+        onBack = onNavigateBack,
+        scrollable = false
+    ) {
         LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
+            modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(
                 start = 20.dp, end = 20.dp,
                 top = 8.dp, bottom = 120.dp

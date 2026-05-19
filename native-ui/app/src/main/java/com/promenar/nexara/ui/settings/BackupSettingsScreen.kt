@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.promenar.nexara.R
 import com.promenar.nexara.ui.common.NexaraGlassCard
+import com.promenar.nexara.ui.common.NexaraPageLayout
 import com.promenar.nexara.ui.common.SettingsSectionHeader
 import com.promenar.nexara.ui.common.SettingsToggle
 import com.promenar.nexara.ui.theme.NexaraColors
@@ -107,32 +108,14 @@ fun BackupSettingsScreen(
         }
     }
 
-    Scaffold(
-        containerColor = NexaraColors.CanvasBackground,
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.backup_title), style = NexaraTypography.headlineLarge) },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                            contentDescription = stringResource(R.string.common_cd_back),
-                            tint = NexaraColors.OnSurface,
-                            modifier = Modifier.size(24.dp)
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = NexaraColors.CanvasBackground.copy(alpha = 0.8f),
-                    titleContentColor = NexaraColors.OnSurface
-                )
-            )
-        }
-    ) { paddingValues ->
+    NexaraPageLayout(
+        title = stringResource(R.string.backup_title),
+        onBack = onNavigateBack,
+        scrollable = false
+    ) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(paddingValues)
                 .padding(horizontal = 20.dp),
             contentPadding = androidx.compose.foundation.layout.PaddingValues(
                 top = 24.dp, bottom = 120.dp

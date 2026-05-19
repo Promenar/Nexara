@@ -62,6 +62,7 @@ import com.promenar.nexara.data.local.inference.SlotState
 import com.promenar.nexara.data.local.inference.SlotType
 import com.promenar.nexara.data.local.inference.StoredModel
 import com.promenar.nexara.ui.common.NexaraGlassCard
+import com.promenar.nexara.ui.common.NexaraPageLayout
 import com.promenar.nexara.ui.common.SettingsSectionHeader
 import com.promenar.nexara.ui.theme.NexaraColors
 import com.promenar.nexara.ui.theme.NexaraShapes
@@ -90,32 +91,14 @@ fun LocalModelsScreen(
         if (uri != null) viewModel.importModel(uri)
     }
 
-    Scaffold(
-        containerColor = NexaraColors.CanvasBackground,
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.local_models_title), style = NexaraTypography.headlineLarge) },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                            contentDescription = stringResource(R.string.common_cd_back),
-                            tint = NexaraColors.OnSurface,
-                            modifier = Modifier.size(24.dp)
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = NexaraColors.CanvasBackground.copy(alpha = 0.8f),
-                    titleContentColor = NexaraColors.OnSurface
-                )
-            )
-        }
-    ) { paddingValues ->
+    NexaraPageLayout(
+        title = stringResource(R.string.local_models_title),
+        onBack = onNavigateBack,
+        scrollable = false
+    ) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(paddingValues)
                 .padding(horizontal = 20.dp),
             contentPadding = androidx.compose.foundation.layout.PaddingValues(
                 top = 24.dp, bottom = 120.dp

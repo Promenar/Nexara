@@ -186,85 +186,33 @@ fun UserSettingsHomeScreen(
         }
     }
 
-    val cardHazeState = rememberHazeState()
     val headerHazeState = rememberHazeState()
 
-    CompositionLocalProvider(LocalHazeState provides cardHazeState) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            // Layer 0: 纯极光背景
-            NexaraGlowBackground(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .hazeSource(state = cardHazeState)
-            ) {}
-
-            // Layer 1: 内容采样区
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .hazeSource(state = headerHazeState)
-            ) {
-                Scaffold(
-                    containerColor = Color.Transparent,
-                    contentWindowInsets = WindowInsets.statusBars,
-                    topBar = {
-                        val glowBorderBrush = Brush.linearGradient(
-                            colors = listOf(
-                                Color(0xFF8083FF).copy(alpha = 0.55f),
-                                Color(0xFFD97721).copy(alpha = 0.45f),
-                                Color(0xFF8083FF).copy(alpha = 0.55f)
-                            )
-                        )
-
+    Box(modifier = Modifier.fillMaxSize()) {
+        // Layer 1: 内容采样区
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .hazeSource(state = headerHazeState)
+        ) {
+            Scaffold(
+                containerColor = Color.Transparent,
+                contentWindowInsets = WindowInsets.statusBars,
+                topBar = {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clipToBounds()
+                    ) {
                         Box(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .clipToBounds()
-                                .drawBehind {
-                                    val strokeWidth = 1.dp.toPx()
-                                    val y = size.height - strokeWidth / 2
-                                    drawLine(
-                                        brush = glowBorderBrush,
-                                        start = Offset(0f, y),
-                                        end = Offset(size.width, y),
-                                        strokeWidth = strokeWidth
-                                    )
+                                .matchParentSize()
+                                .hazeEffect(state = headerHazeState) {
+                                    blurRadius = 28.dp
+                                    noiseFactor = 0.012f
+                                    backgroundColor = Color(0xFF121115).copy(alpha = 0.15f) // 轻若薄纱的通透感，完美融合背景
                                 }
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .matchParentSize()
-                                    .hazeEffect(state = headerHazeState) {
-                                        blurRadius = 28.dp
-                                        noiseFactor = 0.012f
-                                        backgroundColor = Color(0xFF121115).copy(alpha = 0.52f)
-                                    }
-                            ) {
-                                Box(
-                                    modifier = Modifier
-                                        .matchParentSize()
-                                        .background(
-                                            Brush.linearGradient(
-                                                colors = listOf(
-                                                    Color(0xFF8083FF).copy(alpha = 0.08f),
-                                                    Color(0xFFD97721).copy(alpha = 0.05f)
-                                                )
-                                            )
-                                        )
-                                )
-                                Box(
-                                    modifier = Modifier
-                                        .matchParentSize()
-                                        .background(
-                                            Brush.linearGradient(
-                                                colors = listOf(
-                                                    Color.White.copy(alpha = 0.06f),
-                                                    Color.Transparent
-                                                )
-                                            )
-                                        )
-                                )
-                            }
+                        )
 
                             TopAppBar(
                                 title = {
@@ -440,7 +388,6 @@ fun UserSettingsHomeScreen(
             onDismiss = { showLanguageDialog = false }
         )
     }
-}
 }
 }
 }
