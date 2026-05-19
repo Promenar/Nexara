@@ -84,7 +84,7 @@
 - Room Entity: 18 个（TaskNodeEntity）
 - Repository 覆盖率: 12/12 (100%)
 - 内置 Skill: 17 个（新增 4 个任务规划 Skill）
-- 测试文件: 44 个
+- 测试文件: 45 个
 - 总体进度: 98%
 - 剩余: Phase 10 发布准备（编译清零/APK 签名/E2E 测试）
 
