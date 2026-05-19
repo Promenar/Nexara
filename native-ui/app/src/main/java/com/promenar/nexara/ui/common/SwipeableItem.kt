@@ -140,7 +140,7 @@ fun SwipeableItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .offset { IntOffset(offsetX.value.roundToInt(), 0) }
-                .background(NexaraColors.CanvasBackground) // Added background to make content opaque
+                .background(Color.Transparent)
                 .pointerInput(Unit) {
                     detectHorizontalDragGestures(
                         onDragEnd = {

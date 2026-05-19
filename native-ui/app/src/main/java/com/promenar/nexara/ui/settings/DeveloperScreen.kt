@@ -7,6 +7,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.BugReport
 import androidx.compose.material.icons.rounded.Share
+import androidx.compose.material.icons.rounded.Visibility
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -24,7 +25,8 @@ import java.io.File
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DeveloperScreen(
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    onNavigateToVisualDemo: () -> Unit
 ) {
     val context = LocalContext.current
 
@@ -57,6 +59,15 @@ fun DeveloperScreen(
                     style = NexaraTypography.labelLarge,
                     color = NexaraColors.Primary,
                     modifier = Modifier.padding(vertical = 12.dp)
+                )
+            }
+
+            item {
+                NexaraSettingsItem(
+                    icon = Icons.Rounded.Visibility,
+                    title = "视觉DEMO",
+                    subtitle = "测试高级 GPU 高斯模糊毛玻璃与自定义背景图融合效果",
+                    onClick = onNavigateToVisualDemo
                 )
             }
 

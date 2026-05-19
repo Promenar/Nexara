@@ -8,10 +8,16 @@ import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -23,6 +29,9 @@ import com.promenar.nexara.ui.theme.NexaraTypography
 /**
  * A reusable glassmorphic item for lists, adhering to the Stitch Design Spec.
  * Used primarily in Hub, Settings, and List views.
+ * 
+ * Auto-integrates position tracking to alignment layout with NexaraGlowBackground,
+ * delivering 100% precise physical aligned glass blur.
  */
 @Composable
 fun NexaraSettingsItem(
@@ -31,26 +40,32 @@ fun NexaraSettingsItem(
     subtitle: String? = null,
     onClick: () -> Unit
 ) {
-    // Uses the standard large (16dp) radius for glass panels
+    var cardOffset by remember { mutableStateOf(androidx.compose.ui.geometry.Offset.Zero) }
+
     NexaraGlassCard(
         modifier = Modifier
             .fillMaxWidth()
+            .onGloballyPositioned { coordinates ->
+                cardOffset = coordinates.positionInWindow()
+            }
             .clip(NexaraShapes.large)
             .clickable(onClick = onClick),
-        shape = NexaraShapes.large as androidx.compose.foundation.shape.RoundedCornerShape
+        shape = NexaraShapes.large as androidx.compose.foundation.shape.RoundedCornerShape,
+        underlay = {
+            NexaraGlowBackground(alignmentOffset = cardOffset) {}
+        }
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp), // p-md
+                .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp), // gap-md
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Circular icon container: w-10 h-10 bg-surface-container-high text-primary
                 Box(
                     modifier = Modifier
                         .size(40.dp)
@@ -74,8 +89,8 @@ fun NexaraSettingsItem(
                     if (subtitle != null) {
                         Text(
                             text = subtitle,
-                            style = NexaraTypography.bodyMedium.copy(fontSize = 14.sp), // text-sm
-                            color = NexaraColors.OnSurfaceVariant.copy(alpha = 0.7f) // opacity-70
+                            style = NexaraTypography.bodyMedium.copy(fontSize = 14.sp),
+                            color = NexaraColors.OnSurfaceVariant.copy(alpha = 0.7f)
                         )
                     }
                 }

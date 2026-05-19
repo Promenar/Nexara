@@ -121,6 +121,16 @@ import com.promenar.nexara.ui.theme.NexaraTypography
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.draw.drawBehind
+import dev.chrisbanes.haze.hazeEffect
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.rememberHazeState
+import com.promenar.nexara.ui.common.NexaraGlowBackground
+import com.promenar.nexara.ui.common.LocalHazeState
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -140,6 +150,19 @@ fun ChatScreen(
 
     val snackbarHostState = remember { SnackbarHostState() }
     var snackbarData by remember { mutableStateOf<NexaraSnackbarData?>(null) }
+    
+    val hazeState = rememberHazeState()
+    val glowBorderBrush = remember {
+        Brush.horizontalGradient(
+            colors = listOf(
+                Color(0x00FFFFFF),
+                Color(0x1AFFFFFF),
+                Color(0x33FFFFFF),
+                Color(0x1AFFFFFF),
+                Color(0x00FFFFFF)
+            )
+        )
+    }
 
     val listState = rememberLazyListState()
     var showWorkspaceSheet by remember { mutableStateOf(false) }
@@ -268,260 +291,304 @@ fun ChatScreen(
 
 
 
-    Scaffold(
-        containerColor = NexaraColors.CanvasBackground,
-        topBar = {
-            ChatTopBar(
-                title = sessionTitle,
-                subtitle = if (uiState.isGenerating) stringResource(R.string.chat_status_thinking) else agentName.ifBlank { sessionTitle },
-                onBack = onNavigateBack,
-                onWorkspace = { showWorkspaceSheet = true },
-                onSettings = { showModelSettingsSheet = true },
-                onSessionPrompt = { showSessionPromptEditor = true },
-                onClearHistory = { showClearDialog = true },
-                onRename = { showRenameDialog = true },
-                onDeleteSession = { showDeleteDialog = true }
-            )
-        },
-        snackbarHost = {
-            NexaraSnackbarHost(
-                hostState = snackbarHostState,
-                snackbarData = snackbarData,
-                onAction = {
-                    chatViewModel.undoLastDeletion()
-                    snackbarHostState.currentSnackbarData?.dismiss()
-                }
-            )
-        }
-    ) { padding ->
-        Box(modifier = Modifier.fillMaxSize().padding(padding).imePadding()) {
-            LazyColumn(
-                state = listState,
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 20.dp, bottom = 150.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+    CompositionLocalProvider(LocalHazeState provides hazeState) {
+        Box(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            // 背景与物理模糊采样源层：包裹极光背景与 Scaffold，整轨应用 hazeSource 捕获极光与列表内容
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .hazeSource(state = hazeState)
             ) {
-                    // pipelineGroups 已在外部通过 remember 计算，此处直接引用
-                    items(pipelineGroups.size, key = { pipelineGroups[it].messages.first().id }) { idx ->
-                        val group = pipelineGroups[idx]
-                        val isGeneratingGroup = idx == pipelineGroups.lastIndex && uiState.isGenerating
-
-                        if (!group.isUser) {
-                            val ragActiveMsg = group.assistantMessages.find { 
-                                !it.ragReferences.isNullOrEmpty() || !it.citations.isNullOrEmpty() || it.ragReferencesLoading 
-                            } ?: group.assistantMessages.lastOrNull()
-
-                            if (ragActiveMsg != null) {
-                                val targetPhases = if (isGeneratingGroup) ragPhases else emptyList()
-                                val ragLoading = isGeneratingGroup && targetPhases.any { it.status == PhaseStatus.ACTIVE }
-                                val ragComplete = targetPhases.isNotEmpty() && targetPhases.all { it.status == PhaseStatus.DONE }
-                                RagProgressCard(
-                                    phases = targetPhases,
-                                    references = ragActiveMsg.ragReferences,
-                                    kgPaths = ragActiveMsg.kgPaths,
-                                    citations = ragActiveMsg.citations,
-                                    isComplete = if (isGeneratingGroup) (ragComplete || !ragLoading) else true
-                                )
-                            }
-                        }
-
-                        PipelineBubble(
-                            group = group,
-                            isGenerating = isGeneratingGroup,
-                            status = uiState.status,
-                            streamingContent = uiState.streamingContent,
-                            fontSize = uiState.session?.options?.fontSize ?: 13,
-                            onContentChange = { newContent ->
-                                group.assistantMessages.lastOrNull()?.let { lastMsg ->
-                                    chatViewModel.updateMessageContentOnly(lastMsg.id, newContent)
+                NexaraGlowBackground(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    Scaffold(
+                        containerColor = Color.Transparent,
+                        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+                        snackbarHost = {
+                            NexaraSnackbarHost(
+                                hostState = snackbarHostState,
+                                snackbarData = snackbarData,
+                                onAction = {
+                                    chatViewModel.undoLastDeletion()
+                                    snackbarHostState.currentSnackbarData?.dismiss()
                                 }
-                            },
-                            onDelete = { chatViewModel.deleteMessage(it) },
-                            onRegenerate = { chatViewModel.regenerateMessage(it) }
-                        )
-                    }
-
-                    if (compressionState.isCompressing || compressionState.result != null) {
-                        item(key = "summary_card") {
-                            SummaryCard(
-                                isCompressing = compressionState.isCompressing,
-                                progress = compressionState.progress,
-                                detail = compressionState.detail,
-                                result = compressionState.result
                             )
                         }
+                    ) { padding ->
+                        Box(modifier = Modifier.fillMaxSize().padding(padding)) {
+                            LazyColumn(
+                                state = listState,
+                                modifier = Modifier.fillMaxSize(),
+                                contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 88.dp, bottom = 170.dp), // 顶部预留给悬浮 Header，底部预留给悬浮输入岛 + 键盘
+                                verticalArrangement = Arrangement.spacedBy(12.dp)
+                            ) {
+                                // pipelineGroups 已在外部通过 remember 计算，此处直接引用
+                                items(pipelineGroups.size, key = { pipelineGroups[it].messages.first().id }) { idx ->
+                                    val group = pipelineGroups[idx]
+                                    val isGeneratingGroup = idx == pipelineGroups.lastIndex && uiState.isGenerating
+
+                                    if (!group.isUser) {
+                                        val ragActiveMsg = group.assistantMessages.find { 
+                                            !it.ragReferences.isNullOrEmpty() || !it.citations.isNullOrEmpty() || it.ragReferencesLoading 
+                                        } ?: group.assistantMessages.lastOrNull()
+
+                                        if (ragActiveMsg != null) {
+                                            val targetPhases = if (isGeneratingGroup) ragPhases else emptyList()
+                                            val ragLoading = isGeneratingGroup && targetPhases.any { it.status == PhaseStatus.ACTIVE }
+                                            val ragComplete = targetPhases.isNotEmpty() && targetPhases.all { it.status == PhaseStatus.DONE }
+                                            RagProgressCard(
+                                                phases = targetPhases,
+                                                references = ragActiveMsg.ragReferences,
+                                                kgPaths = ragActiveMsg.kgPaths,
+                                                citations = ragActiveMsg.citations,
+                                                isComplete = if (isGeneratingGroup) (ragComplete || !ragLoading) else true
+                                            )
+                                        }
+                                    }
+
+                                    PipelineBubble(
+                                        group = group,
+                                        isGenerating = isGeneratingGroup,
+                                        status = uiState.status,
+                                        streamingContent = uiState.streamingContent,
+                                        fontSize = uiState.session?.options?.fontSize ?: 13,
+                                        onContentChange = { newContent ->
+                                            group.assistantMessages.lastOrNull()?.let { lastMsg ->
+                                                chatViewModel.updateMessageContentOnly(lastMsg.id, newContent)
+                                            }
+                                        },
+                                        onDelete = { chatViewModel.deleteMessage(it) },
+                                        onRegenerate = { chatViewModel.regenerateMessage(it) }
+                                    )
+                                }
+
+                                if (compressionState.isCompressing || compressionState.result != null) {
+                                    item(key = "summary_card") {
+                                        SummaryCard(
+                                            isCompressing = compressionState.isCompressing,
+                                            progress = compressionState.progress,
+                                            detail = compressionState.detail,
+                                            result = compressionState.result
+                                        )
+                                    }
+                                }
+
+                                item(key = "bottom_spacer") {
+                                    Spacer(modifier = Modifier.height(16.dp))
+                                }
+                            }
+
+                            // ── Skeleton 与其他 Overlay 需在 LazyColumn 之上 ──
+                            AnimatedVisibility(
+                                visible = uiState.isLoading && uiState.messages.isEmpty(),
+                                enter = fadeIn(),
+                                exit = fadeOut(),
+                                modifier = Modifier.fillMaxSize().padding(bottom = 160.dp)
+                            ) {
+                                ChatSkeleton(modifier = Modifier.fillMaxSize())
+                            }
+                        }
                     }
-
-                    item(key = "bottom_spacer") {
-                        Spacer(modifier = Modifier.height(16.dp))
-                    }
-            }
-
-            // ── Skeleton 与其他 Overlay 需在 LazyColumn 之上但独立于输入框 ──
-            AnimatedVisibility(
-                visible = uiState.isLoading && uiState.messages.isEmpty(),
-                enter = fadeIn(),
-                exit = fadeOut(),
-                modifier = Modifier.fillMaxSize().padding(bottom = 160.dp)
-            ) {
-                ChatSkeleton(modifier = Modifier.fillMaxSize())
-            }
-
-            if (showTruncateDialog) {
-                Dialog(onDismissRequest = { showTruncateDialog = false }) {
-                    NexaraConfirmDialog(
-                        title = stringResource(R.string.chat_confirm_truncate_title),
-                        message = stringResource(R.string.chat_confirm_truncate_message),
-                        confirmText = stringResource(R.string.common_btn_confirm),
-                        onConfirm = {
-                            pendingTruncateAction?.invoke()
-                            showTruncateDialog = false
-                            pendingTruncateAction = null
-                        },
-                        onCancel = {
-                            showTruncateDialog = false
-                            pendingTruncateAction = null
-                        },
-                        isDestructive = true
-                    )
                 }
             }
 
-                // ── 宽幅低矮版 MD3 风格浮岛 (Optimized Solid MD3 Island) ──
-                Surface(
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .padding(horizontal = 4.dp) // 极窄外边距，显著加宽
-                        .padding(bottom = 8.dp)
-                        .fillMaxWidth(),
-                    color = NexaraColors.SurfaceLow, // 调整颜色为更深的 SurfaceLow，契合 Header
-                    shape = RoundedCornerShape(24.dp), // 略微减小圆角，配合加宽效果
-                    border = BorderStroke(1.dp, NexaraColors.OutlineVariant.copy(alpha = 0.3f)),
-                    shadowElevation = 6.dp
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .padding(horizontal = 8.dp, vertical = 10.dp), // 降低水平间距从 18dp -> 8dp，拓宽本体
-                        verticalArrangement = Arrangement.spacedBy(6.dp)
-                    ) {
-                        val modelDisplayName = remember(uiState.session?.modelId) {
-                            uiState.session?.modelId?.let { id ->
-                                findModelSpec(id)?.note ?: id
-                            } ?: ""
-                        }
-                        val postProcessTasks by chatViewModel.postProcessTasks.collectAsState()
-                        ChatInputTopBar(
-                            modelName = modelDisplayName,
-                            tokenState = tokenState,
-                            postProcessTasks = postProcessTasks,
-                            onRemovePostProcessTask = { chatViewModel.removePostProcessTask(it) },
-                            onModelClick = { showModelSettingsSheet = true },
-                            onManualSummary = { chatViewModel.summarizeHistory() }
+            // ── 顶层物理真·毛玻璃悬浮顶栏 Overlay ──
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clipToBounds()
+                    .drawBehind {
+                        val strokeWidth = 1.dp.toPx()
+                        val y = size.height - strokeWidth / 2
+                        drawLine(
+                            brush = glowBorderBrush,
+                            start = Offset(0f, y),
+                            end = Offset(size.width, y),
+                            strokeWidth = strokeWidth
                         )
+                    }
+            ) {
+                Box(
+                    modifier = Modifier
+                        .matchParentSize()
+                        .hazeEffect(state = hazeState) {
+                            blurRadius = 28.dp
+                            noiseFactor = 0.012f
+                            backgroundColor = Color(0xFF121115).copy(alpha = 0.52f)
+                        }
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .matchParentSize()
+                            .background(
+                                Brush.linearGradient(
+                                    colors = listOf(
+                                        Color(0xFF8083FF).copy(alpha = 0.08f),
+                                        Color(0xFFD97721).copy(alpha = 0.05f)
+                                    )
+                                )
+                            )
+                    )
+                }
 
-                        if (selectedImageUris.isNotEmpty()) {
-                            LazyRow(
-                                modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp),
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                items(selectedImageUris.size) { index ->
-                                    val uri = selectedImageUris[index]
-                                    Box(modifier = Modifier.size(64.dp).clip(RoundedCornerShape(8.dp))) {
-                                        coil3.compose.AsyncImage(
-                                            model = uri,
-                                            contentDescription = null,
-                                            modifier = Modifier.fillMaxSize(),
-                                            contentScale = ContentScale.Crop
-                                        )
-                                        IconButton(
-                                            onClick = { selectedImageUris = selectedImageUris.toMutableList().apply { removeAt(index) } },
-                                            modifier = Modifier.align(Alignment.TopEnd).size(20.dp)
-                                        ) {
-                                            Icon(Icons.Rounded.Close, null, tint = Color.White, modifier = Modifier.size(14.dp))
+                ChatTopBar(
+                    title = sessionTitle,
+                    subtitle = if (uiState.isGenerating) stringResource(R.string.chat_status_thinking) else agentName.ifBlank { sessionTitle },
+                    onBack = onNavigateBack,
+                    onWorkspace = { showWorkspaceSheet = true },
+                    onSettings = { showModelSettingsSheet = true },
+                    onSessionPrompt = { showSessionPromptEditor = true },
+                    onClearHistory = { showClearDialog = true },
+                    onRename = { showRenameDialog = true },
+                    onDeleteSession = { showDeleteDialog = true }
+                )
+            }
+
+            // ── 物理真·毛玻璃悬浮输入岛 Overlay ──
+            // 通过独立的 Box 绑定 Alignment.BottomCenter 并添加 imePadding() 以实现软键盘智能顶起与平滑降下
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .imePadding()
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    // 滚动向下 FAB，跟随输入框一块悬浮，定位在输入框上方
+                    AnimatedVisibility(
+                        visible = isUserScrolledAway,
+                        enter = fadeIn(),
+                        exit = fadeOut(),
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    ) {
+                        FloatingActionButton(
+                            onClick = {
+                                autoFollowEnabled = true
+                                scope.launch {
+                                    val groups = buildPipelineGroups(uiState.messages)
+                                    listState.animateScrollToItem(groups.size)
+                                }
+                            },
+                            containerColor = NexaraColors.SurfaceHigh,
+                            contentColor = NexaraColors.Primary,
+                            shape = CircleShape,
+                            modifier = Modifier.size(40.dp)
+                        ) {
+                            Icon(Icons.Rounded.ArrowDownward, null, modifier = Modifier.size(20.dp))
+                        }
+                    }
+
+                    NexaraGlassCard(
+                        modifier = Modifier
+                            .padding(horizontal = 8.dp)
+                            .padding(bottom = 8.dp)
+                            .fillMaxWidth(),
+                        shape = RoundedCornerShape(24.dp)
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .padding(horizontal = 8.dp, vertical = 10.dp),
+                            verticalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            val modelDisplayName = remember(uiState.session?.modelId) {
+                                uiState.session?.modelId?.let { id ->
+                                    findModelSpec(id)?.note ?: id
+                                } ?: ""
+                            }
+                            val postProcessTasks by chatViewModel.postProcessTasks.collectAsState()
+                            ChatInputTopBar(
+                                modelName = modelDisplayName,
+                                tokenState = tokenState,
+                                postProcessTasks = postProcessTasks,
+                                onRemovePostProcessTask = { chatViewModel.removePostProcessTask(it) },
+                                onModelClick = { showModelSettingsSheet = true },
+                                onManualSummary = { chatViewModel.summarizeHistory() }
+                            )
+
+                            if (selectedImageUris.isNotEmpty()) {
+                                LazyRow(
+                                    modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    items(selectedImageUris.size) { index ->
+                                        val uri = selectedImageUris[index]
+                                        Box(modifier = Modifier.size(64.dp).clip(RoundedCornerShape(8.dp))) {
+                                            coil3.compose.AsyncImage(
+                                                model = uri,
+                                                contentDescription = null,
+                                                modifier = Modifier.fillMaxSize(),
+                                                contentScale = ContentScale.Crop
+                                            )
+                                            IconButton(
+                                                onClick = { selectedImageUris = selectedImageUris.toMutableList().apply { removeAt(index) } },
+                                                modifier = Modifier.align(Alignment.TopEnd).size(20.dp)
+                                            ) {
+                                                Icon(Icons.Rounded.Close, null, tint = Color.White, modifier = Modifier.size(14.dp))
+                                            }
                                         }
                                     }
                                 }
                             }
-                        }
 
-                        // 任务浮动面板
-                        TaskFloatingPanel(
-                            sessionId = sessionId,
-                            taskRepo = taskRepo,
-                            goalTitle = uiState.session?.activeTask?.title ?: "",
-                            modifier = Modifier.padding(horizontal = 16.dp)
-                        )
-
-                        Box(modifier = Modifier.fillMaxWidth()) {
-                            ChatInputBar(
-                                text = inputText,
-                                placeholder = if (agentName.isNotBlank()) stringResource(R.string.chat_input_placeholder, agentName) else stringResource(R.string.chat_input_placeholder_default),
-                                onTextChange = { chatViewModel.updateInputText(it) },
-                                onSend = {
-                                    if (inputText.isNotBlank() || selectedImageUris.isNotEmpty()) {
-                                        val textToSend = inputText.ifBlank { "Describe this image" }
-                                        chatViewModel.sendMessage(textToSend, selectedImageUris)
-                                        selectedImageUris = emptyList()
-                                    }
-                                },
-                                status = uiState.status,
-                                onStop = { chatViewModel.stopGeneration() },
-                                isModelSelected = uiState.session?.modelId?.isNotBlank() == true,
-                                onModelHint = { showModelHint = true },
-                                onPickImage = { imagePickerLauncher.launch("image/*") },
-                                hasImages = selectedImageUris.isNotEmpty()
+                            // 任务浮动面板
+                            TaskFloatingPanel(
+                                sessionId = sessionId,
+                                taskRepo = taskRepo,
+                                goalTitle = uiState.session?.activeTask?.title ?: "",
+                                modifier = Modifier.padding(horizontal = 16.dp)
                             )
-    
-                            // ── 模型未选择提示气泡 ──
-                            androidx.compose.animation.AnimatedVisibility(
-                                visible = showModelHint,
-                                enter = fadeIn() + expandVertically(expandFrom = Alignment.Bottom),
-                                exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Bottom),
-                                modifier = Modifier
-                                    .align(Alignment.TopEnd)
-                                    .offset(y = (-45).dp, x = (-10).dp)
-                            ) {
-                                Surface(
-                                    color = NexaraColors.Primary,
-                                    shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp, bottomStart = 12.dp, bottomEnd = 2.dp),
-                                    shadowElevation = 8.dp
+
+                            Box(modifier = Modifier.fillMaxWidth()) {
+                                ChatInputBar(
+                                    text = inputText,
+                                    placeholder = if (agentName.isNotBlank()) stringResource(R.string.chat_input_placeholder, agentName) else stringResource(R.string.chat_input_placeholder_default),
+                                    onTextChange = { chatViewModel.updateInputText(it) },
+                                    onSend = {
+                                        if (inputText.isNotBlank() || selectedImageUris.isNotEmpty()) {
+                                            val textToSend = inputText.ifBlank { "Describe this image" }
+                                            chatViewModel.sendMessage(textToSend, selectedImageUris)
+                                            selectedImageUris = emptyList()
+                                        }
+                                    },
+                                    status = uiState.status,
+                                    onStop = { chatViewModel.stopGeneration() },
+                                    isModelSelected = uiState.session?.modelId?.isNotBlank() == true,
+                                    onModelHint = { showModelHint = true },
+                                    onPickImage = { imagePickerLauncher.launch("image/*") },
+                                    hasImages = selectedImageUris.isNotEmpty()
+                                )
+        
+                                // ── 模型未选择提示气泡 ──
+                                androidx.compose.animation.AnimatedVisibility(
+                                    visible = showModelHint,
+                                    enter = fadeIn() + expandVertically(expandFrom = Alignment.Bottom),
+                                    exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Bottom),
+                                    modifier = Modifier
+                                        .align(Alignment.TopEnd)
+                                        .offset(y = (-45).dp, x = (-10).dp)
                                 ) {
-                                    Text(
-                                        text = stringResource(R.string.chat_hint_select_model),
-                                        style = NexaraTypography.labelMedium,
-                                        color = NexaraColors.OnPrimary,
-                                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
-                                    )
-                                }
-                            }
+                                    Surface(
+                                        color = NexaraColors.Primary,
+                                        shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp, bottomStart = 12.dp, bottomEnd = 2.dp),
+                                        shadowElevation = 8.dp
+                                    ) {
+                                        Text(
+                                            text = stringResource(R.string.chat_hint_select_model),
+                                            style = NexaraTypography.labelMedium,
+                                            color = NexaraColors.OnPrimary,
+                                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
+                                        )
+                                    }
                         }
-                    }
-                }
-            
-                AnimatedVisibility(
-                    visible = isUserScrolledAway,
-                    enter = fadeIn(),
-                    exit = fadeOut(),
-                    modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 150.dp)
-                ) {
-                    FloatingActionButton(
-                        onClick = {
-                            autoFollowEnabled = true
-                            scope.launch {
-                                val groups = buildPipelineGroups(uiState.messages)
-                                listState.animateScrollToItem(groups.size)
-                            }
-                        },
-                        containerColor = NexaraColors.SurfaceHigh,
-                        contentColor = NexaraColors.Primary,
-                        shape = CircleShape,
-                        modifier = Modifier.size(40.dp)
-                    ) {
-                        Icon(Icons.Rounded.ArrowDownward, null, modifier = Modifier.size(20.dp))
                     }
                 }
             }
         }
+    }
 
     if (showClearDialog) {
         Dialog(onDismissRequest = { showClearDialog = false }) {
@@ -586,6 +653,8 @@ fun ChatScreen(
         placeholder = "Add session-specific instructions...",
         mode = EditorMode.DIALOG
     )
+        }
+    }
 }
 
 @Composable

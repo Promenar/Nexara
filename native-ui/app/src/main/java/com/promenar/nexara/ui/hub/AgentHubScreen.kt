@@ -13,6 +13,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
@@ -172,9 +174,18 @@ fun AgentCardItem(
         onEdit = onEdit,
         isPinned = isPinned
     ) {
+        var cardOffset by remember { mutableStateOf(androidx.compose.ui.geometry.Offset.Zero) }
+
         NexaraGlassCard(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .onGloballyPositioned { coordinates ->
+                    cardOffset = coordinates.positionInWindow()
+                },
             shape = RoundedCornerShape(12.dp),
+            underlay = {
+                NexaraGlowBackground(alignmentOffset = cardOffset) {}
+            },
             onClick = onClick
         ) {
             Row(

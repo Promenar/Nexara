@@ -152,6 +152,10 @@ dependencies {
     implementation("com.mikepenz:multiplatform-markdown-renderer-coil3:$markdownRendererVersion")
     implementation("com.mikepenz:multiplatform-markdown-renderer-code:$markdownRendererVersion")
 
+    // ─── 毛玻璃效果 (Haze by Chris Banes) ───
+    implementation("dev.chrisbanes.haze:haze:1.7.2")
+    implementation("dev.chrisbanes.haze:haze-materials:1.7.2")
+
     // ─── 图片裁剪 (UCrop) ───
     implementation("com.github.yalantis:ucrop:2.2.8")
 

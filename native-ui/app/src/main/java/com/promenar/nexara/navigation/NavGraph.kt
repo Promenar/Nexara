@@ -34,6 +34,7 @@ import com.promenar.nexara.ui.rag.RagFolderScreen
 import com.promenar.nexara.ui.rag.AdvancedRetrievalScreen
 import com.promenar.nexara.ui.settings.BackupSettingsScreen
 import com.promenar.nexara.ui.settings.DeveloperScreen
+import com.promenar.nexara.ui.settings.VisualDemoScreen
 import com.promenar.nexara.ui.settings.LocalModelsScreen
 import com.promenar.nexara.ui.settings.ProviderFormScreen
 import com.promenar.nexara.ui.settings.ProviderModelsScreen
@@ -73,6 +74,7 @@ object NavDestinations {
     const val BACKUP_SETTINGS = "backup_settings"
     const val LOCAL_MODELS = "local_models"
     const val DEVELOPER_PANEL = "developer_panel"
+    const val VISUAL_DEMO = "visual_demo"
 
     fun sessionList(agentId: String) = "session_list/$agentId"
     fun chatHero(sessionId: String) = "chat_hero/$sessionId"
@@ -441,6 +443,13 @@ fun NexaraNavGraph(
 
         composable(NavDestinations.DEVELOPER_PANEL) {
             DeveloperScreen(
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToVisualDemo = { navController.navigate(NavDestinations.VISUAL_DEMO) }
+            )
+        }
+
+        composable(NavDestinations.VISUAL_DEMO) {
+            VisualDemoScreen(
                 onNavigateBack = { navController.popBackStack() }
             )
         }

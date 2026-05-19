@@ -56,6 +56,7 @@
 - 20260512-markdown-rendering-audit.md — Markdown 渲染能力审计（6 项全部修复）
 
 ## 活跃实施计划（.agent/plans/）
+- .agent/plans/20260520-haze-real-glassmorphism-glow-background.md — Haze 奢华真·毛玻璃极光背景重构 ✅
 - .agent/plans/20260519-room-database-migration-schema-mismatch-fix.md — Room 数据库迁移 Schema 不匹配修复 ✅
 - .agent/plans/20260514-phase7-knowledge-base-repair.md — Phase 7 知识库修复与增强 ✅
 - .agent/plans/20260514-phase8-agent-tools-enhancement.md — Phase 8 Agent 工具重构 ✅

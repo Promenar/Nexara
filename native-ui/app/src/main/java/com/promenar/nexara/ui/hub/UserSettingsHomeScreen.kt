@@ -70,6 +70,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -84,6 +86,7 @@ import com.promenar.nexara.ui.common.ModelItem
 import com.promenar.nexara.ui.common.ModelCapability
 import com.promenar.nexara.ui.common.ModelPicker
 import com.promenar.nexara.ui.common.NexaraGlassCard
+import com.promenar.nexara.ui.common.NexaraGlowBackground
 import com.promenar.nexara.ui.common.NexaraConfirmDialog
 import com.promenar.nexara.ui.common.NexaraSettingsItem
 import com.promenar.nexara.ui.common.SettingsSectionHeader
@@ -179,76 +182,76 @@ fun UserSettingsHomeScreen(
         containerColor = NexaraColors.CanvasBackground,
         contentWindowInsets = WindowInsets.statusBars,
         topBar = {
-            TopAppBar(
-                title = {
-                    Box(modifier = Modifier.padding(start = 4.dp)) {
-                        Text(stringResource(R.string.settings_title), style = NexaraTypography.headlineLarge)
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = NexaraColors.CanvasBackground.copy(alpha = 0.8f),
-                    titleContentColor = NexaraColors.OnSurface
+                TopAppBar(
+                    title = {
+                        Box(modifier = Modifier.padding(start = 4.dp)) {
+                            Text(stringResource(R.string.settings_title), style = NexaraTypography.headlineLarge)
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color.Transparent,
+                        titleContentColor = NexaraColors.OnSurface
+                    )
                 )
-            )
-        }
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(horizontal = 20.dp)
-        ) {
-            TabBar(
-                selectedTab = selectedTab,
-                onTabSelected = { viewModel.setSelectedSettingsTab(it.ordinal) }
-            )
+            }
+        ) { paddingValues ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(horizontal = 20.dp)
+            ) {
+                TabBar(
+                    selectedTab = selectedTab,
+                    onTabSelected = { viewModel.setSelectedSettingsTab(it.ordinal) }
+                )
 
-            Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-            Crossfade(
-                targetState = selectedTab,
-                animationSpec = tween(300),
-                label = "settingsTab"
-            ) { tab ->
-                when (tab) {
-                    SettingsTab.APP -> {
-                        AppSettingsContent(
-                            viewModel = viewModel,
-                            userName = userName,
-                            tokenCost = tokenCost,
-                            language = language,
-                            themeMode = themeMode,
-                            haptic = haptic,
-                            onNavigateToSecondary = onNavigateToSecondary,
-                            userAvatar = userAvatar,
-                            onChangeAvatar = {
-                                photoPickerLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo))
-                            },
-                            onEditName = {
-                                editingName = userName
-                                showNameEditor = true
-                            },
-                            onShowLanguageDialog = { showLanguageDialog = true },
-                            onShowModelPicker = { type ->
-                                viewModel.refreshProviders()
-                                showModelPickerType = type
-                            },
-                            onAboutClick = {
-                                onNavigateToSecondary("developer_panel")
-                            }
-                        )
-                    }
-                    SettingsTab.PROVIDER -> {
-                        ProviderSettingsContent(
-                            providers = providers,
-                            onNavigateToSecondary = onNavigateToSecondary,
-                            onDeleteProvider = { providerId -> showDeleteDialog = providerId }
-                        )
+                Crossfade(
+                    targetState = selectedTab,
+                    animationSpec = tween(300),
+                    label = "settingsTab"
+                ) { tab ->
+                    when (tab) {
+                        SettingsTab.APP -> {
+                            AppSettingsContent(
+                                viewModel = viewModel,
+                                userName = userName,
+                                tokenCost = tokenCost,
+                                language = language,
+                                themeMode = themeMode,
+                                haptic = haptic,
+                                onNavigateToSecondary = onNavigateToSecondary,
+                                userAvatar = userAvatar,
+                                onChangeAvatar = {
+                                    photoPickerLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo))
+                                },
+                                onEditName = {
+                                    editingName = userName
+                                    showNameEditor = true
+                                },
+                                onShowLanguageDialog = { showLanguageDialog = true },
+                                onShowModelPicker = { type ->
+                                    viewModel.refreshProviders()
+                                    showModelPickerType = type
+                                },
+                                onAboutClick = {
+                                    onNavigateToSecondary("developer_panel")
+                                }
+                            )
+                        }
+                        SettingsTab.PROVIDER -> {
+                            ProviderSettingsContent(
+                                providers = providers,
+                                onNavigateToSecondary = onNavigateToSecondary,
+                                onDeleteProvider = { providerId -> showDeleteDialog = providerId }
+                            )
+                        }
                     }
                 }
             }
         }
-    }
 
     val allModels by viewModel.providerModels.collectAsState()
     val modelItems by remember {
@@ -628,9 +631,18 @@ private fun UserProfileHeader(
     onEditName: () -> Unit,
     onChangeAvatar: () -> Unit
 ) {
+    var cardOffset by remember { mutableStateOf(androidx.compose.ui.geometry.Offset.Zero) }
+
     NexaraGlassCard(
-        modifier = Modifier.fillMaxWidth(),
-        shape = NexaraShapes.large as RoundedCornerShape
+        modifier = Modifier
+            .fillMaxWidth()
+            .onGloballyPositioned { coordinates ->
+                cardOffset = coordinates.positionInWindow()
+            },
+        shape = NexaraShapes.large as RoundedCornerShape,
+        underlay = {
+            NexaraGlowBackground(alignmentOffset = cardOffset) {}
+        }
     ) {
         Row(
             modifier = Modifier
@@ -696,11 +708,19 @@ private fun UserProfileHeader(
 private fun AddProviderButton(
     onClick: () -> Unit
 ) {
+    var cardOffset by remember { mutableStateOf(androidx.compose.ui.geometry.Offset.Zero) }
+
     NexaraGlassCard(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick() },
-        shape = NexaraShapes.medium as RoundedCornerShape
+            .clickable { onClick() }
+            .onGloballyPositioned { coordinates ->
+                cardOffset = coordinates.positionInWindow()
+            },
+        shape = NexaraShapes.medium as RoundedCornerShape,
+        underlay = {
+            NexaraGlowBackground(alignmentOffset = cardOffset) {}
+        }
     ) {
         Row(
             modifier = Modifier
@@ -732,11 +752,19 @@ private fun ProviderCard(
     onEdit: () -> Unit,
     onDelete: () -> Unit
 ) {
+    var cardOffset by remember { mutableStateOf(androidx.compose.ui.geometry.Offset.Zero) }
+
     NexaraGlassCard(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick() },
-        shape = NexaraShapes.medium as RoundedCornerShape
+            .clickable { onClick() }
+            .onGloballyPositioned { coordinates ->
+                cardOffset = coordinates.positionInWindow()
+            },
+        shape = NexaraShapes.medium as RoundedCornerShape,
+        underlay = {
+            NexaraGlowBackground(alignmentOffset = cardOffset) {}
+        }
     ) {
         Row(
             modifier = Modifier

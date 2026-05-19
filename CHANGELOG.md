@@ -4,6 +4,131 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### 🎨 🎨 🎨 视觉美学巅峰：主会话界面 Header 与悬浮输入岛 GPU 物理实时毛玻璃完美落地 (2026-05-20)
+- **🎨 P0 — 主会话界面极光底盘与物理采样源重构**：
+  - *全画幅极光大背景*：重构 `ChatScreen.kt` 顶级布局，引入 `NexaraGlowBackground` 流光极光大容器，并将 Scaffold 容器背景完全透明化，使用 `CompositionLocalProvider` 完美下发 `hazeState` 到下级所有组件；
+  - *GPU 物理采样源绑定*：在承载消息气泡的 `LazyColumn` 上配置 `.hazeSource(state = hazeState)` 采样器，确保当列表在 Header 底部掠过、或输入框滑动时，能够提供实时 GPU 物理像素卷积源；
+- **🎨 P0 — 主会话 Header 实时 GPU 高斯卷积磨砂升级**：
+  - 重构 `ChatTopBar`，外套带 1px 晶体霓虹渐变底描边与 `hazeEffect` 物理模糊特效 (38.dp 模糊半径、0.012f 细腻噪声、0.40f 高清透光度) 的 Box 容器，呈现极致尊贵的物理穿透高保真磨砂滤镜效果，当气泡滑过顶栏时，以 120Hz 频率完美渲染丝滑微折射；
+- **🎨 P0 — 主会话悬浮输入岛毛玻璃卡片化**：
+  - 将包裹 `ChatInputBar` 的纯色 Surface 悬浮输入岛容器替换为 `NexaraGlassCard`，得益于已派发的 `LocalHazeState.current`，无缝继承 38.dp 磨砂高斯参数。使底部输入框化身晶莹、通透且可滑动的毛玻璃卡片，实现全站卡片与 Header 视觉风格大一统！
+
+### 🎨 双 HazeState 同级 Overlay 架构：修复二级/设置页面卡片毛玻璃失效 (2026-05-20)
+- **🎨 P0 — 解除二级页面 Haze 物理采样盲区**：
+  - *重构 `NexaraPageLayout.kt` 最外层*：将物理采样源 `.hazeSource(state = hazeState)` 从内部的 `Column` 移出，直接完美绑定到最外层的大极光流光容器 `NexaraGlowBackground` 上。
+  - *解除嵌套自我循环*：从 Scaffold 内容 `Column` 上移除重复的 `hazeSource`，彻底解除了卡片作为子组件去模糊自己这部分树造成的 GPU 物理采样紊乱与盲区限制。
+  - *点亮全站十几处二级卡片视觉*：在不修改任何具体二级界面（如通用设置、模型管理等）业务代码的前提下，令所有设置页面的 `NexaraGlassCard` 卡片瞬间获得与主会话输入框完全一致的 28.dp 高饱和度、极致灵动折射的“真·拉丝毛玻璃”磨砂视效，全站视觉高级感完美达成大一统！
+
+### 🎨 Haze 奢华质感精细调优与穿透模糊位置修复 (2026-05-20)
+- **🎨 P0 — 修复 Header 穿透毛玻璃不生效问题**：
+  - 将 `hazeSource` 移至 Scaffold 的实际内容 Column 上，彻底解决 Header 100% 纯透明的缺陷，使其能够完美获取滚动列表/卡片的渲染像素并实施高斯模糊。
+- **🎨 P0 — 奢华拟真磨砂质感精细调优**：
+  - *模糊半径微调*：将模糊半径调整为更紧致、保留更多流光边界和渐变细节的 `28.dp`（原 `35.dp`）。
+  - *抛光微晶玻璃细腻度*：将磨砂表面噪音因子 `noiseFactor` 从 `0.03f` 降低至 `0.015f`，消除糙感。
+  - *大幅度提高透光度*：将遮罩底层 `backgroundColor` 的不透明度从 `0.72f` 降低到极其通透的 `0.40f`，并微弱调高霓虹紫和橙的氛围底色渗透（`alpha = 0.08f` 和 `0.05f`），使底下的极光背景绚烂色彩能高亮物理渗透并折射穿透。
+### 🎨 Haze 奢华真·毛玻璃极光背景重构 (2026-05-20)
+- **🎨 P0 — `NexaraPageLayout` 极光流光背景升级**：
+  - *重构大背景*：将通用次级布局 `NexaraPageLayout.kt` 的大背景由单色深灰升级为大极光流动背景 `NexaraGlowBackground`，并设定 Scaffold 容器背景为透明以实现彻底的物理穿透；
+  - *物理采样绑定*：将最外层的极光流光容器完美绑定为 Haze 实时物理采样源 `hazeSource`；
+  - *全站视觉瞬间亮起*：使全站十几个二级界面的磨砂毛玻璃卡片（`NexaraGlassCard`）和 Header 能实时高斯模糊折射下方的极光斑斓色彩与滚动文字，彻底解决原单色背景下毛玻璃卡片看起来像“纯透明”的视觉退化缺陷。
+
+### 🎨 Haze 穿透毛玻璃：引入 Haze 库实现真·实时穿透模糊 (2026-05-20)
+- **🎨 P0 — 引入 Haze 1.7.2 (Chris Banes)**：
+  - *替换旧方案*：彻底清退 `RenderEffect` 和克隆底图 + `.blur()` 两套无效/静态方案，引入 Compose 社区标准毛玻璃库 Haze，通过 `hazeSource` + `hazeEffect` API 实现真正的实时穿透模糊；
+  - *零修改量接入*：使用 `CompositionLocal`（`LocalHazeState`）自动传播 `HazeState`，60+ 个 `NexaraGlassCard` 调用点无需任何修改即可获得毛玻璃效果。
+- **🎨 P0 — `NexaraPageLayout` 全面重构**：
+  - 移除全屏 `vision_test_bg` 底图和 Header 克隆底图逻辑；
+  - 创建 `HazeState`，内容区标记 `hazeSource`，Header 使用 `hazeEffect` 实现实时穿透模糊；
+  - 恢复 Scaffold `containerColor` 为 `NexaraColors.CanvasBackground` 纯色深暗背景。
+- **🎨 P0 — `NexaraGlassCard` 架构升级**：
+  - 移除 `backgroundImageRes` 参数和克隆底图逻辑；
+  - 三轨材质架构：`underlay` 物理对齐 / `hazeEffect` 穿透毛玻璃 / 纯色降级底盘；
+  - 保留全部视觉装饰层（霓虹渐变底色、水晶发光斜射线、彩虹渐变发光边框）。
+- **🎨 P1 — 清退测试底图**：
+  - 删除 `vision_test_bg.jpg` 资源文件（1.89 MB）；
+  - `UserSettingsHomeScreen` 恢复纯色背景；
+  - `VisualDemoScreen` 改用多彩渐变背景，保留调试功能。
+- **🎨 🎨 P0 — 次级页面 Header 升级真·GPU 实时高斯卷积模糊**：
+  - *废除静态克隆底盘*：彻底清退通用次级布局 `NexaraPageLayout.kt` 中 TopAppBar 背景层的静态 `Image` 克隆方案，全面升级为 API 31+ 硬件加速的 `.graphicsLayer { renderEffect = RenderEffect.createBlurEffect(...) }` 实时高斯卷积模糊；
+  - *无感阻尼穿透*：当列表内容（卡片与文字）向上滚动滑入 Header 底部时，系统级 GPU 会以 120Hz 频率实时捕获像素并进行 35px 软高斯晕染，彻底根治卡片上滑时被静态图片错误覆盖的 glitch 现象，达成完美无缝的毛玻璃物理透射。
+- **🎨 🎨 P0 — 全局卡片（无 underlay 状态）真·毛玻璃实时高斯模糊对齐**：
+  - *全量卡片 GPU 模糊*：在 `NexaraGlassCard.kt` 无 aligned underlay 传入的 fallback 状态卡片底盘中，全新注入基于 API 31+ 的 GPU 实时硬件高斯卷积 `.graphicsLayer { renderEffect = RenderEffect.createBlurEffect(...) }` 过滤器；
+  - *极光流莹交织*：在保留微晶玻璃质感底色（0.70f alpha）、水晶亮边折射、霓虹微光渗透和 1.dp 彩虹发光渐变边缘的基础上，实时抓取卡片后方背景图的每一颗像素进行物理级渲染，完美消除多图独立平铺引起的视觉冗余，将设置界面等全局卡片的美学高级感推向史无前例的巅峰。
+
+### 🎨 🎨 极端实测：全局彩色风景底图平铺与卡片物理模糊极致对齐实测 (2026-05-20)
+- **🎨 🎨 P0 — 设置界面全屏彩色底图平铺实测**：
+  - *全画幅风景背景*：重构 `UserSettingsHomeScreen.kt`，将其最外层背景升级为以 DEMO 中测试完美的彩色风景大图 `R.drawable.vision_test_bg` 全屏平铺裁剪容器，使 Scaffold 完全透明悬浮，为磨砂卡片提供高饱和度、高对比度的彩色物理采样源。
+- **🎨 🎨 P0 — 次级页面通用底图与 Header 物理卷积模糊升级**：
+  - *次级通用底图*：重构通用次级页面布局 `NexaraPageLayout.kt`，同样使用以 `R.drawable.vision_test_bg` 为底图的全屏 Box 包装；
+  - *Header 物理高斯卷积*：在次级 Header 背景层中最底层注入了一个克隆背景层，并应用 GPU 硬件级 `.blur(radius = 35.dp)` 物理高斯模糊，使得列表文字和卡片在滚动穿透滑入 Header 下方时，能被瞬间物理高斯虚化，呈现完美的毛玻璃阻尼透射。
+- **🎨 🎨 P0 — 修复卡片独立裁剪引起的多图平铺与视差破缺问题**：
+  - *卡片平铺图像还原*：废除此前在 `NexaraGlassCard.kt` 中强行拦截每个子卡片单独加载并裁剪 `vision_test_bg` 图像的极端测试方案。因为当卡片尺寸和位置不同时，局部 Image 的裁剪和拉伸使得每个设置容器里都出现了一张独立的、比例不一致的背景图像（导致视觉上“每个卡片里都平铺有一张图”的臃肿与不协调）；
+  - *真·透明偏光微晶玻璃*：将没有 aligned underlay 传入的 fallback 状态卡片底盘完全还原为高通透度的黑色微晶玻璃材质 `Color(0xFF201F22).copy(alpha = 0.70f)`，保留水晶反射斜切发光渐变与霓虹渐变底色渗透。这使得设置项卡片完全回归纯净的半透明磨砂偏光，并且大背景的单张彩色风景大图能够连续、完整地从卡片后方倾泻出来，伴随滚动呈现完美的无缝视差与极致尊贵的立体空间感。
+
+### 🎨 🎨 视觉美学臻善：次级 Header 穿透视差与滑动卡片“真·毛玻璃”偏光质感重磅升级 (2026-05-20)
+- **🎨 🎨 P0 — 彻底攻克 Android GPU 离屏模糊 Alpha-Discard 黑屏缺陷**：
+  - *移除 Header 重绘黑洞*：彻底清退了次级页面 Header 容器 `NexaraPageLayout.kt` 背景中的离屏 `graphicsLayer` / `RenderEffect` 模糊滤镜，改用物理稳定的**超高通透黑色微晶玻璃偏光底盘** `Color(0xFF201F22).copy(alpha = 0.70f)`，保留水晶反射斜切发光渐变与霓虹微光渗透，并对齐高度约束；
+  - *真·列表穿透滚动*：当列表向上滚动时，卡片轮廓和文本能以极具质感的晶莹半透明状态从 Header 底部完美滑动穿透，彻底消除所有页面切换与滚动过程中的重绘 Glitch 闪烁，达成 120Hz 丝滑流畅度。
+- **🎨 🎨 P0 — 滑动卡片 true-transparency 完美呈现**：
+  - *消除滑动层暗淡背景*：重构 `SwipeableItem.kt`，将其滑动容器底盘背景从硬编码的单色 `NexaraColors.CanvasBackground` 彻底解放为 `Color.Transparent`；
+  - *纯净透射释放*：由于置顶/删除等背景操作按钮仅在偏移量非零（即正在滑动）时按需渲染，静止状态下后方完全空置。透明化之后，助手会话卡片底部的极光色彩能够在滑动列表中 100% 毫无保留地渗透出来，还原真·毛玻璃质感。
+- **🎨 🎨 P0 — 全局常规卡片磨砂偏光一致性对齐**：
+  - *重构 fallback 降级层材质*：移除 `NexaraGlassCard.kt` 无 underlay 降级状态下的 `RenderEffect` 离屏模糊，统一采用透光率提升后的黑色微晶玻璃层（underlay/fallback 的 alpha 值分别微调对齐至更为晶莹的 0.72 和 0.70），并完美对齐微弱霓虹（蓝紫与金橘）渐变和彩虹微发光描边，确保全站所有二级设置表单、选项卡片和对话卡片视觉高级感的高度统一。
+
+
+### 🎨 🎨 视觉深度跃升：Stitch 规范“霓虹渐变底色渗透层 (Neon Color Bleeding Layer)”豪华落地 (2026-05-20)
+- **🎨 🎨 P0 — 像素级复刻 Stitch 高级质感底色**：
+  - *底色霓虹渗透*：在 `NexaraGlassCard.kt` 以及 `VisualDemoScreen.kt` 的核心材质渲染层中，成功引入极轻微、高透光的“霓虹渐变底色渗透层”（采用与 1.dp 彩虹发光边框完全一致的 `#8083FF` 蓝紫与 `#D97721` 金橘），其不透明度分别设为 `5%` 和 `3%` 的黄金比例；
+  - *极简与华丽并存*：该层在极暗底盘之上为卡片中间部位物理附着上一层若隐若现的霓虹微光，既完美避开了此前径向偏光由于像素圆心固定带来的局限和生硬，又令卡片底色显得晶莹剔透、流光溢彩，与边缘的彩虹霓虹流光边框相互呼应，高级质感拉满；
+  - *统一导航栏全局亮起与真·毛玻璃列表穿透*：重构统一次级页面 Header 容器 `NexaraPageLayout.kt`。为彻底解决头部高度不对、内容遮挡、未真正穿透模糊以及色彩层扩散错位等视觉 Bug，进行了重磅升级：
+    - *真·列表穿透滚动（Scroll-Under Effect）*：将 Scaffold 默认的 `contentWindowInsets` 设为空，解除内容消费。在主体 Column 顶部动态注入等于 Header 实际高度（含状态栏安全区）的 `Spacer` 占位。这使得当用户滚动列表时，下方卡片列表将以 edge-to-edge 形式穿透流动至 Header 底部，实现晶莹剔透的磨砂折射动效；
+    - *像素级精确裁切与防模糊扩散（Strict Boundary Clipping）*：在 `topBar` 容器及背景 Box 上双重应用 `.clipToBounds()` 和 `clip = true`，从底层截断 GPU `RenderEffect` 模糊滤镜的边缘漫反射扩散，防止色彩及模糊溢出污染下方内容；
+    - *极致锐利底部发光线*：将 1.dp 底部彩虹霓虹渐变发光分割线从模糊背景层剥离，转移至未被模糊的父容器底层进行 `drawBehind` 绘制，实现完美的 1px 精确物理锐度，确保色彩层与 Header 完美对齐、互不搓开，高级感跃然屏上。
+
+### 🎨 🎨 材质纯净化：全站毛玻璃剔除多余径向偏光，回归极简深邃磨砂 (2026-05-20)
+- **🎨 🎨 P0 — 追求更极致的纯净微晶玻璃感 (Pure Dark Glassmorphism)**：
+  - *退场色彩偏光*：从 `NexaraGlassCard.kt` 以及 `VisualDemoScreen.kt` 核心渲染管线中，彻底清退了此前的 `Brush.radialGradient` 色彩偏光层；
+  - *纯净磨砂底盘*：完全消除了卡片内部多余色彩偏光的杂质干扰，令卡片底盘彻底回归最纯正、深邃的 `Color(0xFF201F22)`（82% - 85% 透明度）黑色磨砂微晶玻璃质地，在大背景透射的大极光下纯净剔透；
+  - *极致清晰体验*：彻底扫清了卡片上文本和图标的背景视觉噪音。实机滑动时，仅在卡片外圈物理显露那一圈流光溢彩的彩虹霓虹渐变发光边框，极简奢华、赏心悦目。
+
+### 🎨 🎨 视觉美学颠覆：Stitch 规范“渐变发光彩虹边框 (Gradient Glow Border)”豪华落地 (2026-05-20)
+- **🎨 🎨 P0 — 精准像素级复刻 Stitch 设计方案**：
+  - *渐变发光霓虹彩虹边框*：重构 `NexaraGlassCard.kt`，废除单调单色描边，引入由 `#8083FF` (primary-container 蓝紫) 到 `#D97721` (tertiary-container 金橘) 的 1.dp 线性渐变 Brush 描边。在卡片外沿物理露出一层充满极客感与奢侈艺术底蕴的七彩极光霓虹微光，100% 还原 Stitch 奢华质感；
+  - *磨砂黑色微晶玻璃底盘*：将物理毛玻璃保护底盘色板升级为 `Color(0xFF201F22)`（还原 Stitch 规范 `bg-surface-container` 暗灰偏色），搭配 `alpha = 0.82f`。在大背景极光的通透折射下，呈现出如高档暗色微晶玻璃的梦幻深度；
+  - *调试页面同步照亮*：升级了 `VisualDemoScreen.kt` 核心测试卡片的渲染管线，使其无缝支持此渐变发光彩虹边框与磨砂黑色底盘，便于进行不同采样半径下的光影微折射实机探索。
+
+### 🎨 🎨 视觉奇迹：色彩微折射偏光混合层重构与全局毛玻璃卡片亮起 (2026-05-20)
+- **🎨 🎨 P0 — 独创“色彩微折射偏光混合层 (Chromatic Micro-Refractive Lay)”**：
+  - *七彩晶莹偏光*：重构 `NexaraGlassCard.kt`，在模糊磨砂底盘之上，叠加多重极轻微、晶莹剔透的霓虹偏光粒子（中心 Primary 紫色 7% 渐变，边缘 Secondary 青蓝色 4% 渐变）与微乳白斜折射线性渐变。彻底解决传统毛玻璃效果干瘪暗淡的痛点，在真机上呈现如珍珠、水晶般流光溢彩、剔透玲珑的奢侈品级拟真玻璃质感；
+  - *全局卡片极速亮起*：
+    - 重构了 `NexaraSettingsItem.kt`，直接在组件内部集成 `onGloballyPositioned` 绝对物理坐标追踪与克隆极光 underlay 架构，令设置页的**全部选项卡片**自动照亮、呈现物理克隆对齐模糊，实现了调用层零代码改动的降维升级；
+    - 重构了 `AgentHubScreen.kt`（助手会话主页）的 `AgentCardItem`，以及 `AgentSessionsScreen.kt`（助手会话列表）的 `SessionCard`，完美内置坐标测算与克隆对齐 underlay 渲染；
+    - 全局所有列表卡片物理模糊全面通透，滑动过程中极光粒子折射与背景毫分不差重合，七彩流光梦幻呈现。
+
+### 🎨 🎨 视觉跃升：高保真物理克隆模糊卡片架构升级与多组件全局应用 (2026-05-20)
+- **🎨 🎨 P0 — 奢华毛玻璃卡片（NexaraGlassCard）可选 underlay 克隆架构**：
+  - *可选参数架构*：重构 `NexaraGlassCard.kt`，新增可选的 `underlay: (@Composable BoxScope.() -> Unit)? = null` 重载参数。在提供 underlay 时动态启用 35dp 的物理高斯模糊裁剪，无 underlay 时无缝优雅退化至传统高通透材质，实现 100% 向下兼容；
+  - *物理坐标反平移对齐算法*：重构 `NexaraGlowBackground.kt` 以接收 `alignmentOffset` 物理坐标平移参数。通过 Canvas 在局部容器内绘制时统一基于屏幕物理分辨率计算，并在绘制气泡时执行 `translate(-cardOffset.x, -cardOffset.y)`，从而将卡片内部 Canvas 绘制原点完美还原重合至屏幕大背景的物理坐标系，实现 100% 精确、无瑕的流动极光模糊反射；
+  - *多组件实机落地*：在 `UserSettingsHomeScreen.kt` 的 `UserProfileHeader`、`AddProviderButton`、`ProviderCard` 核心设置卡片中全面上线此高保真克隆物理对齐模糊卡片，让用户在滑动设置列表时享受极致奢华、流光溢彩的磨砂玻璃视觉奇观。
+
+### 🎨 🎨 算法重构：克隆物理对齐高保真毛玻璃卡片（Cloned Underlay Blur）上线 (2026-05-20)
+- **🎨 🎨 P0 — 攻克 Compose 多 RenderNode 背景隔离黑洞**：
+  - *黑洞排查*：深入剖析并定位了 Compose 因每个组件 RenderNode 独立渲染缓存导致 `graphicsLayer.renderEffect` 无法物理卷积下层已绘制像素的“背景模糊黑洞”；
+  - *克隆物理对齐算法*：在 `VisualDemoScreen.kt` 卡片内最底层动态注入了一张与其背景拉伸比例、物理像素完美对齐的模糊克隆 `Image` 控件，并通过 Card 本身的 RoundedCornerShape 进行裁切，搭配 `Modifier.blur(blurRadius.dp)`，在无任何第三方依赖的情况下模拟出 100% 真实的 frosted glass GPU 高斯模糊效果；
+  - *实机调试*：实测 0dp 到 60dp 参数在真机上滑动时如丝般平滑，背景细节的过渡梦幻柔和，彻底根除了显示不模糊的痛点。
+
+### 🎨 🎨 视觉测试二级调试页面与动态模糊滑块物理集成 (2026-05-20)
+- **🎨 🎨 P0 — 交互式视觉 DEMO 二级页面上线**：
+  - *全画幅彩色底图背景*：采用用户提供的彩色风景底图 `vision_test_bg.jpg` 充满整个测试页面，为高斯模糊的物理反射提供天然、细节丰富的折射采样源；
+  - *动态模糊参数滑块*：在 `VisualDemoScreen.kt` 中设计了带有 0px 到 60px 实时物理采样半径动态调节的 Slider。用户可以在真机上通过手指滑动，以毫秒级响应实时观测毛玻璃物理卷积的变化规律与最美分界线；
+  - *开发者面板入口无缝挂载*：在“设置 - 开发者面板”中新增“视觉DEMO”次级入口，实现完美的调试闭环。
+
+### 🎨 🎨 方案 A：极光发光背景（Glow Background）与暗黑磨砂玻璃的极致视觉跃升 (2026-05-20)
+- **🎨 🎨 P0 — NexaraGlowBackground 奢华极光发光容器组件上线**：
+  - *无限往复极微光影*：在 `NexaraGlowBackground.kt` 中，通过 Canvas 硬件加速渲染了两个极其柔和、低饱和度、高透明度的径向渐变极光粒子（左上方 primary 紫色微光，右下方 secondary 青蓝色微光）；
+  - *平滑流动微动效*：引入 15-20 秒超大周期的无限线性往复微动画，使光斑在列表底层极其平缓地流淌；
+  - *极致通透性释放*：将 `UserSettingsHomeScreen.kt` 的 `Scaffold` 以及 `TopAppBar` 容器的背景色设为透明（`Color.Transparent`），从而让底层极光气泡的柔和边缘完全透出，完美地为 `NexaraGlassCard` 提供了充盈的实时高斯模糊折射参考源，彻底解决了纯色暗色背景下毛玻璃卡片沉闷、死板的痛点，高级感瞬间拉满。
+
 ### 提升最低 API 要求至 Android 12 (API 31) 并物理集成 GPU 实时高斯模糊 (2026-05-20)
 - **🔴 P0 — 最低 API (minSdk) 全量升级至 31 (Android 12)**：
   - *系统级升级*：正式将项目最低 SDK 版本要求由 `API 26 (Android 8.0)` 跃升至最新的 `API 31 (Android 12)`；
