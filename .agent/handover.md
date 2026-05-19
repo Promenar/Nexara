@@ -1,5 +1,15 @@
 # 交接文档 (2026-05-19)
 
+## ✅ 已完成 — UI 视觉一致性修复与助手模型默认值优化 (2026-05-19 20:30)
+- **修复内容**：
+  1. **助手创建时默认使用系统摘要模型**：`AddAgentDialog` 初始化时自动读取 `ProviderManager.summaryModelId` 作为默认模型，如果系统未设置摘要模型则保持为空
+  2. **提示词编辑器 UI 优化**：移除"Split"分列视图模式，仅保留"Edit"和"Preview"双模式；修复右上角确认按钮样式，改为标准 `IconButton` 与全局一致
+  3. **全站返回按钮样式统一**：新建统一组件 `NexaraBackButton`，更新 8 个页面使用该组件，统一图标变体、尺寸和样式
+- **变更文件 (10)**：
+  - 新建：`NexaraBackButton.kt`
+  - 修改：`AgentHubScreen.kt`, `UnifiedPromptEditor.kt`, `ChatScreen.kt`, `SessionSettingsScreen.kt`, `AgentEditScreen.kt`, `AgentSessionsScreen.kt`, `NexaraPageLayout.kt`, `DeveloperScreen.kt`, `KnowledgeGraphScreen.kt`, `DocEditorScreen.kt`
+- **DIA 门禁状态**：`CHANGELOG.md`（已更新），`handover.md`（当前文件已更新），`registry.md`（已更新）
+
 ## ✅ 已完成 — 提供商模型配置持久化与会话 RAG 指示器内联排版美化 (2026-05-19 18:20)
 - **问题分析与定位**：
   1. **自定义模型参数退出即重置缺陷**：
