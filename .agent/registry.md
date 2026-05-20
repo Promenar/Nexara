@@ -80,6 +80,7 @@
 - .agent/plans/20260519-ui-consistency-settings.md — UI 一致性设置优化
 - .agent/plans/20260519-xml-fallback-constraint-and-prompt-optimization.md — XML 回退约束与提示词优化
 - .agent/plans/20260517-rag-indicator-glow-refactor.md — RAG 指示器发光效果重构
+- .agent/plans/20260520-techdebt-multi-flavor-visual-isolation.md — 多渠道 Gradle Build Flavor 视觉物理隔离设计（技术债务已归档 💡）
 
 ## 已归档计划（.agent/plans/archive/）
 已完成的所有 Phase 2-6 计划文件（22 个）+ 本轮归档（1 个），留存备查。

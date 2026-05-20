@@ -1,5 +1,27 @@
 # 交接文档 (2026-05-20)
 
+## ✅ 已完成 — 物理硬回退原生版本、minSdk 31 极速升级强推与多渠道物理隔离方案归档技术债务 (2026-05-20 17:15)
+- **🔴 P0 — 分支物理硬回退与彻底同步**：
+  - *回退清洁底座*：成功从 `kotlin-Haze&md3mixed` 混合分支切换至 `native-kotlin-refactor` 原生扁平版分支。
+  - *硬回退（reset --hard）*：安全执行物理撤销，将本地分支硬回退至干净的 `3e7f015` 提交，完美抹去了存在渲染遗留问题的 `9689d65` 提交，彻底净化基础底座。
+  - *远程强推（git push -f）*：解决因硬回退引起的分叉，通过 `-f` 强制将本地最新升级提交强推覆盖远程 HEAD，实现两端完全对齐同步。
+- **🔴 P0 — SDK 升级与工程质量验证门禁**：
+  - *Android 12 SDK 升级*：修改 `build.gradle.kts`，将 `minSdk` 升级至 `31`。
+  - *编译与单测 100% 绿灯*：在升级后执行 Kotlin 编译和回归单元测试，全部在极短时间内通过（`BUILD SUCCESSFUL`），确保升级零副作用，质量稳固。
+- **🔴 P0 — 多变体视觉分支同步架构设计（方案三）以技术债务完美归档**：
+  - *痛点剖析*：针对多套视觉（扁平版、极光水晶毛玻璃版）并行开发导致的 Git 同步冲突与分支爆炸痛点进行了深度研讨。
+  - *技术债务归档*：产出并归档了 [20260520-techdebt-multi-flavor-visual-isolation.md](file:///Users/promenar/Codex/Nexara/.agent/plans/20260520-techdebt-multi-flavor-visual-isolation.md) 技术方案文档，在 `.agent/registry.md` 中进行注册。
+  - *架构设计亮点*：基于 Gradle `productFlavors` 配合 `SourceSets` 源码集，将视觉实现物理隔离。让公共业务逻辑（ViewModel, 本地推理, 数据库等）归集于 `main` 源码集，而将特定 UI（Haze水晶输入框、Flat标准输入框等）分别收纳于 `src/aurora/` 与 `src/flat/` 目录。使用编译期静态变体注入，彻底摆脱运行时性能开销和多分支同步心智负担。
+- **变更文件 (3)**：
+  - 修改: [build.gradle.kts](file:///Users/promenar/Codex/Nexara/native-ui/app/build.gradle.kts)
+  - 新增: [.agent/plans/20260520-techdebt-multi-flavor-visual-isolation.md](file:///Users/promenar/Codex/Nexara/.agent/plans/20260520-techdebt-multi-flavor-visual-isolation.md)
+  - 修改: [.agent/registry.md](file:///Users/promenar/Codex/Nexara/.agent/registry.md)
+
+## Next Steps
+- **🚀 准备正式发布 v0.1-beta GitHub Release**：配合物理层与文档层的对齐，正式在 GitHub 仓库发布 `v0.1-beta` 版本及 Release APK。
+- **🏗️ 推进本地推理模块的开发与端到端验证**：继续完成 llama.cpp JNI 端侧引擎在 App 中的闭环验证。
+- **💡 激活多渠道物理隔离变体**：在后续业务大版本稳定后，视发版需求激活 Gradle Product Flavors，一次性消除视觉多分支冲突债务。
+
 ## ✅ 已完成 — 全站版本号重构回退至 0.1 阶段（物理应用配置、设置界面与全局文档级联对齐） (2026-05-19)
 - **🔴 P0 — 物理版本配置与设置界面版本文本降级**：
   - *Gradle versionName 降级*：在 `build.gradle.kts` 中，将物理打包配置中的 `versionName` 从 `"1.0.0"` 回退调整为 `"0.1"`。`versionCode` 保持 `1`，符合 Android 升级递增规范。
