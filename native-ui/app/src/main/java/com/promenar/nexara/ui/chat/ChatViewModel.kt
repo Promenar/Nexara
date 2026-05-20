@@ -8,6 +8,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.promenar.nexara.NexaraApplication
 import com.promenar.nexara.data.model.ApprovalRequest
+import com.promenar.nexara.data.model.Attachment
+import com.promenar.nexara.data.model.AttachmentTextExtractor
+import com.promenar.nexara.data.model.AttachmentType
 import com.promenar.nexara.data.model.InferenceParams
 import com.promenar.nexara.data.model.Message
 import com.promenar.nexara.data.model.MessageRole
@@ -37,6 +40,8 @@ import com.promenar.nexara.data.rag.RecursiveCharacterTextSplitter
 import com.promenar.nexara.data.rag.VectorStore
 import com.promenar.nexara.data.remote.protocol.PromptRequest
 import com.promenar.nexara.data.remote.protocol.ProtocolMessage
+import com.promenar.nexara.data.remote.protocol.AudioInput
+import com.promenar.nexara.data.remote.protocol.DocumentInput
 import com.promenar.nexara.data.remote.protocol.ImageInput
 import com.promenar.nexara.data.remote.protocol.StreamChunk
 import com.promenar.nexara.data.remote.UnifiedLlmClient
@@ -54,6 +59,7 @@ import com.promenar.nexara.ui.chat.manager.SessionManager
 import com.promenar.nexara.ui.chat.manager.SummaryManager
 import com.promenar.nexara.ui.chat.manager.ToolExecutor
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.currentCoroutineContext
@@ -65,6 +71,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
@@ -244,10 +251,10 @@ class ChatViewModel(
         _inputText.update { text }
     }
 
-    fun sendMessage(text: String, imageUris: List<Uri> = emptyList()) {
+    fun sendMessage(text: String, attachments: List<Attachment> = emptyList()) {
         val sessionId = _currentSessionId.value
         if (sessionId == null) return
-        if (text.isBlank() && imageUris.isEmpty()) return
+        if (text.isBlank() && attachments.isEmpty()) return
 
         val session = store.getSession(sessionId) ?: return
         val userMsgId = IdGenerator.message("user")
@@ -257,21 +264,54 @@ class ChatViewModel(
         _error.update { null }
         viewModelScope.launch { sessionManager.updateSessionDraft(sessionId, null) }
 
-        val imageDataUrls = imageUris.mapNotNull { uri ->
-            try {
-                val bytes = application.contentResolver.openInputStream(uri)?.readBytes()
-                val mimeType = application.contentResolver.getType(uri) ?: "image/jpeg"
-                bytes?.let { "data:$mimeType;base64,${Base64.encodeToString(it, Base64.NO_WRAP)}" }
-            } catch (_: Exception) { null }
-        }
-
         cancelActiveGeneration()
         generationJob = viewModelScope.launch {
+            val imageDataUrls = mutableListOf<String>()
+            val processedAttachments = mutableListOf<Attachment>()
+            var textWithExtractedDocs = text
+
+            for (attachment in attachments) {
+                when (attachment.type) {
+                    AttachmentType.IMAGE -> {
+                        val dataUrl = encodeAttachmentToDataUrl(attachment)
+                        if (dataUrl != null) {
+                            imageDataUrls.add(dataUrl)
+                            processedAttachments.add(attachment.copy(uri = dataUrl))
+                        }
+                    }
+                    AttachmentType.VIDEO, AttachmentType.AUDIO -> {
+                        val dataUrl = encodeAttachmentToDataUrl(attachment)
+                        if (dataUrl != null) {
+                            processedAttachments.add(attachment.copy(uri = dataUrl))
+                        }
+                    }
+                    AttachmentType.DOCUMENT -> {
+                        if (AttachmentTextExtractor.needsTextExtraction(attachment.mimeType)) {
+                            // 需要文本提取的文档（DOCX/XLSX/PPTX/TXT/CSV/MD 等）：提取文本拼接到 content
+                            val uri = Uri.parse(attachment.uri)
+                            val extractedText = AttachmentTextExtractor.extractText(application, uri, attachment.mimeType)
+                            if (extractedText != null) {
+                                val docLabel = attachment.fileName.ifBlank { "文档" }
+                                textWithExtractedDocs += "\n\n--- $docLabel 内容 ---\n$extractedText"
+                            }
+                            // 文本已提取到 content，不需要再作为附件直传
+                        } else {
+                            // PDF 等可直传 Base64 的文档：编码为 data URL，由 buildProtocolMessages 处理
+                            val dataUrl = encodeAttachmentToDataUrl(attachment)
+                            if (dataUrl != null) {
+                                processedAttachments.add(attachment.copy(uri = dataUrl))
+                            }
+                        }
+                    }
+                }
+            }
+
             val userMessage = Message(
                 id = userMsgId,
                 role = MessageRole.USER,
-                content = text,
+                content = textWithExtractedDocs,
                 userImages = imageDataUrls.ifEmpty { null },
+                attachments = processedAttachments.ifEmpty { null },
                 createdAt = System.currentTimeMillis()
             )
 
@@ -286,9 +326,24 @@ class ChatViewModel(
             )
             messageManager.addMessage(sessionId, assistantMessage)
 
-            generateMessage(sessionId, "", false, assistantMsgId, userMsgId, text)
+            generateMessage(sessionId, "", false, assistantMsgId, userMsgId, textWithExtractedDocs)
         }
     }
+
+    /**
+     * 将附件的 content:// URI 编码为 Base64 Data URL。
+     * 在 IO 线程执行，避免阻塞主线程（视频/音频等大文件场景）。
+     */
+    private suspend fun encodeAttachmentToDataUrl(attachment: Attachment): String? =
+        withContext(Dispatchers.IO) {
+            try {
+                val uri = Uri.parse(attachment.uri)
+                val bytes = application.contentResolver.openInputStream(uri)?.readBytes()
+                bytes?.let {
+                    "data:${attachment.mimeType};base64,${Base64.encodeToString(it, Base64.NO_WRAP)}"
+                }
+            } catch (_: Exception) { null }
+        }
 
     private suspend fun generateMessage(
         sessionId: String,
@@ -1241,15 +1296,65 @@ class ChatViewModel(
         for (msg in activeMessages) {
             val protocolMsg = when (msg.role) {
                 MessageRole.USER -> {
-                    val imageInputs = msg.userImages?.map { dataUrl ->
+                    val imageInputs = mutableListOf<ImageInput>()
+                    val audioInputs = mutableListOf<AudioInput>()
+                    val documentInputs = mutableListOf<DocumentInput>()
+
+                    // 向下兼容：从 userImages 读取
+                    msg.userImages?.forEach { dataUrl ->
                         val base64Prefix = "base64,"
                         val base64Idx = dataUrl.indexOf(base64Prefix)
                         val mimeEnd = dataUrl.indexOf(";")
                         val mime = if (mimeEnd > 5) dataUrl.substring(5, mimeEnd) else "image/jpeg"
                         val base64Data = if (base64Idx >= 0) dataUrl.substring(base64Idx + base64Prefix.length) else ""
-                        ImageInput(url = dataUrl, base64 = base64Data, mimeType = mime)
+                        imageInputs.add(ImageInput(url = dataUrl, base64 = base64Data, mimeType = mime))
                     }
-                    ProtocolMessage(role = "user", content = msg.content, imageUrls = imageInputs)
+
+                    // 从 attachments 读取（新逻辑）
+                    msg.attachments?.forEach { attachment ->
+                        when (attachment.type) {
+                            AttachmentType.IMAGE -> {
+                                val dataUrl = attachment.uri
+                                val base64Prefix = "base64,"
+                                val base64Idx = dataUrl.indexOf(base64Prefix)
+                                val mimeEnd = dataUrl.indexOf(";")
+                                val mime = if (mimeEnd > 5) dataUrl.substring(5, mimeEnd) else attachment.mimeType
+                                val base64Data = if (base64Idx >= 0) dataUrl.substring(base64Idx + base64Prefix.length) else ""
+                                imageInputs.add(ImageInput(url = dataUrl, base64 = base64Data, mimeType = mime))
+                            }
+                            AttachmentType.VIDEO -> {
+                                val dataUrl = attachment.uri
+                                val base64Prefix = "base64,"
+                                val base64Idx = dataUrl.indexOf(base64Prefix)
+                                val base64Data = if (base64Idx >= 0) dataUrl.substring(base64Idx + base64Prefix.length) else ""
+                                documentInputs.add(DocumentInput(base64 = base64Data, name = attachment.fileName, mimeType = attachment.mimeType))
+                            }
+                            AttachmentType.AUDIO -> {
+                                val dataUrl = attachment.uri
+                                val base64Prefix = "base64,"
+                                val base64Idx = dataUrl.indexOf(base64Prefix)
+                                val base64Data = if (base64Idx >= 0) dataUrl.substring(base64Idx + base64Prefix.length) else ""
+                                audioInputs.add(AudioInput(base64 = base64Data, mimeType = attachment.mimeType))
+                            }
+                            AttachmentType.DOCUMENT -> {
+                                // 仅 PDF 等可直传 Base64 的文档走这里
+                                // 需要文本提取的文档已在 sendMessage 中提取并拼接到 content
+                                val dataUrl = attachment.uri
+                                val base64Prefix = "base64,"
+                                val base64Idx = dataUrl.indexOf(base64Prefix)
+                                val base64Data = if (base64Idx >= 0) dataUrl.substring(base64Idx + base64Prefix.length) else ""
+                                documentInputs.add(DocumentInput(base64 = base64Data, name = attachment.fileName, mimeType = attachment.mimeType))
+                            }
+                        }
+                    }
+
+                    ProtocolMessage(
+                        role = "user",
+                        content = msg.content,
+                        imageUrls = imageInputs.ifEmpty { null },
+                        audioData = audioInputs.ifEmpty { null },
+                        documentData = documentInputs.ifEmpty { null }
+                    )
                 }
                 MessageRole.ASSISTANT -> ProtocolMessage(
                     role = "assistant",

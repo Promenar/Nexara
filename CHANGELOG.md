@@ -4,6 +4,29 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### 🎯 多模态附件系统 — 全链路多模态支持（图片/视频/音频/文档）(2026-05-20)
+- **🎯 P0 — 统一附件数据模型**：
+  - 新增 `Attachment` / `AttachmentType` 数据类，支持 IMAGE/VIDEO/AUDIO/DOCUMENT 四种类型
+  - `Message` 新增 `attachments: List<Attachment>?` 字段，与 `userImages` 向下兼容
+  - Room 数据库 v16→v17 迁移，messages 表新增 `attachments` 列
+- **🎯 P0 — ViewModel 桥接重构**：
+  - `ChatViewModel.sendMessage()` 签名从 `imageUris: List<Uri>` 扩展为 `attachments: List<Attachment>`
+  - `buildProtocolMessages()` 增强：从 `attachments` 按 type 分发为 `ImageInput`/`AudioInput`/`DocumentInput`
+  - 新增 `encodeAttachmentToDataUrl()` 辅助函数
+- **🎯 P0 — 文档文本提取器**：
+  - 新建 `AttachmentTextExtractor.kt`，利用已有 POI + PDFBox 依赖
+  - 支持 PDF/DOCX/XLSX/PPTX/TXT/CSV/MD 等格式的客户端文本提取
+- **🎯 P0 — 前端多模态附件选择器（方案 B：单按钮→BottomSheet→按类型选择）**：
+  - 新建 `AttachmentPreviewRow.kt` 附件预览条组件
+  - 替换原有的 `image/*` 图片选择器为 4 个类型独立的文件选择器
+  - `ModalBottomSheet` 展示附件类型菜单，根据当前模型能力动态启用/禁用
+- **🎯 P1 — 模型能力感知与热切换守卫**：
+  - 附件兼容性作为运行时派生状态，不兼容附件标记为灰色 + 禁用发送
+  - 切换模型时保留所有附件，不自动清除
+- **🎯 P2 — 用户气泡多格式渲染**：
+  - `UserMessageBubble` 增强为按 `AttachmentType` 分类渲染（图片/视频/音频/文档）
+  - 向下兼容旧消息的 `userImages` 渲染
+
 ### 🎨 共享极光底座大一统与全站二级页面沉浸式毛玻璃安全落地 (2026-05-20)
 - **🎨 P0 — 共享物理大底座与物理毛玻璃大一统**：
   - *全局极光大底盘*：重构多标签页框架 `MainTabScaffold.kt`，在最外层引入唯一的全屏大底座 `NexaraGlowBackground` 和共享采样源 `mainHazeState`，彻底解除了原先三大主页面各自独立渲染极光所造成的内存高占用与 GPU 重合渲染开销；

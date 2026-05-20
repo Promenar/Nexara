@@ -1,5 +1,24 @@
 # 交接文档 (2026-05-20)
 
+## ✅ 已完成 — 多模态附件系统全链路实施 (2026-05-20)
+- **数据模型层**：新增 `Attachment`/`AttachmentType` + `Message.attachments` + Room v16→v17 迁移
+- **文档提取器**：`AttachmentTextExtractor` 支持 PDF/DOCX/XLSX/PPTX/TXT（POI + PDFBox）
+- **ViewModel 桥接**：`sendMessage()` 重构 + `buildProtocolMessages()` 多类型分发（Image/Audio/Document Input）
+- **前端 UI**：方案 B（单按钮→BottomSheet→按类型选择），`AttachmentPreviewRow` 附件预览条
+- **模型能力感知**：热切换时保留附件 + 禁用发送 + 兼容性派生状态
+- **气泡渲染**：`UserMessageBubble` 多格式渲染（图片/视频/音频/文档），向下兼容 `userImages`
+- **编译验证**：`BUILD SUCCESSFUL`，零新增编译错误
+- **DIA Status**: CHANGELOG.md ✅ | handover.md ✅ | registry.md ✅
+- **Next Steps**:
+  1. 真机手动验证：图片/视频/音频/文档发送全流程
+  2. 热切换测试：多模态模型↔纯文本模型切换时的附件守卫行为
+  3. 大文件测试：>10MB 视频文件的 Base64 编码性能
+  4. 运行单元测试验证
+- **Risks**:
+  - 视频大文件 Base64 编码在低端设备上可能导致 OOM
+  - Apache POI 在 Android 上的内存占用需关注（大 XLSX 文件）
+  - ModalBottomSheet 在部分 Android 12 以下设备上的兼容性待验证
+
 ## ✅ 已完成 — 共享极光底座大一统与全站二级页面沉浸式毛玻璃安全落地 (2026-05-20)
 - **🎨 P0 — 共享物理大底座与物理毛玻璃大一统**：
   - *全局极光大底盘*：重构多标签页框架 `MainTabScaffold.kt`，在最外层引入唯一的全屏大底座 `NexaraGlowBackground` 和共享采样源 `mainHazeState`，彻底解除了原先三大主页面各自独立渲染极光所造成的内存高占用与 GPU 重合渲染开销；

@@ -294,6 +294,20 @@ enum class MessageRole {
 }
 
 @Serializable
+enum class AttachmentType {
+    IMAGE, VIDEO, AUDIO, DOCUMENT
+}
+
+@Serializable
+data class Attachment(
+    val uri: String,           // 原始 URI 或 Base64 Data URL
+    val mimeType: String,      // "image/jpeg", "video/mp4", "application/pdf"
+    val fileName: String = "", // 显示用文件名
+    val sizeBytes: Long = 0,   // 文件大小
+    val type: AttachmentType = AttachmentType.IMAGE
+)
+
+@Serializable
 data class Message(
     val id: String,
     val role: MessageRole,
@@ -305,6 +319,7 @@ data class Message(
     val images: String? = null,
     val files: String? = null,
     val userImages: List<String>? = null,
+    val attachments: List<Attachment>? = null,
     val tokens: TokenUsage? = null,
     val citations: List<Citation>? = null,
     val ragReferences: List<RagReference>? = null,

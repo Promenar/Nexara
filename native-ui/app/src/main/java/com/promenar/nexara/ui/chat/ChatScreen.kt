@@ -20,6 +20,7 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -45,6 +46,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AddPhotoAlternate
+import androidx.compose.material.icons.rounded.AttachFile
+import androidx.compose.material.icons.rounded.AudioFile
+import androidx.compose.material.icons.rounded.Description
+import androidx.compose.material.icons.rounded.Image
+import androidx.compose.material.icons.rounded.VideoFile
 import com.promenar.nexara.ui.common.NexaraBackButton
 import androidx.compose.material.icons.rounded.ArrowDownward
 import androidx.compose.material.icons.rounded.ArrowUpward
@@ -108,7 +114,11 @@ import com.promenar.nexara.data.model.MessageRole
 import com.promenar.nexara.data.model.PhaseStatus
 import com.promenar.nexara.data.model.findModelSpec
 import com.promenar.nexara.data.model.PostProcessTask
+import com.promenar.nexara.ui.chat.components.AttachmentPreviewRow
 import com.promenar.nexara.ui.chat.components.TaskFloatingPanel
+import com.promenar.nexara.data.model.Attachment
+import com.promenar.nexara.data.model.AttachmentType
+import com.promenar.nexara.data.model.ModelCapabilities
 import com.promenar.nexara.ui.common.EditorMode
 import com.promenar.nexara.ui.common.NexaraConfirmDialog
 import com.promenar.nexara.ui.common.NexaraGlassCard
@@ -175,10 +185,81 @@ fun ChatScreen(
     var pendingTruncateAction by remember { mutableStateOf<(() -> Unit)?>(null) }
     var showModelHint by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
-    var selectedImageUris by remember { mutableStateOf<List<android.net.Uri>>(emptyList()) }
+    var selectedAttachments by remember { mutableStateOf<List<Attachment>>(emptyList()) }
+
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetMultipleContents()
-    ) { uris -> selectedImageUris = uris }
+    ) { uris ->
+        val newAttachments = uris.map { uri ->
+            Attachment(
+                uri = uri.toString(),
+                mimeType = "image/*",
+                fileName = uri.lastPathSegment ?: "",
+                type = AttachmentType.IMAGE
+            )
+        }
+        selectedAttachments = selectedAttachments + newAttachments
+    }
+
+    val videoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetMultipleContents()
+    ) { uris ->
+        val newAttachments = uris.map { uri ->
+            Attachment(
+                uri = uri.toString(),
+                mimeType = "video/*",
+                fileName = uri.lastPathSegment ?: "",
+                type = AttachmentType.VIDEO
+            )
+        }
+        selectedAttachments = selectedAttachments + newAttachments
+    }
+
+    val audioPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetMultipleContents()
+    ) { uris ->
+        val newAttachments = uris.map { uri ->
+            Attachment(
+                uri = uri.toString(),
+                mimeType = "audio/*",
+                fileName = uri.lastPathSegment ?: "",
+                type = AttachmentType.AUDIO
+            )
+        }
+        selectedAttachments = selectedAttachments + newAttachments
+    }
+
+    val documentPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenMultipleDocuments()
+    ) { uris ->
+        val newAttachments = uris.map { uri ->
+            Attachment(
+                uri = uri.toString(),
+                mimeType = "application/octet-stream",
+                fileName = uri.lastPathSegment ?: "",
+                type = AttachmentType.DOCUMENT
+            )
+        }
+        selectedAttachments = selectedAttachments + newAttachments
+    }
+
+    // 获取当前模型能力
+    val currentModelCapabilities = remember(uiState.session?.modelId) {
+        uiState.session?.modelId?.let { modelId ->
+            findModelSpec(modelId)?.capabilities
+        }
+    }
+
+    // 附件兼容性检查辅助函数
+    fun isAttachmentCompatible(attachment: Attachment, capabilities: ModelCapabilities?): Boolean {
+        if (capabilities == null) return true
+        return when (attachment.type) {
+            AttachmentType.IMAGE -> capabilities.vision
+            AttachmentType.VIDEO -> capabilities.videoUnderstanding
+            AttachmentType.AUDIO -> capabilities.audioInput
+            AttachmentType.DOCUMENT -> true
+        }
+    }
 
     LaunchedEffect(showModelHint) {
         if (showModelHint) {
@@ -509,29 +590,16 @@ fun ChatScreen(
                                 onManualSummary = { chatViewModel.summarizeHistory() }
                             )
 
-                            if (selectedImageUris.isNotEmpty()) {
-                                LazyRow(
-                                    modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp),
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                                ) {
-                                    items(selectedImageUris.size) { index ->
-                                        val uri = selectedImageUris[index]
-                                        Box(modifier = Modifier.size(64.dp).clip(RoundedCornerShape(8.dp))) {
-                                            coil3.compose.AsyncImage(
-                                                model = uri,
-                                                contentDescription = null,
-                                                modifier = Modifier.fillMaxSize(),
-                                                contentScale = ContentScale.Crop
-                                            )
-                                            IconButton(
-                                                onClick = { selectedImageUris = selectedImageUris.toMutableList().apply { removeAt(index) } },
-                                                modifier = Modifier.align(Alignment.TopEnd).size(20.dp)
-                                            ) {
-                                                Icon(Icons.Rounded.Close, null, tint = Color.White, modifier = Modifier.size(14.dp))
-                                            }
-                                        }
-                                    }
+                            if (selectedAttachments.isNotEmpty()) {
+                                val attachmentsWithCompat = selectedAttachments.map { att ->
+                                    att to isAttachmentCompatible(att, currentModelCapabilities)
                                 }
+                                AttachmentPreviewRow(
+                                    attachments = attachmentsWithCompat,
+                                    onRemove = { index ->
+                                        selectedAttachments = selectedAttachments.toMutableList().apply { removeAt(index) }
+                                    }
+                                )
                             }
 
                             // 任务浮动面板
@@ -548,10 +616,11 @@ fun ChatScreen(
                                     placeholder = if (agentName.isNotBlank()) stringResource(R.string.chat_input_placeholder, agentName) else stringResource(R.string.chat_input_placeholder_default),
                                     onTextChange = { chatViewModel.updateInputText(it) },
                                     onSend = {
-                                        if (inputText.isNotBlank() || selectedImageUris.isNotEmpty()) {
-                                            val textToSend = inputText.ifBlank { "Describe this image" }
-                                            chatViewModel.sendMessage(textToSend, selectedImageUris)
-                                            selectedImageUris = emptyList()
+                                        val hasIncompatible = selectedAttachments.any { !isAttachmentCompatible(it, currentModelCapabilities) }
+                                        if (!hasIncompatible && (inputText.isNotBlank() || selectedAttachments.isNotEmpty())) {
+                                            val textToSend = inputText.ifBlank { "Describe this attachment" }
+                                            chatViewModel.sendMessage(textToSend, selectedAttachments)
+                                            selectedAttachments = emptyList()
                                         }
                                     },
                                     status = uiState.status,
@@ -559,7 +628,20 @@ fun ChatScreen(
                                     isModelSelected = uiState.session?.modelId?.isNotBlank() == true,
                                     onModelHint = { showModelHint = true },
                                     onPickImage = { imagePickerLauncher.launch("image/*") },
-                                    hasImages = selectedImageUris.isNotEmpty()
+                                    onPickVideo = { videoPickerLauncher.launch("video/*") },
+                                    onPickAudio = { audioPickerLauncher.launch("audio/*") },
+                                    onPickDocument = {
+                                        documentPickerLauncher.launch(arrayOf(
+                                            "application/pdf",
+                                            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                                            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                                            "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+                                            "text/*"
+                                        ))
+                                    },
+                                    modelCapabilities = currentModelCapabilities,
+                                    hasAttachments = selectedAttachments.isNotEmpty(),
+                                    hasIncompatibleAttachments = selectedAttachments.any { !isAttachmentCompatible(it, currentModelCapabilities) }
                                 )
         
                                 // ── 模型未选择提示气泡 ──
@@ -976,9 +1058,16 @@ fun ChatInputBar(
     isModelSelected: Boolean = true,
     onModelHint: () -> Unit = {},
     onPickImage: () -> Unit = {},
-    hasImages: Boolean = false
+    onPickVideo: () -> Unit = {},
+    onPickAudio: () -> Unit = {},
+    onPickDocument: () -> Unit = {},
+    modelCapabilities: ModelCapabilities? = null,
+    hasAttachments: Boolean = false,
+    hasIncompatibleAttachments: Boolean = false
 ) {
     val isGenerating = status != GenerationStatus.IDLE
+    var showAttachmentMenu by remember { mutableStateOf(false) }
+
     NexaraGlassCard(
         modifier = Modifier.fillMaxWidth().animateContentSize(),
         shape = NexaraShapes.extraLarge as RoundedCornerShape
@@ -989,17 +1078,89 @@ fun ChatInputBar(
                 .padding(start = 4.dp, end = 8.dp, top = 6.dp, bottom = 6.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton(
-                onClick = onPickImage,
-                modifier = Modifier.size(36.dp),
-                enabled = !isGenerating
-            ) {
-                Icon(
-                    Icons.Rounded.AddPhotoAlternate,
-                    null,
-                    tint = if (hasImages) NexaraColors.Primary else NexaraColors.OnSurfaceVariant,
-                    modifier = Modifier.size(22.dp)
-                )
+            // ── 附件按钮 + 锚定的 DropdownMenu ──
+            Box {
+                IconButton(
+                    onClick = { showAttachmentMenu = true },
+                    modifier = Modifier.size(36.dp),
+                    enabled = !isGenerating
+                ) {
+                    Icon(
+                        Icons.Rounded.AttachFile,
+                        contentDescription = "添加附件",
+                        modifier = Modifier.size(20.dp),
+                        tint = if (hasIncompatibleAttachments) MaterialTheme.colorScheme.error
+                               else NexaraColors.OnSurfaceVariant
+                    )
+                }
+
+                DropdownMenu(
+                    expanded = showAttachmentMenu,
+                    onDismissRequest = { showAttachmentMenu = false }
+                ) {
+                    // 图片
+                    DropdownMenuItem(
+                        text = {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(Icons.Rounded.Image, null, modifier = Modifier.size(18.dp), tint = NexaraColors.OnSurfaceVariant)
+                                Spacer(Modifier.width(8.dp))
+                                Column {
+                                    Text("图片", style = NexaraTypography.labelMedium, color = NexaraColors.OnSurface)
+                                    Text("JPG, PNG, GIF, WebP", style = NexaraTypography.labelSmall, color = NexaraColors.OnSurfaceVariant.copy(alpha = 0.6f), fontSize = 10.sp)
+                                }
+                            }
+                        },
+                        onClick = { showAttachmentMenu = false; onPickImage() },
+                        enabled = modelCapabilities?.vision ?: true
+                    )
+
+                    // 视频
+                    DropdownMenuItem(
+                        text = {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(Icons.Rounded.VideoFile, null, modifier = Modifier.size(18.dp), tint = NexaraColors.OnSurfaceVariant)
+                                Spacer(Modifier.width(8.dp))
+                                Column {
+                                    Text("视频", style = NexaraTypography.labelMedium, color = NexaraColors.OnSurface)
+                                    Text("MP4, MOV, WebM", style = NexaraTypography.labelSmall, color = NexaraColors.OnSurfaceVariant.copy(alpha = 0.6f), fontSize = 10.sp)
+                                }
+                            }
+                        },
+                        onClick = { showAttachmentMenu = false; onPickVideo() },
+                        enabled = modelCapabilities?.videoUnderstanding ?: false
+                    )
+
+                    // 音频
+                    DropdownMenuItem(
+                        text = {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(Icons.Rounded.AudioFile, null, modifier = Modifier.size(18.dp), tint = NexaraColors.OnSurfaceVariant)
+                                Spacer(Modifier.width(8.dp))
+                                Column {
+                                    Text("音频", style = NexaraTypography.labelMedium, color = NexaraColors.OnSurface)
+                                    Text("MP3, WAV, OGG, FLAC", style = NexaraTypography.labelSmall, color = NexaraColors.OnSurfaceVariant.copy(alpha = 0.6f), fontSize = 10.sp)
+                                }
+                            }
+                        },
+                        onClick = { showAttachmentMenu = false; onPickAudio() },
+                        enabled = modelCapabilities?.audioInput ?: false
+                    )
+
+                    // 文档
+                    DropdownMenuItem(
+                        text = {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(Icons.Rounded.Description, null, modifier = Modifier.size(18.dp), tint = NexaraColors.OnSurfaceVariant)
+                                Spacer(Modifier.width(8.dp))
+                                Column {
+                                    Text("文档", style = NexaraTypography.labelMedium, color = NexaraColors.OnSurface)
+                                    Text("PDF, DOCX, XLSX, PPTX, TXT", style = NexaraTypography.labelSmall, color = NexaraColors.OnSurfaceVariant.copy(alpha = 0.6f), fontSize = 10.sp)
+                                }
+                            }
+                        },
+                        onClick = { showAttachmentMenu = false; onPickDocument() }
+                    )
+                }
             }
 
             BasicTextField(
@@ -1029,7 +1190,7 @@ fun ChatInputBar(
                     if (isModelSelected) onSend() else onModelHint()
                 },
                 onStop = onStop,
-                enabled = text.isNotBlank() || hasImages,
+                enabled = (text.isNotBlank() || hasAttachments) && !hasIncompatibleAttachments,
                 isModelSelected = isModelSelected
             )
         }
@@ -1264,3 +1425,4 @@ fun ChatSkeleton(modifier: Modifier = Modifier) {
         }
     }
 }
+

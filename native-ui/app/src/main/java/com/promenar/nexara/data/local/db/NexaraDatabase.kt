@@ -65,7 +65,7 @@ import com.promenar.nexara.data.local.db.entity.WorkspaceSeqEntity
         WorkspaceSeqEntity::class,
         TaskNodeEntity::class,
     ],
-    version = 16,
+    version = 17,
     exportSchema = false,
 )
 @TypeConverters(Converters::class)
@@ -638,6 +638,12 @@ abstract class NexaraDatabase : RoomDatabase() {
                 db.execSQL("CREATE INDEX IF NOT EXISTS `index_task_nodes_parent_id` ON `task_nodes` (`parent_id`)")
                 db.execSQL("CREATE INDEX IF NOT EXISTS `index_task_nodes_session_id` ON `task_nodes` (`session_id`)")
                 db.execSQL("CREATE INDEX IF NOT EXISTS `index_task_nodes_status` ON `task_nodes` (`status`)")
+            }
+        }
+
+        val MIGRATION_16_17 = object : androidx.room.migration.Migration(16, 17) {
+            override fun migrate(db: androidx.sqlite.db.SupportSQLiteDatabase) {
+                safeAddColumn(db, "messages", "attachments", "TEXT DEFAULT NULL")
             }
         }
 

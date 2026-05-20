@@ -69,6 +69,8 @@ data class MessageEntity(
     val files: String? = null,
     @ColumnInfo(name = "user_images")
     val userImages: String? = null,
+    @ColumnInfo(name = "attachments")
+    val attachments: String? = null,
     @ColumnInfo(name = "is_error", defaultValue = "0")
     val isError: Int = 0,
     @ColumnInfo(name = "error_message")

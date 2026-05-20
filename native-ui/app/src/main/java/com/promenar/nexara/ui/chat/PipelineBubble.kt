@@ -3,6 +3,7 @@ package com.promenar.nexara.ui.chat
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -37,9 +38,12 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.promenar.nexara.data.model.Attachment
+import com.promenar.nexara.data.model.AttachmentType
 import com.promenar.nexara.data.model.ExecutionStep
 import com.promenar.nexara.data.model.Message
 import com.promenar.nexara.data.model.MessageRole
+import androidx.compose.ui.text.style.TextOverflow
 import com.promenar.nexara.ui.common.MarkdownText
 import com.promenar.nexara.ui.theme.NexaraColors
 import com.promenar.nexara.ui.theme.NexaraTypography
@@ -788,7 +792,158 @@ fun UserMessageBubble(
                     }
             ) {
                 Column {
-                    if (!message.userImages.isNullOrEmpty()) {
+                    // ── 附件渲染（优先 attachments，向下兼容 userImages）──
+                    val hasAttachments = !message.attachments.isNullOrEmpty()
+                    val hasLegacyImages = !message.userImages.isNullOrEmpty()
+
+                    if (hasAttachments) {
+                        Column(
+                            modifier = Modifier.padding(start = 8.dp, end = 8.dp, top = 8.dp),
+                            verticalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            message.attachments!!.forEach { attachment ->
+                                when (attachment.type) {
+                                    AttachmentType.IMAGE -> {
+                                        coil3.compose.AsyncImage(
+                                            model = attachment.uri,
+                                            contentDescription = null,
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .heightIn(max = 200.dp)
+                                                .clip(RoundedCornerShape(8.dp)),
+                                            contentScale = ContentScale.FillWidth
+                                        )
+                                    }
+                                    AttachmentType.VIDEO -> {
+                                        Box(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .height(120.dp)
+                                                .clip(RoundedCornerShape(8.dp))
+                                                .background(NexaraColors.SurfaceContainer)
+                                                .clickable {
+                                                    val intent = android.content.Intent(
+                                                        android.content.Intent.ACTION_VIEW,
+                                                        android.net.Uri.parse(attachment.uri)
+                                                    ).apply {
+                                                        setDataAndType(
+                                                            android.net.Uri.parse(attachment.uri),
+                                                            attachment.mimeType
+                                                        )
+                                                        addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                                    }
+                                                    context.startActivity(intent)
+                                                }
+                                        ) {
+                                            Icon(
+                                                Icons.Rounded.PlayCircleFilled,
+                                                contentDescription = "播放视频",
+                                                modifier = Modifier
+                                                    .size(48.dp)
+                                                    .align(Alignment.Center),
+                                                tint = Color.White.copy(alpha = 0.8f)
+                                            )
+                                            if (attachment.fileName.isNotEmpty()) {
+                                                Text(
+                                                    text = attachment.fileName,
+                                                    style = NexaraTypography.labelSmall,
+                                                    color = Color.White,
+                                                    modifier = Modifier
+                                                        .align(Alignment.BottomStart)
+                                                        .padding(8.dp)
+                                                        .background(
+                                                            Color.Black.copy(alpha = 0.5f),
+                                                            RoundedCornerShape(4.dp)
+                                                        )
+                                                        .padding(horizontal = 6.dp, vertical = 2.dp),
+                                                    maxLines = 1,
+                                                    overflow = TextOverflow.Ellipsis
+                                                )
+                                            }
+                                        }
+                                    }
+                                    AttachmentType.AUDIO -> {
+                                        Surface(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            shape = RoundedCornerShape(8.dp),
+                                            color = NexaraColors.SurfaceContainer
+                                        ) {
+                                            Row(
+                                                modifier = Modifier.padding(12.dp),
+                                                verticalAlignment = Alignment.CenterVertically
+                                            ) {
+                                                Icon(
+                                                    Icons.Rounded.MusicNote,
+                                                    contentDescription = null,
+                                                    modifier = Modifier.size(24.dp),
+                                                    tint = NexaraColors.OnSurfaceVariant
+                                                )
+                                                Spacer(Modifier.width(8.dp))
+                                                Column(modifier = Modifier.weight(1f)) {
+                                                    Text(
+                                                        text = attachment.fileName.ifEmpty { "音频文件" },
+                                                        style = NexaraTypography.bodySmall,
+                                                        color = NexaraColors.OnBackground,
+                                                        maxLines = 1,
+                                                        overflow = TextOverflow.Ellipsis
+                                                    )
+                                                    if (attachment.sizeBytes > 0) {
+                                                        Text(
+                                                            text = formatAttachmentSize(attachment.sizeBytes),
+                                                            style = NexaraTypography.labelSmall,
+                                                            color = NexaraColors.OnSurfaceVariant.copy(alpha = 0.6f)
+                                                        )
+                                                    }
+                                                }
+                                                Icon(
+                                                    Icons.Rounded.PlayArrow,
+                                                    contentDescription = "播放",
+                                                    modifier = Modifier.size(20.dp),
+                                                    tint = NexaraColors.Primary
+                                                )
+                                            }
+                                        }
+                                    }
+                                    AttachmentType.DOCUMENT -> {
+                                        Surface(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            shape = RoundedCornerShape(8.dp),
+                                            color = NexaraColors.SurfaceContainer
+                                        ) {
+                                            Row(
+                                                modifier = Modifier.padding(12.dp),
+                                                verticalAlignment = Alignment.CenterVertically
+                                            ) {
+                                                Icon(
+                                                    Icons.Rounded.Description,
+                                                    contentDescription = null,
+                                                    modifier = Modifier.size(24.dp),
+                                                    tint = NexaraColors.OnSurfaceVariant
+                                                )
+                                                Spacer(Modifier.width(8.dp))
+                                                Column(modifier = Modifier.weight(1f)) {
+                                                    Text(
+                                                        text = attachment.fileName.ifEmpty { "文档" },
+                                                        style = NexaraTypography.bodySmall,
+                                                        color = NexaraColors.OnBackground,
+                                                        maxLines = 1,
+                                                        overflow = TextOverflow.Ellipsis
+                                                    )
+                                                    if (attachment.sizeBytes > 0) {
+                                                        Text(
+                                                            text = formatAttachmentSize(attachment.sizeBytes),
+                                                            style = NexaraTypography.labelSmall,
+                                                            color = NexaraColors.OnSurfaceVariant.copy(alpha = 0.6f)
+                                                        )
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } else if (hasLegacyImages) {
                         Column(
                             modifier = Modifier.padding(start = 8.dp, end = 8.dp, top = 8.dp),
                             verticalArrangement = Arrangement.spacedBy(4.dp)
@@ -891,10 +1046,21 @@ fun MessageContextMenu(
     isUser: Boolean = false,
     offset: DpOffset = DpOffset.Zero
 ) {
+    val glowBorderBrush = Brush.linearGradient(
+        colors = listOf(
+            Color(0xFF8083FF).copy(alpha = 0.55f),
+            Color(0xFFD97721).copy(alpha = 0.45f),
+            Color(0xFF8083FF).copy(alpha = 0.55f)
+        )
+    )
+
     DropdownMenu(
         expanded = expanded,
         onDismissRequest = onDismiss,
-        offset = offset
+        offset = offset,
+        shape = RoundedCornerShape(12.dp),
+        containerColor = NexaraColors.SurfaceHigh.copy(alpha = 0.92f),
+        border = BorderStroke(0.5.dp, glowBorderBrush)
     ) {
         DropdownMenuItem(
             text = { Text("复制正文", style = NexaraTypography.labelMedium, color = NexaraColors.OnSurface) },
@@ -940,4 +1106,10 @@ fun copyToClipboard(context: android.content.Context, text: String) {
     val clipboard = context.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
     val clip = android.content.ClipData.newPlainText("NexaraMessage", text)
     clipboard.setPrimaryClip(clip)
+}
+
+private fun formatAttachmentSize(bytes: Long): String = when {
+    bytes < 1024 -> "$bytes B"
+    bytes < 1024 * 1024 -> "${bytes / 1024} KB"
+    else -> "${"%.1f".format(bytes / (1024.0 * 1024.0))} MB"
 }

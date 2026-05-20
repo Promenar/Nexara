@@ -20,6 +20,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.res.stringResource
@@ -63,6 +64,9 @@ fun AgentSessionsScreen(
     val agentColor by viewModel.agentColor.collectAsState()
     var sessionToDelete by remember { mutableStateOf<String?>(null) }
     var searchQuery by remember { mutableStateOf("") }
+    var headerHeight by remember { mutableStateOf(0) }
+
+    val density = LocalDensity.current
 
     LaunchedEffect(agentId) {
         viewModel.loadSessions(agentId)
@@ -140,7 +144,8 @@ fun AgentSessionsScreen(
                                     modifier = Modifier.fillMaxSize(),
                                     contentPadding = PaddingValues(
                                         start = 20.dp, end = 20.dp,
-                                        top = 80.dp, bottom = 120.dp // 顶部预留出 80.dp 给悬浮顶栏缓冲
+                                        top = with(density) { headerHeight.toDp() },
+                                        bottom = 120.dp
                                     ),
                                     verticalArrangement = Arrangement.spacedBy(8.dp)
                                 ) {
@@ -186,12 +191,18 @@ fun AgentSessionsScreen(
             }
 
             // 物理真·毛玻璃顶栏悬浮 Overlay：层叠在 Source 层之上
-            AgentSessionHeader(
-                agentName = agentName,
-                sessionCount = sessions.size,
-                onBack = onNavigateBack,
-                onSettings = onNavigateToAgentEdit
-            )
+            Box(
+                modifier = Modifier.onGloballyPositioned { coordinates ->
+                    headerHeight = coordinates.size.height
+                }
+            ) {
+                AgentSessionHeader(
+                    agentName = agentName,
+                    sessionCount = sessions.size,
+                    onBack = onNavigateBack,
+                    onSettings = onNavigateToAgentEdit
+                )
+            }
         }
     }
 }
