@@ -1,3 +1,4 @@
+// UNIT TEST EXEMPTION: Pure UI and layout rendering
 package com.promenar.nexara.ui.rag
 
 import androidx.compose.animation.animateColorAsState
@@ -36,6 +37,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -68,8 +71,9 @@ import com.promenar.nexara.ui.theme.SpaceGrotesk
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.material.icons.rounded.VerticalSplit
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.ui.graphics.SolidColor
+import com.promenar.nexara.ui.theme.LocalVisualStyle
+import com.promenar.nexara.ui.theme.VisualStyle
 
 enum class DocEditorViewMode { EDIT, PREVIEW, SPLIT }
 
@@ -79,6 +83,9 @@ fun DocEditorScreen(
     docId: String,
     onNavigateBack: () -> Unit
 ) {
+    val visualStyle = LocalVisualStyle.current
+    val isM3 = visualStyle == VisualStyle.NATIVE_MATERIAL_3
+
     val context = LocalContext.current
     val app = context.applicationContext as com.promenar.nexara.NexaraApplication
     val viewModel: DocEditorViewModel = viewModel(
@@ -107,113 +114,128 @@ fun DocEditorScreen(
     val lineCount = remember(content) { content.lines().size }
 
     Scaffold(
-        containerColor = NexaraColors.CanvasBackground,
+        containerColor = if (isM3) MaterialTheme.colorScheme.background else NexaraColors.CanvasBackground,
         topBar = {
-            TopAppBar(
-                title = {
-                    Column {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(10.dp)
+            Column(
+                modifier = if (isM3) Modifier.background(MaterialTheme.colorScheme.surface) else Modifier
+            ) {
+                TopAppBar(
+                    title = {
+                        Column {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Rounded.Description,
+                                    contentDescription = null,
+                                    tint = if (isM3) MaterialTheme.colorScheme.primary else NexaraColors.Primary,
+                                    modifier = Modifier.size(24.dp)
+                                )
+                                BasicTextField(
+                                    value = titleText,
+                                    onValueChange = {
+                                        titleText = it
+                                        viewModel.updateTitle(it)
+                                    },
+                                    textStyle = NexaraTypography.headlineMedium.copy(
+                                        color = if (isM3) MaterialTheme.colorScheme.onSurface else NexaraColors.OnSurface
+                                    ),
+                                    singleLine = true,
+                                    modifier = Modifier.weight(1f),
+                                    decorationBox = { innerTextField ->
+                                        if (titleText.isEmpty()) {
+                                            Text(
+                                                stringResource(R.string.doc_editor_title_placeholder),
+                                                style = NexaraTypography.headlineMedium,
+                                                color = if (isM3) MaterialTheme.colorScheme.onSurfaceVariant else NexaraColors.OnSurfaceVariant
+                                            )
+                                        }
+                                        innerTextField()
+                                    }
+                                )
+                            }
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    formatFileSize((document?.content?.length ?: 0).toLong()),
+                                    style = NexaraTypography.labelMedium,
+                                    color = if (isM3) MaterialTheme.colorScheme.onSurfaceVariant else NexaraColors.OnSurfaceVariant
+                                )
+                                Box(
+                                    modifier = Modifier
+                                        .size(3.dp)
+                                        .background(if (isM3) MaterialTheme.colorScheme.outlineVariant else NexaraColors.OutlineVariant, CircleShape)
+                                )
+                                Text(
+                                    "DOCUMENT",
+                                    style = NexaraTypography.labelMedium,
+                                    color = if (isM3) MaterialTheme.colorScheme.primary else NexaraColors.Primary
+                                )
+                            }
+                        }
+                    },
+                    navigationIcon = {
+                        NexaraBackButton(onClick = onNavigateBack)
+                    },
+                    actions = {
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(if (isM3) MaterialTheme.colorScheme.surfaceVariant else NexaraColors.SurfaceContainer)
+                                .border(
+                                    if (isM3) 1.dp else 0.5.dp,
+                                    if (isM3) MaterialTheme.colorScheme.outline else NexaraColors.OutlineVariant,
+                                    RoundedCornerShape(8.dp)
+                                )
+                        ) {
+                            Row {
+                                DocEditorTabItem(
+                                    icon = Icons.Rounded.Edit,
+                                    label = stringResource(R.string.doc_editor_edit),
+                                    selected = viewMode == DocEditorViewMode.EDIT,
+                                    onClick = { viewMode = DocEditorViewMode.EDIT; if (!isEditing) viewModel.toggleEditMode() }
+                                )
+                                DocEditorTabItem(
+                                    icon = Icons.Rounded.Visibility,
+                                    label = stringResource(R.string.doc_editor_preview),
+                                    selected = viewMode == DocEditorViewMode.PREVIEW,
+                                    onClick = { viewMode = DocEditorViewMode.PREVIEW; if (isEditing) viewModel.toggleEditMode() }
+                                )
+                                DocEditorTabItem(
+                                    icon = Icons.Rounded.VerticalSplit,
+                                    label = "Split",
+                                    selected = viewMode == DocEditorViewMode.SPLIT,
+                                    onClick = { viewMode = DocEditorViewMode.SPLIT; if (!isEditing) viewModel.toggleEditMode() }
+                                )
+                            }
+                        }
+                        Spacer(modifier = Modifier.width(8.dp))
+                        IconButton(
+                            onClick = { viewModel.saveDocument() },
+                            enabled = isDirty
                         ) {
                             Icon(
-                                imageVector = Icons.Rounded.Description,
-                                contentDescription = null,
-                                tint = NexaraColors.Primary,
-                                modifier = Modifier.size(24.dp)
-                            )
-                            BasicTextField(
-                                value = titleText,
-                                onValueChange = {
-                                    titleText = it
-                                    viewModel.updateTitle(it)
-                                },
-                                textStyle = NexaraTypography.headlineMedium.copy(
-                                    color = NexaraColors.OnSurface
-                                ),
-                                singleLine = true,
-                                modifier = Modifier.weight(1f),
-                                decorationBox = { innerTextField ->
-                                    if (titleText.isEmpty()) {
-                                        Text(
-                                            stringResource(R.string.doc_editor_title_placeholder),
-                                            style = NexaraTypography.headlineMedium,
-                                            color = NexaraColors.OnSurfaceVariant
-                                        )
-                                    }
-                                    innerTextField()
+                                Icons.Rounded.Save,
+                                contentDescription = stringResource(R.string.common_cd_save),
+                                tint = if (isDirty) {
+                                    if (isM3) MaterialTheme.colorScheme.primary else NexaraColors.Primary
+                                } else {
+                                    if (isM3) MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f) else NexaraColors.OnSurfaceVariant
                                 }
                             )
                         }
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(4.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                formatFileSize((document?.content?.length ?: 0).toLong()),
-                                style = NexaraTypography.labelMedium,
-                                color = NexaraColors.OnSurfaceVariant
-                            )
-                            Box(
-                                modifier = Modifier
-                                    .size(3.dp)
-                                    .background(NexaraColors.OutlineVariant, CircleShape)
-                            )
-                            Text(
-                                "DOCUMENT",
-                                style = NexaraTypography.labelMedium,
-                                color = NexaraColors.Primary
-                            )
-                        }
-                    }
-                },
-                navigationIcon = {
-                    NexaraBackButton(onClick = onNavigateBack)
-                },
-                actions = {
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(8.dp))
-                            .background(NexaraColors.SurfaceContainer)
-                            .border(0.5.dp, NexaraColors.OutlineVariant, RoundedCornerShape(8.dp))
-                    ) {
-                        Row {
-                            DocEditorTabItem(
-                                icon = Icons.Rounded.Edit,
-                                label = stringResource(R.string.doc_editor_edit),
-                                selected = viewMode == DocEditorViewMode.EDIT,
-                                onClick = { viewMode = DocEditorViewMode.EDIT; if (!isEditing) viewModel.toggleEditMode() }
-                            )
-                            DocEditorTabItem(
-                                icon = Icons.Rounded.Visibility,
-                                label = stringResource(R.string.doc_editor_preview),
-                                selected = viewMode == DocEditorViewMode.PREVIEW,
-                                onClick = { viewMode = DocEditorViewMode.PREVIEW; if (isEditing) viewModel.toggleEditMode() }
-                            )
-                            DocEditorTabItem(
-                                icon = Icons.Rounded.VerticalSplit,
-                                label = "Split",
-                                selected = viewMode == DocEditorViewMode.SPLIT,
-                                onClick = { viewMode = DocEditorViewMode.SPLIT; if (!isEditing) viewModel.toggleEditMode() }
-                            )
-                        }
-                    }
-                    Spacer(modifier = Modifier.width(8.dp))
-                    IconButton(
-                        onClick = { viewModel.saveDocument() },
-                        enabled = isDirty
-                    ) {
-                        Icon(
-                            Icons.Rounded.Save,
-                            contentDescription = stringResource(R.string.common_cd_save),
-                            tint = if (isDirty) NexaraColors.Primary else NexaraColors.OnSurfaceVariant
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = NexaraColors.CanvasBackground.copy(alpha = 0.8f)
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = if (isM3) MaterialTheme.colorScheme.surface else NexaraColors.CanvasBackground.copy(alpha = 0.8f)
+                    )
                 )
-            )
+                if (isM3) {
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant, thickness = 1.dp)
+                }
+            }
         }
     ) { paddingValues ->
         Column(
@@ -227,22 +249,26 @@ fun DocEditorScreen(
                         .fillMaxWidth()
                         .padding(horizontal = 20.dp, vertical = 8.dp)
                         .clip(RoundedCornerShape(8.dp))
-                        .background(NexaraColors.ErrorContainer.copy(alpha = 0.2f))
-                        .border(0.5.dp, NexaraColors.Error.copy(alpha = 0.3f), RoundedCornerShape(8.dp))
+                        .background(if (isM3) MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.2f) else NexaraColors.ErrorContainer.copy(alpha = 0.2f))
+                        .border(
+                            if (isM3) 1.dp else 0.5.dp,
+                            if (isM3) MaterialTheme.colorScheme.error.copy(alpha = 0.3f) else NexaraColors.Error.copy(alpha = 0.3f),
+                            RoundedCornerShape(8.dp)
+                        )
                         .padding(12.dp),
                     verticalAlignment = Alignment.Top
                 ) {
                     Icon(
                         Icons.Rounded.Warning,
                         contentDescription = null,
-                        tint = NexaraColors.Error,
+                        tint = if (isM3) MaterialTheme.colorScheme.error else NexaraColors.Error,
                         modifier = Modifier.size(18.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         stringResource(R.string.doc_editor_large_file_desc, formatFileSize((document?.content?.length ?: 0).toLong())),
                         style = NexaraTypography.bodyMedium,
-                        color = NexaraColors.OnSurface,
+                        color = if (isM3) MaterialTheme.colorScheme.onSurface else NexaraColors.OnSurface,
                         modifier = Modifier.weight(1f)
                     )
                     IconButton(
@@ -252,7 +278,7 @@ fun DocEditorScreen(
                         Icon(
                             Icons.Rounded.Close,
                             contentDescription = stringResource(R.string.doc_editor_dismiss),
-                            tint = NexaraColors.OnSurfaceVariant,
+                            tint = if (isM3) MaterialTheme.colorScheme.onSurfaceVariant else NexaraColors.OnSurfaceVariant,
                             modifier = Modifier.size(16.dp)
                         )
                     }
@@ -262,11 +288,13 @@ fun DocEditorScreen(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
+                    .weight(1f)
                     .padding(horizontal = 20.dp, vertical = 8.dp)
             ) {
                 NexaraGlassCard(
                     modifier = Modifier.fillMaxSize(),
-                    shape = NexaraShapes.large as RoundedCornerShape
+                    shape = NexaraShapes.large as RoundedCornerShape,
+                    containerColor = if (isM3) MaterialTheme.colorScheme.surface else Color.Unspecified
                 ) {
                     when (viewMode) {
                         DocEditorViewMode.EDIT -> {
@@ -291,7 +319,7 @@ fun DocEditorScreen(
                                     modifier = Modifier
                                         .width(1.dp)
                                         .fillMaxHeight()
-                                        .background(NexaraColors.OutlineVariant)
+                                        .background(if (isM3) MaterialTheme.colorScheme.outlineVariant else NexaraColors.OutlineVariant)
                                 )
                                 PreviewPane(
                                     content = content,
@@ -308,8 +336,12 @@ fun DocEditorScreen(
                     .fillMaxWidth()
                     .padding(horizontal = 20.dp, vertical = 8.dp)
                     .clip(RoundedCornerShape(12.dp))
-                    .background(NexaraColors.SurfaceLow)
-                    .border(0.5.dp, NexaraColors.GlassBorder, RoundedCornerShape(12.dp))
+                    .background(if (isM3) MaterialTheme.colorScheme.surfaceVariant else NexaraColors.SurfaceLow)
+                    .border(
+                        if (isM3) 1.dp else 0.5.dp,
+                        if (isM3) MaterialTheme.colorScheme.outlineVariant else NexaraColors.GlassBorder,
+                        RoundedCornerShape(12.dp)
+                    )
                     .padding(horizontal = 12.dp, vertical = 8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
@@ -318,17 +350,33 @@ fun DocEditorScreen(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(stringResource(R.string.doc_editor_utf8), style = NexaraTypography.bodySmall.copy(fontSize = 12.sp), color = NexaraColors.OnSurfaceVariant)
-                    Box(modifier = Modifier.size(3.dp).background(NexaraColors.OutlineVariant, CircleShape))
-                    Text(stringResource(R.string.doc_editor_words, wordCount), style = NexaraTypography.bodySmall.copy(fontSize = 12.sp), color = NexaraColors.OnSurfaceVariant)
-                    Box(modifier = Modifier.size(3.dp).background(NexaraColors.OutlineVariant, CircleShape))
-                    Text(stringResource(R.string.doc_editor_chars, charCount), style = NexaraTypography.bodySmall.copy(fontSize = 12.sp), color = NexaraColors.OnSurfaceVariant)
+                    Text(
+                        stringResource(R.string.doc_editor_utf8),
+                        style = NexaraTypography.bodySmall.copy(fontSize = 12.sp),
+                        color = if (isM3) MaterialTheme.colorScheme.onSurfaceVariant else NexaraColors.OnSurfaceVariant
+                    )
+                    Box(modifier = Modifier.size(3.dp).background(if (isM3) MaterialTheme.colorScheme.outlineVariant else NexaraColors.OutlineVariant, CircleShape))
+                    Text(
+                        stringResource(R.string.doc_editor_words, wordCount),
+                        style = NexaraTypography.bodySmall.copy(fontSize = 12.sp),
+                        color = if (isM3) MaterialTheme.colorScheme.onSurfaceVariant else NexaraColors.OnSurfaceVariant
+                    )
+                    Box(modifier = Modifier.size(3.dp).background(if (isM3) MaterialTheme.colorScheme.outlineVariant else NexaraColors.OutlineVariant, CircleShape))
+                    Text(
+                        stringResource(R.string.doc_editor_chars, charCount),
+                        style = NexaraTypography.bodySmall.copy(fontSize = 12.sp),
+                        color = if (isM3) MaterialTheme.colorScheme.onSurfaceVariant else NexaraColors.OnSurfaceVariant
+                    )
                 }
                 Row(
                     modifier = Modifier
                         .clip(RoundedCornerShape(6.dp))
-                        .background(NexaraColors.SurfaceContainer)
-                        .border(0.5.dp, NexaraColors.GlassBorder, RoundedCornerShape(6.dp))
+                        .background(if (isM3) MaterialTheme.colorScheme.surface else NexaraColors.SurfaceContainer)
+                        .border(
+                            if (isM3) 1.dp else 0.5.dp,
+                            if (isM3) MaterialTheme.colorScheme.outlineVariant else NexaraColors.GlassBorder,
+                            RoundedCornerShape(6.dp)
+                        )
                         .padding(horizontal = 10.dp, vertical = 4.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(6.dp)
@@ -337,14 +385,18 @@ fun DocEditorScreen(
                         modifier = Modifier
                             .size(8.dp)
                             .background(
-                                if (isEditing) NexaraColors.StatusWarning else NexaraColors.StatusSuccess,
+                                if (isEditing) {
+                                    if (isM3) MaterialTheme.colorScheme.error else NexaraColors.StatusWarning
+                                } else {
+                                    if (isM3) MaterialTheme.colorScheme.primary else NexaraColors.StatusSuccess
+                                },
                                 CircleShape
                             )
                     )
                     Text(
                         if (isEditing) stringResource(R.string.doc_editor_editing) else stringResource(R.string.doc_editor_readonly),
                         style = NexaraTypography.bodySmall.copy(fontSize = 11.sp),
-                        color = NexaraColors.OnSurface
+                        color = if (isM3) MaterialTheme.colorScheme.onSurface else NexaraColors.OnSurface
                     )
                 }
             }
@@ -359,8 +411,15 @@ private fun DocEditorTabItem(
     selected: Boolean,
     onClick: () -> Unit
 ) {
+    val visualStyle = LocalVisualStyle.current
+    val isM3 = visualStyle == VisualStyle.NATIVE_MATERIAL_3
+
     val bg by animateColorAsState(
-        if (selected) NexaraColors.SurfaceBright else Color.Transparent,
+        if (selected) {
+            if (isM3) MaterialTheme.colorScheme.surface else NexaraColors.SurfaceBright
+        } else {
+            Color.Transparent
+        },
         label = "tabBg"
     )
     Box(
@@ -377,13 +436,21 @@ private fun DocEditorTabItem(
             Icon(
                 icon,
                 contentDescription = null,
-                tint = if (selected) NexaraColors.OnSurface else NexaraColors.OnSurfaceVariant,
+                tint = if (selected) {
+                    if (isM3) MaterialTheme.colorScheme.primary else NexaraColors.OnSurface
+                } else {
+                    if (isM3) MaterialTheme.colorScheme.onSurfaceVariant else NexaraColors.OnSurfaceVariant
+                },
                 modifier = Modifier.size(16.dp)
             )
             Text(
                 label,
                 style = NexaraTypography.labelMedium,
-                color = if (selected) NexaraColors.OnSurface else NexaraColors.OnSurfaceVariant
+                color = if (selected) {
+                    if (isM3) MaterialTheme.colorScheme.onSurface else NexaraColors.OnSurface
+                } else {
+                    if (isM3) MaterialTheme.colorScheme.onSurfaceVariant else NexaraColors.OnSurfaceVariant
+                }
             )
         }
     }
@@ -396,12 +463,15 @@ private fun EditorPane(
     lineCount: Int,
     modifier: Modifier = Modifier
 ) {
+    val visualStyle = LocalVisualStyle.current
+    val isM3 = visualStyle == VisualStyle.NATIVE_MATERIAL_3
+
     Row(modifier = modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
                 .width(40.dp)
                 .fillMaxHeight()
-                .background(Color(0xFF151517))
+                .background(if (isM3) MaterialTheme.colorScheme.surfaceVariant else Color(0xFF151517))
                 .padding(end = 8.dp, top = 12.dp)
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.End
@@ -411,7 +481,7 @@ private fun EditorPane(
                     "$i",
                     style = NexaraTypography.bodySmall.copy(
                         fontSize = 12.sp,
-                        color = NexaraColors.OutlineVariant
+                        color = if (isM3) MaterialTheme.colorScheme.onSurfaceVariant else NexaraColors.OutlineVariant
                     ),
                     fontFamily = FontFamily.Monospace
                 )
@@ -424,9 +494,9 @@ private fun EditorPane(
                 fontFamily = FontFamily.Monospace,
                 fontSize = 14.sp,
                 lineHeight = 22.sp,
-                color = NexaraColors.OnSurface
+                color = if (isM3) MaterialTheme.colorScheme.onSurface else NexaraColors.OnSurface
             ),
-            cursorBrush = SolidColor(NexaraColors.Primary),
+            cursorBrush = SolidColor(if (isM3) MaterialTheme.colorScheme.primary else NexaraColors.Primary),
             modifier = Modifier
                 .weight(1f)
                 .fillMaxSize()
@@ -440,7 +510,7 @@ private fun EditorPane(
                         style = TextStyle(
                             fontFamily = FontFamily.Monospace,
                             fontSize = 14.sp,
-                            color = NexaraColors.OnSurfaceVariant
+                            color = if (isM3) MaterialTheme.colorScheme.onSurfaceVariant else NexaraColors.OnSurfaceVariant
                         )
                     )
                 }
@@ -455,6 +525,9 @@ private fun PreviewPane(
     content: String,
     modifier: Modifier = Modifier
 ) {
+    val visualStyle = LocalVisualStyle.current
+    val isM3 = visualStyle == VisualStyle.NATIVE_MATERIAL_3
+
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -464,7 +537,7 @@ private fun PreviewPane(
         MarkdownText(
             markdown = content,
             fontSize = 15,
-            overrideColor = NexaraColors.OnSurface
+            overrideColor = if (isM3) MaterialTheme.colorScheme.onSurface else NexaraColors.OnSurface
         )
     }
 }

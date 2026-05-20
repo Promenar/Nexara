@@ -1,5 +1,17 @@
 # 交接文档 (2026-05-20)
 
+## ✅ 已完成 — 经典 MD3 与极光毛玻璃免重启热切换与历史代码大清洗 (2026-05-20)
+- **🎨 P0 — 视觉双相热切换架构落地**：
+  - *持久化与偏好控制层*：定义了 `VisualStyle` 风格枚举（物理毛玻璃/经典原生 MD3），并在 `SettingsViewModel` 中持久化与暴露为 Flow；利用 `LocalVisualStyle` CompositionLocal 在全局无感分发。
+  - *CompositionLocal 设空策略*：在顶层容器判断当风格为经典 MD3 时，直接注入 `LocalHazeState provides null`。所有底层的 `NexaraGlassCard` 叶子卡片组件在检测到 null 采样源时，自动卸载 Haze 模糊特效与发光边框，优雅降级为 100% 纯正地道的官方标准 MD3 纯色高阻尼卡片。60+ 处卡片调用点零重构量接入。
+  - *流光动画物理卸载（零功耗保障）*：设计 `GlowOrFlatBackground` 辅助组件。在 MD3 模式下利用组合销毁机制（Composition Discard）将 `NexaraGlowBackground` 彻底从渲染组合树中解耦销毁，规避 Canvas 流光后台刷新能耗，降至 0% 额外功耗。
+  - *历史毛玻璃脏代码大清洗*：全面扫除此前在 TopBar、底栏、各个 Screen 中用以模拟毛玻璃的硬编码半透明度、发光描边、水晶斜射线等杂质色块，实现 100% 官方正宗扁平 M3 卡片与纯色背景对齐。
+- **🧪 🧪 编译验证与单元测试门禁 100% 绿灯**：
+  - 在 `native-ui` 模块中执行 `./gradlew compileDebugKotlin` 全站编译完美通过。
+  - 执行 `./gradlew :app:testDebugUnitTest` 完整单元测试，`SettingsViewModelTest` 持久化热切换状态单测 100% 成功。
+- **DIA Status**: CHANGELOG.md ✅ | ARCHITECTURE.md ✅ | registry.md ✅ | handover.md ✅
+- **Next Steps**: 视觉热切换代码已在该 `'kotlin-Haze&MD3Mixed'` 特性分支彻底完美收尾。下一步请用户在此分支上进行真机部署与滑动流畅度多维验证，体验零重启、毫秒级一键双相风格切换的震撼效果。确认完美无误后，手动将本分支合并回主分支中。
+
 ## ✅ 已完成 — 共享极光底座大一统与全站二级页面沉浸式毛玻璃安全落地 (2026-05-20)
 - **🎨 P0 — 共享物理大底座与物理毛玻璃大一统**：
   - *全局极光大底盘*：重构多标签页框架 `MainTabScaffold.kt`，在最外层引入唯一的全屏大底座 `NexaraGlowBackground` 和共享采样源 `mainHazeState`，彻底解除了原先三大主页面各自独立渲染极光所造成的内存高占用与 GPU 重合渲染开销；

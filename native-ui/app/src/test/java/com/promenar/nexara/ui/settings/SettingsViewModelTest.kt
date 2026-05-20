@@ -9,6 +9,7 @@ import com.promenar.nexara.data.local.db.entity.McpServerEntity
 import com.promenar.nexara.data.remote.mcp.McpClient
 import com.promenar.nexara.data.remote.mcp.McpTool
 import com.promenar.nexara.ui.chat.manager.registry.McpSkillRegistry
+import com.promenar.nexara.ui.theme.VisualStyle
 import com.promenar.nexara.domain.repository.ITokenStatsRepository
 import com.promenar.nexara.domain.repository.IVectorRepository
 import com.promenar.nexara.domain.repository.TokenUsageAggregate
@@ -187,6 +188,36 @@ class SettingsViewModelTest {
         verify {
             mockEditor.putStringSet("enabled_skills", any())
             mockEditor.putBoolean("preset_skills_migrated_v3", true)
+            mockEditor.apply()
+        }
+    }
+
+    @Test
+    fun `visualStyle loads default if none saved`() = runTest {
+        every { prefs.getString("pref_visual_style", any()) } returns null
+        val vm = SettingsViewModel(mockApp, vectorRepo, tokenStatsRepo)
+        assertThat(vm.visualStyle.value).isEqualTo(VisualStyle.HAZE_GLASSMORPHISM)
+    }
+
+    @Test
+    fun `visualStyle loads saved value from SharedPreferences`() = runTest {
+        every { prefs.getString("pref_visual_style", any()) } returns VisualStyle.NATIVE_MATERIAL_3.name
+        val vm = SettingsViewModel(mockApp, vectorRepo, tokenStatsRepo)
+        assertThat(vm.visualStyle.value).isEqualTo(VisualStyle.NATIVE_MATERIAL_3)
+    }
+
+    @Test
+    fun `setThemeVisualStyle updates flow and SharedPreferences`() = runTest {
+        val mockEditor = mockk<SharedPreferences.Editor>(relaxed = true)
+        every { prefs.edit() } returns mockEditor
+        every { mockEditor.putString("pref_visual_style", any()) } returns mockEditor
+
+        val vm = SettingsViewModel(mockApp, vectorRepo, tokenStatsRepo)
+        vm.setThemeVisualStyle(VisualStyle.NATIVE_MATERIAL_3)
+
+        assertThat(vm.visualStyle.value).isEqualTo(VisualStyle.NATIVE_MATERIAL_3)
+        verify {
+            mockEditor.putString("pref_visual_style", VisualStyle.NATIVE_MATERIAL_3.name)
             mockEditor.apply()
         }
     }

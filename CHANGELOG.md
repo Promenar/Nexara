@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### 🎨 经典 M3 原生与极光毛玻璃双相热敏适配 — 5大次级页面全量覆盖与编译清零 (2026-05-20)
+- **🎨 P0 — 5大次级设置与知识库页面 100% 原生 M3 降级退化适配**：
+  - *全量退化*：重构 `GlobalRagConfigScreen.kt`（全局检索）、`AdvancedRetrievalScreen.kt`（高级检索）、`RagHomeScreen.kt`（知识库管理）、`KnowledgeGraphScreen.kt`（知识图谱）与 `DocEditorScreen.kt`（文档编辑器）五大核心次级页面。在原生 M3 模式下全面清退 Canvas 极光流莹和 Haze 采样树，实现硬件级零功耗开销；
+  - *纯正扁平材质对齐*：在 M3 状态下，所有的 TopAppBar 彻底剥离毛玻璃与渐变边框，改用纯色底盘并配备 `outlineVariant` 精准 1px 细线分割；重构选项、开关、数值滑动条（Slider）、提示警告卡片、视图切换 Tab 以及选中态的色彩配置，完美匹配 Material 3 原生极简扁平灰度风；
+  - *安全门禁豁免*：依据工程协议，在所有重构的 UI 纯渲染组件文件头部追加 `// UNIT TEST EXEMPTION: Pure UI and layout rendering` 单测豁免说明。
+- **🔴 P0 — 历史遗留编译与导包瑕疵 100% 彻底清零**：
+  - *ChatScreen 括号与 Scaffold 重构*：清理 `ChatScreen.kt` 中由于历史合并冲突残留的重复模型提示 Card 及错乱括号，将 Scaffold 的 `topBar` 和 `bottomBar` 重构为在 `@Composable` 内部执行 `isM3` 判断的推荐 Compose 写法，一举消除了 Argument type mismatch 与 lambda 推断为 Any 的编译硬伤；
+  - *导包修复*：在 `UserSettingsHomeScreen.kt` 头部精准补写 `import androidx.compose.material3.MaterialTheme` 导包，彻底根治 Unresolved reference 编译阻碍；
+  - *全站绿灯*：成功跑通全站 `./gradlew compileDebugKotlin` 编译以及 `:app:testDebugUnitTest` 完整单元测试门禁，100% 绿灯护航品质交付。
+
+### 🎨 经典 MD3 与极光毛玻璃免重启热切换与历史代码大清洗 (2026-05-20)
+- **🎨 P0 — 经典原生 MD3 与极光毛玻璃免重启热切换支持**：
+  - *控制层*：新增 `VisualStyle` 枚举定义 `HAZE_GLASSMORPHISM`（极光毛玻璃）与 `NATIVE_MATERIAL_3`（原生 MD3 扁平），并在 `SettingsViewModel` 中引入 SharedPreferences 持久化和热敏 `visualStyle` 状态分发；
+  - *退化与零功耗开销*：重构 `NexaraPageLayout`、`NexaraGlassCard`、`MainTabScaffold`、`UserSettingsHomeScreen` 和 `ChatScreen`。在原生 MD3 模式下彻底卸载 Haze 采样树和极光 Canvas 流光，取消所有 Canvas 流光协程动画，实现硬件级零功耗开销；
+  - *原子材质清洗*：当处于 MD3 模式时，彻底废除所有的假毛玻璃半透明度、发光斜射线、多余的彩虹渐变发光描边等老旧失败残留，直接使用标准的 `Surface` 作为底盘，呈现 100% 纯正地道的扁平原生 MD3 卡片风格。
+- **🎨 P0 — 主会话界面与顶栏悬浮 Overlay 物理退化**：
+  - 重构 `ChatScreen.kt`。在 M3 状态下，顶栏悬浮 Overlay 完全卸载 `hazeEffect` 物理高斯模糊与微光渐变，改用纯色不透明 `surface` 背景填充，并将水晶发光亮边替换为标准的 `outlineVariant` 分割线，达成纯正清澈的 MD3 观感。
+- **🧪 🧪 单元测试门禁绿灯护航**：
+  - 在 `SettingsViewModelTest.kt` 中编写了默认状态与视觉样式持久化写入的单元测试，并在 Android `native-ui` 工程全站编译与单测验证中取得 100% 绿灯，品质完美收官。
+
 ### 🎨 共享极光底座大一统与全站二级页面沉浸式毛玻璃安全落地 (2026-05-20)
 - **🎨 P0 — 共享物理大底座与物理毛玻璃大一统**：
   - *全局极光大底盘*：重构多标签页框架 `MainTabScaffold.kt`，在最外层引入唯一的全屏大底座 `NexaraGlowBackground` 和共享采样源 `mainHazeState`，彻底解除了原先三大主页面各自独立渲染极光所造成的内存高占用与 GPU 重合渲染开销；

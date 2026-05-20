@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -105,44 +107,54 @@ fun NexaraNavGraph(
     navController: NavHostController,
     startDestination: String = NavDestinations.WELCOME
 ) {
-    NavHost(
-        navController = navController,
-        startDestination = startDestination,
-        enterTransition = {
-            fadeIn(animationSpec = tween(300)) +
-                slideIntoContainer(
-                    towards = AnimatedContentTransitionScope.SlideDirection.Left,
-                    animationSpec = tween(300),
-                    initialOffset = { it / 10 }
-                )
-        },
-        exitTransition = {
-            fadeOut(animationSpec = tween(300)) +
-                slideOutOfContainer(
-                    towards = AnimatedContentTransitionScope.SlideDirection.Left,
-                    animationSpec = tween(300),
-                    targetOffset = { -it / 10 }
-                )
-        },
-        popEnterTransition = {
-            fadeIn(animationSpec = tween(300)) +
-                slideIntoContainer(
-                    towards = AnimatedContentTransitionScope.SlideDirection.Right,
-                    animationSpec = tween(300),
-                    initialOffset = { -it / 10 }
-                )
-        },
-        popExitTransition = {
-            fadeOut(animationSpec = tween(300)) +
-                slideOutOfContainer(
-                    towards = AnimatedContentTransitionScope.SlideDirection.Right,
-                    animationSpec = tween(300),
-                    targetOffset = { it / 10 }
-                )
-        }
+    val context = LocalContext.current
+    val app = context.applicationContext as NexaraApplication
+    val settingsViewModel: SettingsViewModel = viewModel(
+        factory = SettingsViewModel.factory(app)
+    )
+    val visualStyle by settingsViewModel.visualStyle.collectAsState()
+
+    androidx.compose.runtime.CompositionLocalProvider(
+        com.promenar.nexara.ui.theme.LocalVisualStyle provides visualStyle
     ) {
-        composable(NavDestinations.WELCOME) {
-            val context = LocalContext.current
+        NavHost(
+            navController = navController,
+            startDestination = startDestination,
+            enterTransition = {
+                fadeIn(animationSpec = tween(300)) +
+                    slideIntoContainer(
+                        towards = AnimatedContentTransitionScope.SlideDirection.Left,
+                        animationSpec = tween(300),
+                        initialOffset = { it / 10 }
+                    )
+            },
+            exitTransition = {
+                fadeOut(animationSpec = tween(300)) +
+                    slideOutOfContainer(
+                        towards = AnimatedContentTransitionScope.SlideDirection.Left,
+                        animationSpec = tween(300),
+                        targetOffset = { -it / 10 }
+                    )
+            },
+            popEnterTransition = {
+                fadeIn(animationSpec = tween(300)) +
+                    slideIntoContainer(
+                        towards = AnimatedContentTransitionScope.SlideDirection.Right,
+                        animationSpec = tween(300),
+                        initialOffset = { -it / 10 }
+                    )
+            },
+            popExitTransition = {
+                fadeOut(animationSpec = tween(300)) +
+                    slideOutOfContainer(
+                        towards = AnimatedContentTransitionScope.SlideDirection.Right,
+                        animationSpec = tween(300),
+                        targetOffset = { it / 10 }
+                    )
+            }
+        ) {
+            composable(NavDestinations.WELCOME) {
+                val currentContext = LocalContext.current
             WelcomeScreen(
                 onNavigateToChat = {
                     context.getSharedPreferences("nexara_prefs", android.content.Context.MODE_PRIVATE)
@@ -454,4 +466,5 @@ fun NexaraNavGraph(
             )
         }
     }
+}
 }

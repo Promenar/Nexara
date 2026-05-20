@@ -33,6 +33,7 @@
 - ADR-016: CancellationException 传播模式与 channelFlow 生命周期规范（2026-05-18）
 - ADR-017: 知识图谱可视化 176+ 大数据量防崩溃与性能优化（2026-05-18）
 - ADR-018: 极致原生化 Jetpack Compose Canvas 知识图谱引擎演进（2026-05-18）
+- ADR-019: 经典 MD3 与极光毛玻璃免重启热切换架构（2026-05-20）
 
 ## 专项审计报告（docs/audit/）
 - RAG_SETTINGS_AUDIT_20260516.md — RAG 四页设置全量审计

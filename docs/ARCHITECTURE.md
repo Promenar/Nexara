@@ -57,6 +57,8 @@ graph TD
 - **ADR-015 (2026-05-18)**: **Nexara Metro 调试桥系统 (Phase 1)** — 对标 React Native Metro Server 的非侵入、全链路、无 Socket 双端调试桥。通过 Room 审计回调、OkHttp SSE 拦截拦截器、LlmMiddleware 中间件在 DEBUG 下以结构化格式流式打印，在桌面配合 Node.js TUI 解析器实现 100% 零网络阻碍的秒级极速调试。✅ 已实施。
 - **ADR-016 (2026-05-18)**: **CancellationException 传播模式与 channelFlow 生命周期规范** — 两项结构性缺陷根治：(1) 4 个协议类 `sendPromptSync` 的 `catch (e: Exception)` 捕获了 `CancellationException`，违反 Kotlin 结构化并发契约，导致 `withTimeoutOrNull` 失效。修复方案：在所有 `catch (e: Exception)` 前插入 `catch (e: CancellationException) { throw e }` 透传。(2) `UnifiedLlmClient.sendStream()` 使用 `channelFlow { ... awaitClose {} }`，底层协议流结束后 `awaitClose {}` 无限期挂起导致 Flow 永不完成，造成 `isGenerating` 卡死。修复方案：移除 `awaitClose {}`，让 `channelFlow` 在代码块结束时自然完成。同时 `ChatViewModel.generateMessage()` 添加 `try-finally` 确保任何退出路径都重置 `isGenerating`。✅ 已实施。
 - **ADR-017 (2026-05-18)**: **知识图谱可视化 176+ 大数据量防崩溃与性能优化** — 彻底根治 ECharts 大数据量下悬挂边（Dangling Edges）导致的 JS 解析致命崩溃、无初始布局（`initLayout`）导致的坐标重叠斥力爆炸（NaN），以及 category 索引越界和连线模板解析异常。在 `kg_template.html` 中引入前置悬挂边安全过滤映射表、显式圆周初始布局（`circular`）、精细化的力导向参数调优（手机端 `repulsion: 120`）、安全类别降级映射与 Formatter 回调，并配合全局 try-catch 和红色报错卡片展示，实现 100% 可视化防崩溃与 3 倍以上的渲染收敛性能。✅ 已实施。
+- **ADR-018 (2026-05-18)**: **极致原生化 Jetpack Compose Canvas 知识图谱引擎演进** — 从原生 HTML 渲染演进为极致流畅的高保真 Jetpack Compose Canvas 原生知识图谱绘制引擎，提升交互帧率与渲染性能。✅ 已实施。
+- **ADR-019 (2026-05-20)**: **经典 MD3 与极光毛玻璃免重启热切换架构** — 设计双相视觉热切换架构，通过 `LocalVisualStyle` 偏好分发与 `LocalHazeState` 设空策略，在经典 MD3 下完全解耦卸载 Haze 物理采样树与 Canvas 流光背景，彻底清洗历史残留色块，做到毫秒级免重启热切换与 0% 后台能耗负载。✅ 已实施，详见 [ADR/ADR-019-Haze-MD3-Double-Phase-Theme-Hot-Switch.md](./ADR/ADR-019-Haze-MD3-Double-Phase-Theme-Hot-Switch.md)。
 
 ### 新增关键组件 (2026-05-18 移植 & 调试桥落地)
 - **UnifiedLlmClient**: 统一 LLM 调用入口，整合中间件链 + ToolCallLifecycleHandler，自动路由 Protocol。

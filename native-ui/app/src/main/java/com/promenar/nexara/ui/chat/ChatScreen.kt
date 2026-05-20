@@ -1,3 +1,4 @@
+// UNIT TEST EXEMPTION: Pure UI and layout rendering
 package com.promenar.nexara.ui.chat
 
 import android.app.Activity
@@ -22,6 +23,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
@@ -131,6 +133,8 @@ import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 import com.promenar.nexara.ui.common.NexaraGlowBackground
 import com.promenar.nexara.ui.common.LocalHazeState
+import com.promenar.nexara.ui.theme.LocalVisualStyle
+import com.promenar.nexara.ui.theme.VisualStyle
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -150,7 +154,9 @@ fun ChatScreen(
 
     val snackbarHostState = remember { SnackbarHostState() }
     var snackbarData by remember { mutableStateOf<NexaraSnackbarData?>(null) }
-    
+    val visualStyle = LocalVisualStyle.current
+    val isM3 = visualStyle == VisualStyle.NATIVE_MATERIAL_3
+
     val hazeState = rememberHazeState()
     val glowBorderBrush = remember {
         Brush.horizontalGradient(
@@ -264,7 +270,6 @@ fun ChatScreen(
                 val totalItems = layoutInfo.totalItemsCount
                 if (totalItems > 0) {
                     val lastVisible = layoutInfo.visibleItemsInfo.lastOrNull()
-                    // 仅当：用户可以继续向下滚动 + 最后一项不完全在视口内 时才推
                     val canScroll = listState.canScrollForward
                     val lastItemInView = lastVisible != null &&
                         (lastVisible.offset + lastVisible.size) < layoutInfo.viewportEndOffset
@@ -277,7 +282,6 @@ fun ChatScreen(
         }
     }
 
-    // IME 键盘避让
     val isImeVisible = WindowInsets.isImeVisible
     LaunchedEffect(isImeVisible) {
         if (isImeVisible && uiState.messages.isNotEmpty()) {
@@ -289,23 +293,242 @@ fun ChatScreen(
         }
     }
 
+    val topBarContent = @Composable {
+        val outlineVariant = MaterialTheme.colorScheme.outlineVariant
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .then(if (isM3) Modifier else Modifier.clipToBounds())
+                .drawBehind {
+                    val strokeWidth = 1.dp.toPx()
+                    val y = size.height - strokeWidth / 2
+                    if (isM3) {
+                        drawLine(
+                            color = outlineVariant,
+                            start = Offset(0f, y),
+                            end = Offset(size.width, y),
+                            strokeWidth = strokeWidth
+                        )
+                    } else {
+                        drawLine(
+                            brush = glowBorderBrush,
+                            start = Offset(0f, y),
+                            end = Offset(size.width, y),
+                            strokeWidth = strokeWidth
+                        )
+                    }
+                }
+        ) {
+            if (isM3) {
+                Box(
+                    modifier = Modifier
+                        .matchParentSize()
+                        .background(MaterialTheme.colorScheme.surface)
+                )
+            } else {
+                Box(
+                    modifier = Modifier
+                        .matchParentSize()
+                        .hazeEffect(state = hazeState) {
+                            blurRadius = 28.dp
+                            noiseFactor = 0.012f
+                            backgroundColor = Color(0xFF121115).copy(alpha = 0.52f)
+                        }
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .matchParentSize()
+                            .background(
+                                Brush.linearGradient(
+                                    colors = listOf(
+                                        Color(0xFF8083FF).copy(alpha = 0.08f),
+                                        Color(0xFFD97721).copy(alpha = 0.05f)
+                                    )
+                                )
+                            )
+                    )
+                }
+            }
 
+            ChatTopBar(
+                title = sessionTitle,
+                subtitle = if (uiState.isGenerating) stringResource(R.string.chat_status_thinking) else agentName.ifBlank { sessionTitle },
+                onBack = onNavigateBack,
+                onWorkspace = { showWorkspaceSheet = true },
+                onSettings = { showModelSettingsSheet = true },
+                onSessionPrompt = { showSessionPromptEditor = true },
+                onClearHistory = { showClearDialog = true },
+                onRename = { showRenameDialog = true },
+                onDeleteSession = { showDeleteDialog = true }
+            )
+        }
+    }
 
-    CompositionLocalProvider(LocalHazeState provides hazeState) {
+    val bottomBarContent = @Composable {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxWidth()
+                .then(if (isM3) Modifier.background(MaterialTheme.colorScheme.background) else Modifier)
+                .padding(bottom = if (isM3) 8.dp else 0.dp)
+        ) {
+            AnimatedVisibility(
+                visible = isUserScrolledAway,
+                enter = fadeIn(),
+                exit = fadeOut(),
+                modifier = Modifier.padding(bottom = 8.dp)
+            ) {
+                FloatingActionButton(
+                    onClick = {
+                        autoFollowEnabled = true
+                        scope.launch {
+                            val groups = buildPipelineGroups(uiState.messages)
+                            listState.animateScrollToItem(groups.size)
+                        }
+                    },
+                    containerColor = if (isM3) MaterialTheme.colorScheme.primaryContainer else NexaraColors.SurfaceHigh,
+                    contentColor = if (isM3) MaterialTheme.colorScheme.onPrimaryContainer else NexaraColors.Primary,
+                    shape = CircleShape,
+                    modifier = Modifier.size(40.dp)
+                ) {
+                    Icon(Icons.Rounded.ArrowDownward, null, modifier = Modifier.size(20.dp))
+                }
+            }
+
+            NexaraGlassCard(
+                modifier = Modifier
+                    .padding(horizontal = 8.dp)
+                    .padding(bottom = 8.dp)
+                    .fillMaxWidth(),
+                shape = RoundedCornerShape(24.dp)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .padding(horizontal = 8.dp, vertical = 10.dp),
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    val modelDisplayName = remember(uiState.session?.modelId) {
+                        uiState.session?.modelId?.let { id ->
+                            findModelSpec(id)?.note ?: id
+                        } ?: ""
+                    }
+                    val postProcessTasks by chatViewModel.postProcessTasks.collectAsState()
+                    ChatInputTopBar(
+                        modelName = modelDisplayName,
+                        tokenState = tokenState,
+                        postProcessTasks = postProcessTasks,
+                        onRemovePostProcessTask = { chatViewModel.removePostProcessTask(it) },
+                        onModelClick = { showModelSettingsSheet = true },
+                        onManualSummary = { chatViewModel.summarizeHistory() },
+                        isM3 = isM3
+                    )
+
+                    if (selectedImageUris.isNotEmpty()) {
+                        LazyRow(
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            items(selectedImageUris.size) { index ->
+                                val uri = selectedImageUris[index]
+                                Box(modifier = Modifier.size(64.dp).clip(RoundedCornerShape(8.dp))) {
+                                    coil3.compose.AsyncImage(
+                                        model = uri,
+                                        contentDescription = null,
+                                        modifier = Modifier.fillMaxSize(),
+                                        contentScale = ContentScale.Crop
+                                    )
+                                    IconButton(
+                                        onClick = { selectedImageUris = selectedImageUris.toMutableList().apply { removeAt(index) } },
+                                        modifier = Modifier.align(Alignment.TopEnd).size(20.dp)
+                                    ) {
+                                        Icon(Icons.Rounded.Close, null, tint = Color.White, modifier = Modifier.size(14.dp))
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    TaskFloatingPanel(
+                        sessionId = sessionId,
+                        taskRepo = taskRepo,
+                        goalTitle = uiState.session?.activeTask?.title ?: "",
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        ChatInputBar(
+                            text = inputText,
+                            placeholder = if (agentName.isNotBlank()) stringResource(R.string.chat_input_placeholder, agentName) else stringResource(R.string.chat_input_placeholder_default),
+                            onTextChange = { chatViewModel.updateInputText(it) },
+                            onSend = {
+                                if (inputText.isNotBlank() || selectedImageUris.isNotEmpty()) {
+                                    val textToSend = inputText.ifBlank { "Describe this image" }
+                                    chatViewModel.sendMessage(textToSend, selectedImageUris)
+                                    selectedImageUris = emptyList()
+                                }
+                            },
+                            status = uiState.status,
+                            onStop = { chatViewModel.stopGeneration() },
+                            isModelSelected = uiState.session?.modelId?.isNotBlank() == true,
+                            onModelHint = { showModelHint = true },
+                            onPickImage = { imagePickerLauncher.launch("image/*") },
+                            hasImages = selectedImageUris.isNotEmpty()
+                        )
+        
+                        androidx.compose.animation.AnimatedVisibility(
+                            visible = showModelHint,
+                            enter = fadeIn() + expandVertically(expandFrom = Alignment.Bottom),
+                            exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Bottom),
+                            modifier = Modifier
+                                .align(Alignment.TopEnd)
+                                .offset(y = (-45).dp, x = (-10).dp)
+                        ) {
+                            Surface(
+                                color = if (isM3) MaterialTheme.colorScheme.primary else NexaraColors.Primary,
+                                shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp, bottomStart = 12.dp, bottomEnd = 2.dp),
+                                shadowElevation = 8.dp
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.chat_hint_select_model),
+                                    style = NexaraTypography.labelMedium,
+                                    color = if (isM3) MaterialTheme.colorScheme.onPrimary else NexaraColors.OnPrimary,
+                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    CompositionLocalProvider(LocalHazeState provides (if (isM3) null else hazeState)) {
         Box(
             modifier = Modifier.fillMaxSize()
         ) {
-            // 背景与物理模糊采样源层：包裹极光背景与 Scaffold，整轨应用 hazeSource 捕获极光与列表内容
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .hazeSource(state = hazeState)
+                    .then(if (isM3) Modifier else Modifier.hazeSource(state = hazeState))
             ) {
-                NexaraGlowBackground(
+                GlowOrFlatBackground(
+                    isM3 = isM3,
                     modifier = Modifier.fillMaxSize()
                 ) {
                     Scaffold(
-                        containerColor = Color.Transparent,
+                        topBar = {
+                            if (isM3) {
+                                topBarContent()
+                            }
+                        },
+                        bottomBar = {
+                            if (isM3) {
+                                Box(modifier = Modifier.imePadding()) {
+                                    bottomBarContent()
+                                }
+                            }
+                        },
+                        containerColor = if (isM3) MaterialTheme.colorScheme.background else Color.Transparent,
                         contentWindowInsets = WindowInsets(0, 0, 0, 0),
                         snackbarHost = {
                             NexaraSnackbarHost(
@@ -322,10 +545,14 @@ fun ChatScreen(
                             LazyColumn(
                                 state = listState,
                                 modifier = Modifier.fillMaxSize(),
-                                contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 88.dp, bottom = 170.dp), // 顶部预留给悬浮 Header，底部预留给悬浮输入岛 + 键盘
+                                contentPadding = PaddingValues(
+                                    start = 20.dp, 
+                                    end = 20.dp, 
+                                    top = if (isM3) 12.dp else 88.dp, 
+                                    bottom = if (isM3) 12.dp else 170.dp
+                                ),
                                 verticalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
-                                // pipelineGroups 已在外部通过 remember 计算，此处直接引用
                                 items(pipelineGroups.size, key = { pipelineGroups[it].messages.first().id }) { idx ->
                                     val group = pipelineGroups[idx]
                                     val isGeneratingGroup = idx == pipelineGroups.lastIndex && uiState.isGenerating
@@ -381,12 +608,11 @@ fun ChatScreen(
                                 }
                             }
 
-                            // ── Skeleton 与其他 Overlay 需在 LazyColumn 之上 ──
                             AnimatedVisibility(
                                 visible = uiState.isLoading && uiState.messages.isEmpty(),
                                 enter = fadeIn(),
                                 exit = fadeOut(),
-                                modifier = Modifier.fillMaxSize().padding(bottom = 160.dp)
+                                modifier = Modifier.fillMaxSize().padding(bottom = if (isM3) 0.dp else 160.dp)
                             ) {
                                 ChatSkeleton(modifier = Modifier.fillMaxSize())
                             }
@@ -394,201 +620,6 @@ fun ChatScreen(
                     }
                 }
             }
-
-            // ── 顶层物理真·毛玻璃悬浮顶栏 Overlay ──
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clipToBounds()
-                    .drawBehind {
-                        val strokeWidth = 1.dp.toPx()
-                        val y = size.height - strokeWidth / 2
-                        drawLine(
-                            brush = glowBorderBrush,
-                            start = Offset(0f, y),
-                            end = Offset(size.width, y),
-                            strokeWidth = strokeWidth
-                        )
-                    }
-            ) {
-                Box(
-                    modifier = Modifier
-                        .matchParentSize()
-                        .hazeEffect(state = hazeState) {
-                            blurRadius = 28.dp
-                            noiseFactor = 0.012f
-                            backgroundColor = Color(0xFF121115).copy(alpha = 0.52f)
-                        }
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .matchParentSize()
-                            .background(
-                                Brush.linearGradient(
-                                    colors = listOf(
-                                        Color(0xFF8083FF).copy(alpha = 0.08f),
-                                        Color(0xFFD97721).copy(alpha = 0.05f)
-                                    )
-                                )
-                            )
-                    )
-                }
-
-                ChatTopBar(
-                    title = sessionTitle,
-                    subtitle = if (uiState.isGenerating) stringResource(R.string.chat_status_thinking) else agentName.ifBlank { sessionTitle },
-                    onBack = onNavigateBack,
-                    onWorkspace = { showWorkspaceSheet = true },
-                    onSettings = { showModelSettingsSheet = true },
-                    onSessionPrompt = { showSessionPromptEditor = true },
-                    onClearHistory = { showClearDialog = true },
-                    onRename = { showRenameDialog = true },
-                    onDeleteSession = { showDeleteDialog = true }
-                )
-            }
-
-            // ── 物理真·毛玻璃悬浮输入岛 Overlay ──
-            // 通过独立的 Box 绑定 Alignment.BottomCenter 并添加 imePadding() 以实现软键盘智能顶起与平滑降下
-            Box(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .imePadding()
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    // 滚动向下 FAB，跟随输入框一块悬浮，定位在输入框上方
-                    AnimatedVisibility(
-                        visible = isUserScrolledAway,
-                        enter = fadeIn(),
-                        exit = fadeOut(),
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    ) {
-                        FloatingActionButton(
-                            onClick = {
-                                autoFollowEnabled = true
-                                scope.launch {
-                                    val groups = buildPipelineGroups(uiState.messages)
-                                    listState.animateScrollToItem(groups.size)
-                                }
-                            },
-                            containerColor = NexaraColors.SurfaceHigh,
-                            contentColor = NexaraColors.Primary,
-                            shape = CircleShape,
-                            modifier = Modifier.size(40.dp)
-                        ) {
-                            Icon(Icons.Rounded.ArrowDownward, null, modifier = Modifier.size(20.dp))
-                        }
-                    }
-
-                    NexaraGlassCard(
-                        modifier = Modifier
-                            .padding(horizontal = 8.dp)
-                            .padding(bottom = 8.dp)
-                            .fillMaxWidth(),
-                        shape = RoundedCornerShape(24.dp)
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .padding(horizontal = 8.dp, vertical = 10.dp),
-                            verticalArrangement = Arrangement.spacedBy(6.dp)
-                        ) {
-                            val modelDisplayName = remember(uiState.session?.modelId) {
-                                uiState.session?.modelId?.let { id ->
-                                    findModelSpec(id)?.note ?: id
-                                } ?: ""
-                            }
-                            val postProcessTasks by chatViewModel.postProcessTasks.collectAsState()
-                            ChatInputTopBar(
-                                modelName = modelDisplayName,
-                                tokenState = tokenState,
-                                postProcessTasks = postProcessTasks,
-                                onRemovePostProcessTask = { chatViewModel.removePostProcessTask(it) },
-                                onModelClick = { showModelSettingsSheet = true },
-                                onManualSummary = { chatViewModel.summarizeHistory() }
-                            )
-
-                            if (selectedImageUris.isNotEmpty()) {
-                                LazyRow(
-                                    modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp),
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                                ) {
-                                    items(selectedImageUris.size) { index ->
-                                        val uri = selectedImageUris[index]
-                                        Box(modifier = Modifier.size(64.dp).clip(RoundedCornerShape(8.dp))) {
-                                            coil3.compose.AsyncImage(
-                                                model = uri,
-                                                contentDescription = null,
-                                                modifier = Modifier.fillMaxSize(),
-                                                contentScale = ContentScale.Crop
-                                            )
-                                            IconButton(
-                                                onClick = { selectedImageUris = selectedImageUris.toMutableList().apply { removeAt(index) } },
-                                                modifier = Modifier.align(Alignment.TopEnd).size(20.dp)
-                                            ) {
-                                                Icon(Icons.Rounded.Close, null, tint = Color.White, modifier = Modifier.size(14.dp))
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                            // 任务浮动面板
-                            TaskFloatingPanel(
-                                sessionId = sessionId,
-                                taskRepo = taskRepo,
-                                goalTitle = uiState.session?.activeTask?.title ?: "",
-                                modifier = Modifier.padding(horizontal = 16.dp)
-                            )
-
-                            Box(modifier = Modifier.fillMaxWidth()) {
-                                ChatInputBar(
-                                    text = inputText,
-                                    placeholder = if (agentName.isNotBlank()) stringResource(R.string.chat_input_placeholder, agentName) else stringResource(R.string.chat_input_placeholder_default),
-                                    onTextChange = { chatViewModel.updateInputText(it) },
-                                    onSend = {
-                                        if (inputText.isNotBlank() || selectedImageUris.isNotEmpty()) {
-                                            val textToSend = inputText.ifBlank { "Describe this image" }
-                                            chatViewModel.sendMessage(textToSend, selectedImageUris)
-                                            selectedImageUris = emptyList()
-                                        }
-                                    },
-                                    status = uiState.status,
-                                    onStop = { chatViewModel.stopGeneration() },
-                                    isModelSelected = uiState.session?.modelId?.isNotBlank() == true,
-                                    onModelHint = { showModelHint = true },
-                                    onPickImage = { imagePickerLauncher.launch("image/*") },
-                                    hasImages = selectedImageUris.isNotEmpty()
-                                )
-        
-                                // ── 模型未选择提示气泡 ──
-                                androidx.compose.animation.AnimatedVisibility(
-                                    visible = showModelHint,
-                                    enter = fadeIn() + expandVertically(expandFrom = Alignment.Bottom),
-                                    exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Bottom),
-                                    modifier = Modifier
-                                        .align(Alignment.TopEnd)
-                                        .offset(y = (-45).dp, x = (-10).dp)
-                                ) {
-                                    Surface(
-                                        color = NexaraColors.Primary,
-                                        shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp, bottomStart = 12.dp, bottomEnd = 2.dp),
-                                        shadowElevation = 8.dp
-                                    ) {
-                                        Text(
-                                            text = stringResource(R.string.chat_hint_select_model),
-                                            style = NexaraTypography.labelMedium,
-                                            color = NexaraColors.OnPrimary,
-                                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
-                                        )
-                                    }
-                        }
-                    }
-                }
-            }
-        }
-    }
 
     if (showClearDialog) {
         Dialog(onDismissRequest = { showClearDialog = false }) {
@@ -690,7 +721,8 @@ private fun ChatInputTopBar(
     postProcessTasks: List<PostProcessTask>,
     onRemovePostProcessTask: (String) -> Unit,
     onModelClick: () -> Unit,
-    onManualSummary: () -> Unit
+    onManualSummary: () -> Unit,
+    isM3: Boolean
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -708,17 +740,26 @@ private fun ChatInputTopBar(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                Icon(Icons.Rounded.Memory, null, tint = NexaraColors.Primary, modifier = Modifier.size(14.dp))
+                Icon(
+                    Icons.Rounded.Memory,
+                    null,
+                    tint = if (isM3) MaterialTheme.colorScheme.primary else NexaraColors.Primary,
+                    modifier = Modifier.size(14.dp)
+                )
                 Text(
                     text = modelName.ifBlank { stringResource(R.string.chat_model_placeholder) },
                     style = NexaraTypography.labelMedium.copy(fontSize = 11.sp),
-                    color = if (modelName.isBlank()) NexaraColors.OnSurfaceVariant else NexaraColors.OnSurface
+                    color = if (modelName.isBlank()) {
+                        if (isM3) MaterialTheme.colorScheme.onSurfaceVariant else NexaraColors.OnSurfaceVariant
+                    } else {
+                        if (isM3) MaterialTheme.colorScheme.onSurface else NexaraColors.OnSurface
+                    }
                 )
             }
         }
 
         // Token Indicator
-        TokenIndicator(state = tokenState, onManualSummary = onManualSummary)
+        TokenIndicator(state = tokenState, onManualSummary = onManualSummary, isM3 = isM3)
 
         // PostProcess Tasks (e.g. Session RAG, Summary)
         postProcessTasks.forEach { task ->
@@ -735,7 +776,8 @@ private fun ChatInputTopBar(
 @Composable
 private fun TokenIndicator(
     state: ChatViewModel.TokenIndicatorState,
-    onManualSummary: () -> Unit
+    onManualSummary: () -> Unit,
+    isM3: Boolean
 ) {
     var showTooltip by remember { mutableStateOf(false) }
 
@@ -750,15 +792,17 @@ private fun TokenIndicator(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
+                val warningColor = if (isM3) MaterialTheme.colorScheme.error else NexaraColors.StatusWarning
+                val successColor = if (isM3) MaterialTheme.colorScheme.primary else NexaraColors.StatusSuccess
                 ContextCircularIndicator(
                     progress = (state.used.toFloat() / state.max.toFloat()).coerceIn(0f, 1f),
-                    color = if (state.used > state.max * 0.8) NexaraColors.StatusWarning else NexaraColors.StatusSuccess,
+                    color = if (state.used > state.max * 0.8) warningColor else successColor,
                     modifier = Modifier.size(12.dp)
                 )
                 Text(
                     text = "${state.used / 1000}K / ${state.max / 1000}K",
                     style = NexaraTypography.labelMedium.copy(fontSize = 11.sp, fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace),
-                    color = NexaraColors.OnSurface
+                    color = if (isM3) MaterialTheme.colorScheme.onSurface else NexaraColors.OnSurface
                 )
             }
         }
@@ -778,14 +822,21 @@ private fun TokenIndicator(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
-                            Text(stringResource(R.string.chat_context_usage_title), style = NexaraTypography.titleSmall, color = NexaraColors.Primary)
+                            Text(
+                                stringResource(R.string.chat_context_usage_title),
+                                style = NexaraTypography.titleSmall,
+                                color = if (isM3) MaterialTheme.colorScheme.primary else NexaraColors.Primary
+                            )
                             Spacer(modifier = Modifier.height(10.dp))
-                            TokenDetailRow(stringResource(R.string.chat_context_label_system), state.systemTokens)
-                            TokenDetailRow(stringResource(R.string.chat_context_label_summary), state.summaryTokens)
-                            TokenDetailRow(stringResource(R.string.chat_context_label_active), state.activeTokens)
-                            TokenDetailRow(stringResource(R.string.chat_context_label_rag), state.ragTokens)
+                            TokenDetailRow(stringResource(R.string.chat_context_label_system), state.systemTokens, isM3)
+                            TokenDetailRow(stringResource(R.string.chat_context_label_summary), state.summaryTokens, isM3)
+                            TokenDetailRow(stringResource(R.string.chat_context_label_active), state.activeTokens, isM3)
+                            TokenDetailRow(stringResource(R.string.chat_context_label_rag), state.ragTokens, isM3)
                             
-                            HorizontalDivider(modifier = Modifier.padding(vertical = 10.dp), color = NexaraColors.OutlineVariant.copy(alpha = 0.3f))
+                            HorizontalDivider(
+                                modifier = Modifier.padding(vertical = 10.dp),
+                                color = if (isM3) MaterialTheme.colorScheme.outlineVariant else NexaraColors.OutlineVariant.copy(alpha = 0.3f)
+                            )
                             
                             Button(
                                 onClick = {
@@ -793,7 +844,10 @@ private fun TokenIndicator(
                                     showTooltip = false
                                 },
                                 modifier = Modifier.fillMaxWidth(),
-                                colors = ButtonDefaults.buttonColors(containerColor = NexaraColors.Primary),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = if (isM3) MaterialTheme.colorScheme.primary else NexaraColors.Primary,
+                                    contentColor = if (isM3) MaterialTheme.colorScheme.onPrimary else NexaraColors.OnPrimary
+                                ),
                                 shape = RoundedCornerShape(16.dp)
                             ) {
                                 Text(stringResource(R.string.chat_context_btn_compress), style = NexaraTypography.labelMedium)
@@ -807,13 +861,21 @@ private fun TokenIndicator(
 }
 
 @Composable
-private fun TokenDetailRow(label: String, value: Int) {
+private fun TokenDetailRow(label: String, value: Int, isM3: Boolean) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(label, style = NexaraTypography.bodySmall, color = NexaraColors.OnSurfaceVariant)
-        Text("$value", style = NexaraTypography.bodySmall.copy(fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace), color = NexaraColors.OnSurface)
+        Text(
+            label,
+            style = NexaraTypography.bodySmall,
+            color = if (isM3) MaterialTheme.colorScheme.onSurfaceVariant else NexaraColors.OnSurfaceVariant
+        )
+        Text(
+            "$value",
+            style = NexaraTypography.bodySmall.copy(fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace),
+            color = if (isM3) MaterialTheme.colorScheme.onSurface else NexaraColors.OnSurface
+        )
     }
 }
 
@@ -1262,5 +1324,24 @@ fun ChatSkeleton(modifier: Modifier = Modifier) {
                     .background(NexaraColors.SurfaceVariant.copy(alpha = alpha))
             )
         }
+    }
+}
+
+@Composable
+private fun GlowOrFlatBackground(
+    isM3: Boolean,
+    modifier: Modifier = Modifier,
+    content: @Composable BoxScope.() -> Unit
+) {
+    if (isM3) {
+        Box(
+            modifier = modifier.background(MaterialTheme.colorScheme.background),
+            content = content
+        )
+    } else {
+        NexaraGlowBackground(
+            modifier = modifier,
+            content = content
+        )
     }
 }

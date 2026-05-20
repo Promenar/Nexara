@@ -1,3 +1,4 @@
+// UNIT TEST EXEMPTION: Pure UI and layout rendering
 package com.promenar.nexara.ui.rag
 
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -58,6 +59,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -88,6 +90,8 @@ import com.promenar.nexara.ui.rag.components.IndexingProgressBar
 import com.promenar.nexara.ui.theme.NexaraColors
 import com.promenar.nexara.ui.theme.NexaraShapes
 import com.promenar.nexara.ui.theme.NexaraTypography
+import com.promenar.nexara.ui.theme.LocalVisualStyle
+import com.promenar.nexara.ui.theme.VisualStyle
 import dev.chrisbanes.haze.rememberHazeState
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.hazeEffect
@@ -109,6 +113,8 @@ fun RagHomeScreen(
     onNavigateToGraph: () -> Unit = {},
     onNavigateToDocEditor: (String) -> Unit = {}
 ) {
+    val visualStyle = LocalVisualStyle.current
+    val isM3 = visualStyle == VisualStyle.NATIVE_MATERIAL_3
     val stats by viewModel.stats.collectAsState()
     val folders by viewModel.folders.collectAsState()
     val folderStats by viewModel.folderStats.collectAsState()
@@ -146,44 +152,60 @@ fun RagHomeScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .hazeSource(state = headerHazeState)
+                .then(if (isM3) Modifier else Modifier.hazeSource(state = headerHazeState))
         ) {
             Scaffold(
-                containerColor = Color.Transparent,
+                containerColor = if (isM3) MaterialTheme.colorScheme.background else Color.Transparent,
                 contentWindowInsets = WindowInsets.statusBars,
                 topBar = {
-                    Box(
-                        modifier = Modifier
+                    val outlineColor = MaterialTheme.colorScheme.outlineVariant
+                    val topBarModifier = if (isM3) {
+                        Modifier
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.surface)
+                            .drawBehind {
+                                drawLine(
+                                    color = outlineColor,
+                                    start = Offset(0f, size.height),
+                                    end = Offset(size.width, size.height),
+                                    strokeWidth = 1.dp.toPx()
+                                )
+                            }
+                    } else {
+                        Modifier
                             .fillMaxWidth()
                             .clipToBounds()
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .matchParentSize()
-                                .hazeEffect(state = headerHazeState) {
-                                    blurRadius = 28.dp
-                                    noiseFactor = 0.012f
-                                    backgroundColor = Color(0xFF121115).copy(alpha = 0.15f) // 轻若薄纱的通透感，完美融合背景
-                                }
-                        )
-
-                            TopAppBar(
-                                title = {
-                                    Text(
-                                        stringResource(R.string.rag_home_title),
-                                        style = NexaraTypography.headlineLarge,
-                                        color = NexaraColors.OnSurface,
-                                        modifier = Modifier.padding(start = 4.dp)
-                                    )
-                                },
-                                colors = TopAppBarDefaults.topAppBarColors(
-                                    containerColor = Color.Transparent,
-                                    titleContentColor = NexaraColors.OnSurface
-                                )
+                    }
+                    Box(modifier = topBarModifier) {
+                        if (!isM3) {
+                            Box(
+                                modifier = Modifier
+                                    .matchParentSize()
+                                    .hazeEffect(state = headerHazeState) {
+                                        blurRadius = 28.dp
+                                        noiseFactor = 0.012f
+                                        backgroundColor = Color(0xFF121115).copy(alpha = 0.15f) // 轻若薄纱的通透感，完美融合背景
+                                    }
                             )
                         }
+
+                        TopAppBar(
+                            title = {
+                                Text(
+                                    stringResource(R.string.rag_home_title),
+                                    style = NexaraTypography.headlineLarge,
+                                    color = if (isM3) MaterialTheme.colorScheme.onSurface else NexaraColors.OnSurface,
+                                    modifier = Modifier.padding(start = 4.dp)
+                                )
+                            },
+                            colors = TopAppBarDefaults.topAppBarColors(
+                                containerColor = Color.Transparent,
+                                titleContentColor = if (isM3) MaterialTheme.colorScheme.onSurface else NexaraColors.OnSurface
+                            )
+                        )
                     }
-                ) { paddingValues ->
+                }
+            ) { paddingValues ->
         // NewFolderDialog
         if (showNewFolderDialog) {
             var folderName by remember { mutableStateOf("") }
@@ -208,9 +230,9 @@ fun RagHomeScreen(
                         Text(stringResource(R.string.common_btn_cancel))
                     }
                 },
-                containerColor = NexaraColors.SurfaceDim,
-                titleContentColor = NexaraColors.OnSurface,
-                textContentColor = NexaraColors.OnSurfaceVariant
+                containerColor = if (isM3) MaterialTheme.colorScheme.surface else NexaraColors.SurfaceDim,
+                titleContentColor = if (isM3) MaterialTheme.colorScheme.onSurface else NexaraColors.OnSurface,
+                textContentColor = if (isM3) MaterialTheme.colorScheme.onSurfaceVariant else NexaraColors.OnSurfaceVariant
             )
         }
 
@@ -230,8 +252,8 @@ fun RagHomeScreen(
             TabRow(
                 selectedTabIndex = currentTab.ordinal,
                 containerColor = Color.Transparent,
-                contentColor = NexaraColors.Primary,
-                divider = { HorizontalDivider(color = NexaraColors.OutlineVariant) }
+                contentColor = if (isM3) MaterialTheme.colorScheme.primary else NexaraColors.Primary,
+                divider = { HorizontalDivider(color = if (isM3) MaterialTheme.colorScheme.outlineVariant else NexaraColors.OutlineVariant) }
             ) {
                 listOf(
                     PortalTab.DOCUMENTS to (Icons.Rounded.Description to stringResource(R.string.rag_home_documents)),
@@ -242,8 +264,8 @@ fun RagHomeScreen(
                         selected = currentTab == tab,
                         onClick = { if (tab == PortalTab.GRAPH) onNavigateToGraph() else currentTab = tab },
                         text = { Text(data.second, style = NexaraTypography.labelMedium) },
-                        selectedContentColor = NexaraColors.Primary,
-                        unselectedContentColor = NexaraColors.OnSurfaceVariant
+                        selectedContentColor = if (isM3) MaterialTheme.colorScheme.primary else NexaraColors.Primary,
+                        unselectedContentColor = if (isM3) MaterialTheme.colorScheme.onSurfaceVariant else NexaraColors.OnSurfaceVariant
                     )
                 }
             }
@@ -289,6 +311,8 @@ fun RagHomeScreen(
             when (currentTab) {
                 PortalTab.DOCUMENTS -> {
                     // Toolbar
+                    val toolbarBtnBg = if (isM3) MaterialTheme.colorScheme.surfaceVariant else NexaraColors.SurfaceHigh
+                    val toolbarBtnTint = if (isM3) MaterialTheme.colorScheme.primary else NexaraColors.Primary
                     Row(
                         modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -297,26 +321,26 @@ fun RagHomeScreen(
                         Box(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(8.dp))
-                                .background(NexaraColors.SurfaceHigh)
+                                .background(toolbarBtnBg)
                                 .clickable { showNewFolderDialog = true }
                                 .padding(horizontal = 12.dp, vertical = 8.dp)
                         ) {
                             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                                Icon(Icons.Rounded.CreateNewFolder, null, tint = NexaraColors.Primary, modifier = Modifier.size(16.dp))
-                                Text(stringResource(R.string.rag_home_new), style = NexaraTypography.labelMedium.copy(fontSize = 11.sp), color = NexaraColors.Primary)
+                                Icon(Icons.Rounded.CreateNewFolder, null, tint = toolbarBtnTint, modifier = Modifier.size(16.dp))
+                                Text(stringResource(R.string.rag_home_new), style = NexaraTypography.labelMedium.copy(fontSize = 11.sp), color = toolbarBtnTint)
                             }
                         }
                         // 上传
                         Box(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(8.dp))
-                                .background(NexaraColors.SurfaceHigh)
+                                .background(toolbarBtnBg)
                                 .clickable { filePickerLauncher.launch(arrayOf("*/*")) }
                                 .padding(horizontal = 12.dp, vertical = 8.dp)
                         ) {
                             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                                Icon(Icons.Rounded.CloudUpload, null, tint = NexaraColors.Primary, modifier = Modifier.size(16.dp))
-                                Text(stringResource(R.string.rag_home_upload_area), style = NexaraTypography.labelMedium.copy(fontSize = 11.sp), color = NexaraColors.Primary)
+                                Icon(Icons.Rounded.CloudUpload, null, tint = toolbarBtnTint, modifier = Modifier.size(16.dp))
+                                Text(stringResource(R.string.rag_home_upload_area), style = NexaraTypography.labelMedium.copy(fontSize = 11.sp), color = toolbarBtnTint)
                             }
                         }
                     }
@@ -347,39 +371,58 @@ fun RagHomeScreen(
                         contentPadding = PaddingValues(bottom = 24.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        item { Text(stringResource(R.string.rag_home_memory_section), style = NexaraTypography.headlineMedium, color = NexaraColors.OnSurface) }
+                        item { Text(stringResource(R.string.rag_home_memory_section), style = NexaraTypography.headlineMedium, color = if (isM3) MaterialTheme.colorScheme.onSurface else NexaraColors.OnSurface) }
                         item {
-                            NexaraGlassCard(modifier = Modifier.fillMaxWidth(), shape = NexaraShapes.large as RoundedCornerShape) {
+                            NexaraGlassCard(
+                                modifier = Modifier.fillMaxWidth(),
+                                shape = NexaraShapes.large as RoundedCornerShape,
+                                containerColor = if (isM3) MaterialTheme.colorScheme.surfaceVariant else null
+                            ) {
                                 Column(Modifier.fillMaxWidth().padding(16.dp), Arrangement.spacedBy(4.dp)) {
-                                    Text(stringResource(R.string.rag_home_memory_total_count, memoryVectors.size), style = NexaraTypography.labelMedium.copy(fontWeight = FontWeight.Bold), color = NexaraColors.OnSurface)
-                                    Text(stringResource(R.string.rag_home_memory_est_tokens, memoryVectors.sumOf { it.content.length / 3 }), style = NexaraTypography.bodyMedium.copy(fontSize = 11.sp, fontFamily = FontFamily.Monospace), color = NexaraColors.OnSurfaceVariant)
+                                    Text(stringResource(R.string.rag_home_memory_total_count, memoryVectors.size), style = NexaraTypography.labelMedium.copy(fontWeight = FontWeight.Bold), color = if (isM3) MaterialTheme.colorScheme.onSurface else NexaraColors.OnSurface)
+                                    Text(stringResource(R.string.rag_home_memory_est_tokens, memoryVectors.sumOf { it.content.length / 3 }), style = NexaraTypography.bodyMedium.copy(fontSize = 11.sp, fontFamily = FontFamily.Monospace), color = if (isM3) MaterialTheme.colorScheme.onSurfaceVariant else NexaraColors.OnSurfaceVariant)
                                 }
                             }
                         }
                         if (memoryVectors.isEmpty()) {
                             item {
-                                NexaraGlassCard(Modifier.fillMaxWidth(), NexaraShapes.large as RoundedCornerShape) {
+                                NexaraGlassCard(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    shape = NexaraShapes.large as RoundedCornerShape,
+                                    containerColor = if (isM3) MaterialTheme.colorScheme.surfaceVariant else null
+                                ) {
                                     Column(Modifier.fillMaxWidth().padding(32.dp), Arrangement.spacedBy(8.dp), Alignment.CenterHorizontally) {
-                                        Icon(Icons.Rounded.Psychology, null, tint = NexaraColors.OnSurfaceVariant, modifier = Modifier.size(40.dp))
-                                        Text(stringResource(R.string.rag_home_memory_empty), style = NexaraTypography.labelMedium, color = NexaraColors.OnSurface)
+                                        Icon(Icons.Rounded.Psychology, null, tint = if (isM3) MaterialTheme.colorScheme.onSurfaceVariant else NexaraColors.OnSurfaceVariant, modifier = Modifier.size(40.dp))
+                                        Text(stringResource(R.string.rag_home_memory_empty), style = NexaraTypography.labelMedium, color = if (isM3) MaterialTheme.colorScheme.onSurface else NexaraColors.OnSurface)
                                     }
                                 }
                             }
                         } else {
                             items(memoryVectors, key = { it.id }) { memory ->
                                 val isExpanded = expandedMemoryId == memory.id
+                                val targetContainerColor = if (isM3) {
+                                    if (isExpanded) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant
+                                } else {
+                                    null
+                                }
+                                val targetTextColor = if (isM3) {
+                                    if (isExpanded) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface
+                                } else {
+                                    NexaraColors.OnSurface
+                                }
                                 NexaraGlassCard(
-                                    Modifier.fillMaxWidth().combinedClickable(
+                                    modifier = Modifier.fillMaxWidth().combinedClickable(
                                         onClick = { expandedMemoryId = if (isExpanded) null else memory.id },
                                         onLongClick = { memoryDeleteTarget = memory }
                                     ),
-                                    RoundedCornerShape(12.dp)
+                                    shape = RoundedCornerShape(12.dp),
+                                    containerColor = targetContainerColor
                                 ) {
                                     Column(modifier = Modifier.fillMaxWidth().padding(12.dp, 10.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                                        Text(text = if (isExpanded) memory.content else memory.content.take(120) + if (memory.content.length > 120) "…" else "", style = NexaraTypography.bodyMedium, color = NexaraColors.OnSurface, maxLines = if (isExpanded) Int.MAX_VALUE else 2, overflow = TextOverflow.Ellipsis)
+                                        Text(text = if (isExpanded) memory.content else memory.content.take(120) + if (memory.content.length > 120) "…" else "", style = NexaraTypography.bodyMedium, color = targetTextColor, maxLines = if (isExpanded) Int.MAX_VALUE else 2, overflow = TextOverflow.Ellipsis)
                                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                                            memory.sessionId?.let { Text("Session: ${it.take(8)}…", style = NexaraTypography.bodyMedium.copy(fontSize = 11.sp, fontFamily = FontFamily.Monospace), color = NexaraColors.Primary.copy(alpha = 0.7f)) }
-                                            Text(text = java.text.SimpleDateFormat("MMM d, HH:mm", java.util.Locale.getDefault()).format(java.util.Date(memory.createdAt)), style = NexaraTypography.bodyMedium.copy(fontSize = 11.sp), color = NexaraColors.OnSurfaceVariant)
+                                            memory.sessionId?.let { Text("Session: ${it.take(8)}…", style = NexaraTypography.bodyMedium.copy(fontSize = 11.sp, fontFamily = FontFamily.Monospace), color = if (isM3) MaterialTheme.colorScheme.primary.copy(alpha = 0.8f) else NexaraColors.Primary.copy(alpha = 0.7f)) }
+                                            Text(text = java.text.SimpleDateFormat("MMM d, HH:mm", java.util.Locale.getDefault()).format(java.util.Date(memory.createdAt)), style = NexaraTypography.bodyMedium.copy(fontSize = 11.sp), color = if (isM3) MaterialTheme.colorScheme.onSurfaceVariant else NexaraColors.OnSurfaceVariant)
                                         }
                                     }
                                 }
@@ -400,8 +443,8 @@ fun RagHomeScreen(
                     .align(Alignment.BottomCenter)
                     .padding(start = 20.dp, end = 20.dp, bottom = 24.dp)
                     .clip(RoundedCornerShape(16.dp))
-                    .background(NexaraColors.SurfaceLow.copy(alpha = 0.95f))
-                    .border(0.5.dp, NexaraColors.GlassBorder, RoundedCornerShape(16.dp))
+                    .background(if (isM3) MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.95f) else NexaraColors.SurfaceLow.copy(alpha = 0.95f))
+                    .border(0.5.dp, if (isM3) MaterialTheme.colorScheme.outlineVariant else NexaraColors.GlassBorder, RoundedCornerShape(16.dp))
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth().padding(16.dp),
@@ -412,18 +455,18 @@ fun RagHomeScreen(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(text = stringResource(R.string.rag_home_selected_count, selectedIds.size), style = NexaraTypography.labelMedium, color = NexaraColors.OnSurfaceVariant)
-                        Text(text = stringResource(R.string.rag_home_clear_all), style = NexaraTypography.labelMedium, color = NexaraColors.Primary, modifier = Modifier.clickable { selectedIds.clear() })
+                        Text(text = stringResource(R.string.rag_home_selected_count, selectedIds.size), style = NexaraTypography.labelMedium, color = if (isM3) MaterialTheme.colorScheme.onSurfaceVariant else NexaraColors.OnSurfaceVariant)
+                        Text(text = stringResource(R.string.rag_home_clear_all), style = NexaraTypography.labelMedium, color = if (isM3) MaterialTheme.colorScheme.primary else NexaraColors.Primary, modifier = Modifier.clickable { selectedIds.clear() })
                     }
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Box(Modifier.clip(RoundedCornerShape(10.dp)).background(NexaraColors.SurfaceContainer).clickable { showMoveSheet = true }.padding(horizontal = 14.dp, vertical = 10.dp)) {
-                            Icon(Icons.Rounded.Folder, null, tint = NexaraColors.OnSurface, modifier = Modifier.size(18.dp))
+                        Box(Modifier.clip(RoundedCornerShape(10.dp)).background(if (isM3) MaterialTheme.colorScheme.surface else NexaraColors.SurfaceContainer).clickable { showMoveSheet = true }.padding(horizontal = 14.dp, vertical = 10.dp)) {
+                            Icon(Icons.Rounded.Folder, null, tint = if (isM3) MaterialTheme.colorScheme.onSurface else NexaraColors.OnSurface, modifier = Modifier.size(18.dp))
                         }
-                        Box(Modifier.clip(RoundedCornerShape(10.dp)).background(NexaraColors.SurfaceContainer).clickable { viewModel.reindexDocuments(selectedIds.toList()); selectedIds.clear() }.padding(horizontal = 14.dp, vertical = 10.dp)) {
-                            Icon(Icons.Rounded.Refresh, null, tint = NexaraColors.OnSurface, modifier = Modifier.size(18.dp))
+                        Box(Modifier.clip(RoundedCornerShape(10.dp)).background(if (isM3) MaterialTheme.colorScheme.surface else NexaraColors.SurfaceContainer).clickable { viewModel.reindexDocuments(selectedIds.toList()); selectedIds.clear() }.padding(horizontal = 14.dp, vertical = 10.dp)) {
+                            Icon(Icons.Rounded.Refresh, null, tint = if (isM3) MaterialTheme.colorScheme.onSurface else NexaraColors.OnSurface, modifier = Modifier.size(18.dp))
                         }
-                        Box(Modifier.clip(RoundedCornerShape(10.dp)).background(NexaraColors.Error.copy(alpha = 0.1f)).border(0.5.dp, NexaraColors.Error.copy(alpha = 0.3f), RoundedCornerShape(10.dp)).clickable { showDeleteConfirm = true }.padding(horizontal = 14.dp, vertical = 10.dp)) {
-                            Icon(Icons.Rounded.Delete, null, tint = NexaraColors.Error, modifier = Modifier.size(18.dp))
+                        Box(Modifier.clip(RoundedCornerShape(10.dp)).background(if (isM3) MaterialTheme.colorScheme.errorContainer else NexaraColors.Error.copy(alpha = 0.1f)).border(0.5.dp, if (isM3) MaterialTheme.colorScheme.error else NexaraColors.Error.copy(alpha = 0.3f), RoundedCornerShape(10.dp)).clickable { showDeleteConfirm = true }.padding(horizontal = 14.dp, vertical = 10.dp)) {
+                            Icon(Icons.Rounded.Delete, null, tint = if (isM3) MaterialTheme.colorScheme.error else NexaraColors.Error, modifier = Modifier.size(18.dp))
                         }
                     }
                 }
@@ -434,13 +477,13 @@ fun RagHomeScreen(
 
     // Move sheet
     if (showMoveSheet) {
-        ModalBottomSheet(onDismissRequest = { showMoveSheet = false }, sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true), containerColor = NexaraColors.SurfaceLow, shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)) {
+        ModalBottomSheet(onDismissRequest = { showMoveSheet = false }, sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true), containerColor = if (isM3) MaterialTheme.colorScheme.surface else NexaraColors.SurfaceLow, shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)) {
             Column(Modifier.fillMaxWidth().fillMaxHeight(0.7f).padding(24.dp).padding(bottom = 40.dp), Arrangement.spacedBy(8.dp)) {
-                Text(stringResource(R.string.rag_home_move_to_folder), style = NexaraTypography.headlineMedium, color = NexaraColors.OnSurface)
+                Text(stringResource(R.string.rag_home_move_to_folder), style = NexaraTypography.headlineMedium, color = if (isM3) MaterialTheme.colorScheme.onSurface else NexaraColors.OnSurface)
                 folders.forEach { folder ->
-                    Row(Modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp)).background(NexaraColors.SurfaceContainer).clickable { showMoveSheet = false; selectedIds.clear() }.padding(14.dp), Arrangement.SpaceBetween, Alignment.CenterVertically) {
-                        Text(folder.name, style = NexaraTypography.labelMedium, color = NexaraColors.OnSurface)
-                        Text(stringResource(R.string.rag_home_docs_count, folderStats[folder.id] ?: 0), style = NexaraTypography.bodyMedium.copy(fontSize = 12.sp), color = NexaraColors.OnSurfaceVariant)
+                    Row(Modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp)).background(if (isM3) MaterialTheme.colorScheme.surfaceVariant else NexaraColors.SurfaceContainer).clickable { showMoveSheet = false; selectedIds.clear() }.padding(14.dp), Arrangement.SpaceBetween, Alignment.CenterVertically) {
+                        Text(folder.name, style = NexaraTypography.labelMedium, color = if (isM3) MaterialTheme.colorScheme.onSurface else NexaraColors.OnSurface)
+                        Text(stringResource(R.string.rag_home_docs_count, folderStats[folder.id] ?: 0), style = NexaraTypography.bodyMedium.copy(fontSize = 12.sp), color = if (isM3) MaterialTheme.colorScheme.onSurfaceVariant else NexaraColors.OnSurfaceVariant)
                     }
                 }
             }
@@ -449,15 +492,15 @@ fun RagHomeScreen(
 
     // Delete confirm
     if (showDeleteConfirm) {
-        ModalBottomSheet(onDismissRequest = { showDeleteConfirm = false }, containerColor = NexaraColors.SurfaceLow, shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)) {
+        ModalBottomSheet(onDismissRequest = { showDeleteConfirm = false }, containerColor = if (isM3) MaterialTheme.colorScheme.surface else NexaraColors.SurfaceLow, shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)) {
             Column(Modifier.fillMaxWidth().fillMaxHeight(0.7f).padding(24.dp).padding(bottom = 40.dp), Arrangement.spacedBy(16.dp)) {
-                Text(stringResource(R.string.rag_home_delete_confirm_title, selectedIds.size), style = NexaraTypography.headlineMedium, color = NexaraColors.OnSurface)
+                Text(stringResource(R.string.rag_home_delete_confirm_title, selectedIds.size), style = NexaraTypography.headlineMedium, color = if (isM3) MaterialTheme.colorScheme.onSurface else NexaraColors.OnSurface)
                 Row(Modifier.fillMaxWidth(), Arrangement.spacedBy(8.dp)) {
-                    Box(Modifier.weight(1f).clip(RoundedCornerShape(12.dp)).background(NexaraColors.SurfaceContainer).clickable { showDeleteConfirm = false }.padding(vertical = 14.dp), contentAlignment = Alignment.Center) {
-                        Text(stringResource(R.string.common_btn_cancel), style = NexaraTypography.labelMedium, color = NexaraColors.OnSurface)
+                    Box(Modifier.weight(1f).clip(RoundedCornerShape(12.dp)).background(if (isM3) MaterialTheme.colorScheme.surfaceVariant else NexaraColors.SurfaceContainer).clickable { showDeleteConfirm = false }.padding(vertical = 14.dp), contentAlignment = Alignment.Center) {
+                        Text(stringResource(R.string.common_btn_cancel), style = NexaraTypography.labelMedium, color = if (isM3) MaterialTheme.colorScheme.onSurface else NexaraColors.OnSurface)
                     }
-                    Box(Modifier.weight(1f).clip(RoundedCornerShape(12.dp)).background(NexaraColors.Error).clickable { viewModel.deleteDocuments(selectedIds.toList()); selectedIds.clear(); showDeleteConfirm = false }.padding(vertical = 14.dp), contentAlignment = Alignment.Center) {
-                        Text(stringResource(R.string.shared_btn_delete), style = NexaraTypography.labelMedium, color = NexaraColors.OnError)
+                    Box(Modifier.weight(1f).clip(RoundedCornerShape(12.dp)).background(if (isM3) MaterialTheme.colorScheme.error else NexaraColors.Error).clickable { viewModel.deleteDocuments(selectedIds.toList()); selectedIds.clear(); showDeleteConfirm = false }.padding(vertical = 14.dp), contentAlignment = Alignment.Center) {
+                        Text(stringResource(R.string.shared_btn_delete), style = NexaraTypography.labelMedium, color = if (isM3) MaterialTheme.colorScheme.onError else NexaraColors.OnError)
                     }
                 }
             }
@@ -471,13 +514,17 @@ fun RagHomeScreen(
             title = { Text(stringResource(R.string.rag_home_memory_delete_confirm_title), style = NexaraTypography.headlineSmall) },
             text = { Text(stringResource(R.string.rag_home_memory_delete_confirm_msg), style = NexaraTypography.bodyMedium) },
             confirmButton = {
-                Button(onClick = { memoryDeleteTarget?.let { viewModel.deleteMemoryVector(it.id) }; memoryDeleteTarget = null },
-                    colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = NexaraColors.Error)) {
+                Button(
+                    onClick = { memoryDeleteTarget?.let { viewModel.deleteMemoryVector(it.id) }; memoryDeleteTarget = null },
+                    colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = if (isM3) MaterialTheme.colorScheme.error else NexaraColors.Error)
+                ) {
                     Text(stringResource(R.string.shared_btn_delete))
                 }
             },
             dismissButton = { TextButton(onClick = { memoryDeleteTarget = null }) { Text(stringResource(R.string.common_btn_cancel)) } },
-            containerColor = NexaraColors.SurfaceDim, titleContentColor = NexaraColors.OnSurface, textContentColor = NexaraColors.OnSurfaceVariant
+            containerColor = if (isM3) MaterialTheme.colorScheme.surface else NexaraColors.SurfaceDim,
+            titleContentColor = if (isM3) MaterialTheme.colorScheme.onSurface else NexaraColors.OnSurface,
+            textContentColor = if (isM3) MaterialTheme.colorScheme.onSurfaceVariant else NexaraColors.OnSurfaceVariant
         )
     }
 }

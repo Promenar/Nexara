@@ -47,6 +47,11 @@ fun NexaraSlider(
     val isDragged by interactionSource.collectIsDraggedAsState()
     val isActive = isPressed || isDragged
 
+    val visualStyle = com.promenar.nexara.ui.theme.LocalVisualStyle.current
+    val isM3 = visualStyle == com.promenar.nexara.ui.theme.VisualStyle.NATIVE_MATERIAL_3
+    val finalActiveColor = if (isM3) androidx.compose.material3.MaterialTheme.colorScheme.primary else activeColor
+    val finalInactiveColor = if (isM3) androidx.compose.material3.MaterialTheme.colorScheme.surfaceVariant else inactiveColor
+
     val thumbScale by animateFloatAsState(
         targetValue = if (isActive) 1.2f else 1f,
         label = "thumbScale"
@@ -73,7 +78,7 @@ fun NexaraSlider(
                     .shadow(if (isActive) 6.dp else 2.dp, CircleShape)
                     .background(Color.White, CircleShape)
                     .padding(2.dp)
-                    .background(activeColor, CircleShape),
+                    .background(finalActiveColor, CircleShape),
                 contentAlignment = Alignment.Center
             ) {
                 // 中间的白色小圆点，增加精致感
@@ -89,8 +94,8 @@ fun NexaraSlider(
                 sliderState = sliderState,
                 modifier = Modifier.height(trackHeight),
                 colors = SliderDefaults.colors(
-                    activeTrackColor = activeColor,
-                    inactiveTrackColor = inactiveColor,
+                    activeTrackColor = finalActiveColor,
+                    inactiveTrackColor = finalInactiveColor,
                     activeTickColor = Color.Transparent, // 隐藏刻度点
                     inactiveTickColor = Color.Transparent
                 ),

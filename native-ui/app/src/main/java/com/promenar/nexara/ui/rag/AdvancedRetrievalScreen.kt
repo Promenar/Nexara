@@ -1,3 +1,4 @@
+// UNIT TEST EXEMPTION: Pure UI and layout rendering
 package com.promenar.nexara.ui.rag
 
 import android.app.Application
@@ -25,6 +26,7 @@ import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -47,6 +49,8 @@ import com.promenar.nexara.ui.common.*
 import com.promenar.nexara.ui.theme.NexaraColors
 import com.promenar.nexara.ui.theme.NexaraShapes
 import com.promenar.nexara.ui.theme.NexaraTypography
+import com.promenar.nexara.ui.theme.LocalVisualStyle
+import com.promenar.nexara.ui.theme.VisualStyle
 import com.promenar.nexara.data.manager.ProviderManager
 
 @Composable
@@ -54,6 +58,8 @@ fun AdvancedRetrievalScreen(
     viewModel: RagViewModel = viewModel(factory = RagViewModel.factory(LocalContext.current.applicationContext as Application)),
     onNavigateBack: () -> Unit
 ) {
+    val visualStyle = LocalVisualStyle.current
+    val isM3 = visualStyle == VisualStyle.NATIVE_MATERIAL_3
     val config by viewModel.config.collectAsState()
     val presetRerankModel by ProviderManager.getInstance().rerankModelId.collectAsState()
     val isRerankAvailable = presetRerankModel.isNotBlank()
@@ -77,7 +83,7 @@ fun AdvancedRetrievalScreen(
                         text = stringResource(R.string.retrieval_memory_section),
                         style = NexaraTypography.titleMedium,
                         fontWeight = FontWeight.SemiBold,
-                        color = NexaraColors.OnSurface
+                        color = if (isM3) MaterialTheme.colorScheme.onSurface else NexaraColors.OnSurface
                     )
                     AdaptiveSlider(
                         label = stringResource(R.string.retrieval_memory_limit),
@@ -112,7 +118,7 @@ fun AdvancedRetrievalScreen(
                         text = stringResource(R.string.retrieval_doc_section),
                         style = NexaraTypography.titleMedium,
                         fontWeight = FontWeight.SemiBold,
-                        color = NexaraColors.OnSurface
+                        color = if (isM3) MaterialTheme.colorScheme.onSurface else NexaraColors.OnSurface
                     )
                     Spacer(modifier = Modifier.height(2.dp))
                     AdaptiveSlider(
@@ -148,7 +154,7 @@ fun AdvancedRetrievalScreen(
                         text = stringResource(R.string.retrieval_hybrid_section),
                         style = NexaraTypography.titleMedium,
                         fontWeight = FontWeight.SemiBold,
-                        color = NexaraColors.OnSurface
+                        color = if (isM3) MaterialTheme.colorScheme.onSurface else NexaraColors.OnSurface
                     )
                     Spacer(modifier = Modifier.height(2.dp))
                     SettingsToggle(
@@ -199,19 +205,19 @@ fun AdvancedRetrievalScreen(
                             text = stringResource(R.string.retrieval_rerank_section),
                             style = NexaraTypography.titleMedium,
                             fontWeight = FontWeight.SemiBold,
-                            color = NexaraColors.OnSurface
+                            color = if (isM3) MaterialTheme.colorScheme.onSurface else NexaraColors.OnSurface
                         )
                         if (!isRerankAvailable) {
                             Box(
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(4.dp))
-                                    .background(NexaraColors.StatusWarning.copy(alpha = 0.15f))
+                                    .background(if (isM3) MaterialTheme.colorScheme.error.copy(alpha = 0.15f) else NexaraColors.StatusWarning.copy(alpha = 0.15f))
                                     .padding(horizontal = 8.dp, vertical = 3.dp)
                             ) {
                                 Text(
                                     "未配置模型",
                                     style = NexaraTypography.labelMedium.copy(fontSize = 10.sp),
-                                    color = NexaraColors.StatusWarning
+                                    color = if (isM3) MaterialTheme.colorScheme.error else NexaraColors.StatusWarning
                                 )
                             }
                         }
@@ -220,7 +226,7 @@ fun AdvancedRetrievalScreen(
                         Text(
                             text = "⚠️ 未检测到已配置的重排模型。重排序是多数据源融合的高性能基石，请先前往「提供商管理」添加 Rerank 服务并设为默认重排模型。",
                             style = NexaraTypography.bodySmall.copy(fontSize = 11.sp, lineHeight = 16.sp),
-                            color = NexaraColors.StatusWarning.copy(alpha = 0.9f)
+                            color = if (isM3) MaterialTheme.colorScheme.error.copy(alpha = 0.9f) else NexaraColors.StatusWarning.copy(alpha = 0.9f)
                         )
                     }
                     Spacer(modifier = Modifier.height(2.dp))
@@ -266,7 +272,7 @@ fun AdvancedRetrievalScreen(
                         text = stringResource(R.string.retrieval_rewrite_section),
                         style = NexaraTypography.titleMedium,
                         fontWeight = FontWeight.SemiBold,
-                        color = NexaraColors.OnSurface
+                        color = if (isM3) MaterialTheme.colorScheme.onSurface else NexaraColors.OnSurface
                     )
                     Spacer(modifier = Modifier.height(2.dp))
                     SettingsToggle(
@@ -282,14 +288,28 @@ fun AdvancedRetrievalScreen(
                     ) {
                         listOf("hyde" to "HyDE", "multi-query" to "Multi-Query", "expansion" to "Expansion").forEach { (value, label) ->
                             val isSelected = config.queryRewriteStrategy == value
-                            val bg by animateColorAsState(
-                                if (isSelected) NexaraColors.Primary.copy(alpha = 0.12f) else NexaraColors.SurfaceContainer,
-                                label = value
-                            )
-                            val border by animateColorAsState(
-                                if (isSelected) NexaraColors.Primary.copy(alpha = 0.3f) else Color.Transparent,
-                                label = "$value-b"
-                            )
+                            
+                            val targetBg = if (isM3) {
+                                if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant
+                            } else {
+                                if (isSelected) NexaraColors.Primary.copy(alpha = 0.12f) else NexaraColors.SurfaceContainer
+                            }
+                            
+                            val targetBorder = if (isM3) {
+                                if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant
+                            } else {
+                                if (isSelected) NexaraColors.Primary.copy(alpha = 0.3f) else Color.Transparent
+                            }
+                            
+                            val targetTextColor = if (isM3) {
+                                if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant
+                            } else {
+                                if (isSelected) NexaraColors.Primary else NexaraColors.OnSurface
+                            }
+
+                            val bg by animateColorAsState(targetBg, label = value)
+                            val border by animateColorAsState(targetBorder, label = "$value-b")
+                            
                             Box(modifier = Modifier.weight(1f)) {
                                 Box(
                                     modifier = Modifier
@@ -306,7 +326,7 @@ fun AdvancedRetrievalScreen(
                                     Text(
                                         label,
                                         style = NexaraTypography.labelMedium.copy(fontSize = 13.sp),
-                                        color = if (isSelected) NexaraColors.Primary else NexaraColors.OnSurface
+                                        color = targetTextColor
                                     )
                                 }
                             }
@@ -334,6 +354,8 @@ private fun AdaptiveSlider(
     rerankBadge: Boolean,
     onValueChange: (Float) -> Unit
 ) {
+    val visualStyle = LocalVisualStyle.current
+    val isM3 = visualStyle == VisualStyle.NATIVE_MATERIAL_3
     val alpha = if (enabled) 1f else 0.4f
     Column(modifier = Modifier.fillMaxWidth()) {
         Row(
@@ -341,7 +363,7 @@ private fun AdaptiveSlider(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(label, style = NexaraTypography.labelMedium, color = NexaraColors.OnSurface.copy(alpha = alpha))
+            Text(label, style = NexaraTypography.labelMedium, color = if (isM3) MaterialTheme.colorScheme.onSurface.copy(alpha = alpha) else NexaraColors.OnSurface.copy(alpha = alpha))
             Row(
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
                 verticalAlignment = Alignment.CenterVertically
@@ -350,17 +372,17 @@ private fun AdaptiveSlider(
                     Box(
                         modifier = Modifier
                             .clip(RoundedCornerShape(4.dp))
-                            .background(NexaraColors.Primary.copy(alpha = 0.15f))
+                            .background(if (isM3) MaterialTheme.colorScheme.primary.copy(alpha = 0.15f) else NexaraColors.Primary.copy(alpha = 0.15f))
                             .padding(horizontal = 6.dp, vertical = 2.dp)
                     ) {
                         Text(
                             stringResource(R.string.retrieval_rerank_badge),
                             style = NexaraTypography.bodySmall.copy(fontSize = 9.sp, fontFamily = FontFamily.Monospace),
-                            color = NexaraColors.Primary
+                            color = if (isM3) MaterialTheme.colorScheme.primary else NexaraColors.Primary
                         )
                     }
                 }
-                Text(displayValue, style = NexaraTypography.bodySmall, color = if (enabled) NexaraColors.Primary else NexaraColors.OnSurfaceVariant)
+                Text(displayValue, style = NexaraTypography.bodySmall, color = if (enabled) (if (isM3) MaterialTheme.colorScheme.primary else NexaraColors.Primary) else (if (isM3) MaterialTheme.colorScheme.onSurfaceVariant else NexaraColors.OnSurfaceVariant))
             }
         }
         Spacer(modifier = Modifier.height(6.dp))

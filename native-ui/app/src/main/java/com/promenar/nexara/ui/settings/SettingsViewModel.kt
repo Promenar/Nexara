@@ -21,6 +21,7 @@ import com.promenar.nexara.data.repository.ISkillRepository
 import com.promenar.nexara.ui.chat.manager.registry.McpSkillRegistry
 import com.promenar.nexara.domain.repository.ITokenStatsRepository
 import com.promenar.nexara.domain.repository.IVectorRepository
+import com.promenar.nexara.ui.theme.VisualStyle
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -128,6 +129,9 @@ class SettingsViewModel(
     private val _hapticEnabled = MutableStateFlow(true)
     val hapticEnabled: StateFlow<Boolean> = _hapticEnabled.asStateFlow()
 
+    private val _visualStyle = MutableStateFlow(VisualStyle.HAZE_GLASSMORPHISM)
+    val visualStyle: StateFlow<VisualStyle> = _visualStyle.asStateFlow()
+
     val providers: StateFlow<List<ProviderListItem>> = pm.providers
 
     private val _selectedSettingsTab = MutableStateFlow(0) // 0: App, 1: Provider
@@ -221,6 +225,12 @@ class SettingsViewModel(
         _themeMode.value = prefs.getString("theme_mode", "dark") ?: "dark"
         _hapticEnabled.value = prefs.getBoolean("haptic_enabled", true)
         _loopLimit.value = prefs.getInt("loop_limit", 50)
+        val savedStyle = prefs.getString("pref_visual_style", VisualStyle.HAZE_GLASSMORPHISM.name)
+        _visualStyle.value = try {
+            VisualStyle.valueOf(savedStyle ?: VisualStyle.HAZE_GLASSMORPHISM.name)
+        } catch (e: Exception) {
+            VisualStyle.HAZE_GLASSMORPHISM
+        }
     }
 
     fun refreshProviders() {
@@ -492,6 +502,11 @@ class SettingsViewModel(
     fun setThemeMode(mode: String) {
         _themeMode.value = mode
         prefs.edit().putString("theme_mode", mode).apply()
+    }
+
+    fun setThemeVisualStyle(style: VisualStyle) {
+        _visualStyle.value = style
+        prefs.edit().putString("pref_visual_style", style.name).apply()
     }
 
     fun setHaptic(enabled: Boolean) {

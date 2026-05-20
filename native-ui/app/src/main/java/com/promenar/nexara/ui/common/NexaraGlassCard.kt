@@ -24,6 +24,14 @@ import dev.chrisbanes.haze.hazeEffect
  * NexaraPageLayout 在内部 provide，NexaraGlassCard 自动读取。
  * 不在 NexaraPageLayout 内的卡片将获得 null（降级为纯色底盘）。
  */
+import androidx.compose.material3.Surface
+import androidx.compose.foundation.BorderStroke
+
+/**
+ * 通过 CompositionLocal 向下传播 HazeState。
+ * NexaraPageLayout 在内部 provide，NexaraGlassCard 自动读取。
+ * 不在 NexaraPageLayout 内的卡片将获得 null（降级为纯色底盘）。
+ */
 val LocalHazeState = compositionLocalOf<HazeState?> { null }
 
 /**
@@ -39,6 +47,8 @@ val LocalHazeState = compositionLocalOf<HazeState?> { null }
  * - **underlay 模式**：调用方通过 underlay lambda 传入自定义底层，框架自动施加模糊
  * - 所有装饰层（霓虹渐变底色、水晶发光斜射线、彩虹渐变发光边框）始终保留
  */
+// UNIT TEST EXEMPTION: Pure UI and layout rendering
+
 @Composable
 fun NexaraGlassCard(
     modifier: Modifier = Modifier,
@@ -46,9 +56,11 @@ fun NexaraGlassCard(
     onClick: (() -> Unit)? = null,
     // 可选的克隆背景层（物理对齐模式）
     underlay: (@Composable BoxScope.() -> Unit)? = null,
+    containerColor: Color? = null,
     content: @Composable BoxScope.() -> Unit
 ) {
     val hazeState = LocalHazeState.current
+    val visualStyle = com.promenar.nexara.ui.theme.LocalVisualStyle.current
 
     // 裁剪边界并处理点击事件
     val baseModifier = modifier.clip(shape)
@@ -58,18 +70,34 @@ fun NexaraGlassCard(
         baseModifier
     }
 
-    // 渐变发光边框 Brush（从 primary-container 到 tertiary-container 渐变）
-    val glowBorderBrush = Brush.linearGradient(
-        colors = listOf(
-            Color(0xFF8083FF).copy(alpha = 0.55f), // primary-container 霓虹蓝紫
-            Color(0xFFD97721).copy(alpha = 0.45f), // tertiary-container 梦幻金橘
-            Color(0xFF8083FF).copy(alpha = 0.55f)
+    if (visualStyle == com.promenar.nexara.ui.theme.VisualStyle.NATIVE_MATERIAL_3) {
+        // 样式与纯布局展示组件，根据全局规范 §3.4 单元测试门禁，在此显式声明豁免单元测试
+        Surface(
+            modifier = clickModifier,
+            shape = shape,
+            color = containerColor ?: com.promenar.nexara.ui.theme.NexaraColors.SurfaceContainer,
+            border = BorderStroke(1.dp, com.promenar.nexara.ui.theme.NexaraColors.OutlineVariant.copy(alpha = 0.4f)),
+            shadowElevation = 2.dp,
+            tonalElevation = 1.dp
+        ) {
+            Box(
+                modifier = Modifier,
+                content = content
+            )
+        }
+    } else {
+        // 渐变发光边框 Brush（从 primary-container 到 tertiary-container 渐变）
+        val glowBorderBrush = Brush.linearGradient(
+            colors = listOf(
+                Color(0xFF8083FF).copy(alpha = 0.55f), // primary-container 霓虹蓝紫
+                Color(0xFFD97721).copy(alpha = 0.45f), // tertiary-container 梦幻金橘
+                Color(0xFF8083FF).copy(alpha = 0.55f)
+            )
         )
-    )
 
-    Box(
-        modifier = clickModifier
-    ) {
+        Box(
+            modifier = clickModifier
+        ) {
         if (underlay != null) {
             // ==============================
             // 【物理对齐模式】自定义 underlay + 模糊
@@ -203,5 +231,6 @@ fun NexaraGlassCard(
             modifier = Modifier,
             content = content
         )
+        }
     }
 }

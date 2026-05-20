@@ -1,7 +1,11 @@
+// UNIT TEST EXEMPTION: Pure UI and layout rendering
 package com.promenar.nexara.ui.rag
 
 import android.app.Application
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.material3.MaterialTheme
+import com.promenar.nexara.ui.theme.LocalVisualStyle
+import com.promenar.nexara.ui.theme.VisualStyle
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -73,6 +77,8 @@ fun GlobalRagConfigScreen(
     onNavigateToAdvanced: () -> Unit = {},
     onNavigateToDebug: () -> Unit = {}
 ) {
+    val visualStyle = LocalVisualStyle.current
+    val isM3 = visualStyle == VisualStyle.NATIVE_MATERIAL_3
     val config by viewModel.config.collectAsState()
     var showClearDialog by remember { mutableStateOf(false) }
     var clearWithGraph by remember { mutableStateOf(true) }
@@ -99,24 +105,34 @@ fun GlobalRagConfigScreen(
                     Triple(Icons.Rounded.Code, codingLabel, "coding")
                 ).forEach { (icon, title, presetId) ->
                     val isSelected = config.currentPreset == presetId
-                    val bgColor by animateColorAsState(
-                        if (isSelected) NexaraColors.Primary.copy(alpha = 0.08f) else NexaraColors.GlassSurface,
-                        label = title
-                    )
-                    val borderColor by animateColorAsState(
-                        if (isSelected) NexaraColors.Primary.copy(alpha = 0.4f) else NexaraColors.GlassBorder,
-                        label = "$title-border"
-                    )
+                    val presetBgColor = if (isM3) {
+                        Color.Transparent
+                    } else {
+                        if (isSelected) NexaraColors.Primary.copy(alpha = 0.08f) else NexaraColors.GlassSurface
+                    }
+                    val cardContainerColor = if (isM3) {
+                        if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant
+                    } else {
+                        null
+                    }
+                    val currentBorderColor = if (isM3) {
+                        if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant
+                    } else {
+                        if (isSelected) NexaraColors.Primary.copy(alpha = 0.4f) else NexaraColors.GlassBorder
+                    }
+                    val borderThickness = if (isSelected) 1.5.dp else 0.5.dp
+
                     Box(modifier = Modifier.weight(1f)) {
                         NexaraGlassCard(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .border(
-                                    if (isSelected) 1.5.dp else 0.5.dp,
-                                    borderColor,
+                                    borderThickness,
+                                    currentBorderColor,
                                     NexaraShapes.large as RoundedCornerShape
                                 ),
                             shape = NexaraShapes.large as RoundedCornerShape,
+                            containerColor = cardContainerColor,
                             onClick = {
                                 viewModel.applyPreset(presetId)
                             }
@@ -124,7 +140,7 @@ fun GlobalRagConfigScreen(
                             Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .background(bgColor)
+                                    .background(presetBgColor)
                                     .padding(14.dp),
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.spacedBy(6.dp)
@@ -132,13 +148,21 @@ fun GlobalRagConfigScreen(
                                 Icon(
                                     imageVector = icon,
                                     contentDescription = title,
-                                    tint = if (isSelected) NexaraColors.Primary else NexaraColors.Outline,
+                                    tint = if (isSelected) {
+                                        if (isM3) MaterialTheme.colorScheme.primary else NexaraColors.Primary
+                                    } else {
+                                        if (isM3) MaterialTheme.colorScheme.onSurfaceVariant else NexaraColors.Outline
+                                    },
                                     modifier = Modifier.size(24.dp)
                                 )
                                 Text(
                                     text = title,
                                     style = NexaraTypography.labelMedium,
-                                    color = if (isSelected) NexaraColors.OnSurface else NexaraColors.OnSurfaceVariant
+                                    color = if (isSelected) {
+                                        if (isM3) MaterialTheme.colorScheme.onPrimaryContainer else NexaraColors.OnSurface
+                                    } else {
+                                        if (isM3) MaterialTheme.colorScheme.onSurfaceVariant else NexaraColors.OnSurfaceVariant
+                                    }
                                 )
                             }
                         }

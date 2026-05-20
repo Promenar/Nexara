@@ -55,15 +55,33 @@ fun MainTabScaffold(
 ) {
     var selectedTab by rememberSaveable { mutableStateOf(AppTab.CHAT) }
     val mainHazeState = rememberHazeState()
+    
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val viewModel: com.promenar.nexara.ui.settings.SettingsViewModel = androidx.lifecycle.viewmodel.compose.viewModel(
+        factory = com.promenar.nexara.ui.settings.SettingsViewModel.factory(context.applicationContext as android.app.Application)
+    )
+    val visualStyle by viewModel.visualStyle.collectAsState()
+    val isM3 = visualStyle == com.promenar.nexara.ui.theme.VisualStyle.NATIVE_MATERIAL_3
 
-    CompositionLocalProvider(LocalHazeState provides mainHazeState) {
+    CompositionLocalProvider(
+        LocalHazeState provides (if (isM3) null else mainHazeState),
+        com.promenar.nexara.ui.theme.LocalVisualStyle provides visualStyle
+    ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            // Layer 0: 全屏大极光底座
-            NexaraGlowBackground(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .hazeSource(state = mainHazeState)
-            ) {}
+            if (isM3) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(androidx.compose.material3.MaterialTheme.colorScheme.background)
+                )
+            } else {
+                // Layer 0: 全屏大极光底座
+                NexaraGlowBackground(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .hazeSource(state = mainHazeState)
+                ) {}
+            }
 
             Scaffold(
                 containerColor = Color.Transparent,
@@ -109,6 +127,8 @@ private fun NexaraBottomNavigationBar(
     onTabSelected: (AppTab) -> Unit
 ) {
     val mainHazeState = LocalHazeState.current
+    val visualStyle = com.promenar.nexara.ui.theme.LocalVisualStyle.current
+    val isM3 = visualStyle == com.promenar.nexara.ui.theme.VisualStyle.NATIVE_MATERIAL_3
 
     Box(
         modifier = Modifier
@@ -116,47 +136,64 @@ private fun NexaraBottomNavigationBar(
             .windowInsetsPadding(WindowInsets.navigationBars)
             .clipToBounds()
     ) {
-        // Haze 物理高斯模糊背景层（与顶栏及卡片效果完全对齐，28.dp 极致毛玻璃磨砂感）
-        Box(
-            modifier = Modifier
-                .matchParentSize()
-                .hazeEffect(state = mainHazeState) {
-                    blurRadius = 28.dp
-                    noiseFactor = 0.012f
-                    backgroundColor = Color(0xFF121115).copy(alpha = 0.40f) // 极致高档清透偏光
-                }
-        ) {
-            // 水晶微光折射层
+        if (isM3) {
+            // 经典 M3 纯净不透明底盘
             Box(
                 modifier = Modifier
                     .matchParentSize()
+                    .background(androidx.compose.material3.MaterialTheme.colorScheme.surface)
+            )
+            // 经典 M3 原生扁平分割线
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(androidx.compose.material3.MaterialTheme.colorScheme.outlineVariant)
+                    .align(Alignment.TopCenter)
+            )
+        } else {
+            // Haze 物理高斯模糊背景层（与顶栏及卡片效果完全对齐，28.dp 极致毛玻璃磨砂感）
+            Box(
+                modifier = Modifier
+                    .matchParentSize()
+                    .hazeEffect(state = mainHazeState) {
+                        blurRadius = 28.dp
+                        noiseFactor = 0.012f
+                        backgroundColor = Color(0xFF121115).copy(alpha = 0.40f) // 极致高档清透偏光
+                    }
+            ) {
+                // 水晶微光折射层
+                Box(
+                    modifier = Modifier
+                        .matchParentSize()
+                        .background(
+                            Brush.verticalGradient(
+                                colors = listOf(
+                                    Color.White.copy(alpha = 0.04f),
+                                    Color.Transparent
+                                )
+                            )
+                        )
+                )
+            }
+
+            // 顶边超细发光亮边（0.5.dp 晶莹质感）
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(0.5.dp)
                     .background(
-                        Brush.verticalGradient(
+                        Brush.horizontalGradient(
                             colors = listOf(
-                                Color.White.copy(alpha = 0.04f),
-                                Color.Transparent
+                                Color(0xFF8083FF).copy(alpha = 0.35f),
+                                Color(0xFFD97721).copy(alpha = 0.25f),
+                                Color(0xFF8083FF).copy(alpha = 0.35f)
                             )
                         )
                     )
+                    .align(Alignment.TopCenter)
             )
         }
-
-        // 顶边超细发光亮边（0.5.dp 晶莹质感）
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(0.5.dp)
-                .background(
-                    Brush.horizontalGradient(
-                        colors = listOf(
-                            Color(0xFF8083FF).copy(alpha = 0.35f),
-                            Color(0xFFD97721).copy(alpha = 0.25f),
-                            Color(0xFF8083FF).copy(alpha = 0.35f)
-                        )
-                    )
-                )
-                .align(Alignment.TopCenter)
-        )
 
         Row(
             modifier = Modifier
@@ -186,6 +223,8 @@ private fun TabItem(
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
+    val visualStyle = com.promenar.nexara.ui.theme.LocalVisualStyle.current
+    val isM3 = visualStyle == com.promenar.nexara.ui.theme.VisualStyle.NATIVE_MATERIAL_3
 
     val scale by animateFloatAsState(
         targetValue = if (isPressed) 0.90f else 1f,
@@ -214,7 +253,7 @@ private fun TabItem(
             modifier = Modifier
                 .size(24.dp)
                 .drawBehind {
-                    if (isSelected) {
+                    if (isSelected && !isM3) {
                         drawIntoCanvas { canvas ->
                             val paint = Paint().apply {
                                 color = glowColor

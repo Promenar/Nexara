@@ -1,3 +1,4 @@
+// UNIT TEST EXEMPTION: Pure UI and layout rendering
 package com.promenar.nexara.ui.rag
 
 import android.app.Application
@@ -22,6 +23,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -43,6 +46,8 @@ import com.promenar.nexara.ui.rag.canvas.GraphPhysicsSimulator
 import com.promenar.nexara.ui.rag.canvas.InteractiveGraphCanvas
 import com.promenar.nexara.ui.theme.NexaraColors
 import com.promenar.nexara.ui.theme.NexaraTypography
+import com.promenar.nexara.ui.theme.LocalVisualStyle
+import com.promenar.nexara.ui.theme.VisualStyle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,6 +55,9 @@ fun KnowledgeGraphScreen(
     viewModel: KnowledgeGraphViewModel = viewModel(factory = KnowledgeGraphViewModel.factory(LocalContext.current.applicationContext as Application)),
     onNavigateBack: () -> Unit
 ) {
+    val visualStyle = LocalVisualStyle.current
+    val isM3 = visualStyle == VisualStyle.NATIVE_MATERIAL_3
+
     val nodes by viewModel.nodes.collectAsState()
     val edges by viewModel.edges.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
@@ -59,7 +67,7 @@ fun KnowledgeGraphScreen(
     val scope = rememberCoroutineScope()
     val simulator = remember(scope) { GraphPhysicsSimulator(scope) }
 
-    // 动态同步数据流至力导向模拟器
+    // 动态同步 data流至力导向模拟器
     LaunchedEffect(nodes, edges) {
         simulator.setData(nodes, edges)
     }
@@ -72,21 +80,23 @@ fun KnowledgeGraphScreen(
     }
 
     Scaffold(
-        containerColor = NexaraColors.CanvasBackground,
+        containerColor = if (isM3) MaterialTheme.colorScheme.background else NexaraColors.CanvasBackground,
         topBar = {
-            Column {
+            Column(
+                modifier = if (isM3) Modifier.background(MaterialTheme.colorScheme.surface) else Modifier
+            ) {
                 TopAppBar(
                     title = {
                         Column(modifier = Modifier.padding(start = 4.dp)) {
                             Text(
                                 stringResource(R.string.kg_title),
                                 style = NexaraTypography.headlineLarge,
-                                color = NexaraColors.OnSurface
+                                color = if (isM3) MaterialTheme.colorScheme.onSurface else NexaraColors.OnSurface
                             )
                             Text(
                                 stringResource(R.string.kg_stats_summary, nodes.size, edges.size),
                                 style = NexaraTypography.labelMedium,
-                                color = NexaraColors.OnSurfaceVariant
+                                color = if (isM3) MaterialTheme.colorScheme.onSurfaceVariant else NexaraColors.OnSurfaceVariant
                             )
                         }
                     },
@@ -95,7 +105,7 @@ fun KnowledgeGraphScreen(
                     },
 
                     colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = NexaraColors.CanvasBackground.copy(alpha = 0.8f)
+                        containerColor = if (isM3) MaterialTheme.colorScheme.surface else NexaraColors.CanvasBackground.copy(alpha = 0.8f)
                     )
                 )
                 Row(
@@ -111,11 +121,19 @@ fun KnowledgeGraphScreen(
                     ).forEach { (mode, label) ->
                         val isActive = viewMode == mode
                         val bgColor by animateColorAsState(
-                            if (isActive) NexaraColors.Primary.copy(alpha = 0.12f) else NexaraColors.SurfaceHigh,
+                            if (isM3) {
+                                if (isActive) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant
+                            } else {
+                                if (isActive) NexaraColors.Primary.copy(alpha = 0.12f) else NexaraColors.SurfaceHigh
+                            },
                             label = "tabBg"
                         )
                         val textColor by animateColorAsState(
-                            if (isActive) NexaraColors.Primary else NexaraColors.OnSurfaceVariant,
+                            if (isM3) {
+                                if (isActive) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant
+                            } else {
+                                if (isActive) NexaraColors.Primary else NexaraColors.OnSurfaceVariant
+                            },
                             label = "tabText"
                         )
                         Box(
@@ -125,7 +143,7 @@ fun KnowledgeGraphScreen(
                                 .then(
                                     if (isActive) Modifier.border(
                                         0.5.dp,
-                                        NexaraColors.Primary.copy(alpha = 0.3f),
+                                        if (isM3) MaterialTheme.colorScheme.primary else NexaraColors.Primary.copy(alpha = 0.3f),
                                         RoundedCornerShape(8.dp)
                                     ) else Modifier
                                 )
@@ -139,6 +157,13 @@ fun KnowledgeGraphScreen(
                             )
                         }
                     }
+                }
+                if (isM3) {
+                    HorizontalDivider(
+                        color = MaterialTheme.colorScheme.outlineVariant,
+                        thickness = 1.dp,
+                        modifier = Modifier.padding(top = 4.dp)
+                    )
                 }
             }
         }
@@ -157,7 +182,7 @@ fun KnowledgeGraphScreen(
             } else if (isLoading) {
                 androidx.compose.material3.CircularProgressIndicator(
                     modifier = Modifier.align(Alignment.Center),
-                    color = NexaraColors.Primary
+                    color = if (isM3) MaterialTheme.colorScheme.primary else NexaraColors.Primary
                 )
             } else {
                 Box(
@@ -167,7 +192,7 @@ fun KnowledgeGraphScreen(
                     Text(
                         stringResource(R.string.kg_empty_graph),
                         style = NexaraTypography.bodyMedium,
-                        color = NexaraColors.OnSurfaceVariant
+                        color = if (isM3) MaterialTheme.colorScheme.onSurfaceVariant else NexaraColors.OnSurfaceVariant
                     )
                 }
             }

@@ -59,6 +59,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -115,6 +116,9 @@ import androidx.compose.ui.geometry.Offset
 import com.promenar.nexara.ui.common.LocalHazeState
 import androidx.compose.runtime.CompositionLocalProvider
 
+import com.promenar.nexara.ui.theme.VisualStyle
+import com.promenar.nexara.ui.theme.LocalVisualStyle
+
 private enum class SettingsTab(val labelRes: Int) {
     APP(R.string.settings_tab_app),
     PROVIDER(R.string.settings_tab_provider)
@@ -134,6 +138,8 @@ fun UserSettingsHomeScreen(
     val themeMode by viewModel.themeMode.collectAsState()
     val haptic by viewModel.hapticEnabled.collectAsState()
     val providers by viewModel.providers.collectAsState()
+    val visualStyle by viewModel.visualStyle.collectAsState()
+    val isM3 = visualStyle == VisualStyle.NATIVE_MATERIAL_3
 
     val selectedSettingsTab by viewModel.selectedSettingsTab.collectAsState()
     val selectedTab = remember(selectedSettingsTab) { SettingsTab.entries[selectedSettingsTab] }
@@ -141,6 +147,7 @@ fun UserSettingsHomeScreen(
     var editingName by remember { mutableStateOf(userName) }
     var showDeleteDialog by remember { mutableStateOf<String?>(null) }
     var showLanguageDialog by remember { mutableStateOf(false) }
+    var showVisualStyleDialog by remember { mutableStateOf(false) }
     var showModelPickerType by remember { mutableStateOf<String?>(null) }
 
     val cropLauncher = rememberLauncherForActivityResult(
@@ -189,14 +196,12 @@ fun UserSettingsHomeScreen(
     val headerHazeState = rememberHazeState()
 
     Box(modifier = Modifier.fillMaxSize()) {
-        // Layer 1: 内容采样区
+        // Layer 1: 内容采样区 (M3 模式下彻底卸载 Haze 采样树)
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .hazeSource(state = headerHazeState)
+            modifier = if (isM3) Modifier.fillMaxSize() else Modifier.fillMaxSize().hazeSource(state = headerHazeState)
         ) {
             Scaffold(
-                containerColor = Color.Transparent,
+                containerColor = if (isM3) androidx.compose.material3.MaterialTheme.colorScheme.background else Color.Transparent,
                 contentWindowInsets = WindowInsets.statusBars,
                 topBar = {
                     Box(
@@ -204,15 +209,23 @@ fun UserSettingsHomeScreen(
                             .fillMaxWidth()
                             .clipToBounds()
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .matchParentSize()
-                                .hazeEffect(state = headerHazeState) {
-                                    blurRadius = 28.dp
-                                    noiseFactor = 0.012f
-                                    backgroundColor = Color(0xFF121115).copy(alpha = 0.15f) // 轻若薄纱的通透感，完美融合背景
-                                }
-                        )
+                        if (isM3) {
+                            Box(
+                                modifier = Modifier
+                                    .matchParentSize()
+                                    .background(androidx.compose.material3.MaterialTheme.colorScheme.surface)
+                            )
+                        } else {
+                            Box(
+                                modifier = Modifier
+                                    .matchParentSize()
+                                    .hazeEffect(state = headerHazeState) {
+                                        blurRadius = 28.dp
+                                        noiseFactor = 0.012f
+                                        backgroundColor = Color(0xFF121115).copy(alpha = 0.15f) // 轻若薄纱的通透感，完美融合背景
+                                    }
+                            )
+                        }
 
                             TopAppBar(
                                 title = {
@@ -265,6 +278,7 @@ fun UserSettingsHomeScreen(
                                     showNameEditor = true
                                 },
                                 onShowLanguageDialog = { showLanguageDialog = true },
+                                onShowVisualStyleDialog = { showVisualStyleDialog = true },
                                 onShowModelPicker = { type ->
                                     viewModel.refreshProviders()
                                     showModelPickerType = type
@@ -388,6 +402,17 @@ fun UserSettingsHomeScreen(
             onDismiss = { showLanguageDialog = false }
         )
     }
+
+    if (showVisualStyleDialog) {
+        VisualStyleSelectorDialog(
+            currentStyle = visualStyle,
+            onSelect = { style ->
+                viewModel.setThemeVisualStyle(style)
+                showVisualStyleDialog = false
+            },
+            onDismiss = { showVisualStyleDialog = false }
+        )
+    }
 }
 }
 }
@@ -448,6 +473,7 @@ private fun AppSettingsContent(
     onChangeAvatar: () -> Unit,
     onEditName: () -> Unit,
     onShowLanguageDialog: () -> Unit,
+    onShowVisualStyleDialog: () -> Unit,
     onShowModelPicker: (String) -> Unit,
     onAboutClick: () -> Unit
 ) {
@@ -483,6 +509,16 @@ private fun AppSettingsContent(
                 title = stringResource(R.string.settings_language),
                 subtitle = if (language == "zh") stringResource(R.string.settings_language_zh) else stringResource(R.string.settings_language_en),
                 onClick = { onShowLanguageDialog() }
+            )
+        }
+
+        item {
+            val visualStyle by viewModel.visualStyle.collectAsState()
+            NexaraSettingsItem(
+                icon = Icons.Rounded.Visibility,
+                title = "视觉主题",
+                subtitle = if (visualStyle == VisualStyle.HAZE_GLASSMORPHISM) "极光物理毛玻璃" else "经典原生 M3",
+                onClick = { onShowVisualStyleDialog() }
             )
         }
 
@@ -788,7 +824,10 @@ private fun ProviderCard(
     onDelete: () -> Unit
 ) {
     var cardOffset by remember { mutableStateOf(androidx.compose.ui.geometry.Offset.Zero) }
+    val visualStyle = com.promenar.nexara.ui.theme.LocalVisualStyle.current
+    val isM3 = visualStyle == com.promenar.nexara.ui.theme.VisualStyle.NATIVE_MATERIAL_3
 
+    // UI 布局与样式代码，根据全局开发规范 §3.4，在此声明豁免单元测试
     NexaraGlassCard(
         modifier = Modifier
             .fillMaxWidth()
@@ -797,8 +836,10 @@ private fun ProviderCard(
                 cardOffset = coordinates.positionInWindow()
             },
         shape = NexaraShapes.medium as RoundedCornerShape,
-        underlay = {
-            NexaraGlowBackground(alignmentOffset = cardOffset) {}
+        underlay = if (isM3) null else {
+            {
+                NexaraGlowBackground(alignmentOffset = cardOffset) {}
+            }
         }
     ) {
         Row(
@@ -815,21 +856,21 @@ private fun ProviderCard(
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape)
-                    .background(NexaraColors.Primary.copy(alpha = 0.1f)),
+                    .background(if (isM3) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f) else NexaraColors.Primary.copy(alpha = 0.1f)),
                 contentAlignment = Alignment.Center
             ) {
                 if (providerIcon != null) {
                     Icon(
                         painter = painterResource(id = providerIcon),
                         contentDescription = null,
-                        tint = NexaraColors.Primary,
+                        tint = if (isM3) MaterialTheme.colorScheme.primary else NexaraColors.Primary,
                         modifier = Modifier.size(24.dp)
                     )
                 } else {
                     Icon(
                         imageVector = Icons.Rounded.Psychology,
                         contentDescription = null,
-                        tint = NexaraColors.Primary,
+                        tint = if (isM3) MaterialTheme.colorScheme.primary else NexaraColors.Primary,
                         modifier = Modifier.size(20.dp)
                     )
                 }
@@ -841,7 +882,7 @@ private fun ProviderCard(
                 Text(
                     text = provider.name,
                     style = NexaraTypography.headlineMedium.copy(fontSize = 17.sp, fontWeight = FontWeight.Bold),
-                    color = NexaraColors.OnSurface
+                    color = if (isM3) MaterialTheme.colorScheme.onSurface else NexaraColors.OnSurface
                 )
                 
                 Row(
@@ -851,7 +892,7 @@ private fun ProviderCard(
                     Text(
                         text = provider.typeName,
                         style = NexaraTypography.labelMedium,
-                        color = NexaraColors.OnSurfaceVariant
+                        color = if (isM3) MaterialTheme.colorScheme.onSurfaceVariant else NexaraColors.OnSurfaceVariant
                     )
                     
                     // 分隔小点
@@ -859,13 +900,16 @@ private fun ProviderCard(
                         modifier = Modifier
                             .size(3.dp)
                             .clip(CircleShape)
-                            .background(NexaraColors.Outline.copy(alpha = 0.5f))
+                            .background(
+                                if (isM3) MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f) 
+                                else NexaraColors.Outline.copy(alpha = 0.5f)
+                            )
                     )
                     
                     Text(
                         text = provider.baseUrl.removePrefix("https://").removePrefix("http://"),
                         style = NexaraTypography.labelMedium.copy(fontFamily = SpaceGrotesk, fontSize = 11.sp),
-                        color = NexaraColors.Outline,
+                        color = if (isM3) MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f) else NexaraColors.Outline,
                         maxLines = 1
                     )
                 }
@@ -883,7 +927,7 @@ private fun ProviderCard(
                     Icon(
                         imageVector = Icons.Rounded.Tune,
                         contentDescription = stringResource(R.string.settings_manage_models),
-                        tint = NexaraColors.Primary,
+                        tint = if (isM3) MaterialTheme.colorScheme.primary else NexaraColors.Primary,
                         modifier = Modifier.size(18.dp)
                     )
                 }
@@ -894,7 +938,7 @@ private fun ProviderCard(
                     Icon(
                         imageVector = Icons.Rounded.Edit,
                         contentDescription = null,
-                        tint = NexaraColors.OnSurfaceVariant,
+                        tint = if (isM3) MaterialTheme.colorScheme.onSurfaceVariant else NexaraColors.OnSurfaceVariant,
                         modifier = Modifier.size(18.dp)
                     )
                 }
@@ -905,7 +949,7 @@ private fun ProviderCard(
                     Icon(
                         imageVector = Icons.Rounded.Delete,
                         contentDescription = null,
-                        tint = NexaraColors.StatusError.copy(alpha = 0.7f),
+                        tint = if (isM3) MaterialTheme.colorScheme.error else NexaraColors.StatusError.copy(alpha = 0.7f),
                         modifier = Modifier.size(18.dp)
                     )
                 }
@@ -921,10 +965,13 @@ private fun NameEditDialog(
     onSave: (String) -> Unit
 ) {
     var name by remember { mutableStateOf(currentName) }
+    val visualStyle = com.promenar.nexara.ui.theme.LocalVisualStyle.current
+    val isM3 = visualStyle == com.promenar.nexara.ui.theme.VisualStyle.NATIVE_MATERIAL_3
 
+    // UI 布局与样式代码，根据全局开发规范 §3.4，在此声明豁免单元测试
     AlertDialog(
         onDismissRequest = onDismiss,
-        containerColor = NexaraColors.SurfaceContainer,
+        containerColor = if (isM3) MaterialTheme.colorScheme.surfaceContainerHigh else NexaraColors.SurfaceContainer,
         title = { Text(stringResource(R.string.settings_edit_name), style = NexaraTypography.headlineMedium) },
         text = {
             OutlinedTextField(
@@ -954,9 +1001,12 @@ private fun LanguageSelectorDialog(
     onSelect: (String) -> Unit,
     onDismiss: () -> Unit
 ) {
+    val visualStyle = com.promenar.nexara.ui.theme.LocalVisualStyle.current
+    val isM3 = visualStyle == com.promenar.nexara.ui.theme.VisualStyle.NATIVE_MATERIAL_3
+
     AlertDialog(
         onDismissRequest = onDismiss,
-        containerColor = NexaraColors.SurfaceContainer,
+        containerColor = if (isM3) MaterialTheme.colorScheme.surfaceContainerHigh else NexaraColors.SurfaceContainer,
         title = { Text(stringResource(R.string.settings_language), style = NexaraTypography.headlineMedium) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -982,19 +1032,115 @@ private fun LanguageOption(
     isSelected: Boolean,
     onSelect: () -> Unit
 ) {
+    val visualStyle = com.promenar.nexara.ui.theme.LocalVisualStyle.current
+    val isM3 = visualStyle == com.promenar.nexara.ui.theme.VisualStyle.NATIVE_MATERIAL_3
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(8.dp))
-            .background(if (isSelected) NexaraColors.Primary.copy(alpha = 0.1f) else Color.Transparent)
+            .background(
+                if (isSelected) {
+                    if (isM3) MaterialTheme.colorScheme.primaryContainer else NexaraColors.Primary.copy(alpha = 0.1f)
+                } else {
+                    Color.Transparent
+                }
+            )
             .clickable { onSelect() }
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(text = label, style = NexaraTypography.bodyLarge, color = if (isSelected) NexaraColors.Primary else NexaraColors.OnSurface)
+        Text(
+            text = label, 
+            style = NexaraTypography.bodyLarge, 
+            color = if (isSelected) {
+                if (isM3) MaterialTheme.colorScheme.onPrimaryContainer else NexaraColors.Primary
+            } else {
+                if (isM3) MaterialTheme.colorScheme.onSurface else NexaraColors.OnSurface
+            }
+        )
         if (isSelected) {
-            Icon(imageVector = Icons.Rounded.Check, contentDescription = null, tint = NexaraColors.Primary)
+            Icon(
+                imageVector = Icons.Rounded.Check, 
+                contentDescription = null, 
+                tint = if (isM3) MaterialTheme.colorScheme.primary else NexaraColors.Primary
+            )
+        }
+    }
+}
+
+@Composable
+private fun VisualStyleSelectorDialog(
+    currentStyle: VisualStyle,
+    onSelect: (VisualStyle) -> Unit,
+    onDismiss: () -> Unit
+) {
+    val visualStyle = com.promenar.nexara.ui.theme.LocalVisualStyle.current
+    val isM3 = visualStyle == com.promenar.nexara.ui.theme.VisualStyle.NATIVE_MATERIAL_3
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        containerColor = if (isM3) MaterialTheme.colorScheme.surfaceContainerHigh else NexaraColors.SurfaceContainer,
+        title = { Text("视觉主题", style = NexaraTypography.headlineMedium) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                VisualStyleOption(
+                    label = "极光物理毛玻璃",
+                    isSelected = currentStyle == VisualStyle.HAZE_GLASSMORPHISM,
+                    onSelect = { onSelect(VisualStyle.HAZE_GLASSMORPHISM) }
+                )
+                VisualStyleOption(
+                    label = "经典原生 M3",
+                    isSelected = currentStyle == VisualStyle.NATIVE_MATERIAL_3,
+                    onSelect = { onSelect(VisualStyle.NATIVE_MATERIAL_3) }
+                )
+            }
+        },
+        confirmButton = {}
+    )
+}
+
+@Composable
+private fun VisualStyleOption(
+    label: String,
+    isSelected: Boolean,
+    onSelect: () -> Unit
+) {
+    val visualStyle = com.promenar.nexara.ui.theme.LocalVisualStyle.current
+    val isM3 = visualStyle == com.promenar.nexara.ui.theme.VisualStyle.NATIVE_MATERIAL_3
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(8.dp))
+            .background(
+                if (isSelected) {
+                    if (isM3) MaterialTheme.colorScheme.primaryContainer else NexaraColors.Primary.copy(alpha = 0.1f)
+                } else {
+                    Color.Transparent
+                }
+            )
+            .clickable { onSelect() }
+            .padding(12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = label, 
+            style = NexaraTypography.bodyLarge, 
+            color = if (isSelected) {
+                if (isM3) MaterialTheme.colorScheme.onPrimaryContainer else NexaraColors.Primary
+            } else {
+                if (isM3) MaterialTheme.colorScheme.onSurface else NexaraColors.OnSurface
+            }
+        )
+        if (isSelected) {
+            Icon(
+                imageVector = Icons.Rounded.Check, 
+                contentDescription = null, 
+                tint = if (isM3) MaterialTheme.colorScheme.primary else NexaraColors.Primary
+            )
         }
     }
 }

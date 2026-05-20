@@ -81,13 +81,76 @@ fun NexaraPageLayout(
     actions: @Composable RowScope.() -> Unit = {},
     content: @Composable ColumnScope.() -> Unit
 ) {
-    // 双 HazeState 架构：彻底分离卡片与 Header 的采样源
-    val cardHazeState = rememberHazeState()    // 卡片模糊用：采样纯极光背景
-    val headerHazeState = rememberHazeState()  // Header 模糊用：采样内容区（极光+卡片）
+    val visualStyle = com.promenar.nexara.ui.theme.LocalVisualStyle.current
 
-    // 向子树派发 cardHazeState，NexaraGlassCard 通过 LocalHazeState.current 读取
-    CompositionLocalProvider(LocalHazeState provides cardHazeState) {
-        Box(modifier = modifier.fillMaxSize()) {
+    if (visualStyle == com.promenar.nexara.ui.theme.VisualStyle.NATIVE_MATERIAL_3) {
+        // ==============================
+        // 【经典 100% 纯正原生 Material 3 扁平视觉】
+        // 彻底卸载 Haze 采样树与 Canvas 动画，零硬件消耗
+        // ==============================
+        Box(
+            modifier = modifier
+                .fillMaxSize()
+                .background(androidx.compose.material3.MaterialTheme.colorScheme.background)
+        ) {
+            val statusBarPadding = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
+            val topBarHeight = 64.dp
+            val totalTopPadding = statusBarPadding + topBarHeight
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .then(if (scrollable) Modifier.verticalScroll(rememberScrollState()) else Modifier)
+                    .then(if (imePadding) Modifier.imePadding() else Modifier)
+                    .padding(horizontal = 20.dp)
+            ) {
+                Spacer(modifier = Modifier.height(totalTopPadding))
+                Spacer(modifier = Modifier.height(24.dp))
+                CompositionLocalProvider(LocalHazeState provides null) {
+                    content()
+                }
+                Spacer(modifier = Modifier.height(24.dp))
+            }
+
+            TopAppBar(
+                title = {
+                    Box(modifier = Modifier.padding(start = if (onBack != null) 0.dp else 4.dp)) {
+                        Text(
+                            text = title,
+                            style = NexaraTypography.headlineMedium.copy(fontWeight = FontWeight.Bold),
+                            color = androidx.compose.material3.MaterialTheme.colorScheme.onBackground
+                        )
+                    }
+                },
+                navigationIcon = {
+                    if (onBack != null) {
+                        IconButton(onClick = onBack) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Back",
+                                tint = androidx.compose.material3.MaterialTheme.colorScheme.onBackground
+                            )
+                        }
+                    }
+                },
+                actions = actions,
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface,
+                    titleContentColor = androidx.compose.material3.MaterialTheme.colorScheme.onSurface,
+                    navigationIconContentColor = androidx.compose.material3.MaterialTheme.colorScheme.onSurface,
+                    actionIconContentColor = androidx.compose.material3.MaterialTheme.colorScheme.onSurface
+                ),
+                modifier = Modifier.fillMaxWidth().align(Alignment.TopStart)
+            )
+        }
+    } else {
+        // 双 HazeState 架构：彻底分离卡片与 Header 的采样源
+        val cardHazeState = rememberHazeState()    // 卡片模糊用：采样纯极光背景
+        val headerHazeState = rememberHazeState()  // Header 模糊用：采样内容区（极光+卡片）
+
+        // 向子树派发 cardHazeState，NexaraGlassCard 通过 LocalHazeState.current 读取
+        CompositionLocalProvider(LocalHazeState provides cardHazeState) {
+            Box(modifier = modifier.fillMaxSize()) {
 
             // ══════════════════════════════════════════════════════════
             // Layer 0: 纯极光背景层（cardHazeState 的物理采样源）
@@ -225,6 +288,7 @@ fun NexaraPageLayout(
                         actionIconContentColor = NexaraColors.OnSurface
                     )
                 )
+            }
             }
         }
     }

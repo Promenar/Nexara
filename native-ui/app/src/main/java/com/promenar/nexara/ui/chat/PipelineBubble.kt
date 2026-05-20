@@ -1,6 +1,9 @@
+// UNIT TEST EXEMPTION: Pure UI and layout rendering
 package com.promenar.nexara.ui.chat
 
 import androidx.compose.animation.*
+import com.promenar.nexara.ui.theme.LocalVisualStyle
+import com.promenar.nexara.ui.theme.VisualStyle
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -763,59 +766,112 @@ fun UserMessageBubble(
     val density = LocalDensity.current
     val timeFormat = remember { java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault()) }
     val timestamp = remember(message.createdAt) { timeFormat.format(java.util.Date(message.createdAt)) }
+    val visualStyle = LocalVisualStyle.current
+    val isM3 = visualStyle == VisualStyle.NATIVE_MATERIAL_3
 
     Column(
         modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.End
     ) {
         Box {
-            Surface(
-                shape = com.promenar.nexara.ui.theme.NexaraCustomShapes.ChatBubbleUser,
-                color = NexaraColors.SurfaceHigh,
-                border = BorderStroke(0.5.dp, NexaraColors.OutlineVariant),
-                modifier = Modifier
-                    .widthIn(max = 280.dp)
-                    .pointerInput(Unit) {
-                        detectTapGestures(
-                            onLongPress = { offset ->
-                                pressOffset = DpOffset(
-                                    x = with(density) { offset.x.toDp() },
-                                    y = with(density) { offset.y.toDp() }
-                                )
-                                showMenu = true
-                            }
-                        )
-                    }
-            ) {
-                Column {
-                    if (!message.userImages.isNullOrEmpty()) {
-                        Column(
-                            modifier = Modifier.padding(start = 8.dp, end = 8.dp, top = 8.dp),
-                            verticalArrangement = Arrangement.spacedBy(4.dp)
-                        ) {
-                            message.userImages!!.forEach { dataUrl ->
-                                coil3.compose.AsyncImage(
-                                    model = dataUrl,
-                                    contentDescription = null,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .heightIn(max = 200.dp)
-                                        .clip(RoundedCornerShape(8.dp)),
-                                    contentScale = ContentScale.FillWidth
-                                )
+            if (isM3) {
+                Surface(
+                    shape = com.promenar.nexara.ui.theme.NexaraCustomShapes.ChatBubbleUser,
+                    color = MaterialTheme.colorScheme.primaryContainer,
+                    border = null,
+                    modifier = Modifier
+                        .widthIn(max = 280.dp)
+                        .pointerInput(Unit) {
+                            detectTapGestures(
+                                onLongPress = { offset ->
+                                    pressOffset = DpOffset(
+                                        x = with(density) { offset.x.toDp() },
+                                        y = with(density) { offset.y.toDp() }
+                                    )
+                                    showMenu = true
+                                }
+                            )
+                        }
+                ) {
+                    Column {
+                        if (!message.userImages.isNullOrEmpty()) {
+                            Column(
+                                modifier = Modifier.padding(start = 8.dp, end = 8.dp, top = 8.dp),
+                                verticalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                message.userImages!!.forEach { dataUrl ->
+                                    coil3.compose.AsyncImage(
+                                        model = dataUrl,
+                                        contentDescription = null,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .heightIn(max = 200.dp)
+                                            .clip(RoundedCornerShape(8.dp)),
+                                        contentScale = ContentScale.FillWidth
+                                    )
+                                }
                             }
                         }
+                        if (message.content.isNotBlank()) {
+                            Text(
+                                text = message.content,
+                                style = NexaraTypography.bodyMedium.copy(
+                                    fontSize = fontSize.sp,
+                                    lineHeight = (fontSize * 1.5).sp
+                                ),
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                modifier = Modifier.padding(16.dp)
+                            )
+                        }
                     }
-                    if (message.content.isNotBlank()) {
-                        Text(
-                            text = message.content,
-                            style = NexaraTypography.bodyMedium.copy(
-                                fontSize = fontSize.sp,
-                                lineHeight = (fontSize * 1.5).sp
-                            ),
-                            color = NexaraColors.OnBackground,
-                            modifier = Modifier.padding(16.dp)
-                        )
+                }
+            } else {
+                NexaraGlassCard(
+                    shape = com.promenar.nexara.ui.theme.NexaraCustomShapes.ChatBubbleUser,
+                    modifier = Modifier
+                        .widthIn(max = 280.dp)
+                        .pointerInput(Unit) {
+                            detectTapGestures(
+                                onLongPress = { offset ->
+                                    pressOffset = DpOffset(
+                                        x = with(density) { offset.x.toDp() },
+                                        y = with(density) { offset.y.toDp() }
+                                    )
+                                    showMenu = true
+                                }
+                            )
+                        }
+                ) {
+                    Column {
+                        if (!message.userImages.isNullOrEmpty()) {
+                            Column(
+                                modifier = Modifier.padding(start = 8.dp, end = 8.dp, top = 8.dp),
+                                verticalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                message.userImages!!.forEach { dataUrl ->
+                                    coil3.compose.AsyncImage(
+                                        model = dataUrl,
+                                        contentDescription = null,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .heightIn(max = 200.dp)
+                                            .clip(RoundedCornerShape(8.dp)),
+                                        contentScale = ContentScale.FillWidth
+                                    )
+                                }
+                            }
+                        }
+                        if (message.content.isNotBlank()) {
+                            Text(
+                                text = message.content,
+                                style = NexaraTypography.bodyMedium.copy(
+                                    fontSize = fontSize.sp,
+                                    lineHeight = (fontSize * 1.5).sp
+                                ),
+                                color = NexaraColors.OnBackground,
+                                modifier = Modifier.padding(16.dp)
+                            )
+                        }
                     }
                 }
             }
