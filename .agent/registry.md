@@ -92,12 +92,12 @@
 ## 其他参考文档
 - .agent/checklists/CODE_REVIEW.md — 代码评审清单
 
-## 关键指标 (2026-05-19)
+## 关键指标 (2026-07-05)
 - Kotlin 源文件: ~342 个
 - Room Entity: 18 个
 - Repository 覆盖率: 12/12 (100%)
 - 内置 Skill: 18 个
-- 测试文件: 58 个
+- 测试文件: 59 个（新增 MarkdownTextTest.kt，54 用例覆盖 Markdown 预处理纯函数）
 - 总体进度: 98%
 - 剩余: 后台生成服务 (GenerationService) + 发布会准备
 

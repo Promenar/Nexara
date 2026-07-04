@@ -1,5 +1,49 @@
 # 交接文档 (2026-05-20)
 
+## 2026-07-05T02:20:25+08:00 · Markdown 排版根因修复 + mikepenz 0.41.0 升级 + 测试网建立
+
+**type**: feat/fix/test  **scope**: native-ui/主会话Markdown渲染  **status**: done  **tags**: [markdown, mikepenz, eolAsNewLine, unit-test, kotlin-stdlib]
+
+### Summary
+修复主会话 Markdown 渲染"大段文本挤成一段"的 P0 根因，升级 mikepenz 库到与项目 Kotlin 工具链兼容的最高版本，并建立 Markdown 预处理纯函数的单元测试网。
+
+### Changed
+- **根因修复**（`MarkdownText.kt:546-557`）：`Markdown()` 调用新增 `annotator = markdownAnnotator(config = markdownAnnotatorConfig(eolAsNewLine = true))` + `padding = markdownPadding(block=8.dp, listItemTop=4.dp, listItemBottom=4.dp, listIndent=12.dp)`。根因是库默认按 CommonMark 规范把段内单 `\n`（软换行）替换为空格。
+- **库升级**（`build.gradle.kts:150`）：mikepenz 0.40.2 → 0.41.0。
+- **可见性调整**（`MarkdownText.kt`）：8 个纯函数 + `ContentSegment` sealed class + `ParseCache` 从 `private` → `internal`，为测试可访问（符合项目约定，不用 `@VisibleForTesting`）。
+- **新建测试**：`app/src/test/java/com/promenar/nexara/ui/common/MarkdownTextTest.kt`（54 用例，JUnit5 + Truth + `@Nested`）。
+
+### Validation
+- `./gradlew clean` + `./gradlew :app:compileDebugKotlin` → BUILD SUCCESSFUL（仅预先存在的 deprecation 警告）
+- `./gradlew :app:testDebugUnitTest` → 682 测试，0 失败，0 错误，13 跳过
+
+### 关键技术决策（从 0.43.0 回退到 0.41.0 的原因）
+- 0.42.0/0.43.0 通过 Gradle metadata 把 `kotlin-stdlib` 硬约束到 **2.4.0**，超出项目 Kotlin 编译器 2.2.x 的 metadata 读取上限（最高读 2.3.0），编译报 `Class 'kotlin.Unit' was compiled with an incompatible version of Kotlin`。
+- 升级到 Kotlin 2.4.0 需要 compose compiler plugin 2.4.0（存在）+ serialization plugin 2.4.0 + ksp 2.4.0 全套同步，且 2.4.10/2.4.20 的 compose plugin 尚未发布——这是一次跨小版本 Kotlin 大升级，远超"修排版"范围。
+- 0.41.0 的 stdlib 约束为 2.3.21（编译器可读），`minCompileSdk=36`（与项目匹配，无需改 compileSdk/JDK），且包含 0.41 的关键收益（表格内联修复 #559、a11y 重写 #561、blockquote 崩溃修复 #550）。
+- coroutines 自动从 1.7.3 提升到 1.10.x，全量单测验证无回归。
+
+### Next
+- **阶段二（P1 排版质量）**：CJK 排版调优（`LineBreak.Paragraph` 行首禁则）、自定义 `paragraph` 组件统一行高/段间距、`safeTrimIndent` 4 空格逻辑优化（保护缩进代码块）。
+- **阶段三（P2 工程加固）**：流式增量缓存增加段落边界感知（检测 `\n\n` 触发重新分段）、`rememberMarkdownState(retainState = true)` 防流式闪烁。
+- **未来升级路径**：当项目整体升级 Kotlin 到 2.4.x 时，可同步把 mikepenz 升到 0.43.0+。
+
+### Risks
+- 当前留在 0.41.0，无法获得 0.42 的 `em` lineHeight 崩溃修复（#581）——但项目 `paragraph`/`text` 用的是 `sp` lineHeight 而非 `em`，不受影响。
+- `insertCjkSpacing` 在 CJK 与数字边界**双向**插窄空格（设计行为，已记入测试）。
+- `sanitizeStreamingMarkdown` 对未闭合 `$$` 是**截断**而非补齐（与代码围栏的"补齐"策略不一致，可能导致流式过程公式块短暂消失）。
+
+### DIA
+- CHANGELOG.md：已新增 2026-07-05 条目
+- registry.md：已新增 MarkdownTextTest.kt 登记
+- handover.md：本条记录
+
+### HLG
+- 本条交接记录已追加；无归档触发（同月）。
+- 候选长期规则：mikepenz 升级前必须核验 Gradle metadata 里 `kotlin-stdlib` 的 `requires` 约束是否与项目 Kotlin 编译器版本兼容——已提醒用户，未获授权不沉淀。
+
+---
+
 ## ✅ 已完成 — 物理硬回退原生版本、minSdk 31 极速升级强推与多渠道物理隔离方案归档技术债务 (2026-05-20 17:15)
 - **🔴 P0 — 分支物理硬回退与彻底同步**：
   - *回退清洁底座*：成功从 `kotlin-Haze&md3mixed` 混合分支切换至 `native-kotlin-refactor` 原生扁平版分支。
