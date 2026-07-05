@@ -1,5 +1,41 @@
 # 交接文档 (2026-05-20)
 
+## 2026-07-05T20:50:46+08:00 · 提供商添加界面预设选择器改下拉菜单
+
+**type**: ui  **scope**: native-ui/设置-提供商配置  **status**: done  **tags**: [provider, ui, dropdown, ExposedDropdownMenuBox]
+
+### Summary
+优化"添加提供商"表单的预设选择交互：把 14 个预设的纵向 Column 列表（占约 1000dp / 两屏+）替换为 ExposedDropdownMenuBox 下拉菜单，收起态仅约 56dp。
+
+### Changed
+- `ProviderFormScreen.kt:182-292`：删除 `Column { PROVIDER_PRESETS.forEach { PresetItem(...) } }`，替换为 `ExposedDropdownMenuBox` + 自定义玻璃风格收起态卡片 + `DropdownMenu`（可滚动，14 项 `DropdownMenuItem`）。
+- 新增状态 `presetMenuExpanded`（line 122）。
+- 新增 import：`ExposedDropdownMenuBox`/`DropdownMenu`/`DropdownMenuItem`/`ExperimentalMaterial3Api`/`MenuAnchorType`/`ArrowDropDown`/`verticalScroll`/`rememberScrollState`。
+- 函数加 `@OptIn(ExperimentalMaterial3Api::class)`（`ExposedDropdownMenuBox`/`menuAnchor` 是实验性 API）。
+- 业务逻辑（selectedPreset 赋值 + name/baseUrl 填充）逐字保留；`PresetItem` 函数保留未删（稳定起见）。
+
+### Validation
+- `./gradlew :app:compileDebugKotlin` → BUILD SUCCESSFUL
+- 纯 UI 改动，无需单测（全局规则 §4.2 纯布局代码豁免）。
+
+### Technical Notes
+- `menuAnchor(MenuAnchorType.PrimaryNotEditable)` 是 Compose Material3 1.4+ 的新签名（旧的无参 `menuAnchor()` 已废弃）。
+- 弹出菜单容器用 `DropdownMenu` 而非 `ExposedDropdownMenu`（后者在当前 M3 版本不存在为独立 import）。
+- 编译中遇到的两个坑（已修复）：① 子 Agent 误用 `ExposedDropdownMenu`（不存在）→ 改为 `DropdownMenu`；② 缺 `@OptIn(ExperimentalMaterial3Api::class)` → 加注解。
+
+### Next
+- 若后续要进一步优化：可考虑 Custom 分支的 `ProtocolSelector`（15 项纵向列表）也改下拉，与主选择器视觉一致。
+- 预设精简（砍掉低频的百川/Cohere）可在后续做减法时处理。
+
+### DIA
+- CHANGELOG.md：已新增条目
+- handover.md：本条记录
+
+### HLG
+- 本条交接记录已追加；无归档触发（同月）。
+
+---
+
 ## 2026-07-05T02:20:25+08:00 · Markdown 排版根因修复 + mikepenz 0.41.0 升级 + 测试网建立
 
 **type**: feat/fix/test  **scope**: native-ui/主会话Markdown渲染  **status**: done  **tags**: [markdown, mikepenz, eolAsNewLine, unit-test, kotlin-stdlib]
