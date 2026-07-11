@@ -7,6 +7,7 @@
 - AGENTS.md — 开发者与 AI Agent 协同开发规范
 
 ## 按需文档
+- docs/superpowers/specs/2026-07-12-v0.2-beta-release-readiness-design.md — v0.2-beta GitHub 侧载发行整改设计（安全、数据、业务、后台生成、UI/E2E 与发行门禁）
 - docs/PRD.md — 产品需求文档 v2.0（进度已更新至 2026-05-15）
 - docs/ARCHITECTURE_DESIGN.md — 全局架构设计（含 §2.4.1 KG 双模式策略）
 - docs/ARCHITECTURE.md — 架构快速参考（含 ADR 索引，已至 ADR-018）
