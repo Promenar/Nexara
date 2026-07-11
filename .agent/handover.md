@@ -1,5 +1,50 @@
 # 交接文档 (2026-05-20)
 
+## 2026-07-12T03:38:50+08:00 · v0.2-beta 发行设计与四阶段实施计划冻结
+
+type: planning
+scope: release-readiness, security, data, core-flows, background-generation, ui-qa, github-release
+status: ready-for-implementation
+tags: [v0.2-beta, apk, security, backup, provider, workspace, rag, background, ui-test, release]
+
+### Summary
+
+完成全项目商业交付审计后的产品边界收敛、发行架构设计和实施计划拆解。目标为 GitHub Release 可侧载签名 APK；采用 P0 安全数据、P1 核心业务、P2 后台生成与 UI、P3 发布工程四阶段门禁。用户已批准设计，并额外授权使用一个真实内网聚合 LLM 资源做显式集成测试。
+
+### Changed
+
+- 新增 `docs/superpowers/specs/2026-07-12-v0.2-beta-release-readiness-design.md`，提交 `8cb8f6a`。
+- 新增主路线图和四份阶段实施计划，提交 `6e00ecf`。
+- 更新 `.agent/registry.md` 注册上述规格与计划。
+- 真实 LLM 地址与 Key 不写入仓库、文档、日志、截图、fixture 或子 Agent 提示词；仅由主控通过进程环境变量注入显式 integration profile。Release 仍禁止 HTTP Provider。
+
+### Validation
+
+- 五份计划共 1,278 行，已完成规格关键项扫描、禁止占位语扫描、接口名一致性检查和 `git diff --check`。
+- 计划覆盖 SecretStore、Room v2 schema v1、加密备份/WebDAV、Provider router、工具 ledger、Session workspace、RAG/KG、分享导入、GenerationCoordinator/FGS、首次引导、双语、自适应、无障碍、截图/GMD、CI、签名和 GitHub Release。
+
+### Next
+
+- 用户选择 Subagent-Driven 或 Inline Execution；推荐前者。
+- 执行前按 `superpowers:using-git-worktrees` 建立隔离工作区。
+- 从 P0 Task 1 SecretStore 的 RED 测试开始，阶段门禁未绿前不推进完成声明。
+
+### Risks
+
+- `NexaraApplication.kt`、`ChatViewModel.kt`、`NexaraDatabase.kt`、`MainActivity.kt`、`NavGraph.kt`、Manifest 和 Gradle 构建文件是跨阶段冲突热点，必须串行指定唯一 owner。
+- 内网真实 LLM 使用 HTTP，只能进入 debug/integration 测试策略，不得放宽 Release HTTPS 门禁。
+- 当前基线仍有单测失败、Lint error 和大量 UI 自动化空白；计划完成不代表代码已达到发行条件。
+
+### DIA
+
+DIA: 已同步设计规格、四阶段计划、主路线图、registry 与 handover；代码和用户可见行为尚未修改。
+
+### HLG
+
+HLG: 已追加标准时间戳交接记录；“真实内网 LLM 仅经环境变量进入显式集成测试，Release 不放宽 HTTP”具备长期规则候选价值，未经用户明确授权未写入 AGENTS.md。
+
+---
+
 ## 2026-07-06T00:27:24+08:00 · 全栈业务流程完整代码审计
 
 **type**: audit  **scope**: 全项目（消息/渲染/RAG/配置/工具/工作区/UI）  **status**: done  **tags**: [audit, business-flow, rag, tools, workspace, ui, cross-module]
