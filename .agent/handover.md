@@ -1,5 +1,122 @@
 # 交接文档 (2026-05-20)
 
+## 2026-07-06T00:27:24+08:00 · 全栈业务流程完整代码审计
+
+**type**: audit  **scope**: 全项目（消息/渲染/RAG/配置/工具/工作区/UI）  **status**: done  **tags**: [audit, business-flow, rag, tools, workspace, ui, cross-module]
+
+### Summary
+对 APP 全栈业务流程做完整只读代码审计。7 个子 Agent 并行扫描 7 个模块，主 Agent 交叉核验关键发现后整合成统一报告。报告已落盘供后续交叉审计。
+
+### Changed（仅文档）
+- 新增 `docs/audit/20260706-fullstack-business-audit.md`（整合报告，含跨模块关联分析）
+- 7 份子报告在 `.agent/tmp-agent-reports/tmp-audit-module-{a..g}.md`
+- 更新 `.agent/registry.md`（修正审计条目文件名）
+
+### 核心发现（5 个跨模块系统性缺陷）
+1. **X-001 错误信息永不显示**：`ErrorNormalizer` 产出友好文案写入 `uiState.error`，但 `ChatScreen` 零消费（grep 确认）
+2. **X-002 审批模式完全无效**：`ApprovalCard` 组件完整存在但全代码库零调用；`patch_file` 不在白名单绕过审批（E+F+G 三方确认）
+3. **X-003 会话级配置大量死链**：旧 SessionSettingsScreen 滑块、会话级 Skill/MCP、Agent 级 ragConfig/skills（D+E 确认）
+4. **X-004 浅色主题假支持**：只有 DarkColorScheme，ThemeScreen 无入口
+5. **X-005 QueryRewriter 死代码**：完整实现但检索链路零调用（grep 确认）
+
+### 统计
+- 🔴 严重 25 项 / 🟡 中等 35 项 / 🟢 轻微 30+ 项
+- 所有 🔴 严重问题经主 Agent grep 二次核验
+- 5 项遗留疑问需运行时验证（额外 Provider 切换、SSE 中断、ParseCache 串味、runBlocking 线程、embedding 维度）
+
+### Next
+- **P0 立即修复**：X-001（错误显示）、X-002（审批生效）、A-003（重发丢图）、G-01（首次启动引导）
+- **P1 近期修复**：X-003（配置死链）、X-005（QueryRewriter）、C2/C3（向量清理）、F-C1（create_file）
+- 完整优先级建议见报告第六节
+
+### Risks
+- 审计为静态代码分析，5 项遗留疑问需运行时验证才能定论
+- 子 Agent 报告中 D-3.3（额外 Provider 不生效）可能不完全准确——NexaraApplication 有 MutableStateFlow 重建机制，需运行时确认会话级切换是否触发
+
+### DIA
+- registry.md：已修正审计条目
+- handover.md：本条记录
+- 审计报告已落盘 docs/audit/
+
+### HLG
+- 本条交接记录已追加
+- 候选长期规则：审计子报告统一存 `.agent/tmp-agent-reports/`，整合报告存 `docs/audit/`——已按此约定执行，建议沉淀为项目规范（待用户授权）
+
+---
+
+## 2026-07-05T23:45:40+08:00 · 会话气泡长按复制兜底修复与 Markdown 规则沉淀
+
+**type**: fix/test/docs/governance  **scope**: native-ui/主会话气泡交互 + AGENTS规则  **status**: done  **tags**: [chat, copy, clipboard, context-menu, markdown, AGENTS]
+
+### Summary
+修复会话界面消息气泡长按菜单点击“复制正文”后不写入系统剪贴板的问题，并根据用户明确授权，将上一轮 Markdown 渲染排障候选规则沉淀到项目 `AGENTS.md`。
+
+### Changed
+- `PipelineBubble.kt`：新增 `messageCopyOverride()`，只有父级真实传入 `onCopy` 处理器时才向用户/AI 子气泡下传包装回调；父级为空时保持 `null`，让子气泡内部 `copyToClipboard()` 兜底执行。
+- 修复根因：此前 `PipelineBubble` 无论父级 `onCopy` 是否为空，都会传入 `{ onCopy?.invoke(...) }` 空包装 lambda；子气泡看到非空 `onCopy` 后跳过本地剪贴板兜底，导致 ChatScreen 未传 `onCopy` 的默认路径复制失效。
+- `ChatLogicTest.kt`：新增 2 个用例覆盖父级复制处理器为空/存在两条分支。
+- `AGENTS.md`：新增“项目排障沉淀”章节，写入 Markdown 渲染排障分层规则，并更新文件尾部规范日期为 2026-07-05。
+- `CHANGELOG.md`：新增会话气泡复制兜底修复与规则沉淀条目。
+
+### Validation
+- 先写失败测试：`messageCopyOverride` 缺失导致 `ChatLogicTest` 编译红灯。
+- 实现后 `./gradlew :app:testDebugUnitTest --tests com.promenar.nexara.ui.chat.ChatLogicTest` → BUILD SUCCESSFUL。
+- `./gradlew :app:testDebugUnitTest` → BUILD SUCCESSFUL。
+
+### Next
+- 建议实际设备上长按用户气泡和 AI 气泡各验证一次：菜单出现后点击“复制正文”，再粘贴确认内容。
+
+### Risks
+- 本轮修复的是复制回调兜底链路；若设备侧仍表现异常，下一步应排查 Android 版本剪贴板权限/系统提示、DropdownMenu 点击是否被外层手势层吞掉。
+
+### DIA
+- AGENTS.md：已沉淀 Markdown 渲染排障规则。
+- CHANGELOG.md：已新增复制修复与规则沉淀条目。
+- handover.md：本条记录。
+
+### HLG
+- 用户已授权沉淀长期规则；规则已写入项目 `AGENTS.md`，适用范围限定为 Nexara 项目 Markdown 渲染排障。
+- 本条交接记录已追加；无月度归档触发（同月）。
+
+---
+
+## 2026-07-05T23:20:35+08:00 · 本地模型压行 Markdown 边界修复
+
+**type**: fix/test/docs  **scope**: native-ui/主会话Markdown渲染  **status**: done  **tags**: [markdown, local-model, preprocessing, compose, unit-test]
+
+### Summary
+修复本地 OpenAI-Compatible 模型输出 Markdown 标记但缺少真实换行时，会话正文堆成一坨的问题。根因不是 mikepenz 再次吞换行，而是部分本地模型原始文本已压行为 `#一级标题##二级标题`、`---###列表`、`1.第一步 2.第二步`、`||---|---|---||` 这类无块级边界字符串；此前 `eolAsNewLine = true` 只能保留已有换行，无法凭空恢复边界。
+
+### Changed
+- `MarkdownText.kt`：在预处理链路中新增 `repairCompressedMarkdownBoundaries()`，位于 `safeTrimIndent()` 之后、`insertCjkSpacing()` 之前。
+- 修复范围：压行标题、水平分隔线后接标题、有序/无序列表、常见代码围栏语言与正文粘连、标题后接表格、表格行 `||` 压行、引用 `>` 粘连。
+- 安全边界：先保护行内代码 span 和 Markdown 链接，避免把 `` `#标签##值 1.不是列表` `` 或 URL hash 拆坏。
+- `MarkdownTextTest.kt`：新增 6 个回归用例，覆盖截图暴露的压行标题、分隔线、序号列表、表格、inline code/link 保护和四空格缩进代码块保护。
+
+### Validation
+- 先写失败测试：初始红灯为 `repairCompressedMarkdownBoundaries` 缺失；实现后断言级红灯定位到正则分组与表格末行闭合；修正后目标测试绿灯。
+- `./gradlew :app:testDebugUnitTest --tests com.promenar.nexara.ui.common.MarkdownTextTest` → BUILD SUCCESSFUL。
+- `./gradlew :app:testDebugUnitTest` → BUILD SUCCESSFUL。
+
+### Next
+- 若后续仍发现本地模型把无序列表项目连成 `项目 A项目 B` 且完全丢失 `-`/`*` 标记，这类语义已无法可靠从纯文本恢复，需从模型提示词或 provider 输出格式层面约束。
+- 可选增强：在实际设备上补一次聊天截图验收，确认 QWEN3.6-VL-128K-Q8KV 的测试 prompt 排版恢复。
+
+### Risks
+- 当前修复是渲染前启发式修复，刻意只处理明显 Markdown 块级边界；不会尝试重写普通自然语言段落。
+- 本轮未启动 Android 设备/模拟器做截图验收，仅完成纯函数与全量单测验证。
+
+### DIA
+- CHANGELOG.md：已新增本地模型压行 Markdown 边界修复条目。
+- .agent/registry.md：已将 MarkdownTextTest.kt 用例数从 54 校准为 60。
+- handover.md：本条记录。
+
+### HLG
+- 本条交接记录已追加；无月度归档触发（同月，热层仍保留近期状态）。
+- 候选长期规则：遇到“Markdown 标记存在但排版堆成一坨”时，应先区分“已有换行被渲染库吞掉”和“上游文本根本没有换行”两类根因；用户已于后续消息授权沉淀，已写入项目 `AGENTS.md`。
+
+---
+
 ## 2026-07-05T20:50:46+08:00 · 提供商添加界面预设选择器改下拉菜单
 
 **type**: ui  **scope**: native-ui/设置-提供商配置  **status**: done  **tags**: [provider, ui, dropdown, ExposedDropdownMenuBox]
@@ -1464,3 +1581,294 @@
 | DOCUMENT_GOVERNANCE.md | ✅ | v2.0 更新 |
 | .agent/registry.md | ✅ | 补全注册、更新指标 |
 | .agent/handover.md | ✅ | 本文件已更新 |
+
+---
+
+## 2026-07-06T00:18:47+08:00 · APP 业务流程完整代码审计报告落盘
+
+type: audit
+scope: native-ui/app, docs/audit, .agent, CHANGELOG
+status: completed
+tags: [business-flow-audit, chat, multimodal, rag, kg, tools, workspace, tasks, ux]
+
+### Summary
+
+根据用户授权，完成 APP 业务流程完整代码审计，并将报告落盘到 `docs/audit/20260706-business-flow-full-code-audit.md`。审计范围覆盖基础文本消息、多模态、Prompt 拼接、API 协议、连接保持、错误捕获与 fallback、返回渲染、RAG/KG、知识库文档、配置载入、工具/Skill、工作区文件操作、任务管理和 UI/UX 可观测性。
+
+### Changed
+
+- 新增审计报告：`docs/audit/20260706-business-flow-full-code-audit.md`。
+- 保留模块级原始审计材料：`.agent/tmp-agent-reports/tmp-audit-module-a.md` 至 `.agent/tmp-agent-reports/tmp-audit-module-g.md`。
+- 更新注册表：`.agent/registry.md` 新增本报告入口。
+- 更新变更记录：`CHANGELOG.md` 新增本轮审计报告落盘条目。
+
+### Key Findings
+
+- 最高风险不是单点崩溃，而是多处“用户以为开启/选择/执行，实际未稳定进入生成链路”的信任断点。
+- P0/P1 集中在 RAG 文档选择失效、RAG 完整上下文未进入 Prompt、会话附加文档 UI 未绑定真实文档 ID、协议层逐 delta trim 损伤 Markdown、多模态重试丢图、本地视觉协议未真实传图、工具生成图片不可见、OpenAI Responses 协议映射错误、工作区文件操作 DB/磁盘不一致、任务计划缺事务和防环。
+- 子代理 C/E 因 Spark 额度限制中断，对应范围已由主控补做静态代码复核；本报告仍需后续真机和真实服务商请求交叉验证。
+
+### Validation
+
+- 完成静态证据复核，报告中每个主要发现均附代码路径或行号入口。
+- 本轮审计只新增/更新文档，未修改 APP 源码；未重新运行 Android 单元测试。
+- 已计划执行文档级 diff/空白校验。
+
+### Next
+
+- 优先按报告 BF-01~BF-09 修复 RAG、协议和多模态主信任链路。
+- 第二批处理工作区文件一致性、任务计划事务/防环、工具幂等和高风险审批。
+- 修复前建议用报告第 10 节的交叉验证清单补真机复验。
+
+### Risks
+
+- 报告为代码证据级审计，尚未覆盖真实设备、真实模型 API、弱网、大文件和多服务商差异。
+- 当前工作区已有本会话前序 Markdown/复制修复与治理文档改动，后续提交或分支整理时需避免混淆审计报告和代码修复范围。
+
+### DIA
+
+DIA: 已同步 `docs/audit/20260706-business-flow-full-code-audit.md`、`.agent/tmp-agent-reports/`、`.agent/registry.md`、`CHANGELOG.md` 与 `.agent/handover.md`。
+
+### HLG
+
+HLG: 已追加标准时间戳交接记录；本轮未发现需要立即写入长期规则文件的新规则候选。
+
+---
+
+## 2026-07-06T00:34:34+08:00 · APP 业务流程终版交叉审计报告落盘
+
+type: audit
+scope: docs/audit, .agent, CHANGELOG
+status: completed
+tags: [business-flow-audit, cross-audit, glm-5.2, final-report, rag, tools, workspace, ux]
+
+### Summary
+
+完整阅读 GLM-5.2 并行审计主报告、A-G 模块报告，以及 Codex 原业务流程审计报告后，完成终版交叉审计报告 `docs/audit/20260706-final-business-flow-cross-audit.md`。终版报告按 FA-01~FA-13 编号整合双方结论，明确采纳、降级和剔除项，作为后续修复排期主入口。
+
+### Changed
+
+- 新增终版报告：`docs/audit/20260706-final-business-flow-cross-audit.md`。
+- 注册 Codex 原审计报告：`docs/audit/20260706-business-flow-full-code-audit.md`。
+- 保留并注册 GLM 原始主报告：`docs/audit/20260706-fullstack-business-audit.md`。
+- 更新文档注册表与 CHANGELOG。
+
+### Key Decisions
+
+- 采纳并提升优先级：错误状态未消费、审批 UI 未接线、RAG Prompt 注入断点、指定文档检索风险、QueryRewriter 死链、Agent RAG 配置死链、RAG 删除/重索引生命周期污染、多模态重试丢图、Responses API 映射错误、工作区非原子写/无版本/路径校验缺失、任务状态错配。
+- 保留 Codex 原报告中 GLM 未强调的结论：协议逐 delta trim、工具生成图片不可见、本地视觉协议只传文本标记、diff basisHash 假 diff、任务 move_step 防环/事务、web_fetch 内网访问保护。
+- 降级或重写：额外 Provider 完全不生效、MCP schema 双重序列化、ParseCache 串味、Provider fallback、浅色主题假支持、工具耗时假数据等需要运行时验证或不属于主链路 P0 的结论。
+
+### Validation
+
+- 已对新增高价值结论做 grep 复核，包括 `uiState.error` 未消费、`ApprovalCard` 零调用、`QueryRewriter` 零调用、RAG 删除/重索引路径、会话级 Skill/MCP 死链、Agent RAG 配置死链、UnifiedLlmClient 参数丢失、工作区 writeText/renameTo、任务状态错配。
+- 本轮只新增/更新文档，未修改 APP 源码；无需运行 Android 单元测试。
+
+### Next
+
+- 后续修复应以终版报告 FA-01~FA-13 为主入口，不再以 GLM 原始编号或 Codex BF 编号单独排期。
+- 优先从 FA-01 错误可见性、FA-02 审批 UI、FA-03/FA-04 RAG 信任链、FA-05 多模态链路、FA-06 协议配置透传开始。
+
+### Risks
+
+- 终版仍是静态代码证据级报告；额外 Provider 运行时路由、MCP schema 序列化、ParseCache 串味、弱网半截流等需要真机或集成测试确认。
+
+### DIA
+
+DIA: 已同步 `docs/audit/20260706-final-business-flow-cross-audit.md`、`.agent/registry.md`、`CHANGELOG.md` 与 `.agent/handover.md`。
+
+### HLG
+
+HLG: 已追加标准时间戳交接记录；本报告为后续业务流程修复主入口，未发现需要新增长期规则文件的候选。
+
+---
+
+## 2026-07-06T03:46:00+08:00 · APP 业务链路第一批修复与真实 API 模拟器验收
+
+type: implementation
+scope: native-ui, chat, rag, protocol, provider, workspace, tests
+status: completed
+tags: [business-flow-fix, markdown, multimodal, rag, provider, workspace, emulator-qa, minimax-m3]
+
+### Summary
+
+按 `docs/audit/20260706-final-business-flow-cross-audit.md` 的 FA-01~FA-13 优先级推进第一批修复，重点闭合用户信任链：错误可见、审批可点、复制可用、RAG context 真正进入 Prompt、流式 Markdown 空白保真、多模态图片发送/重试保真、工具图片产物可见、内网 HTTP Provider 可用、Provider 测试连接不再假成功，以及文件写入的 root 守卫和原子替换。
+
+### Changed
+
+- `ChatScreen.kt`：消费 `uiState.error` 到 snackbar；接入 `ApprovalCard`；复制成功显示 snackbar；审批请求显示工具名和参数摘要。
+- `PipelineBubble.kt`：长按从手写 `pointerInput` 改为稳定 `combinedClickable`；工具结果卡渲染生成图片数据。
+- `ChatViewModel.kt`：图片 URI 在 `Dispatchers.IO` 读取；读取失败显示错误且不静默发纯文本；重试/重新生成保留用户图片；高风险工具名单补 `patch_file`、`web_fetch` 等；无 RAG 结果时不显示假“检索就绪”。
+- `ContextBuilder.kt` / `MemoryManager.kt`：完整 `ragContext` 注入 system prompt；指定文档检索和任务状态映射修复。
+- `OpenAIProtocol.kt` / `GenericOpenAICompatProtocol.kt` / `UnifiedLlmClient.kt`：流式 delta 保留普通空白；Unified 路径透传 penalty、topK、timeout、Gemini search 等参数。
+- `FileOperationRepository.kt`：canonical root containment；写入/patch 改为同目录临时文件 + fsync + 原子 move。
+- `ProviderFormScreen.kt`：测试连接改为真实 `ProtocolFactory.create(...).listModels()`。
+- `AndroidManifest.xml` + `network_security_config.xml`：允许自定义 HTTP Provider 覆盖内网聚合站场景。
+- `ContextBuilderTest.kt`：新增完整 RAG context 注入回归测试。
+
+### Validation
+
+- `./gradlew :app:compileDebugKotlin`：通过。
+- `./gradlew :app:assembleDebug`：通过。
+- `./gradlew :app:testDebugUnitTest`：通过。
+- Android 模拟器 `emulator-5554` 安装 `com.promenar.nexara.native.debug` 并注入本地 Provider 配置。
+- 真实 API：`MiniMax-M3` 通过 OpenAI-compatible 聚合站完成文本 Markdown 生成，UI 树显示 JavaScript 代码块、表格、标题与真实换行；截图 `/tmp/nexara-md-ok.png`，日志 `/tmp/nexara-md-ok-logcat.txt`。
+- 真实 API 多模态：通过系统 Photo Picker 选择截图并发送，模型准确描述图片内容；截图 `/tmp/nexara-mm-result.png`，日志 `/tmp/nexara-mm-result-logcat.txt`。
+- 长按复制：assistant 正文长按菜单显示“复制正文 / 重新生成 / 删除消息”，点击复制后出现“已复制到剪贴板”。
+
+### Next
+
+- 第二批继续处理工作区 `WorkspaceRepository` rename/move 事务补偿、任务 `updatePlan()` 事务化与 move_step 防环、web_fetch SSRF 拦截、exec_js 网络阻断、RAG 删除/重索引生命周期清理。
+- RAG embedding 当前会在未配置 embedding 模型时尝试使用聊天 Provider 并记录 `Missing data array in embedding response`，主生成不受阻断；后续应增加 embedding 配置缺失的 UI 提示或默认关闭文档/记忆检索。
+- OpenAI Responses 仍需单独实现或隐藏入口。
+
+### Risks
+
+- 本轮是第一批修复，不代表终版审计 FA-01~FA-13 全部清零；数据安全和工具安全第二阶段仍需继续。
+- `network_security_config` 允许 cleartext，是为了支持自定义内网 HTTP Provider；后续如需发布公网版本，应在设置页和文档明确风险。
+
+### DIA
+
+DIA: 已同步 `CHANGELOG.md` 与 `.agent/handover.md`；本轮新增 Android network security 配置，未新增独立架构文档。
+
+### HLG
+
+HLG: 已追加标准时间戳交接记录；本轮未发现需要写入长期规则文件的新规则候选。
+
+---
+
+## 2026-07-06T11:26:00+08:00 · Qwen 本地模型中文流式排版与思考块追踪二次收口
+
+type: implementation
+scope: native-ui, chat, markdown-rendering, emulator-qa
+status: completed
+tags: [chat-scroll, streaming, thinking-block, markdown, qwen, ui-ux]
+
+### Summary
+
+针对用户继续反馈的“思考块排版已好但流式镜头仍上下跳、正文流式稳定但中文段距偏大且偶见裸 `**`”做二次收口。使用内网同一 provider 的 `QWEN3.6-VL-128K-Q4KV` 复现：Qwen 会输出较长 `<think>`，生成中完整展开会让同一 AI Lazy item 高度剧烈变化，造成视口追踪在思考内容和正文之间反复重锚。
+
+### Changed
+
+- `PipelineBubble.kt`：新增 `streamingReasoningPreview()`，生成中的思考块只展示最近尾部预览；完成后仍可手动展开完整思考内容，避免超长动态 reasoning 持续撑高当前 item。
+- `PipelineBubble.kt`：正文与思考块均使用 `compactSpacing`，保持中文编号列表阅读密度。
+- `MarkdownText.kt`：`sanitizeStreamingMarkdown()` 对流式阶段未闭合的 `**` 加粗标记临时补闭合，避免中间帧裸露半截 Markdown 符号。
+- `PipelineBubbleTest.kt` / `MarkdownTextTest.kt`：补充思考尾部预览和 streaming 加粗补闭合测试。
+
+### Validation
+
+- `./gradlew :app:testDebugUnitTest --tests com.promenar.nexara.ui.common.MarkdownTextTest --tests com.promenar.nexara.ui.chat.PipelineBubbleTest :app:assembleDebug`：通过。
+- 模拟器 `emulator-5554` 安装 debug APK，provider/会话切到 `QWEN3.6-VL-128K-Q4KV`。
+- 发送简体中文 Markdown 30 项编号列表后，修复前连续帧编号轨迹出现 `1-5 -> 24-30+1-18 -> 4 -> 1-2 -> 8-25` 的明显往返；修复后轨迹为 `1-4 -> 3-20 -> 17-30` 并稳定在尾部。
+- 截图 `/tmp/nexara-preview-fix-shot-5.png`、`/tmp/nexara-preview-fix-shot-13.png`、`/tmp/nexara-preview-fix-shot-14.png` 显示中文列表字号、加粗和段距正常；最终正文未见裸 `**`。
+
+### Next
+
+- 若后续仍要进一步强化体验，可把“生成中思考尾部预览字符数/行数”抽成会话设置或视觉常量，并补 UI 自动化断言。
+- Qwen 首条强制 step-by-step 请求曾出现 content 为空、reasoning 为异常 `assistant` 的 provider/模型兼容现象；这不是本轮 UI 修复目标，可后续按协议解析专项排查。
+
+### Risks
+
+- 本轮用截图和 UI 树验证了 Qwen 中文列表场景；复杂表格、大代码块、图片混排仍建议发布前抽样复测。
+
+### DIA
+
+DIA: 已同步 `CHANGELOG.md` 与 `.agent/handover.md`；本轮未新增独立架构文档。
+
+### HLG
+
+HLG: 已追加标准时间戳交接记录；发现“生成中超长思考内容应限制可视增量，以免动态高度破坏滚动锚定”的经验可作为后续 UI 规则候选，未获用户授权前不沉淀到长期规则文件。
+
+---
+
+## 2026-07-06T10:36:00+08:00 · 会话生成滚动抢镜修复与思考块列表排版优化
+
+type: implementation
+scope: native-ui, chat, markdown-rendering, emulator-qa
+status: completed
+tags: [chat-scroll, streaming, thinking-block, markdown, ui-ux, minimax-m3]
+
+### Summary
+
+修复用户反馈的会话生成过程中“镜头抢夺”问题：思考区块流式增长时，旧逻辑会一边追最新输出、一边被列表底部锚点/高度变化拖回消息首行，造成高频闪烁。同步处理思考块 Markdown 编号列表的视觉问题，避免序号字体明显大于正文、列表行距过松。
+
+### Changed
+
+- `ChatScreen.kt`：移除 8ms 循环锚定 `bottom_spacer` 的自动滚动策略，改为跟随当前 AI pipeline item 的尾部；用户真实滚动通过 `nestedScroll` 切断自动跟随；自动跟随生成中隐藏“向下”FAB，避免在长思考块中误抢视线。
+- `MarkdownText.kt`：新增 `compactSpacing` 参数，思考块可使用更紧凑的 Markdown block/list padding。
+- `PipelineBubble.kt`：思考块调用 `MarkdownText(compactSpacing = true)`。
+- `NexaraMarkdownTheme.kt`：补齐 `ordered`、`bullet`、`list` typography，使列表 marker 与正文使用同一字号和行高。
+
+### Validation
+
+- `./gradlew :app:compileDebugKotlin :app:testDebugUnitTest :app:assembleDebug`：通过。
+- Android 模拟器 `emulator-5554` 安装 debug APK，使用内网真实 `MiniMax-M3` API 发送长思考与长 Markdown 列表请求。
+- 连续截图 `/tmp/nexara-scrollfix4-shot-*.png` 显示视口从思考尾部稳定推进到正文末段，未再出现回跳用户消息/消息首行的高频闪烁。
+- 思考块排版截图 `/tmp/nexara-mdspacing-shot-3.png` 显示 `1.`~`7.` 序号与正文同字号同基线，列表间距较之前收紧。
+
+### Next
+
+- 后续可继续补充手动用户滚动打断后的 UI 自动化回归脚本，覆盖“生成中用户上滑查看旧内容、点击向下按钮恢复跟随”的完整交互。
+- 若未来为思考块单独设计更弱化的富文本样式，可在 `MarkdownText` 的 `compactSpacing` 基础上扩展为正式 display mode。
+
+### Risks
+
+- 当前真实验收覆盖 MiniMax-M3 与 Android 模拟器；不同模型输出超长代码块、表格或图片时仍建议在发布前补一轮视觉抽样。
+
+### DIA
+
+DIA: 已同步 `CHANGELOG.md` 与 `.agent/handover.md`；本轮未新增独立架构文档。
+
+### HLG
+
+HLG: 已追加标准时间戳交接记录；发现“流式视口跟随应锚定当前生成内容尾部而非列表底部哨兵”的经验可作为后续 UI 规则候选，未获用户授权前不沉淀到长期规则文件。
+
+---
+
+## 2026-07-06T04:15:10+08:00 · APP 业务链路第二批收口修复与最终模拟器验收
+
+type: implementation
+scope: native-ui, chat, rag, kg, protocol, tools, workspace, tasks, emulator-qa
+status: completed
+tags: [business-flow-fix, minimax-m3, rag, responses-api, workspace, tasks, tool-security, emulator-qa]
+
+### Summary
+
+延续终版交叉审计报告 `docs/audit/20260706-final-business-flow-cross-audit.md`，完成第二批收口修复，并用内网真实 MiniMax-M3 API 在 Android 模拟器走通干净新会话文本生成与 Markdown 渲染。重点补齐第一批后仍未闭合的默认模型继承、Embedding 未配置误检索、RAG/KG 删除生命周期、OpenAI Responses 协议、工具网络安全、工作区一致性与任务事务/防环。
+
+### Changed
+
+- `SessionListViewModel.kt` / `ChatViewModel.kt`：新会话创建优先继承 Agent 模型，其次使用全局/主提供商模型，修复“未配置模型”导致新会话不可直接发送。
+- `EmbeddingClient.kt` / `NexaraApplication.kt` / `MemoryManager.kt`：Embedding 未显式配置或本地 embedding 槽未加载时提前跳过检索，不再把聊天模型误当 embedding 服务；QueryRewriter 接入真实模型和策略覆盖。
+- `ChatScreen.kt` / `MessageManager.kt`：无检索结果时清理消息 RAG 状态，避免空检索展示为“知识检索就绪”。
+- `RagViewModel.kt`：删除文档/集合时取消向量化、删除向量、清理图谱节点边与索引状态。
+- `OpenAIResponsesProtocol.kt` / `ProtocolFactory.kt` / `LlmProvider.kt`：新增真实 `/responses` 协议实现，修复 endpoint、request body、流式/同步文本解析与最小工具声明。
+- `WorkspaceRepository.kt` / `FileEntryDao.kt`：修复路径逃逸、绝对路径拼接、移动/删除静默失败、回收站恢复查询与目录子树 DB 同步。
+- `TaskRepository.kt`：`updatePlan()` 支持事务回滚，`move_step` 拒绝父子环、自身移动、跨会话父节点。
+- `WebFetchSkill.kt` / `ExecJsSkill.kt`：阻断私网/localhost fetch，ExecJS WebView 禁用网络加载和桥接接口。
+
+### Validation
+
+- `./gradlew :app:testDebugUnitTest :app:assembleDebug`：通过。
+- 模拟器 `emulator-5554` 安装 debug APK 并从 UI 创建干净新会话；底部模型自动显示 `MiniMax-M3`。
+- 真实 API 文本生成：发送 `Return_a_short_markdown_list_with_two_items.`，日志出现 `LLM_COMPLETE`，UI 渲染两条 bullet。
+- RAG 未配置 embedding 时：日志显示 `embedding unavailable, skip retrieval: Embedding 服务未配置`，本次生成未展示“知识检索就绪”卡片。
+- 证据文件：`/tmp/nexara-final-real-send.png`、`/tmp/nexara-final-real-send.xml`、`/tmp/nexara-final-real-send-logcat.txt`。
+
+### Next
+
+- 后续若继续深挖，可专项补 UI 自动化测试脚本化、多 Provider fallback 真实运行时矩阵、Responses 工具调用多轮兼容性，以及大文档/弱网/长流式请求压测。
+- 生产发布前需再次评估 `network_security_config` 的 cleartext 支持是否只面向内网自定义 Provider 场景，并在用户设置中显式提示。
+
+### Risks
+
+- OpenAI Responses 已修正基础协议与文本流，但复杂工具调用、多模态 Responses 输入矩阵仍建议做专项兼容测试。
+- 当前真实验收使用内网聚合站和 MiniMax-M3；其它服务商协议差异仍需按 Provider 矩阵补测。
+
+### DIA
+
+DIA: 已同步 `CHANGELOG.md` 与 `.agent/handover.md`；本轮新增/修改代码均已通过单元测试和模拟器真实 API 验收。
+
+### HLG
+
+HLG: 已追加标准时间戳交接记录；本轮未发现需要写入长期规则文件的新规则候选。
