@@ -1,5 +1,54 @@
 # 交接文档 (2026-05-20)
 
+## 2026-07-13T04:49:16+08:00 · v0.2-beta P0/P1 核心门禁完成
+
+type: implementation
+scope: security, backup, provider, tools, workspace, rag, kg, share-import, android-qa
+status: p1-completed
+tags: [v0.2-beta, p0, p1, room, provider-router, tool-ledger, workspace, transactional-index, share, emulator]
+
+### Summary
+
+完成 `v0.2-beta` P0 安全/数据和 P1 核心业务整改。请求级 Provider、持久工具 ledger、Session 工作区、KG 路径回流、资源管理器、事务索引、SAF/系统分享导入和进程死亡恢复已形成真实闭环。项目仍未达到发行条件，下一阶段必须完成后台生成、首次引导、完整双语/自适应/无障碍、视觉回归及发行工程。
+
+### Changed
+
+- P0 最终提交：`9d8b72c`；P1 主要提交：`3f2a246`、`8a2cf6e`、`c4ef4f3`、`e288398`、`63346db`、`250d6c2`、`043b375`、`e0e97cb`、`51b3004`、`79a7da0`。
+- API Key 默认安全遮蔽，可显式查看；备份可选包含完整 Key，恢复保持认证与事务边界。
+- 文件重索引采用事务外候选、事务内哈希复核与向量/FTS/KG 原子切换；永久删除统一清派生数据并用稳定 tombstone 覆盖进程死亡。
+- `ACTION_SEND` / `ACTION_SEND_MULTIPLE`、SAF 与资源管理器复用共享 importer，逐项展示导入、拒绝和重试状态。
+- 新增 opt-in 真实 LLM 集成门禁；缺少安全环境变量时明确 SKIP，默认单测绝不外呼。
+
+### Validation
+
+- 统一 Gradle 门禁：1232 JVM tests，0 failures，14 skipped；28 Android tests，0 failures，2 skipped；Lint 无 Error/Fatal；Debug APK 成功。
+- 备份多阶段 `prepare -> force-stop -> commit` 通过。
+- 恢复多阶段 `stage（按设计杀进程） -> verify -> force-stop -> noReplay` 通过。
+- Room schema、备份常量和生成实现 identity hash 一致；仓库未检出用户提供的内网地址或 Key 前缀。
+- 真实 LLM 本轮未执行：凭证未由环境安全注入，禁止把聊天中的 Key 写入命令、文件、日志或 Agent 提示词。
+
+### Next
+
+- 执行 Phase 3 Task 1-3：提取 `GenerationRunner`、建立应用级 `GenerationCoordinator`、实现 Foreground Service 与通知返回会话。
+- 执行 Phase 3 Task 4-7：可恢复首次引导、发行入口清理、完整双语/自适应/无障碍、三设备截图回归。
+- 完成 Phase 4 签名、CI、冷安装与 GitHub Release；在此之前不得宣称可发行。
+
+### Risks
+
+- Queue reset 期间同步等待旧任务取消，极端情况下可能造成短时调用线程等待；不影响持久正确性，P2 性能/交互验收时继续观察。
+- `v0.2-beta` 采用 clean schema，不承担旧版缺失 `fileUuid` 的 KG 节点猜测迁移；P3 必须明确升级/清数据策略。
+- 真实 LLM 测试基础设施已就绪，但仍缺一次通过安全环境变量注入的真实四模型运行证据。
+
+### DIA
+
+DIA: 已同步 `CHANGELOG.md`、`README.md`、`docs/ARCHITECTURE.md`、`docs/IMPLEMENTATION_ANALYSIS.md`、ADR-019、registry 与 handover。
+
+### HLG
+
+HLG: 已追加标准时间戳交接记录；本轮未发现需要新增项目长期规则的候选，未修改 `AGENTS.md` 或 Skill。
+
+---
+
 ## 2026-07-12T03:38:50+08:00 · v0.2-beta 发行设计与四阶段实施计划冻结
 
 type: planning

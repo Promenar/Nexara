@@ -15,7 +15,8 @@
 - docs/superpowers/plans/2026-07-12-v0.2-beta-phase4-release-engineering.md — P3 CI、签名、冷安装、文档与 GitHub Release 实施计划
 - docs/PRD.md — 产品需求文档 v2.0（进度已更新至 2026-05-15）
 - docs/ARCHITECTURE_DESIGN.md — 全局架构设计（含 §2.4.1 KG 双模式策略）
-- docs/ARCHITECTURE.md — 架构快速参考（含 ADR 索引，已至 ADR-018）
+- docs/ARCHITECTURE.md — 架构快速参考（含 ADR 索引，已至 ADR-019）
+- docs/ADR/ADR-019-transactional-workspace-indexing.md — 工作区文件、派生索引、永久删除与进程恢复的事务候选切换决策
 - docs/IMPLEMENTATION_ANALYSIS.md — 当前实现分析（总体 98%）
 - docs/DOCUMENT_GOVERNANCE.md — 文档治理方案（v2.0, 2026-05-19 更新）
 - native-ui/AGENTS.md — Kotlin 迁移技术规范（归档参考用）
@@ -101,14 +102,15 @@
 ## 其他参考文档
 - .agent/checklists/CODE_REVIEW.md — 代码评审清单
 
-## 关键指标 (2026-07-05)
-- Kotlin 源文件: ~342 个
+## 关键指标 (2026-07-13)
+- 主源码 Kotlin 文件: 337 个
+- JVM 测试 Kotlin 文件: 130 个
+- Android 设备测试 Kotlin 文件: 12 个
 - Room Entity: 18 个
 - Repository 覆盖率: 12/12 (100%)
 - 内置 Skill: 18 个
-- 测试文件: 59 个（MarkdownTextTest.kt 60 用例覆盖 Markdown 预处理纯函数）
-- 总体进度: 98%
-- 剩余: 后台生成服务 (GenerationService) + 发布会准备
+- 当前门禁: P0/P1 完成；P2 后台生成与 UI、P3 发行工程未完成
+- 自动化证据: JVM 1232（0 失败，14 跳过）；Android 28（0 失败，2 跳过）；Lint 0 Error/Fatal
 
 ## DIA 清理记录
 ### 2026-05-19 本轮文档优化
