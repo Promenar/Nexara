@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-07-15T18:28:59+08:00
+> generated_at: 2026-07-15T19:21:58+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -8,12 +8,13 @@
 
 | continuity-key | continuity | last update | status | scope | title | source |
 | :--- | :---: | :---: | :---: | :--- | :--- | :--- |
-| v0.2-beta-release-readiness | resume | 2026-07-15 | completed | release-readiness, real-llm, cancellation, tests, review | v0.2-beta 取消纠偏后全量复验与真实任务缓存门禁 | `.agent/handover.md` · `2026-07-15T18:28:09+08:00` |
+| v0.2-beta-release-readiness | waiting | 2026-07-15 | completed | release-readiness, android-ci, signed-apk, handoff | v0.2-beta 最终应用候选推送与远端 Android CI 闭合 | `.agent/handover.md` · `2026-07-15T19:21:02+08:00` |
 
 ## Recent 7-Day Catalog
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-07-15 | iso | completed | waiting | release-readiness, android-ci, signed-apk, handoff | [v0.2-beta, android-ci, api31, api35, api36, signed-apk, talkback] | v0.2-beta 最终应用候选推送与远端 Android CI 闭合 | `.agent/handover.md` · `2026-07-15T19:21:02+08:00` |
 | 2026-07-15 | iso | completed | resume | release-readiness, real-llm, cancellation, tests, review | [v0.2-beta, real-llm, cancellation, full-jvm, release-contract, review] | v0.2-beta 取消纠偏后全量复验与真实任务缓存门禁 | `.agent/handover.md` · `2026-07-15T18:28:09+08:00` |
 | 2026-07-15 | iso | completed | resume | release-readiness, real-llm, cancellation, documentation | [v0.2-beta, real-llm, cancellation, mockengine, evidence-correction] | v0.2-beta 真实取消证据纠偏与发布账本一致性收口 | `.agent/handover.md` · `2026-07-15T18:15:28+08:00` |
 | 2026-07-15 | iso | completed | resume | release-readiness, signed-apk, r8, api35, api36, talkback, workflow | [v0.2-beta, signed-apk, r8, cold-install, api35, api36, talkback, release] | v0.2-beta 最终签名 R8 候选与双版本冷安装闭合 | `.agent/handover.md` · `2026-07-15T18:05:19+08:00` |

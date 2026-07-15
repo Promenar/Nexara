@@ -1,5 +1,51 @@
 # 交接文档 (2026-05-20)
 
+## 2026-07-15T19:21:02+08:00 · v0.2-beta 最终应用候选推送与远端 Android CI 闭合
+
+type: validation
+scope: release-readiness, android-ci, signed-apk, handoff
+status: completed
+tags: [v0.2-beta, android-ci, api31, api35, api36, signed-apk, talkback]
+continuity: waiting
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+应用候选提交 `bf6f87cc6143d3e6efe310cc95966ac638bd1f8c` 已推送至 `origin/codex/v0.2-beta`。远端 Android CI run `29408429117` 的 quality、API 31、API 35 与 API 36 最终全部成功。API 36 首次执行被托管模拟器的 `System UI isn't responding` 系统弹窗覆盖通知权限弹窗而失败；保留截图与 logcat 后仅重跑失败作业，第二次完整设备 E2E 用时 13m03s 成功，没有削弱产品断言或修改测试来换取通过。当前进入同一稳定证书签名 APK 的真机 TalkBack 人工听觉、完整焦点遍历与核心业务体验验收。
+
+### Changed
+
+- 未修改产品代码、测试或发行工作流。
+- 发行验证账本更新为应用候选 `bf6f87c` 已推送且 run `29408429117` 全绿，并保留 API 36 首轮基础设施失败与第二轮成功的证据边界。
+- registry 同步当前远端候选事实；项目仍保持 `NO-GO / PENDING`，未创建 tag 或 GitHub Release。
+
+### Validation
+
+- Git：`bf6f87c` 已推送，分支与 `origin/codex/v0.2-beta` 同步；仅 `artifacts/` 为未跟踪本地证据，不进入提交。
+- Android CI run `29408429117`，attempt 2，conclusion `success`：quality 18m39s、API 31 9m53s、API 35 10m56s、API 36 第二轮 13m03s。
+- API 36 首轮失败证据显示 Android System UI ANR 系统弹窗阻挡权限控制器；Nexara 无 crash/ANR。第二轮执行同一应用提交与同一测试断言后通过。
+- 本地签名 APK 仍为 17,971,235 bytes，SHA-256 `d1a26735d25fac02eb282e00f5ec26e9fc76783b87cc55b3d01f209ade5966f1`；本记录未重建或替换 APK。
+
+### Next
+
+1. 用户把当前签名 APK 安装到真实 Android 设备，完成 TalkBack 人工听觉、完整焦点遍历和核心业务体验，并反馈异常或明确通过。
+2. 若真机发现缺陷，按真实复现修复后重新构建、验签、冷安装并跑远端门禁；不得沿用旧 APK 证据。
+3. 真机验收通过后，再取得用户对 Git tag 签名身份的明确授权，把发行账本切换为 GO，创建 verified tag 并触发 tag-only GitHub Release workflow。
+
+### Risks
+
+- TalkBack 自动语义门禁不能替代真实设备的语音输出、手势顺序与完整焦点可达性。
+- 本地 APK keystore 只解决 APK 签名；GitHub verified tag 仍需要独立签名身份和用户授权。
+- tag workflow 会重新构建 APK，最终 Release 资产仍需重新验签、扫描、冷安装并回读哈希。
+
+### DIA
+
+DIA: 已同步发行验证账本、registry 与本 handover；没有产品行为、架构、API 或配置变更。
+
+### HLG
+
+HLG: 已追加应用候选推送、首轮基础设施失败证据、失败作业重跑及最终全绿事实；continuity 进入真机验收等待，无新增长期规则候选。
+
 ## 2026-07-15T18:28:09+08:00 · v0.2-beta 取消纠偏后全量复验与真实任务缓存门禁
 
 type: validation

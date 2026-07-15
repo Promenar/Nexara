@@ -113,7 +113,7 @@
 - 内置 Skill: 18 个
 - P0/P1 基线: 已完成；基线证据为 JVM 1232（0 失败，14 跳过）、Android 28（0 失败，2 跳过）、Lint 0 Error/Fatal、Debug APK 与备份/恢复多阶段流程。
 - P2 当前状态: 后台持续生成、结构化错误/取消、RAG/Prompt、资源树/设置与协议专项实现已完成；当前最终候选 1641 JVM、Lint、36 张截图、API 31/35/36 设备矩阵及三版本 IME 5/5 已通过。TalkBack 自动语义已通过，人工听觉/全焦点遍历仍待最终签名 APK 真机验收。
-- P3 当前状态: R8/签名配置、APK 验证器、API 31/35/36 workflow 与冷安装/发布编排已实现；minified 业务黑盒、最终候选远端 Android CI、四模型真实 API 与稳定发行证书均已通过。本地稳定证书签名 R8 APK 为 17,971,235 bytes，mapping/seeds/usage/configuration、包身份/唯一签名、安全扫描、checksum、zipalign 及 API 35/36 冷安装全部 PASS。GitHub 可验证 signed tag、签名候选真机 TalkBack/人工业务验收与 GitHub Release 仍为 PENDING，当前仍是 NO-GO。
+- P3 当前状态: R8/签名配置、APK 验证器、API 31/35/36 workflow 与冷安装/发布编排已实现；minified 业务黑盒、应用候选 `bf6f87c` 的远端 Android CI run `29408429117`、四模型真实 API 与稳定发行证书均已通过。本地稳定证书签名 R8 APK 为 17,971,235 bytes，mapping/seeds/usage/configuration、包身份/唯一签名、安全扫描、checksum、zipalign 及 API 35/36 冷安装全部 PASS。GitHub 可验证 signed tag、签名候选真机 TalkBack/人工业务验收与 GitHub Release 仍为 PENDING，当前仍是 NO-GO。
 
 ## DIA 清理记录
 ### 2026-05-19 本轮文档优化
