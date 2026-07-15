@@ -2720,6 +2720,51 @@ HLG: 已追加标准时间戳交接记录；本轮未发现需要写入长期规
 
 ---
 
+## 2026-07-16T00:58:11+08:00 · Material 3 第一阶段实施计划完成
+
+type: planning
+scope: native-ui, material3, theme, chat, accessibility, screenshot-testing
+status: completed
+tags: [material3, md3-redesign, chat-composer, thinking-trace, ui-qa]
+continuity: resume
+continuity-key: nexara-md3-redesign
+
+### Summary
+
+在用户批准“方案 3”并授权自主使用内外部 Agent 后，完成 Material 3 重设计第一阶段实施计划。计划将当前阶段严格限定为稳定主题基线与主会话视觉母版，管理页、知识库与其余页面留待后续阶段逐页迁移。
+
+### Changed
+
+- 新增 `docs/superpowers/plans/2026-07-16-nexara-md3-phase1-foundation-chat.md`，包含 BOM、主题令牌、单层 composer、思考轨迹、IME/TalkBack、截图对照和治理收口七个任务。
+- `.agent/registry.md` 登记该计划。
+- 计划吸收原生 Agent 与 AGY Gemini 3.5 Flash 的只读映射；拒绝在第一阶段全局删除仍被其他页面消费的 Glass 公共组件，也不将设置/Provider 页面扩入会话母版阶段。
+
+### Validation
+
+- `git diff --check`：通过。
+- 计划执行了规格覆盖、占位表达、类型与接口一致性自检；没有修改产品代码。
+- 当前分支保持 `codex/md3-redesign`，发行候选 `codex/v0.2-beta` 未被改动。
+
+### Next
+
+- 使用 `superpowers:subagent-driven-development` 按 Task 1 开始 TDD 实施，每个任务均执行规格复核、代码质量复核和本地主控验证。
+- 第一阶段完成后再依据全站设计契约拆分管理页与其余页面的后续实施计划。
+
+### Risks
+
+- 会话 composer 高度变化会影响流式追尾、IME 和向下按钮位置，必须使用实测高度而非新增固定魔数。
+- 截图基线会大范围变化，必须与用户批准的方案 3 参考图并排逐张审阅，禁止批量盲收。
+
+### DIA
+
+DIA: 已新增第一阶段实施计划并同步 `.agent/registry.md`；产品代码与用户可见行为尚未变化。
+
+### HLG
+
+HLG: 已追加标准时间戳规划记录；继续复用 `nexara-md3-redesign` 工作流，无需沉淀新的长期规则。
+
+---
+
 ## 2026-07-16T00:42:56+08:00 · Nexara Material 3 全站视觉重设计启动
 
 type: design
