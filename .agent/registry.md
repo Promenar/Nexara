@@ -14,7 +14,7 @@
 - docs/superpowers/plans/2026-07-12-v0.2-beta-phase3-background-ui.md — P2 后台生成、首次引导、双语、自适应、无障碍与视觉回归实施计划
 - docs/superpowers/plans/2026-07-12-v0.2-beta-phase4-release-engineering.md — P3 CI、签名、冷安装、文档与 GitHub Release 实施计划
 - docs/release/v0.2-beta.md — GitHub Release 发行正文草案；最终门禁关闭前保持 PENDING/NO-GO
-- docs/release/v0.2-beta-validation.md — 发行事实账本；区分已确证专项测试与待执行 R8/签名/冷安装/真实 API/设备/UI/远端 workflow 证据
+- docs/release/v0.2-beta-validation.md — 发行事实账本；记录设备/UI/真实 API/分支 CI、本地稳定证书签名 R8 与双版本冷安装证据，并区分待执行的 TalkBack 真机、核心业务人工验收与 tag release workflow
 - docs/PRD.md — 产品需求文档 v2.0（进度已更新至 2026-05-15）
 - docs/ARCHITECTURE_DESIGN.md — 全局架构设计（含 §2.4.1 KG 双模式策略）
 - docs/ARCHITECTURE.md — 架构快速参考（含 ADR 索引，已至 ADR-019）
@@ -112,8 +112,8 @@
 - Repository 覆盖率: 12/12 (100%)
 - 内置 Skill: 18 个
 - P0/P1 基线: 已完成；基线证据为 JVM 1232（0 失败，14 跳过）、Android 28（0 失败，2 跳过）、Lint 0 Error/Fatal、Debug APK 与备份/恢复多阶段流程。
-- P2 当前状态: 后台持续生成、结构化错误/取消、RAG/Prompt、资源树/设置与协议专项实现已完成；1632 JVM、Lint、36 张截图、API 31/35/36 设备矩阵及三版本 IME 5/5 已通过。TalkBack 自动语义已通过，人工听觉/全焦点遍历仍待最终验收。
-- P3 当前状态: R8/签名配置、APK 验证器、API 31/35/36 workflow 与冷安装/发布编排已实现；API 35/36 minified 冷启动及 PDF/DOCX 分享导入通过，API 36 新增 TXT 索引失败/重试黑盒、Room close/reopen 测试及 8/8 alpha 归一化截图证据。首次远端 push CI 的 quality/API 31 通过，API 35/36 环境竞态已本地修复但第二轮远端结果待回填；真实签名 R8 APK、mapping、其余业务验真、真实 API、tag 与 GitHub Release 仍为 PENDING，当前仍是 NO-GO。
+- P2 当前状态: 后台持续生成、结构化错误/取消、RAG/Prompt、资源树/设置与协议专项实现已完成；当前最终候选 1641 JVM、Lint、36 张截图、API 31/35/36 设备矩阵及三版本 IME 5/5 已通过。TalkBack 自动语义已通过，人工听觉/全焦点遍历仍待最终签名 APK 真机验收。
+- P3 当前状态: R8/签名配置、APK 验证器、API 31/35/36 workflow 与冷安装/发布编排已实现；minified 业务黑盒、最终候选远端 Android CI、四模型真实 API 与稳定发行证书均已通过。本地稳定证书签名 R8 APK 为 17,971,235 bytes，mapping/seeds/usage/configuration、包身份/唯一签名、安全扫描、checksum、zipalign 及 API 35/36 冷安装全部 PASS。GitHub 可验证 signed tag、签名候选真机 TalkBack/人工业务验收与 GitHub Release 仍为 PENDING，当前仍是 NO-GO。
 
 ## DIA 清理记录
 ### 2026-05-19 本轮文档优化

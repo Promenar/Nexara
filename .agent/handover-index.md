@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-07-15T15:47:56+08:00
+> generated_at: 2026-07-15T18:28:59+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -8,12 +8,17 @@
 
 | continuity-key | continuity | last update | status | scope | title | source |
 | :--- | :---: | :---: | :---: | :--- | :--- | :--- |
-| v0.2-beta-release-readiness | resume | 2026-07-15 | in_progress | release-readiness, android-ci, share-import, rag, ui-evidence | v0.2-beta 第二轮 Android CI 准备与 RAG/UI 证据闭合 | `.agent/handover.md` · `2026-07-15T15:47:10+08:00` |
+| v0.2-beta-release-readiness | resume | 2026-07-15 | completed | release-readiness, real-llm, cancellation, tests, review | v0.2-beta 取消纠偏后全量复验与真实任务缓存门禁 | `.agent/handover.md` · `2026-07-15T18:28:09+08:00` |
 
 ## Recent 7-Day Catalog
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-07-15 | iso | completed | resume | release-readiness, real-llm, cancellation, tests, review | [v0.2-beta, real-llm, cancellation, full-jvm, release-contract, review] | v0.2-beta 取消纠偏后全量复验与真实任务缓存门禁 | `.agent/handover.md` · `2026-07-15T18:28:09+08:00` |
+| 2026-07-15 | iso | completed | resume | release-readiness, real-llm, cancellation, documentation | [v0.2-beta, real-llm, cancellation, mockengine, evidence-correction] | v0.2-beta 真实取消证据纠偏与发布账本一致性收口 | `.agent/handover.md` · `2026-07-15T18:15:28+08:00` |
+| 2026-07-15 | iso | completed | resume | release-readiness, signed-apk, r8, api35, api36, talkback, workflow | [v0.2-beta, signed-apk, r8, cold-install, api35, api36, talkback, release] | v0.2-beta 最终签名 R8 候选与双版本冷安装闭合 | `.agent/handover.md` · `2026-07-15T18:05:19+08:00` |
+| 2026-07-15 | iso | completed | resume | release-readiness, signing, real-llm, protocol, talkback | [v0.2-beta, signing, real-llm, openai-compatible, cancellation, talkback] | v0.2-beta 发行签名材料与真实四模型门禁闭合 | `.agent/handover.md` · `2026-07-15T17:40:58+08:00` |
+| 2026-07-15 | iso | completed | resume | release-readiness, android-ci, api31, api35, api36, restore-relay, rag | [v0.2-beta, android-ci, device-e2e, restore, rag, ui-qa] | v0.2-beta 最终候选 Android CI 全绿与设备门禁闭合 | `.agent/handover.md` · `2026-07-15T17:17:45+08:00` |
 | 2026-07-15 | iso | in_progress | resume | release-readiness, android-ci, share-import, rag, ui-evidence | [v0.2-beta, android-ci, share-import, rag, ui-qa, png] | v0.2-beta 第二轮 Android CI 准备与 RAG/UI 证据闭合 | `.agent/handover.md` · `2026-07-15T15:47:10+08:00` |
 | 2026-07-15 | iso | active | resume | native-ui, ime, accessibility, doc-editor, screenshot, apk-verifier, release-readiness | [v0.2-beta, ime, talkback, accessibility, screenshot, apk, p3, release] | IME/TalkBack/UI 门禁与现代 APK 验证器闭合 | `.agent/handover.md` · `2026-07-15T12:30:21+08:00` |
 | 2026-07-14 | iso | paused | waiting | native-ui, doc-editor, resource-explorer, full-regression, release-readiness | [v0.2-beta, ui-gate, screenshots, regression, release, handover] | DocEditor 与 Resource Explorer 闭合后暂停全量发行回归 | `.agent/handover.md` · `2026-07-14T16:50:21+08:00` |

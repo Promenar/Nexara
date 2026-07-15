@@ -1,5 +1,255 @@
 # 交接文档 (2026-05-20)
 
+## 2026-07-15T18:28:09+08:00 · v0.2-beta 取消纠偏后全量复验与真实任务缓存门禁
+
+type: validation
+scope: release-readiness, real-llm, cancellation, tests, review
+status: completed
+tags: [v0.2-beta, real-llm, cancellation, full-jvm, release-contract, review]
+continuity: resume
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+完成取消证据纠偏后的全量复验。复跑过程中发现显式 `realLlmIntegrationTest` 第二次调用被 Gradle 标记为 `UP-TO-DATE`，会错误复用旧模型、旧凭据或旧服务状态的测试结果；先补 source-contract RED，再对该真实网络任务禁用 up-to-date 与构建缓存。修复后同一命令显示任务实际 `executed` 并完成四模型真实外呼。最终只读 staged 复审结论为 Ready，未发现 Critical、Important 或 Minor 问题。
+
+### Changed
+
+- `native-ui/app/build.gradle.kts`：`realLlmIntegrationTest` 增加 `outputs.upToDateWhen { false }` 与 `outputs.cacheIf { false }`，每次显式调用必须真实执行。
+- `release-workflow-reliability-test.py`：新增真实 LLM 任务不得复用陈旧测试输出的契约；总数由 17 增至 18。
+- CHANGELOG 与发行验证账本：同步确定性取消证据、真实任务缓存门禁、1641 JVM 和 18/18 发行契约事实。
+
+### Validation
+
+- 取消定向：`UnifiedLlmClientCancellationTest` + `GenericOpenAICompatCancellationTest`，`BUILD SUCCESSFUL`（9s）。
+- 真实四模型：禁用 up-to-date/缓存前准确观察到一次 `UP-TO-DATE`；修复后 `:app:realLlmIntegrationTest` 显示 1 task executed，`BUILD SUCCESSFUL`（45s）。
+- 完整 JVM：1641 tests，0 failure/error，14 skipped，`BUILD SUCCESSFUL`（35s）。
+- 六套 Python：64/64；Metro TUI 49/49；device-core/minified Shell 契约与 Shell 语法通过。
+- release readiness validator 对当前 `NO-GO / PENDING` 文档按预期拒绝，exit=1；未误放行。
+- staged diff：`git diff --check` 通过；凭据前缀、内网地址、APK、keystore、`artifacts/` 与临时 Agent 报告均未进入暂存区。
+- 最终只读复审：Critical 0、Important 0、Minor 0、Ready Yes。
+
+### Next
+
+1. 提交并推送当前候选，监控新 head 的 quality、API 31、API 35、API 36 远端 Android CI 全绿。
+2. 新 head 全绿后，把本地稳定证书签名 APK 交给用户真机安装，完成 TalkBack 人工听觉、完整焦点遍历和核心业务体验。
+3. 真机验收通过且用户授权 Git tag 签名身份后，才把发行账本切换为 GO、创建 verified tag 并触发 GitHub Release。
+
+### Risks
+
+- 真实 API 聚合服务属于外部运行态；本轮出现一次无详细报告的失败后重跑成功。任务现已强制新鲜执行，但远端服务瞬态仍可能导致未来 smoke 失败，失败时不得用旧缓存掩盖。
+- 当前签名 APK 仍是本地候选；tag workflow 产物必须重新验签、扫描、冷安装并回读哈希。
+
+### DIA
+
+DIA: 已同步 CHANGELOG、发行验证账本、registry 与本 handover；新增真实任务缓存门禁属于发行测试行为变更，已记录。
+
+### HLG
+
+HLG: 已追加全量复验、真实任务陈旧缓存失败路径、RED/GREEN、独立复审和恢复顺序；未改写既有记录，未新增长期规则候选。
+
+## 2026-07-15T18:15:28+08:00 · v0.2-beta 真实取消证据纠偏与发布账本一致性收口
+
+type: correction
+scope: release-readiness, real-llm, cancellation, documentation
+status: completed
+tags: [v0.2-beta, real-llm, cancellation, mockengine, evidence-correction]
+continuity: resume
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+最终逐文件复审指出，18:05 与 17:40 记录中的真实模型取消断言只能证明外层 collector 被取消，无法排除协议生产者已把 `Done` 缓冲并自然结束，因此不应作为“真实上游传输仍在途”的证据。本记录追加纠偏，不回写既有历史：四模型真实任务只承担真实路由、payload、完成终态、reasoning 字段与多模态兼容；取消传播改由两层确定性门禁证明，一层直接保持统一客户端的协议生产者在途，另一层保持 MockEngine SSE 响应体不结束并观察取消 cause 与响应体关闭。发行账本中“最终签名 APK/logcat/GGUF 仍待验”的过期表述也已与同文件最新 PASS 事实对齐。
+
+### Changed
+
+- `RealLlmProviderIntegrationTest.kt`：四个真实模型均走完整 payload + `Done` 终态，不再把第三方高速响应当作确定性取消证据。
+- `UnifiedLlmClientCancellationTest.kt`：新增受控协议 Flow 在首个分片后 `awaitCancellation()`，并要求取消统一客户端收集后生产者 `finally` 确实执行；`cancelAndJoin` 全程受 5 秒超时约束。
+- `GenericOpenAICompatCancellationTest.kt`：新增保持打开的 MockEngine SSE 响应，首个真实 SSE payload 后取消收集，断言 `CancellationException` 与响应体关闭。
+- `CHANGELOG.md`、发行验证账本与 registry：移除真实取消过度声明，修正最终签名 APK、logcat 和 GGUF 扫描的过期 PENDING 文案。
+
+### Validation
+
+- `UnifiedLlmClientCancellationTest` + `GenericOpenAICompatCancellationTest`：`BUILD SUCCESSFUL`（9s）。
+- 两层测试均使用显式 5 秒边界；不存在无界 `cancelAndJoin()`。
+- 真实 API 任务、完整 JVM、脚本契约与远端 CI 将在本记录之后按当前 head 重新执行并回填。
+
+### Next
+
+1. 重新运行四模型真实 API 任务，确认四个角色均取得 payload 与完整终态。
+2. 重跑完整 JVM、发行脚本契约与差异检查，复审 staged diff 后提交推送。
+3. 监控新 head 的 quality、API 31、API 35、API 36 全绿，再把签名 APK 交给用户做真机 TalkBack 与核心业务人工验收。
+
+### Risks
+
+- MockEngine SSE 证明应用协议栈在受控在途响应上的取消和关闭行为；它不声称能够观测第三方聚合站服务端是否即时释放自身资源。
+- 既有两条交接记录保留了当时的错误判断；本纠偏记录是同一 continuity-key 的最新事实，后续恢复应以本记录为准。
+
+### DIA
+
+DIA: 已同步 CHANGELOG、发行验证账本、registry 与本 handover，纠正取消证据边界及过期签名 APK 状态。
+
+### HLG
+
+HLG: 以追加记录纠正既有过度声明，保留原始判断、复审发现、替代证据与后续恢复顺序；未修改历史记录，未新增长期规则候选。
+
+## 2026-07-15T18:05:19+08:00 · v0.2-beta 最终签名 R8 候选与双版本冷安装闭合
+
+type: validation
+scope: release-readiness, signed-apk, r8, api35, api36, talkback, workflow
+status: completed
+tags: [v0.2-beta, signed-apk, r8, cold-install, api35, api36, talkback, release]
+continuity: resume
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+使用用户指出的项目外 `secure_env` 稳定签名材料完成本地最终签名 R8 候选构建，并以同一 APK 在 API 35 与 API 36 完成 fail-closed 验证和真实冷安装。最终 APK、R8 mapping/seeds/usage/configuration、包身份、唯一签名者、登记证书、敏感内容、GGUF 排除、zipalign、checksum、安装后字节回读、前台冷启动与 crash/ANR 观察均取得新鲜 PASS。冷安装首次执行准确暴露 Build Tools 37 `V2 Signer` 输出未被 Shell smoke 解析的问题；没有绕过校验，而是让 smoke 统一复用 Python APK 验证器并以 RED/GREEN 契约闭合。复审提出的 Actions 手动候选模式经运行态核验发现会被默认分支和 tag-only environment policy 阻断，已撤销该试验性改动，保留安全边界更窄的本地稳定证书候选路径。项目仍为 NO-GO，下一人工门禁是真机 TalkBack 与核心业务体验，随后才处理 GitHub verified tag 和 Release。
+
+### Changed
+
+- `android-release-apk-smoke.sh`：移除只识别旧 `Signer #1 certificate` 文本的重复解析，改为复用 `verify-release-apk.py` 统一完成包身份、版本、唯一签名者和登记证书校验；仍独立保留 16 KiB `zipalign`、安装后字节一致和冷启动门禁。
+- `release-workflow-reliability-test.py`：新增 smoke 必须在 `adb install` 前调用统一 fail-closed APK 验证器、传齐四项身份参数且不保留旧解析字符串的契约测试。
+- `BackupViewModelTest.kt`：把不以真实线程为测试目标的异步保存失败用例切换到受控测试 dispatcher，避免真实 IO 在状态已发布后越过 `Dispatchers.resetMain()` 污染下一用例。
+- `RealLlmProviderIntegrationTest.kt`：取消门禁除子 Job 状态外，新增上游 Flow `onCompletion` cause 必须为 `CancellationException` 的断言，收紧真实取消传播证据。
+- `GenericOpenAICompatReasoningFieldTest.kt`：补齐标准/兼容 reasoning 字段并存时标准字段优先、不重复及唯一 Done 断言。
+- README、CHANGELOG、发行说明、发行验证账本与 registry：同步本地最终签名候选、双版本冷安装、TalkBack 真机顺序及剩余 NO-GO 边界。
+
+### Validation
+
+- `:app:assembleRelease`：`BUILD SUCCESSFUL`（1m43s）；`app-release.apk` 17,971,235 bytes。
+- R8：`mapping.txt` 95,661,567 bytes、`seeds.txt` 768,628 bytes、`usage.txt` 11,072,847 bytes、`configuration.txt` 67,338 bytes。
+- APK 验证：包名 `com.promenar.nexara.native`、versionCode 2、versionName `0.2-beta`、唯一签名者、登记 SHA-256 证书、ZIP/体积/敏感内容、GGUF/llama/ggml 与 checksum 全部通过；16 KiB zipalign 通过。
+- APK SHA-256：`d1a26735d25fac02eb282e00f5ec26e9fc76783b87cc55b3d01f209ade5966f1`，生成 checksum 后在 APK 目录再次 `sha256sum -c` 通过。
+- API 35 与 API 36：卸载旧包、签名 APK 安装、设备 `base.apk` 回读逐字节一致、身份/版本/证书、launcher、前台进程、5 秒存活及 crash/ANR 观察全部 exit=0；应用 PID 日志分别 20/33 行，敏感字段扫描无命中。
+- 冷安装 smoke RED/GREEN：旧脚本对真实 Build Tools 37 输出报“签名证书指纹不匹配”；统一验证器后 release workflow 契约 17/17、Shell 语法与同一 APK API 35/36 smoke 全部通过。
+- 最终 JVM：1639 tests，0 failure/error，14 skipped；六套 Python 契约 63/63、Metro TUI 49/49、device-core/minified Shell 契约与 `git diff --check` 通过。
+- 真实四模型任务在收紧上游取消 cause 后重新执行：`BUILD SUCCESSFUL`（17s）；凭据仍未落盘。
+
+### Next
+
+1. 将本地最终签名候选 APK 交给用户安装到真实 Android 设备，按发行清单完成 TalkBack 人工听觉、完整焦点遍历和核心业务体验；在用户明确反馈前保持 NO-GO。
+2. 推送当前代码候选并监控新 head 的 quality、API 31、API 35、API 36 Android CI 全绿；本地签名证据不能替代新 head 远端回归。
+3. 获得用户明确授权后为 Git tag 配置 GitHub 可验证签名身份；APK keystore 不等于 Git tag signing key。
+4. 真机人工验收和新 head CI 都通过后，只追加验收记录并把发行账本更新为 GO，创建 verified `v0.2-beta` tag，触发既有 tag-only release workflow，回读 Release APK/checksum 哈希并完成发行。
+
+### Risks
+
+- 当前 APK 是本机稳定证书签名的最终候选，不是 GitHub Release 资产；不得在人工验收前公开为正式版本。
+- GitHub 公开 SSH signing keys 与 GPG keys 当前均为 0；已登录 `gh` 令牌也缺少 `admin:ssh_signing_key` scope，未经用户明确授权不得扩权或上传公钥。
+- TalkBack 机器语义门禁不能替代人类听觉、手势顺序和真实设备体验。
+- 本地签名候选仅对应用源码有代表性；tag workflow 最终重建的 APK 仍必须重新运行相同签名、冷安装与哈希门禁。
+
+### DIA
+
+DIA: 已同步 README、CHANGELOG、发行说明、发行验证账本、registry 与本 handover；最终签名候选、Build Tools 37 smoke 修复、TalkBack 验收顺序和 tag-only 发布边界均已记录。
+
+### HLG
+
+HLG: 已追加标准时间戳交接记录，保留复审分歧、不可执行方案的运行态否决、真实 APK 失败路径、RED/GREEN 修复、双版本冷安装证据和恢复顺序；未改写既有记录，未新增长期规则候选。
+
+## 2026-07-15T17:40:58+08:00 · v0.2-beta 发行签名材料与真实四模型门禁闭合
+
+type: validation
+scope: release-readiness, signing, real-llm, protocol, talkback
+status: completed
+tags: [v0.2-beta, signing, real-llm, openai-compatible, cancellation, talkback]
+continuity: resume
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+根据用户补充信息核验项目外安全目录中的现有 APK 签名材料，并使用用户明确授权的内网聚合服务执行四模型真实门禁。稳定 APK 发行证书与 GitHub `release` environment 登记指纹完全一致；同一 Router 中高速文本、可取消推理、多模态 MiniMax 与均衡多模态四个角色均完成一次真实请求。测试先后暴露 Generic OpenAI-compatible 未解析 `delta.reasoning`，以及高速模型在取消断言前自然完成的确定性测试竞态；两项均以 RED/GREEN 证据修复。TalkBack 人工听觉和完整焦点遍历按用户确认调整为最终签名发行 APK 安装到真机后的验收步骤，不再被误写为当前开发包前置动作。项目仍为 NO-GO，APK keystore 已不构成阻断，但 GitHub 可验证 tag 签名身份、最终签名包与发布链尚未闭合。
+
+### Changed
+
+- `GenericOpenAICompatProtocol.kt`：保持 `reasoning_content` 优先，并兼容部分聚合服务使用的 `delta.reasoning` 字段。
+- `GenericOpenAICompatReasoningFieldTest.kt`：新增 `delta.reasoning` 流片段、完成终态与 `[DONE]` 的回归测试。
+- `RealLlmProviderIntegrationTest.kt`：取消用例在观察首个有效 payload 后挂起，确保父协程执行真实取消并验证传播，不再受高速模型自然完成竞态影响。
+- `README.md`、`CHANGELOG.md`、`docs/release/v0.2-beta.md`、`docs/release/v0.2-beta-validation.md`、`.agent/registry.md`：同步真实 API、稳定 APK 证书、TalkBack 验收顺序与剩余发行门禁。
+
+### Validation
+
+- 现有 APK 发行证书有效期为 2025-12-29 至 2053-05-16；SHA-256 为 `00:BE:4C:DD:83:78:AA:FB:D7:0E:BC:43:E9:71:52:37:91:CC:07:DE:EA:D6:31:E0:6D:CF:15:5D:EE:EE:38:02`，与 GitHub `release` environment 公开登记值逐字节一致；四项签名 Secret 名称存在，未读取或记录 Secret 值。
+- Generic OpenAI-compatible 定向回归先复现 `delta.reasoning` 被丢弃的 RED，修复后定向协议与参数审计测试通过。
+- `:app:realLlmIntegrationTest` 首次修复后准确暴露取消契约竞态；调整测试同步后最终 `BUILD SUCCESSFUL`（21s）。四个模型各请求一次，覆盖有效流式 payload、完成终态、取消传播与图片输入。
+- 当前协议候选完整 `:app:testDebugUnitTest`：1638 tests，0 failure/error，14 skipped；release workflow 可靠性契约 16/16 与 device-core 脚本契约均通过。
+- 内网 URL 与真实 Key 仅通过进程环境变量进入测试进程，未写入源码、文档、Agent 报告或提交。
+- OpenCode MiniMax-M3 负责边界明确的协议 TDD 施工；主控独立检查 diff、简化双字段拼接逻辑，并复跑定向测试与真实任务。
+
+### Next
+
+1. 运行当前工作树完整 `:app:testDebugUnitTest`、发行 workflow 契约与 `git diff --check`，排除 `artifacts/` 和临时 Agent 报告后提交推送。
+2. 监控新提交触发的 quality、API 31、API 35、API 36 远端 Android CI；只有新 head 全绿后才能进入 tag 阶段。
+3. 单独解决 Git tag 的 GitHub 可验证签名身份。APK keystore 只能签 APK，不能替代 Git tag 签名；账户 signing key 变更仍须用户明确授权。
+4. 获得可验证 signed tag 后触发 release workflow，生成并验真最终签名 R8 APK；由用户在真机安装该候选后完成 TalkBack 人工听觉与完整焦点遍历，再完成最终放行。
+
+### Risks
+
+- APK 签名证书已匹配不代表 Git tag 已具备 GitHub Verified 状态；两套身份链必须分别闭合。
+- TalkBack 自动语义、真实服务绑定与关键触控目标已有机器证据，但最终人类听觉体验和完整手势焦点顺序只能由真机人工验收确认。
+- 真实 API 集成任务依赖显式环境变量且默认不会在普通 CI 中外呼；新一轮远端 Android CI 只能回归离线协议测试，不能替代本轮内网真实模型证据。
+- 当前代码与文档尚未提交；后续远端全绿必须以实际新 head 为准，不能继续引用 `10d6761` 代表协议修复后的候选。
+
+### DIA
+
+DIA: 已同步 README、CHANGELOG、发行说明、发行验证账本、registry 与本 handover；协议兼容、测试同步、签名事实和 TalkBack 用户验收顺序均已记录。
+
+### HLG
+
+HLG: 已追加标准时间戳交接记录，保留用户授权、真实测试失败路径、Agent 分工、主控复核、签名链边界与恢复顺序；未改写既有历史记录，未新增长期规则候选。
+
+## 2026-07-15T17:17:45+08:00 · v0.2-beta 最终候选 Android CI 全绿与设备门禁闭合
+
+type: validation
+scope: release-readiness, android-ci, api31, api35, api36, restore-relay, rag
+status: completed
+tags: [v0.2-beta, android-ci, device-e2e, restore, rag, ui-qa]
+continuity: resume
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+在提交 `10d676115530aa387ad0644b6c3a9368a3736a30` 上完成第三轮、最终候选远端 Android CI。质量门禁与 API 31/35/36 三组设备 E2E 全部成功，第二轮暴露的欢迎页真实旋转宿主销毁、API 36 System UI 权限窗不稳定，以及恢复中继把旧进程死亡后的新进程误判为存活失败，均获得本地与远端闭环证据。API 35/36 release-equivalent minified 黑盒也均已覆盖 TXT 导入、索引失败、Retry 与再次失败后仍可重试。项目仍保持 NO-GO，剩余阻断是安全注入真实 API、TalkBack 人工听觉/完整焦点遍历、稳定且 GitHub 可验证的 tag 签名身份、最终签名 R8 APK 业务验真及 GitHub Release。
+
+### Changed
+
+- `WelcomeScreenLayoutTest.kt`：使用 Compose `DeviceConfigurationOverride.WindowSize` 与 `FontScale` 模拟横屏大字体压力，不再旋转并销毁测试宿主 Activity。
+- `android-device-core-e2e.sh`：恢复中继阶段不再用“整个包无 PID”误判成功重启；保留阶段结束 PID 证据，并由测试内持久化 stage PID 与 verify 阶段新 PID 做权威跨进程断言。
+- `android-device-core-e2e-contract-test.sh`：同步欢迎页配置覆盖、恢复 PID 证据与跨进程断言契约。
+- `CHANGELOG.md`、`.agent/registry.md`、`docs/release/v0.2-beta-validation.md`：回填 API 35 minified RAG、最终候选远端 CI 与剩余发行门禁。
+
+### Validation
+
+- 本机 API 35 `WelcomeScreenLayoutTest` 连续 4 轮、共 8 项通过；API 36 同类测试 2/2 通过。
+- 本机 API 36 full device E2E 通过，覆盖通知拒绝/允许/回跳、聊天、onboarding、无障碍、自适应、欢迎页、备份恢复、后台生成、PDF/DOCX 与冷启动跟踪。
+- 本机 API 35 full device E2E exit=0；恢复 stage 旧进程死亡、生产新进程启动、verify PID 不同及 no-replay 均通过。
+- API 35 release-equivalent minified 黑盒 exit=0，PDF/DOCX/TXT、索引失败、Retry 与再次失败后 Retry 保持可用全部通过，crash buffer 为空；关键截图经 JPEG 视觉副本复核无裁切。
+- GitHub Android CI [run 29401903929](https://github.com/Promenar/Nexara/actions/runs/29401903929) 全绿：quality 18m09s、API 31 9m28s、API 35 11m03s、API 36 12m30s。
+- `git diff --check`、device-core Shell 语法与契约、release workflow 可靠性测试均通过。
+
+### Next
+
+1. 由安全运行时向当前进程注入六个 `NEXARA_TEST_LLM_*` 环境变量，运行四模型协议、流式终态、取消和多模态真实 API smoke；不得使用聊天中的明文 Key 拼接命令。
+2. 完成 TalkBack 人工听觉与完整焦点遍历验收，或在发行账本中保留明确人工签字边界。
+3. 获得用户明确授权后生成 Nexara 专用 Ed25519 SSH 签名密钥并仅上传公钥到 GitHub signing keys；未经授权不得变更 GitHub 账户安全设置。
+4. 所有门禁关闭后更新 GO 账本、创建 GitHub 可验证 signed tag，触发 release workflow，验签、冷安装并发布可侧载 prerelease APK。
+
+### Risks
+
+- 当前进程的六个真实 API 测试环境变量仍全部 UNSET；聊天里出现过的 Key 不得写入命令、文件、日志、报告或提交。
+- TalkBack 自动语义、真实服务绑定与触控目标已通过，但没有人类听觉体验与全手势焦点遍历证据。
+- 本地尚无 GitHub 可验证的 tag 签名身份；生成专用密钥与上传公钥属于账户安全状态变更，仍待用户明确授权。
+- 发行账本与本交接回填尚未形成最终提交；任何后续 push 都会触发新的分支 CI，因此最终 tag 必须以最后一次全绿 head 为准。
+
+### DIA
+
+DIA: 已同步 CHANGELOG、registry、发行验证账本与本 handover；README 的产品安装、后台生成、密钥显示/备份、GGUF 与 Metro TUI 边界未发生变化，无需改写。
+
+### HLG
+
+HLG: 已追加标准时间戳交接记录，保留第二轮失败、欢迎页与恢复 PID 根因、本地双版本设备证据、最终远端全绿 run 和剩余授权边界；未新增长期规则候选。
+
 ## 2026-07-15T15:47:10+08:00 · v0.2-beta 第二轮 Android CI 准备与 RAG/UI 证据闭合
 
 type: implementation
