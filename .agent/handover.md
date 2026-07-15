@@ -1,5 +1,545 @@
 # 交接文档 (2026-05-20)
 
+## 2026-07-15T12:30:21+08:00 · IME/TalkBack/UI 门禁与现代 APK 验证器闭合
+
+type: implementation
+scope: native-ui, ime, accessibility, doc-editor, screenshot, apk-verifier, release-readiness
+status: active
+tags: [v0.2-beta, ime, talkback, accessibility, screenshot, apk, p3, release]
+continuity: resume
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+恢复发行任务后完成 API 31/35/36 聊天 IME 专项、API 36 TalkBack 真实绑定下的自动语义门禁、DocEditor 大字体冲突状态与 36 张截图回归。GLM-5.2 完成首轮语义施工，但对 `mergeDescendants` 回归推演过久，主控在保留已落盘实现后终止会话并独立闭环。随后用真实 minifiedTest APK 运行发行验证器，发现 Android 16 `aapt` 与 Build Tools 37 `apksigner` 两个输出格式兼容缺口，均按 RED/GREEN 修复并完成实际 APK 扫描。GitHub `release` environment 已确认存在四项签名 Secret、公开证书指纹、1 分钟 wait timer 和仅允许 `v0.2-beta` tag 的分支策略；Secret 与登记证书是否匹配仍须由远端 build-release 作业实证。
+
+### Changed
+
+- `ChatScreen.kt` / `ChatImeInteractionTest.kt`：IME inset 稳定后才做尾部遮挡校正，保留主动上滚，粗滚后重新读取布局；底部 200dp 可达空间关闭长消息尾部不可滚到目标位置的根因，测试清理等待 IME 隐藏且 inset 归零。
+- `ChatScreen.kt` / `UnifiedPromptEditor.kt` / `UiTags.kt` / `AccessibilitySmokeTest.kt`：聊天与 Prompt 主输入拥有稳定名称和标签；DocEditor 保存中使用 polite 动态区域，保存错误标题使用 assertive 动态区域。
+- `DocEditorScreen.kt`：错误、冲突和保存后文件消失提示优先占用剩余空间，大字体下不再把复制/重载按钮压缩到 20.6dp；提示动作保持完整 48dp，非关键状态栏在这些状态让位。
+- `ReleasePreviewScreenshotTest` reference：更新 1 张中文 DocEditor 冲突大字体预期基线，保留更多本地内容预览且不牺牲关键动作。
+- `verify-release-apk.py` / `test_verify_release_apk.py`：badging 字段只在空白边界匹配，避免 `compileSdkVersionCodename` 后缀冲突；签名解析同时兼容旧 `Signer #1` 与 Build Tools 37 `V2 Signer`，仍要求单 signer 和唯一证书摘要。
+- 发行验证账本、发行说明、registry 与 SDD 进度已同步本轮新鲜证据，状态继续保持 NO-GO。
+
+### Validation
+
+- `ChatImeInteractionTest`：API 31、35、36 各 5/5，两次 API 31 连续复跑均通过。
+- API 36 TalkBack 服务处于 Bound/Enabled：`AccessibilitySmokeTest` 7/7，`DocEditorInteractionTest` 10/10；后者包含 2.0x 字体双 48dp 冲突动作与真实点击链。
+- `:app:validateDebugScreenshotTest`：首次 35/36，仅新的预期 UI 变化失败；参考/实际/差异同输入目视比较并接受新基线后 36/36。
+- APK 验证器：两个现代工具兼容测试与 signer 计数 fail-closed 测试均先复现 RED，修复后专项目标与全套 23/23 通过；全部 Python 合约现为 58/58。
+- 真实 `app-minifiedTest.apk`：17,921,194 bytes，包身份、version、单签名、敏感内容、GGUF/llama/ggml 排除及 SHA-256 全扫描通过；该证据只证明 release-equivalent 测试身份，不替代最终发行证书 APK。
+- `git diff --check` 通过；发行文档 validator 在 NO-GO 状态按预期拒绝，证明发布入口继续 fail-closed。
+
+### Next
+
+1. 由用户或安全运行时把 `LLM_API_KEY` 注入当前进程环境，不在命令、文件、日志或报告中出现真实值；随后运行四模型协议、流式终态与多模态 smoke。
+2. 形成集成提交并推送 `codex/v0.2-beta`，观察 Android CI 新鲜 run；不得把本地证据替代远端结论。
+3. 评估并执行最小剩余 minified 业务黑盒与 TalkBack 人工听觉/焦点遍历；若不能自动化，发行账本须保留明确人工签字边界。
+4. 全部门禁关闭后把验证账本和发行说明改为精确 GO，创建 GitHub 可验证的 signed tag；默认不得用未签名 annotated tag。随后等待 release workflow 生成、验签、冷安装并发布 prerelease APK。
+
+### Risks
+
+- 当前真实 API Key 未进入进程环境，不能用聊天中出现过的明文值拼入工具命令；真实 API 仍是硬门禁。
+- TalkBack 自动语义和真实服务绑定已通过，但没有人类听觉体验与完整手势焦点遍历证据，不能扩大为完整人工无障碍验收。
+- GitHub 签名材料虽已配置，但本地不可读取 Secret；只有远端 build-release 能证明 keystore、密码、别名和公开证书指纹一致。
+- 工作树仍是大规模未提交集成改动；提交时必须排除本地 `artifacts/` 与临时 Agent 报告，并在推送后以远端 CI 重新验证。
+
+### DIA
+
+DIA: 已同步发行验证账本、发行说明、registry、SDD 进度与本 handover；新增 APK 工具兼容契约、IME/TalkBack 用户可见行为和 DocEditor 大字体布局均已记录。
+
+### HLG
+
+HLG: 已追加标准时间戳交接记录，保留 GLM 首轮施工/终止、主控回归根因、RED/GREEN 工具链修复、GitHub release environment 当前事实与下一恢复入口；未发现需要新增长期全局规则的新候选。
+
+## 2026-07-14T16:50:21+08:00 · DocEditor 与 Resource Explorer 闭合后暂停全量发行回归
+
+type: maintenance
+scope: native-ui, doc-editor, resource-explorer, full-regression, release-readiness
+status: paused
+tags: [v0.2-beta, ui-gate, screenshots, regression, release, handover]
+continuity: waiting
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+DocEditor 响应式 UI 与 Resource Explorer 五个切片均已完成主控验收，确定性截图套件扩展至 32 张。随后进入全量 JVM 回归，1632 条测试中出现 2 条失败；系统化调查确认两者都是状态提升与 Modifier 链式格式变化后遗留的源码文本契约，不是生产行为回归。已做最小测试契约修复并验证目标套件通过。应用户要求，在开发环境更新前暂停，不再启动下一轮全量构建。
+
+### Changed
+
+- `.superpowers/sdd/progress.md`：将当前阶段更新为 P3 全量发行验证与打包，并补充 DocEditor 响应式 UI、Resource Explorer 五切片和 32 张截图的阶段证据。
+- `ReleaseAboutSurfaceContractTest.kt`：把过时的直接 `BuildConfig.VERSION_NAME` 渲染字符串断言更新为 Route 注入真实版本、Content 渲染 `state.versionName` 的两段数据流契约。
+- `ReleaseReachableUiLocalizationContractTest.kt`：允许 `Modifier` 与 `.size(48.dp)` 跨行链式书写，继续约束两个回收站图标操作的 48dp 触控目标与本地化语义。
+
+### Validation
+
+- Resource Explorer JVM 聚焦套件 27/27 通过；主源码、AndroidTest 与 ScreenshotTest Kotlin 编译通过。
+- 截图套件更新后连续两轮 32/32 通过；3 张新增 Resource Explorer reference/rendered 逐像素一致并完成同输入配对目视检查。
+- 全量 JVM 首轮：1632 tests，2 failed，14 skipped；失败仅为上述两个过时源码契约。
+- 修复后目标复验：`ReleaseAboutSurfaceContractTest` 与 `ReleaseReachableUiLocalizationContractTest` 全部通过。
+- 当前 `git diff --check` 通过；本机无在线 Android 设备且无可用 AVD，因此 Compose AndroidTest 仍只有编译证据。
+
+### Next
+
+1. 环境更新完成后，首先串行强制重跑 `:app:testDebugUnitTest`，确认 1632 条全量 JVM 测试不再有失败；不得以目标套件通过替代全量结论。
+2. 随后串行执行 clean、Lint、32 张截图、Debug/deviceTest/minifiedTest 构建，以及主机侧 Python、Shell、Node 发行契约。
+3. 通过安全进程环境执行真实四模型 API smoke，并确认任务实际执行而非因变量缺失静默跳过。
+4. 补齐 API 31/35/36 设备矩阵与本轮新增关键 Compose 测试；再进入受保护签名、R8、APK 校验、API 35/36 冷安装、发行文档回填、远端 CI 和 GitHub prerelease。
+5. 修复 release workflow 只检查发行文档非空、却不校验验证账本 PASS 的 fail-open 缺口；所有门禁通过前保持 NO-GO，禁止推 tag。
+
+### Risks
+
+- 当前工作树仍有大量未提交变更，发行正文与验证账本仍为 PENDING/NO-GO；尚无可追溯最终 commit、tag、签名 APK、checksum 或远端成功 run。
+- 至少 54 个本轮关键 Compose 测试尚未在设备执行；现有 device 脚本也未覆盖全部新增 UI 类。
+- minified 黑盒当前主要覆盖冷启动和 PDF/DOCX 分享导入，不能代表 Provider、聊天、备份、RAG 与后台生成的完整压缩版 E2E。
+- 本轮确认一条长期规则候选：同一工作树内 Gradle/截图任务应跨 Agent 串行独占，避免共享 `app/build` 产物被并发污染；未经用户明确授权不写入长期规则文件。
+
+### DIA
+
+DIA: 已同步 SDD 进度账本与本 handover 暂停点；发行验证账本、发行正文、README、CHANGELOG 和 workflow 修复等待环境更新后取得最终新鲜证据再统一回填。
+
+### HLG
+
+HLG: 已追加标准时间戳暂停记录，保留全量回归失败、根因、定点修复与尚未重跑全量的事实边界；continuity 标记为 waiting，等待开发环境更新后恢复。
+
+## 2026-07-14T13:53:34+08:00 · DocEditor P0 数据安全与竞态门禁闭合
+
+type: implementation
+scope: native-ui, doc-editor, state-machine, safe-save, concurrency, release-readiness
+status: completed
+tags: [v0.2-beta, doc-editor, p0, state-machine, cas, tdd, concurrency]
+continuity: resume
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+闭合 DocEditor 审计中的两个 P0 数据安全问题：加载、保存、冲突和文件消失不再静默失败，标题输入不再绕过文件操作仓库直写 DAO。实施经历三轮独立拒绝：先后发现跨文档保存回调污染、同文档代际回调污染，以及 A1 保存期间切到 B 后 A2 可提前读取旧物理快照的更底层竞态。最终引入独立 active-save identity 并用真实维护 content/hash 的受控 CAS fake 先 RED 再 GREEN，终审为 `SPEC: PASS`、`QUALITY: APPROVED`，C=0/I=0/M=0。
+
+### Changed
+
+- `DocEditorViewModel.kt`：建立类型化 `DocEditorUiState` 与 Loading/Ready/LoadError/Saving/SaveConflict/SaveError/NotFound 状态机；标题只保留内存草稿，显式保存时先走安全 rename，再走带 expectedHash 的原子内容写入。
+- 加载 generation 与 document epoch 共同阻断过期回调；`activeSaveIdentity` 按物理 root/document 阻止保存中的任意代际重读，与当前页面是否已切到其它文档无关。
+- 保存的成功、冲突、文件消失、异常和取消都通过唯一 `finally` 清理活跃保存身份并解锁；标题和内容 dirty 基线分离维护。
+- `DocEditorViewModelTest.kt`：补充 20 条状态、保存、冲突、取消和竞态测试；真实 CAS fake 在写入前后校验 hash，并修改物理 content/hash。
+
+### Validation
+
+- 主控强制重跑 `:app:testDebugUnitTest --tests 'com.promenar.nexara.ui.rag.DocEditorViewModelTest' --rerun-tasks`：20/20 通过，0 skipped/failures/errors。
+- Debug Kotlin 编译成功；目标 `git diff --check` 通过。
+- 独立终审逐项检查 active-save 登记/清理、A1 -> B -> A2 物理一致性、不同文件导航、真实 CAS 断言和无死锁，结论 C=0/I=0/M=0。
+
+### Next
+
+1. 抽离 DocEditor Content seam，将状态机真实呈现为加载/错误/文件消失/保存失败/冲突处理界面，补未保存返回确认、单一模式事实源、响应式布局、无障碍、大文件边界、Compose 交互测试与确定性截图。
+2. 串行关闭 Resource Explorer 的可见无效操作、搜索/回收站语义和视觉门禁。
+3. 剩余 UI 扩面后执行 clean JVM、Lint、全截图、设备矩阵、签名 R8、真实 API、冷安装与 APK 黑盒验收。
+
+### Risks
+
+- DocEditor 当前仅 P0 ViewModel 获批；界面仍未呈现多数失败/冲突状态，也没有 dirty-back 确认和发行级截图，所以 DocEditor 整体仍为 NO-GO。
+- 当前无在线 Android 设备；后续 Compose 交互测试需纳入最终设备矩阵。
+- 整体项目仍为 NO-GO；签名 APK、真实 API 与 GitHub Release 均尚未存在。
+
+### DIA
+
+DIA: 已同步 DocEditor P0 状态/安全保存契约、测试证据、SDD 进度账本与本 handover；README、CHANGELOG 和发行文档继续等待完整 UI 扩面与最终门禁闭合后统一更新。
+
+### HLG
+
+HLG: 已追加标准时间戳交接记录，保留三轮独立拒绝、RED/GREEN 竞态复现与最终批准证据链；未发现需要升级为长期全局规则的新候选。
+
+## 2026-07-14T13:17:49+08:00 · RAG 稳定 ID 导航链与行为门禁闭合
+
+type: implementation
+scope: native-ui, rag-navigation, files-panel, rag-folder, doc-editor-route, accessibility, release-readiness
+status: completed
+tags: [v0.2-beta, rag, navigation, files-panel, compose, tdd, accessibility]
+continuity: resume
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+闭合知识库首页目录点击、专用文件夹页与文档编辑器入口。首轮实现虽然接通名义回调，但独立复核以 C=0/I=2 拒绝：展示名称仍进入 route，且测试主要匹配源码字符串。修复后 route 仅携带稳定 `folderId`，目标页从工作区仓库读取实时名称；FilesPanel 的选择、展开、目录导航和文件打开统一进入可执行四态决策，并补真实 Compose 行为测试。第二轮独立终审为 `SPEC: PASS`、`QUALITY: APPROVED`，C=0/I=0/M=0。
+
+### Changed
+
+- `FilesPanel.kt`：增加默认兼容且递归透传的目录激活回调；四态行为函数实际驱动点击入口，多选模式不触发目录或文件导航。
+- `RagHomeScreen.kt`、`RagFolderScreen.kt`、`MainTabScaffold.kt`、`NavGraph.kt`：首页目录进入专用文件夹页，文档卡主体进入编辑器，checkbox 独立选择；route 只使用稳定 ID，标题按 `workspaceRootUuid + folderId` 从仓库读取并使用本地化回退。
+- 测试：增加四态 JVM 行为、特殊字符 route 与 Compose 根/递归/文件/多选/default expand/checkbox 隔离覆盖。
+
+### Validation
+
+- 主控强制重跑相关 RAG/Files JVM 测试：通过；修复后聚焦套件与导航终审套件均通过。
+- `:app:compileDebugAndroidTestKotlin`：通过；无在线设备，Compose 行为测试未冒充设备执行。
+- 目标 `git diff --check`：通过。终审 `SPEC: PASS`、`QUALITY: APPROVED`，C=0/I=0/M=0。
+
+### Next
+
+1. 按已完成的 DocEditor 聚焦审计先修复 P0 状态机、保存冲突和安全重命名，再抽离 Content seam 并完成视觉、无障碍和截图门禁。
+2. 独立关闭 Resource Explorer 可见无效动作与确定性视觉门禁。
+3. UI 扩面完成后执行 clean JVM、Lint、截图、设备、签名 R8、真实 API、冷安装和 APK 黑盒门禁。
+
+### Risks
+
+- DocEditor 当前仍为 NO-GO：加载/保存/冲突/未保存返回静默，标题按键直写 DAO，另有模式事实源、布局、滚动、大文件、可访问性和本地化缺口。
+- 当前无在线 Android 设备；新增 Compose 行为测试必须纳入最终设备矩阵。
+- 整体项目继续保持 NO-GO，本记录仅关闭 RAG 导航链子门禁。
+
+### DIA
+
+已同步 SDD 进度账本与本 handover；README、CHANGELOG 与发行正文继续等待全部 UI 和最终发行门禁关闭后统一更新。
+
+### HLG
+
+已追加标准时间戳交接记录，保留首轮拒绝与修复证据链；未发现需升级为长期全局规则的新候选。
+
+## 2026-07-14T12:51:00+08:00 · RAG Home 单一批量入口与删除确认门禁闭合
+
+type: implementation
+scope: native-ui, rag-home, files-panel, accessibility, screenshot-qa, ui-release-contract, release-readiness
+status: completed
+tags: [v0.2-beta, rag-home, files-panel, compose, tdd, accessibility, screenshot, visual-qa]
+continuity: resume
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+完成 RAG Home 的 Route/Content seam、真实导航/导入/Memory/索引动作接线、稳定 UiTags、批量选择交互和三张发行截图。Spark CLI 首轮施工违反边界并留下破损整文件重写，主控立即终止；原生 Agent 恢复编译后，主控从旧实现对照中发现批量清空、移动、重建索引和删除确认整段回归，按 TDD 恢复。独立复审又发现真实 `FilesPanel` 会与 RAG Home 同时渲染两套批量栏，且内层删除绕过确认；修复后复审最终为 `SPEC: PASS`、`QUALITY: APPROVED`，C=0/I=0/M=0，仅允许关闭 RAG Home 子门禁。
+
+### Changed
+
+- `RagHomeScreen.kt`：运行时依赖留在 Route，Content 通过 State/Actions/文档内容 seam 可测试；配置、图谱、上传、新建文件夹、文档打开、Memory 单次切入加载、索引 notice、批量操作与 Memory 展开/删除保持真实接线。
+- `RagHomeScreen.kt`：新增唯一批量选择栏；清空、移动、重建索引与删除确认均为 48dp 可达入口。单项和批量删除统一提升为 pending confirm，确认前不会调用删除；取消释放 FilesPanel pending 状态且不改变选择。
+- `FilesPanel.kt`：新增默认兼容的 `showSelectionOverlay=true`；仅 RAG Route 显式关闭内置 overlay 与 88dp 预留，Resource Explorer 默认行为不变。
+- `UiTags.kt` 与测试：新增 RAG 页面、tab、配置、上传、内容、selection bar、移动 sheet 与删除确认锚点；JVM 契约覆盖 Route/Content 边界、FilesPanel 默认兼容和失败选择态，Compose 测试覆盖真实点击链。
+- `ReleasePreviewScreenshotTest.kt` 与 reference：新增英文文档手机、英文 360x800 已选中态、中文 Memory 2 倍字体三种场景。
+
+### Validation
+
+- 主控定向运行 `RagHomeScreenContractTest`、`RagHomeInteractionTest`、`RagFolderUiStateTest`、`IndexingNoticeTest`、`FilesPanelStateTest`：通过。
+- `:app:compileDebugAndroidTestKotlin --rerun-tasks`：通过；无在线设备，因此新增 Compose AndroidTest 仅有编译证据。
+- 首轮截图 20 项仅两张新图缺 reference；批量栏补回后新增第三张 360x800 选中态。最终 `:app:validateDebugScreenshotTest --rerun-tasks`：21/21 通过。
+- 三组 RAG reference/rendered SHA-256 各自一致；主控与独立审阅者均实际查看三张图片，未见裁切、重叠、越界或 2 倍字体缺陷。
+- 目标 `git diff --check`：通过。第二轮独立复审 `SPEC: PASS`、`QUALITY: APPROVED`，C=0/I=0/M=0。
+
+### Next
+
+1. 进入 FilesPanel / RagFolder / DocEditor / Resource Explorer 独立子门禁，优先关闭“文件夹行只切选择而不打开文档路径”、真实内容 seam 与设备交互覆盖。
+2. 完成剩余 UI 扩面后执行 clean JVM、Lint、21+ 截图、设备矩阵、签名 R8、真实 API、冷安装和 APK 黑盒门禁。
+3. 最终门禁关闭后统一更新 README、CHANGELOG、发行正文与验证账本，再提交推送、Tag 和创建 GitHub Release 侧载 APK。
+
+### Risks
+
+- 当前没有在线 Android 设备；RAG Home 新增 Compose 测试尚未真机执行，必须纳入最终设备矩阵。
+- 三张截图使用确定性内容 seam；真实 FilesPanel 集成由源码契约和默认兼容测试覆盖，但 Files/RagFolder 的完整视觉/导航仍未关闭。
+- 整体项目继续保持 NO-GO；不得把本记录扩大为整个 RAG 或 v0.2-beta 已可发布。
+
+### DIA
+
+已同步 SDD 进度账本与本 handover。FilesPanel 新增默认兼容参数、RAG 用户可见批量/确认行为和测试基线均已记录；README、CHANGELOG、发行文档继续等待完整 UI 扩面与最终门禁关闭后统一更新。
+
+### HLG
+
+已追加标准时间戳交接记录并保留失败施工、回归发现、独立复审拒绝与最终修复证据链；未发现需要升级为长期全局规则的新候选。
+
+## 2026-07-14T12:01:00+08:00 · Provider Models 发行级交互与视觉门禁闭合并继续 RAG
+
+type: implementation
+scope: native-ui, provider-models, accessibility, screenshot-qa, ui-release-contract, release-readiness
+status: completed
+tags: [v0.2-beta, provider-models, compose, tdd, accessibility, screenshot, visual-qa]
+continuity: resume
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+完成 Provider Models 的 Route/Content seam、稳定 UiTags、完整动作接线、Android Compose 测试与两张发行截图。Spark CLI Worker 完成首轮施工后，主控纠正其错误环境结论和编译问题，逐张检查 actual 并修复模型名称硬裁切、复合 ID 可读性、按钮对比度和预览状态语义冲突。独立复审随后发现同 ID 同步刷新会保留陈旧草稿，以及两个交互测试锚点缺口；主控按 RED/GREEN 补测并修复，定向复审最终为 `SPEC: PASS`、`QUALITY: APPROVED`，C=0/I=0/M=0。
+
+### Changed
+
+- `ProviderModelsScreen.kt`：新增真实接线的 State/Actions/Content seam；按稳定 `providerId` 过滤；保留同步、添加、全部禁用/删除、模型更新/启停/测试或取消/删除；同 ID 外部刷新会同步类型、名称、上下文和能力草稿。
+- `NexaraConfirmDialog.kt`：增加默认兼容的 `confirmButtonModifier`，使“全部删除”确认按钮拥有稳定测试锚点。
+- `UiTags.kt`：覆盖页面、搜索、顶层动作、notice、列表状态、添加表单、删除确认和按模型 ID 唯一的操作锚点。
+- 测试与截图：新增/补强 JVM 契约、Testing→Cancel、同 ID 刷新、稳定确认按钮点击；新增英文手机与中文 2 倍字体发行截图。
+
+### Validation
+
+- `ProviderModelReleaseBlockersTest` 12/12、`ModelSyncNoticeTest` 7/7、`ProviderModelsScreenContractTest` 5/5，共 24/24 通过。
+- `:app:compileDebugAndroidTestKotlin --rerun-tasks` 与 ScreenshotTest 编译通过。
+- `:app:validateDebugScreenshotTest --rerun-tasks`：18/18 通过；两张新增 reference 与 rendered 完全一致，整改未更新基线。
+- 目标 `git diff --check` 通过；当前无在线 Android 设备，新增 Compose 测试仅编译，未宣称设备运行通过。
+
+### Next
+
+1. 进入 RAG 首页及 Files/Resource Explorer 发行门禁，先完成只读业务路径、交互、无障碍和视觉缺口审计，再冻结 Content seam 与截图规格。
+2. RAG/Files 闭合后执行 clean JVM/Lint/全截图、设备矩阵、签名 R8、真实 API、冷安装与 GitHub Release 门禁。
+
+### Risks
+
+- Provider Models Android Compose 测试尚无设备执行证据；将在最终设备矩阵补跑。
+- 整体项目仍为 NO-GO；RAG、Files 等发行可达页面尚未完成本轮可视化扩面，最终签名 APK 与 GitHub Release 也尚不存在。
+
+### DIA
+
+DIA: 已同步 Provider Models UI/测试契约、SDD 进度账本与本 handover；README、CHANGELOG 和发行文档继续等待完整 UI 扩面与最终门禁关闭后统一更新。
+
+### HLG
+
+HLG: 已追加标准时间戳交接记录；本轮未发现需要升级为长期全局规则的新候选。
+
+## 2026-07-14T11:34:43+08:00 · Settings 发行级交互与视觉门禁闭合并继续 Provider Models
+
+type: implementation
+scope: native-ui, settings-home, provider-summary, accessibility, screenshot-qa, ui-release-contract, release-readiness
+status: completed
+tags: [v0.2-beta, settings, provider-summary, compose, tdd, accessibility, screenshot, visual-qa]
+continuity: resume
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+完成 Settings 首页的 Route/Content seam、稳定 UiTags、真实点击契约与两张发行截图。GLM-5.2 完成首轮实现后，主控发现旧用户名闭包、Composable 内构造 ImageRequest、2 倍字体 Provider 卡片不可读和英文界面协议名混中文；GLM 跟进 15 分钟无文件进展后按路由规则安全终止，改由 Spark CLI Worker 施工。主控未采信 Worker 的环境与完成声明，修复其重复参数编译错误和错误源码断言，并继续迭代布局、本地化与截图。最终独立复审为 `SPEC: PASS`、`QUALITY: APPROVED`，C=0/I=0/M=0。
+
+### Changed
+
+- `UserSettingsHomeScreen.kt`：新增真实接线的 Route/Content State/Actions seam；移除会固化旧用户名的 Actions `remember`；头像 helper 直接接收 model；Provider 卡片改为身份区与 48dp 操作区分层布局，在 2 倍字体下保留名称、协议、URL 与三个操作入口。
+- 双语资源：通用 OpenAI 兼容协议与本地推理协议显示名资源化，避免英文界面出现中文。
+- `UiTags.kt`：增加 Settings 根节点、双 Tab、双列表、添加提供商、Provider 卡片/操作区与本地推理入口锚点。
+- 测试与截图：Tab 和添加提供商均执行真实点击并验证结果；新增中文平板 APP 页和 412x892 英文 Provider 2 倍字体发行截图，Release Preview 均显式隐藏本地推理入口。
+
+### Validation
+
+- `:app:testDebugUnitTest --tests '*UserSettingsHomeScreenContractTest' --tests '*ReleaseLocalInferenceSurfaceContractTest' --rerun-tasks`：8/8 通过。
+- `:app:compileDebugAndroidTestKotlin --rerun-tasks`：通过；最终编译在全部布局、本地化和测试改动后重新执行。
+- `:app:validateDebugScreenshotTest --rerun-tasks`：16/16 通过；两张新增 reference 与 rendered 的 SHA-256 分别完全一致，并已逐张目视检查。
+- 目标 `git diff --check`：通过；当前无在线 Android 设备，新增 Compose 测试仅编译，未宣称设备运行通过。
+
+### Next
+
+1. 串行进入完整 Provider Models 页面，补 Content seam、稳定 UiTags、真实同步/添加/禁用/删除交互测试和发行截图；Key 仍只能固定遮蔽，Preview 禁止出现完整凭证。
+2. Provider Models 闭合后继续 RAG 与 Resource Explorer/Files 的交互、无障碍与视觉门禁。
+3. UI 扩面结束后执行 clean JVM/Lint/全截图、设备矩阵、签名 R8、真实 API、冷安装与 GitHub Release 门禁。
+
+### Risks
+
+- Settings Android Compose 测试尚无设备执行证据；将在最终设备矩阵补跑。
+- 整体项目仍为 NO-GO；Provider Models、RAG、Files 等发行可达页面尚未完成本轮可视化扩面，最终签名 APK 与 GitHub Release 也尚不存在。
+
+### DIA
+
+DIA: 已同步 Settings 双语资源、测试/截图契约、SDD 进度账本与本 handover；README、CHANGELOG 和发行文档继续等待完整 UI 扩面与最终门禁关闭后统一更新。
+
+### HLG
+
+HLG: 已追加标准时间戳交接记录；本轮未发现需要升级为长期全局规则的新候选。
+
+## 2026-07-14T10:36:59+08:00 · Agent Hub 发行级 UI 门禁闭合并继续 Settings
+
+type: implementation
+scope: native-ui, agent-hub, accessibility, screenshot-qa, ui-release-contract, release-readiness
+status: completed
+tags: [v0.2-beta, agent-hub, compose, tdd, accessibility, screenshot, visual-qa]
+continuity: resume
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+完成 Agent Hub 的 Route/Content 状态提升、可发现卡片操作、本地化、稳定 UiTags、Android Compose 测试和两张发行截图。GLM-5.2 按冻结契约先建立 5 条 RED 契约测试再实施；主控未直接采信报告，而是检查 diff、真实测试与截图 actual，发现并修复副标题硬裁切、中文 2 倍字体空态左偏断行、空态测试误点顶部按钮，以及 State/Actions 字段未真实复用的问题。最终独立复审为 `SPEC: PASS`、`QUALITY: APPROVED`，C=0/I=0/M=0。
+
+### Changed
+
+- `AgentHubScreen.kt`：新增真实接线的 `AgentHubScreenState`、`AgentHubScreenActions`、`AgentHubScreenContent`；Route 保留 ViewModel/Provider overlay；卡片增加 48dp MoreVert 菜单，删除仍进入确认；空态改用 Material 图标并修复 2x 字体居中排版。
+- `SwipeableItem.kt` 与双语资源：Delete/Edit/Unpin 描述全部资源化。
+- `UiTags.kt`：增加 Hub 根、搜索、列表、动态卡片/动作、空态及空态添加按钮锚点。
+- 新增 Hub JVM 契约测试与 Compose 交互测试；发行截图增加 412x892 英文三卡片场景和 360x640 中文 2x 字体空态场景，并在逐张检查后接受 reference。
+
+### Validation
+
+- `:app:testDebugUnitTest --tests '*AgentHub*' --rerun-tasks`：通过。
+- `:app:compileDebugAndroidTestKotlin :app:compileDebugScreenshotTestKotlin --rerun-tasks`：通过。
+- 首次 `validateDebugScreenshotTest`：14 项中仅两张新图缺 reference，符合预期 RED；主控检查 actual 并补修后更新基线。
+- 最终 `validateDebugScreenshotTest --rerun-tasks`：14/14 通过。
+- 目标 `git diff --check`：通过；当前无在线 Android 设备，新增 Compose 测试仅编译，未宣称设备运行通过。
+
+### Next
+
+1. 串行进入 Settings Route/Content seam 与两张发行截图，Release Preview 必须显式使用 `localInferenceAvailable=false`。
+2. Settings 闭合后继续 Provider、RAG、Resource Explorer/Files 的 Content seam、UiTags、截图与设备交互测试。
+3. UI 扩面结束后执行 clean JVM/Lint/全截图、设备矩阵、签名 R8、真实 API、冷安装与 GitHub Release 门禁。
+
+### Risks
+
+- Hub Android Compose 测试尚无设备执行证据；将在最终设备矩阵补跑。
+- 整体项目仍为 NO-GO，Settings、Provider、RAG、Files 等发行可达页面尚未完成本轮可视化扩面。
+
+### DIA
+
+已同步 SDD 进度账本与本 handover；README、CHANGELOG 和发行文档在完整 UI 扩面与最终门禁关闭时统一更新，避免中途反复改写发行结论。
+
+### HLG
+
+已追加标准时间戳交接记录；未发现需要升级为长期全局规则的新候选。
+
+## 2026-07-14T08:39:20+08:00 · v0.2-beta 结构化错误锚点修复后即时暂停
+
+type: implementation
+scope: native-ui, chat-error-state, screenshot-qa, ui-release-contract, release-readiness
+status: in-progress
+tags: [v0.2-beta, pause, chat-state, structured-error, tdd, ui-coverage]
+continuity: resume
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+用户恢复后要求继续完成发行目标，本轮先从上一记录明确的 `chatRenderStateTag()` 可观测性缺口入手。已让真实结构化 `generationNotice`、`GenerationStatus.ERROR` 和 legacy `error` 三条路径分别映射到错误锚点，并移除截图夹具为了测试 tag 伪造的裸错误字段。过程中 Spark 首轮错误加入未导入的截图引用，主控未接受其完成声明；独立修复 Agent 已移除，随后主控完成 RED/GREEN 验证。用户在准备执行独立分支 mutation RED 时要求立即暂停；主控已先恢复正确生产实现，再以 `--rerun-tasks` 实际执行目标单测并确认通过。当前没有临时 mutation 残留。
+
+### Changed
+
+- `native-ui/app/src/main/java/com/promenar/nexara/ui/chat/ChatScreen.kt`：错误锚点同时识别 legacy `error`、结构化 `generationNotice` 和 `GenerationStatus.ERROR`，其后 approval/generating/loading/empty/ready 优先级保持不变。
+- `native-ui/app/src/test/java/com/promenar/nexara/ui/chat/ChatRenderStateContractTest.kt`：三个错误入口分别建立独立契约测试，避免 notice 与 status 同时设置时互相掩盖回归。
+- `native-ui/app/src/screenshotTest/kotlin/com/promenar/nexara/ui/ReleasePreviewScreenshotTest.kt`：错误态保留结构化持久消息信封与 `status = ERROR`，删除伪造的 `error = "provider_unavailable"`。
+- 两个只读 Agent 已形成 Hub/Settings 与 Provider/RAG/Files 的后续 Content seam、截图矩阵、UiTags、设备 E2E 和风险契约；未修改对应生产页面。
+
+### Validation
+
+- 主控临时恢复旧 `chatRenderStateTag` 后运行 `ChatRenderStateContractTest --rerun-tasks`：5 tests 中两条新结构化/status 用例按预期失败，证明初始 RED。
+- 恢复实现后运行 `ChatRenderStateContractTest + GenerationFailureNoticeTest + validateDebugScreenshotTest --rerun-tasks`：exit 0，35/35 Gradle tasks 实际执行，截图 12/12 通过。
+- 审阅发现结构化 notice 与 ERROR status 同时设置会掩盖 notice 分支回归；修复 Agent 将三条入口拆成独立测试。用户暂停前主控再次运行 `ChatRenderStateContractTest --rerun-tasks`：exit 0，29/29 tasks 实际执行，6/6 tests 通过。
+- `git diff --check`：通过；`adb devices` 无在线设备。
+
+### Next
+
+1. 恢复后先核对正确条件仍为 `error || generationNotice || status == ERROR`，并对测试补强后的 review package 做一次任务级 re-review；不得重新执行已完成的初始实现。
+2. 采用只读契约，先串行实现 Agent Hub + Settings 的 Route/Content 状态提升、稳定 UiTags 与四张发行截图；必须沿用现有 Nexara 深色玻璃设计系统，`localInferenceAvailable=false` 证明 Release 真实入口。
+3. 同一任务修复 Hub 空态硬编码 emoji、滑动操作对 TalkBack 不可达及 Delete/Edit/Unpin 硬编码英文；先写 UI RED，再实现可见/可访问的等价操作。
+4. 随后串行处理 Provider、RAG、Resource Explorer/Files 的 Content seam、固定时钟、UiTags、截图和设备 E2E；Provider Preview 禁止完整 Key，固定显示 `****`。
+5. 所有新 Preview 首次以缺 golden 的 RED 生成 actual；主控逐张检查 actual，并与同 viewport reference 放在同一比较输入中验收后才更新 baseline。
+
+### Risks
+
+- Chat 锚点实现和目标测试当前已恢复 GREEN，但 reviewer 对补强后的三个独立测试尚未完成最终 re-review；恢复后先关闭这一小审阅环。
+- Hub/Settings 源码只读审计发现：Hub 编辑/删除/置顶依赖滑动且缺 TalkBack 等价操作，空态使用硬编码 emoji；Provider 协议显示名存在英文界面混中文风险。这些都是发行阻断缺陷，不能只靠新增截图掩盖。
+- Provider/RAG/Resource Explorer 顶层均与 Application/ViewModel/launcher 耦合，必须提取生产级 Content seam；不得添加 `previewMode` 或假 Application 分支。
+- 最终签名 APK、真实 compact/tablet 设备 UI 矩阵、签名制品黑盒与 GitHub Release 仍未完成，项目继续保持 NO-GO。
+
+### DIA
+
+DIA: 本轮修改 Chat 自动化状态语义、契约测试和截图夹具，并同步 `.agent/handover.md`；未改变用户可见错误文案、业务 API、持久化或架构。Hub/Settings/Provider/RAG/Files 的设计契约尚未落生产，README/CHANGELOG/架构文档继续等待完整 UI 门禁后统一回填。
+
+### HLG
+
+HLG: 已追加即时暂停记录，continuity-key 继续使用 `v0.2-beta-release-readiness`；恢复入口为本记录 Next。此前“真实错误态 tag 由结构化状态驱动”的候选已在本轮代码中验证有效，但未经用户明确授权仍未写入 AGENTS.md 或 Skill。
+
+---
+
+## 2026-07-14T08:25:16+08:00 · v0.2-beta 截图确定性门禁闭合后安全暂停
+
+type: implementation
+scope: native-ui, screenshot-qa, ui-release-audit, phase4-release-audit, release-readiness
+status: in-progress
+tags: [v0.2-beta, pause, screenshot, timezone, structured-error, ui-coverage, release-gap]
+continuity: resume
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+用户恢复环境后继续上一暂停点，并要求在当前工作完成后的合适节点再次暂停。本轮已把截图门禁从 12 项中 2 个差异与 2 个缺失基线的 RED 闭合为 UTC 与本地时区双重 12/12 GREEN；所有 12 张 actual 已逐张检查，现有 reference 也按同 viewport 对照，四张需要变更或新增的 golden 仅在视觉验收后接受。随后完成截图相关错误契约单测、静态差异检查和两份只读发行差距审计。当前处于“截图确定性门禁已闭合、尚未启动 Hub／Provider／RAG／Files／Settings 扩面实施”的安全暂停点。
+
+### Changed
+
+- `native-ui/app/src/screenshotTest/kotlin/com/promenar/nexara/ui/ReleasePreviewScreenshotTest.kt`：错误态夹具改用 `GenerationFailureCodec` 构造正式 `SERVER` 失败信封，避免把旧裸英文错误误测为通用降级文案。
+- 同一截图夹具将聊天时间改为固定墙上时间 `2026-07-14 08:00`，再按当前系统时区生成 epoch；生产 formatter 与用户本地时区语义保持不变，同时消除 UTC／上海等构建机之间的截图漂移。
+- 已接受流式聊天移除 stale 光标、2x 字体结构化错误态以及两张 UnifiedPromptEditor 新增场景，共四张新增或变更 reference；其余既有 reference 未发现需要产品性改动的视觉差异。
+- 本轮未修改生产 UI、错误映射、时间 formatter、公开 API、持久化结构或发行配置。
+
+### Validation
+
+- `TZ=UTC ./gradlew :app:validateDebugScreenshotTest --stacktrace --console=plain`：通过，12 tests / 0 failures / 0 errors。
+- 本地时区 `./gradlew :app:validateDebugScreenshotTest --rerun-tasks --stacktrace --console=plain`：通过，29/29 Gradle tasks 实际执行；XML 报告为 12 tests / 0 failures / 0 errors，全部 `diffPercent=0.0`。
+- `./gradlew :app:testDebugUnitTest --tests '*GenerationFailureContractTest' --tests '*GenerationFailureNoticeTest' --tests '*PipelineBubbleTest' --tests '*ChatRenderStateContractTest'`：通过。
+- `git diff --check`：通过。12 张 screenshot reference 文件均存在。
+- 逐图视觉检查覆盖现有 onboarding 双语手机／平板／2x 字体、Provider Key 遮蔽片段、Chat 空态／流式／错误／审批、Backup、Prompt Editor；未见裁切、错误字重／间距或核心控件不可达。
+- Phase 4 只读审计确认 workflow 与 APK verifier 的本地契约较强，但当前仍无最终签名 APK、mapping、checksum、远端发行分支、tag、GitHub Release 或对应 workflow run。
+
+### Next
+
+1. 恢复后先核对 `codex/v0.2-beta`、HEAD、工作树、JDK/Gradle/ADB、无在线设备和本记录；保留全部未提交改动，禁止 reset、clean 或回滚。
+2. 按发行设计契约补齐 Agent Hub、完整 Provider、RAG、Files、Settings 的确定性全屏截图与交互门禁，并覆盖中英文、紧凑手机、平板、横竖屏和 2x 字体；新增 golden 必须先验收 actual，再更新 reference。
+3. 扩展这些主路径的稳定 `UiTags`，把当前脚本未执行的既有 Android UI 测试纳入设备门禁；专项验证系统 Back、IME、TalkBack/阅读顺序和核心控件可达性。
+4. 修复 `chatRenderStateTag()` 未识别真实 `generationNotice/status == ERROR` 的自动化可观测性缺口，先补 RED 测试，再移除截图夹具为了 tag 伪造的裸 `error`。
+5. UI 门禁闭合后执行 clean JVM/Lint/截图/Debug、最终签名 R8 APK、签名制品 PDF/DOCX/RAG 黑盒、性能与真实 API smoke；最终回填文档后再提交、推送、打 tag 并创建 GitHub Release。
+
+### Risks
+
+- 当前 12 张截图本身已 GREEN，但覆盖面仍不足以证明商业级 UI：Agent Hub、完整 Provider、RAG、Files、Settings 为零全屏 screenshot coverage，当前不得据此宣称 UI 完整或可发行。
+- API 31/35/36 CI 设备矩阵使用同一 Pixel 7 Pro profile，尚未证明真实紧凑手机与平板 shape；多个现有 UI 测试也尚未被设备脚本执行。
+- 最终签名 APK尚不存在；Release workflow 的签名 APK smoke 目前只覆盖身份、zipalign、冷安装、启动和 crash/ANR，PDF/DOCX/RAG 黑盒仍主要运行 release-equivalent `minifiedTest`，需复用到最终签名 APK。
+- `chatRenderStateTag()` 的真实结构化错误态 tag 缺口不影响当前画面，但会削弱后续自动化对错误态的准确观测，必须在最终 UI 门禁前修复。
+
+### DIA
+
+DIA: 已同步截图测试夹具、四张视觉基线与 `.agent/handover.md`；生产 UI/API/架构未变。README、CHANGELOG、架构与 release validation 状态仍应在最终全门禁后统一回填。
+
+### HLG
+
+HLG: 已追加标准时间戳安全暂停记录，continuity-key 继续使用 `v0.2-beta-release-readiness`；恢复入口为本记录的 Next。发现“真实错误态的测试 tag 必须由结构化状态而非伪造裸 error 驱动”具备项目测试规则候选价值，未经用户明确授权未沉淀到 AGENTS.md 或 Skill。
+
+---
+
+## 2026-07-14T08:07:09+08:00 · v0.2-beta 多 API 设备矩阵闭合后安全暂停
+
+type: implementation
+scope: native-ui, api31-device-e2e, api35-device-e2e, minified-blackbox, screenshot-qa, release-readiness
+status: in-progress
+tags: [v0.2-beta, pause, api31, api35, device-matrix, minified, screenshot, ui-qa]
+continuity: resume
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+用户要求在当前工作完成后的合适节点再次暂停，以更新工作环境。本轮已完成 API 35 full deviceTest、API 35 发行等价 minified 黑盒和 API 31 minimum deviceTest，至此 API 31/35/36 arm64 设备矩阵闭合。API 31 首轮失败被定位为测试固定期待 Android 13+ 通知权限语义，生产在 Android 12 正确允许后台持续生成；只修复测试夹具并取得整轮 GREEN。随后启动截图门禁，只完成当前事实生成与四个失败项的初步目视诊断，尚未修改截图夹具、产品 UI 或 golden。当前正处于设备矩阵与 UI 整改之间的安全检查点。
+
+### Changed
+
+- 本机新增独立 `Nexara_API_35` 与 `Nexara_API_31` Google APIs arm64 AVD，不覆盖现有 `Pixel_7` API 36 AVD。
+- `native-ui/mainactivity-e2e/src/main/java/com/promenar/nexara/MainActivityChatFlowE2eTest.kt`：测试期待按设备 SDK 分支；API 33 以下期待 `BACKGROUND_ALLOWED`，API 33 及以上未授权且已询问时期待 `FOREGROUND_ONLY`。生产权限和生成策略未改动。
+- 截图门禁当前仅生成 actual/diff 与报告，没有更新任何 reference golden；两处差异和两处缺失 golden 保持 RED，避免未经目视验收掩盖视觉缺陷。
+
+### Validation
+
+- API 35 full deviceTest：`artifacts/android-device-api-35-arm64-v8a-resume1/exit-code.txt` 为 `0`，矩阵为 API 35 / arm64-v8a / full / deviceTest；普通测试、通知权限、聊天、onboarding、无障碍、自适应、备份恢复、预期进程死亡、后台生成、真实 PDF/DOCX 与冷启停链路通过，`crash-log.txt` 为空。
+- API 35 minified 黑盒：`artifacts/android-minified-blackbox-api-35-arm64-v8a-resume1/exit-code.txt` 为 `0`；目标 APK 不可调试、禁明文、无 instrumentation，mapping 非空，冷启动及 PDF/DOCX 分享、强停恢复、导入索引通过，`crash-log.txt` 为空。
+- API 31 minimum 首轮 RED：`artifacts/android-device-api-31-arm64-v8a-resume1/` 中聊天测试错误期待 `FOREGROUND_ONLY`，实际为 `BACKGROUND_ALLOWED`。
+- 生产策略、ViewModel 权限快照和独立只读审阅共同确认 API 31 实际行为符合产品设计；只修改测试夹具后，`artifacts/android-device-api-31-arm64-v8a-resume2/exit-code.txt` 为 `0`，矩阵为 API 31 / arm64-v8a / minimum，聊天、onboarding、无障碍和自适应用例通过，两个 crash 输出均为空。
+- `./gradlew :app:validateDebugScreenshotTest` 当前为 12 tests / 4 failures：流式聊天与 2x 字体错误态各有一处 diff，统一提示词编辑器 compact 2x 字体与中文平板空态各缺一张 golden。已确认流式 actual 与现有设计一致、旧 golden 残留光标；错误态 actual 使用通用降级文案，夹具仍写入旧版非结构化错误字符串，需先改为真实结构化失败再判断 golden；两张提示词编辑器 actual 初看无裁切，但尚未完成全量逐图对照。
+- 暂停前所有子 Agent 已完成；API 31 模拟器已关闭，Gradle Daemon 已正常停止。未发现本任务的 emulator、instrumentation、设备脚本、OpenCode 或 Codex CLI Worker 仍在运行；系统中仍有一条约 10 小时的独立 `agy` 进程，非本任务启动，未擅自终止。
+
+### Next
+
+1. 环境恢复后先核对分支 `codex/v0.2-beta`、HEAD、工作树、JDK 21、Gradle 9.5、ADB/AVD、无在线设备和 HLG 索引；必须保留当前全部未提交改动，禁止 reset、clean 或回滚。
+2. 从 `native-ui/app/src/screenshotTest/kotlin/com/promenar/nexara/ui/ReleasePreviewScreenshotTest.kt` 的错误态夹具开始，读取 `GenerationFailure` / `GenerationFailureCodec` 契约，把旧原始错误字符串改为真实结构化持久失败；同步检查截图时间格式在不同时区的确定性。
+3. 重新生成 12 张 actual；按同 viewport 将 actual 与 reference 放在同一比较输入中，逐张验收双语、手机/平板、2x 字体、裁切、间距、字重、触控与可达性。只在实际视觉被接受后更新流式光标 stale golden 和两张缺失 golden，再把 screenshotTest 跑绿。
+4. 补齐 Agent Hub、Provider、RAG、Files、Settings 等发行主路径的双语、手机/平板、横竖屏、2x 字体、无障碍与交互可视化审计；有缺陷先修复并补测试，不以截图存在代替交互验收。
+5. UI 门禁闭合后执行 full clean JVM/Lint/截图、最终签名 R8 APK、冷安装、真实 API smoke、最终 DIA/HLG 与商业交付审计，再提交、推送、打 tag 并创建 GitHub Release 可侧载 APK。
+
+### Risks
+
+- 截图门禁仍为 RED；当前不得更新全部 golden、不得宣称 UI 已达到商业发行质量。
+- 错误态截图夹具使用旧版非结构化持久错误，与正式 `GenerationFailureCodec` 契约不一致；直接接受通用降级文案会降低发行错误体验的验证价值。
+- 当前尚无最终签名 Release APK、冷安装真实 API smoke、远端 Actions、提交/推送/tag/GitHub Release 证据，项目仍不可发行。
+- API 31 测试 helper 与生产策略均依赖 API 33 分界，未来 Android 通知权限策略调整时需同步复核；本次已有纯策略单测作为契约。
+
+### DIA
+
+DIA: 本轮新增 API 31 测试矩阵适配并形成 API 31/35 设备验证证据；未改变正式产品接口或用户能力。已同步 `.agent/handover.md`，README、CHANGELOG、架构与 release validation 仍待最终门禁统一复核。
+
+### HLG
+
+HLG: 已追加标准时间戳安全暂停记录，continuity-key 继续使用 `v0.2-beta-release-readiness`；恢复入口为本记录的 Next。未发现需要新增到长期规则文件的新候选，既有未授权候选保持不变。
+
+---
+
 ## 2026-07-13T04:49:16+08:00 · v0.2-beta P0/P1 核心门禁完成
 
 type: implementation
@@ -1828,6 +2368,417 @@ DIA: 已同步 `CHANGELOG.md` 与 `.agent/handover.md`；本轮新增 Android ne
 ### HLG
 
 HLG: 已追加标准时间戳交接记录；本轮未发现需要写入长期规则文件的新规则候选。
+
+---
+
+## 2026-07-14T07:43:31+08:00 · v0.2-beta API 36 完整设备门禁通过后安全暂停
+
+type: implementation
+scope: native-ui, onboarding, api36-device-e2e, android-toolchain, release-readiness
+status: in-progress
+tags: [v0.2-beta, pause, api36, onboarding, locale, device-e2e, android-sdk]
+continuity: resume
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+用户要求在当前动作完成后选择合适节点暂停，以再次更新工作环境。本轮已闭合上一条交接中的 onboarding 语言切换竞态、整类测试、force-stop 恢复和 API 36 完整设备 E2E；同时修复独立审阅发现的发行本地推理测试契约陈旧问题，并取得同一审阅者复审通过。Android command-line tools 已恢复，但尚未开始安装 API 35/31 镜像，因此当前正好处于设备矩阵切换前的安全检查点。
+
+### Changed
+
+- `OnboardingAndroidEndToEndTest.kt`：语言点击后显式重建 Activity，再断言英文 Provider 页面；该夹具与产品真实 LocaleManager 行为分离，聚焦测试连续 5 次稳定通过。
+- 同一测试对 Local Provider 按构建能力分支，并在 force-stop 分阶段模式跳过无关用例，避免持久状态夹具互相污染。
+- `MainActivity.kt`：Local probe 失败测试 Intent 仅受 `BuildConfig.DEBUG` 保护；正式 Release 仍由 `DEBUG=false` 阻断。
+- `ReleaseLocalInferenceSurfaceContractTest.kt`：分别锁定测试 hook 的 DEBUG 边界，以及 `minifiedTest` / `release` 的 `DEBUG=false` 与 `LOCAL_INFERENCE_AVAILABLE=false`。
+- `app/build.gradle.kts`：Release 显式声明 `isDebuggable = false`，使发行安全边界可由源码契约直接核验。
+- 本机恢复官方 Android command-line tools 20.0；未创建或覆盖任何 AVD，API 35/31 镜像安装留待恢复后执行。
+
+### Validation
+
+- onboarding 语言聚焦用例在显式重建方案下 5/5 通过；onboarding 整类 3/3 通过。
+- `seed_first_chat -> force-stop -> verify_first_chat` 两阶段均通过；非阶段用例按预期 assumed/skipped。
+- API 36 arm64 完整 `android-device-core-e2e.sh` 退出码为 0，通知权限、聊天、onboarding、无障碍、自适应布局、备份/恢复进程死亡、后台生成、真实 PDF/DOCX 解析与冷启动/停止链路全部通过；`crash-log.txt` 为空。证据目录：`artifacts/android-device-api-36-arm64-v8a-resume5/`。
+- 发行本地推理契约测试先对陈旧断言稳定 RED，修复后 `ReleaseLocalInferenceSurfaceContractTest` GREEN；同一只读审阅者给出 Spec APPROVED、Quality APPROVED、无阻塞项。
+- 暂停前已正常关闭 `emulator-5554` 并停止 Gradle Daemon；`adb devices` 为空，未发现 Gradle、instrumentation、设备脚本、sdkmanager/avdmanager、OpenCode 或 Codex CLI Worker 遗留进程。
+
+### Next
+
+1. 环境恢复后先核对分支、工作树、JDK 21、Gradle 9.5、ADB、`sdkmanager --version`、AVD 列表和 HLG 索引；保留全部未提交改动，禁止 reset、clean 或回滚。
+2. 通过 `sdkmanager --list` 重新确认包名后安装 API 35 与 API 31 的 Google APIs arm64 系统镜像，创建独立 AVD，不覆盖现有 `Pixel_7`。
+3. API 35 执行 full deviceTest 与 minified 黑盒门禁；API 31 执行 minimum 设备门禁。
+4. 进入截图、双语、字体、手机/平板、横竖屏、无障碍与交互视觉验收，再执行 full clean JVM/Lint/截图、签名 R8、冷安装和真实 API smoke。
+5. 最终复核 DIA 文档、提交推送、标签和 GitHub Release 可侧载 APK。
+
+### Risks
+
+- API 35/31 尚未安装或执行，设备矩阵仍未闭合。
+- 截图门禁仍有旧证据中的两处差异和两张缺失 golden；错误态夹具、时区稳定性与视觉一致性尚待处理，不得直接更新基准。
+- 测试契约依赖源码字符串和 Gradle 片段，格式调整时较脆弱；Release/minifiedTest Intent 黑盒边界仍将在后续发行门禁复核。
+- 前次审阅的非阻断风险仍在：Release 根语义树暴露测试 tag，以及 onboarding 测试后的偏好状态隔离，需要在视觉/完整回归阶段继续观察。
+- 尚无最终签名 Release、真实 API smoke、提交、推送、标签或 GitHub Release，当前仍不可发行。
+
+### DIA
+
+DIA: 本轮调整 Android E2E 夹具、发行安全源码契约与 Release 显式不可调试配置；正式 Release 用户能力边界未扩大。已同步本交接记录，README、CHANGELOG、架构与 release validation 留待最终门禁统一复核。
+
+### HLG
+
+HLG: 已追加标准时间戳安全暂停记录，continuity-key 继续使用 `v0.2-beta-release-readiness`；恢复入口为本记录的 Next。本轮未发现需要新增到长期规则文件的候选。
+
+---
+
+## 2026-07-14T07:23:59+08:00 · v0.2-beta onboarding Local 发行边界聚焦修复后暂停
+
+type: implementation
+scope: native-ui, onboarding, api36-device-e2e, release-readiness
+status: in-progress
+tags: [v0.2-beta, pause, api36, onboarding, local-inference, device-e2e]
+continuity: resume
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+用户要求在当前动作结束后的合适节点暂停，以再次更新工作环境。本轮已把 API 36 完整设备测试暴露的 onboarding Local 发行边界夹具问题收敛到聚焦用例通过：`deviceTest` 继续保持 `LOCAL_INFERENCE_AVAILABLE=false`，测试不再求值被能力门禁禁止的本地推理引擎；DEBUG 测试构建可通过既有 Intent 钩子构造“恢复到不可用 Local 配置”的真实发行态，并验证用户可见阻断文案可滚动到达。随后 onboarding 整类复跑暴露独立的语言切换竞态，已保留确切 RED 证据，未继续启动新一轮修复、完整 API 36 矩阵或 UI 审计。
+
+### Changed
+
+- `native-ui/app/src/androidTest/java/com/promenar/nexara/onboarding/OnboardingAndroidEndToEndTest.kt`：本地推理 slot 快照和恢复断言改为能力可用时才访问引擎；Local 场景按构建能力分别验证真实 probe 失败或发行不可用提示，并等待异步配置装载后滚动到提示。
+- `native-ui/app/src/main/java/com/promenar/nexara/MainActivity.kt`：既有 Local probe 测试 Intent 钩子只受 `BuildConfig.DEBUG` 保护，不再与 `LOCAL_INFERENCE_AVAILABLE` 绑定；正式 Release 的 `DEBUG=false`，用户路径不可触发。
+- 新增聚焦验证与整类复跑输出：`artifacts/android-device-api-36-arm64-v8a-onboarding-scroll-fix/`、`artifacts/android-device-api-36-arm64-v8a-onboarding-checkpoint/`。
+
+### Validation
+
+- RED 1：旧夹具在 `deviceTest` 的 `@Before/@After` 无条件访问 `localInferenceEngine`，onboarding-full 为 3 tests / 6 fixture failures。
+- RED 2：只按能力分支后，发行不可用提示在一次运行中存在但不可见，另一次运行中因测试钩子被能力门禁禁用而 10 秒内始终不存在；据此定位到钩子与产品能力边界错误耦合，而非生产表单缺少提示。
+- GREEN：重新构建并安装 `deviceTest` APK 与 AndroidTest APK 后，`localProviderRespectsBuildCapabilityAndStaysOnConnection` 为 `OK (1 test)`，5.234 秒。
+- 整类复跑中 Local 场景继续通过；`freshInstall_localeAndEveryCheckpointSurviveRecreate_thenOnlyMatchingSuccessCompletes` 在点击 English 后资源配置仍为 `zh`，期望 `en`，整类 3 tests / 1 failure。该问题是新的语言切换/等待竞态，尚未修复。
+- 因整类门禁失败，force-stop 的 `seed_first_chat -> force-stop -> verify_first_chat` 两阶段未继续执行；不得扩大宣称 onboarding 或 API 36 full 已通过。
+- 暂停前没有 Gradle、instrumentation、设备 E2E 或外部 Agent 进程仍在执行。
+
+### Next
+
+1. 环境恢复后先核对工作树、JDK/Gradle/ADB、Android SDK tools、模拟器与 HLG 索引；保留全部未提交改动，禁止 reset/clean/回滚。
+2. 用聚焦方法复现 English 点击后的 locale 状态流转，确认是测试等待条件不足还是产品语言应用竞态；先取得稳定 RED，再做最小修复。
+3. 依次复跑 onboarding 聚焦语言用例、整类与 `seed_first_chat -> force-stop -> verify_first_chat` 两阶段。
+4. onboarding 全绿后重新运行独立 artifact 目录的 API 36 full；随后再进入 API 35/31、截图与最终发行门禁。
+
+### Risks
+
+- 当前只有 Local 发行边界聚焦用例通过；onboarding 整类、force-stop 两阶段和 API 36 full 均未通过，不具备发行结论。
+- Android SDK `cmdline-tools` 在本次环境中仍缺失，当前只有 API 36 Play Store arm64 系统镜像与 `Pixel_7` AVD；API 35/31 矩阵需环境更新后恢复工具并安装镜像。
+- 工作树存在大量有意未提交变更；本轮只在上述两个文件继续增量修改，恢复时必须以当前 diff 为事实源。
+
+### DIA
+
+DIA: 本轮仅调整 DEBUG 测试钩子与 Android E2E 夹具，没有改变正式 Release 的用户可见行为；已同步本交接记录，发行文档仍待最终门禁统一复核。
+
+### HLG
+
+HLG: 已追加标准时间戳安全暂停记录并重建索引；恢复入口为本记录的 Next。本轮没有新增长期规则候选。
+
+---
+
+## 2026-07-14T06:57:00+08:00 · v0.2-beta API 36 聊天主流程夹具修复后安全暂停
+
+type: implementation
+scope: native-ui, mainactivity-e2e, api36-device-e2e, release-readiness
+status: in-progress
+tags: [v0.2-beta, pause, api36, mainactivity, notification-permission, device-e2e]
+continuity: resume
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+用户要求在当前工作完成后选择合适节点暂停，以更新工作环境。本轮已将 API 36 完整设备测试当前失败收敛：聊天主流程的模型切换与持久化没有故障；测试在清空应用数据后未声明 Android 13+ 通知权限状态，产品按设计停在通知权限说明门，导致测试过早等待生成协调器请求。现已把测试夹具改为自包含，并在通知权限仍未授予、应用数据刚清空的条件下由 Agent 与主控分别取得聚焦用例通过证据。未启动下一轮完整 API 36 矩阵、API 35 安装或 UI 视觉审计。
+
+### Changed
+
+- `native-ui/mainactivity-e2e/src/main/java/com/promenar/nexara/MainActivityChatFlowE2eTest.kt`：在 Activity 启动前同步写入 `GENERATION_NOTIFICATION_PERMISSION_ASKED=true`，使该非权限专项在未授权设备上确定性走 `FOREGROUND_ONLY`。
+- 同一测试新增首请求 `runtimePolicy == FOREGROUND_ONLY` 和通知权限说明对话框不存在断言，继续覆盖模型切换、持久化与审批回传。
+- 新增只读诊断、夹具修复、Phase 3 与 Phase 4 当前状态审计临时报告；设备 CI 脚本最终未因本问题发生变更。
+- 主控新增聚焦验证输出 `artifacts/android-device-api-36-arm64-v8a-resume2/mainactivity-chat-flow-focused-after-fixture-fix.txt`。
+
+### Validation
+
+- RED：API 36 清空应用数据后、未授予通知权限时，旧测试在 `requests.size == 1` 等待处超时，1 test / 1 failure。
+- Agent GREEN：重新构建测试 APK，`pm clear` 后不执行 `pm grant`，聚焦 instrumentation 为 `OK (1 test)`，10.444 秒。
+- 主控独立 GREEN：确认 `POST_NOTIFICATIONS: granted=false` 后直接运行同一聚焦 instrumentation，`OK (1 test)`，9.147 秒；验证输出通过 `nexara_assert_normal_instrumentation_output`。
+- 主控首次聚焦验证包装命令在测试本体已通过后因 zsh 内建只读变量 `status` 返回非零；随后拆分执行输出判定 helper，验证通过，未涉及产品或测试失败。
+- `android-device-core-e2e-contract-test.sh`、两个相关 Bash 语法检查和全工作树 `git diff --check` 均通过。
+- Phase 3 当前审计：Task 1、2 PROVEN，Task 3-7 PARTIAL；Phase 4 当前审计：Task 1-6 均 PARTIAL，总体 NO-GO，截图门禁和最终发行证据仍未关闭。
+
+### Next
+
+1. 恢复环境后先确认工作树、JDK/Gradle、ADB 与治理索引状态，不重置或清理现有大规模未提交改动。
+2. 在 API 36 重新运行完整 `android-device-core-e2e.sh`，生成新的独立 artifact 目录，确认修复后的聊天流及后续 onboarding、备份恢复、文档解析、前台服务等全链路。
+3. 完成 API 35 full/minified 与 API 31 minimum 矩阵，再进入截图硬红灯修复和手机/平板/横竖屏/2x 字体/双语/无障碍人工视觉验收。
+4. 最后执行 full clean JVM/Lint/截图、签名 R8 Release、冷安装、真实 API smoke、DIA 文档、提交推送、标签与 GitHub Release 侧载 APK。
+
+### Risks
+
+- 当前只是聚焦用例通过，API 36 完整 `deviceTest` 仍需从头复跑；不得把本次 1/1 扩大为完整设备矩阵通过。
+- 截图门禁仍有 2 个 diff 与 2 个缺失 golden，Phase 4 仍为 NO-GO。
+- API 35/31、签名 Release、真实 API、远端 workflow、tag 和 GitHub Release 证据仍未完成。
+- 工作树改动量大且未提交；恢复时必须保留全部现有改动，禁止 reset、clean 或回滚他人改动。
+
+### DIA
+
+DIA: 本次只调整设备 E2E 测试夹具、断言、临时报告和交接记录，没有产品、接口、配置或用户可见行为变化；正式发行文档仍在最终门禁阶段统一复核。
+
+### HLG
+
+HLG: 已追加标准时间戳安全暂停记录；恢复入口为本记录的 Next。没有新增长期规则候选；此前已记录但未获授权的候选保持原状。
+
+---
+
+## 2026-07-14T06:36:19+08:00 · v0.2-beta API 36 发行等价黑盒门禁通过并安全暂停
+
+type: implementation
+scope: native-ui, minified-test, r8, docx, pdf, device-e2e, release-engineering
+status: in-progress
+tags: [v0.2-beta, pause, r8, blackbox, api-36, docx, pdf]
+continuity: resume
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+完成 minified AndroidTest 架构重整后的 API 36 发行等价黑盒闭环：`deviceTest` 承担内部 AndroidTest，`minifiedTest` 保持非调试、禁明文、真实 R8/资源压缩并由宿主 ADB/UIAutomator 黑盒验收。独立 fixture ContentProvider 生成 PDF/DOCX canary，验证 ACTION_SEND、授权读取、强停重启后的 staging 持久性、导入和索引完成。用户要求在当前动作完成后选择安全节点暂停；本记录写入时所有构建、设备脚本与子 Agent 均已结束，可安全更新工作环境。
+
+### Changed
+
+- 新增独立 `blackbox-fixture` 与 `android-minified-blackbox-smoke.sh`，不再用会被目标 APK R8 裁剪影响的 instrumentation 作为发行等价门禁。
+- 分享黑盒显式同时携带 data URI、`EXTRA_STREAM` 与读取授权；ModalBottomSheet 独立语义根开启 resource-id 测试标签。
+- Log4j 2.21.1 的三个内建反射消息工厂仅保留 public 无参构造器，允许类名混淆，不扩大整库 keep。
+- Commons Compress 1.25.0 仅对 zip 包内实现 `ZipExtraField` 的类型保留 public 无参构造器，修复 `ExtraFieldUtils.register()` 反射实例化；不保留其它成员。
+- 对应 R8 契约已覆盖禁止 Log4j/Commons Compress 宽泛 keep、整库 dontwarn 和构造器 `allowoptimization` 回退。
+
+### Validation
+
+- `r8-document-rules-contract-test.py`：5/5 通过；minified 黑盒静态架构契约通过；`git diff --check` 通过。
+- `:app:assembleMinifiedTest`（`arm64-v8a`）成功，Lint Vital 通过。
+- mapping/usage/DEX 验证：Log4j 三个反射工厂均有 public 无参构造器，`DefaultFlowMessageFactory` 不再是 ABSTRACT；Commons Compress 静态注册的 14 个 extra-field 类型均存在、非抽象且保留 public 无参构造器。
+- API 36 `artifacts/android-minified-blackbox-api-36-arm64-v8a-attempt9/exit-code.txt` 为 `0`；PDF 与 DOCX 的 indexed XML 均显示“已完成索引”，`crash-log.txt` 为 0 字节，未检出目标包 Crash/ANR。
+- 两轮失败证据仍保留：attempt6 暴露 Log4j 构造器缺口，attempt8 暴露 Commons Compress 构造器缺口；均按 mapping、依赖源码和最终 DEX 闭环，不以宽泛规则掩盖。
+
+### Next
+
+1. 环境恢复后先核对分支、工作树、JDK/Gradle/SDK、模拟器与无遗留进程；不要重复 attempt6/8 的已定位路线。
+2. 在 API 36 运行 `deviceTest` 的稳定文本 DOCX/PDF 解析测试与完整设备 E2E，再在 API 35 执行同一 `deviceTest` + minified 黑盒矩阵。
+3. 进入截图/UI/交互门禁：先复跑当前 screenshot actual，逐张与 golden 同 viewport 对照，修复内容缺失、双语、字体、手机/平板与可访问性缺陷后再更新 golden。
+4. 完成 full clean JVM/Lint/截图/签名 R8/真实 API smoke，随后同步 DIA 文档、商业审计状态并执行 commit、push、tag 与 GitHub Release APK。
+
+### Risks
+
+- 当前只证明 API 36 空但有效 PDF/DOCX canary 的发行压缩包全链；带稳定正文的真实解析、API 35 矩阵和完整 deviceTest 尚未完成。
+- UI 发行门禁仍为 NO-GO：旧证据中仍有 2 个 screenshot diff、2 个缺 golden，以及 Chat actual 内容缺失，恢复后必须重新生成当前事实并逐图验收。
+- 尚无最终签名 Release、冷安装真实 API smoke、提交/推送/标签/GitHub Release。
+
+### DIA
+
+DIA: 已同步 `.agent/handover.md` 记录发行测试架构、R8 反射规则与 API 36 门禁状态；README、CHANGELOG、架构和 release validation 文档留待 API 35/36 与最终放行门禁统一同步。
+
+### HLG
+
+HLG: 已追加标准时间戳安全暂停记录，continuity-key 继续使用 `v0.2-beta-release-readiness`；恢复入口为本记录的 Next。当前未发现需要新增到长期规则文件的候选。
+
+---
+
+## 2026-07-14T06:38:41+08:00 · 安全暂停进程核对补记
+
+type: validation
+scope: release-engineering, environment, handover
+status: completed
+tags: [pause, process-audit, xcode, environment-update]
+continuity: resume
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+在最终暂停核对中发现一条早于本轮黑盒测试启动、已持续约 1 小时 21 分钟的只读 `xcrun simctl list` 子进程；它不属于 Gradle、ADB、构建或设备测试，但会妨碍“环境中无遗留任务”的严格结论。已向该子进程及其父 shell 发送 TERM 并确认退出。
+
+### Validation
+
+- 终止后再次扫描未发现 `gradlew`、ADB instrumentation、minified 黑盒脚本、OpenCode、Codex CLI Worker 或 `simctl list` 遗留进程。
+- API 36 attempt9 的退出码、产物与工作树未受影响。
+
+### Next
+
+- 环境恢复后仍按上一条记录的 Next 从状态核对和 API 36 `deviceTest` 开始。
+
+### Risks
+
+- 无新增产品风险；该进程仅为旧环境探测命令。
+
+### DIA
+
+DIA: 仅追加交接勘误，无正式项目文档影响。
+
+### HLG
+
+HLG: 按追加式事实链补记暂停前进程清理，不回写上一条记录。
+
+---
+
+## 2026-07-14T05:15:02+08:00 · v0.2-beta minifiedTest 设备运行时诊断暂停
+
+type: implementation
+scope: native-ui, minified-test, androidtest, device-e2e, release-engineering
+status: in-progress
+tags: [v0.2-beta, pause, r8, androidtest, instrumentation, emulator]
+continuity: resume
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+用户要求在当前动作完成后选择安全节点暂停，以更新工作环境。本轮已完成 RAG、Prompt 与 Provider 聚焦测试复核，并解决两个 minifiedTest 构建级 R8 阻断；三个 APK 已能成功构建、安装并被设备识别。窄范围 DOCX/PDF instrumentation 随后暴露目标 APK 与测试 APK 之间的运行时裁剪边界问题：先缺失 `androidx.tracing.Trace`，补精确保留后又缺失 `kotlin.LazyKt`。这说明继续逐类追加 keep 规则会形成不可控的打地鼠式修复，主控已停止该路线并中断正在执行的诊断 Agent。当前没有 Gradle、instrumentation、外部 CLI Agent 或子 Agent 继续运行，工作树保持原样，等待环境更新后从本记录恢复。
+
+### Changed
+
+- `mainactivity-e2e` 的 `minifiedTest` 已启用真实 shrinking，并通过专用 `testProguardFiles` 处理测试代码；对应 17 个 AGP 精确 `-dontwarn` 与静态契约已落盘。
+- app `minifiedTest` AndroidTest 已接入独立测试 R8 规则，只忽略 `error_prone_annotations` 中无 Android 运行时调用的 `javax.lang.model.element.Modifier` 签名缺失；静态契约已落盘。
+- 为定位 AndroidJUnitRunner 首个启动崩溃，当前工作树暂存 `proguard-minified-test-runner-rules.pro` 及其契约，仅精确保留 `androidx.tracing.Trace` 三个入口。该实验只能消除第一处崩溃，尚未形成可接受的最终方案，恢复后不得直接视为闭环。
+
+### Validation
+
+- RAG 45/45、Prompt 67/67、Provider 30/30，合计 142/142 聚焦 JVM 测试通过。
+- `:app:assembleMinifiedTest`、`:app:assembleMinifiedTestAndroidTest`、`:mainactivity-e2e:assembleMinifiedTest` 联合构建成功；三 APK 安装成功，两个 instrumentation runner 均能被设备发现。
+- `DocumentParserDeviceE2eTest` 首次运行由脚本识别为 `Process crashed`，根因为目标 APK 中被 R8 移除的 `androidx.tracing.Trace`；加入精确保留后启动继续推进，但在 `TestDirCalculator`/`FileTestStorage` 处因 `kotlin.LazyKt` 被目标 R8 移除再次崩溃。
+- 证据表明测试 APK 保留测试代码并应用目标 mapping，但测试运行时共享依赖在目标 APK 中被完全优化/移除时仍会产生未解析入口；当前不得用零散 keep 规则宣布解决。
+- 暂停前只读进程核对未发现仍在运行的 Gradle、ADB instrumentation、OpenCode 或 Codex CLI Worker；所有子 Agent 已完成或中断。
+
+### Next
+
+1. 恢复后先核对工作树、Java/Gradle/Android SDK/模拟器状态，不重复已通过的 142 项聚焦测试。
+2. 系统检查 AGP `minifiedTestAndroidTest` 的 keep/mapping 产物与 task inputs，确认是否存在官方的测试运行时闭包保留机制；在根因明确前禁止继续逐类补 `LazyKt` 等 keep 规则。
+3. 选择可维护方案后重新执行 DOCX/PDF 窄门禁，再跑完整 API 36；之后补 API 35/36 证据。
+4. 设备门禁稳定后继续当前 UI 截图缺陷修复、双语/字体/手机平板视觉覆盖、full clean、签名 Release、真实 API smoke 与 GitHub Release。
+
+### Risks
+
+- `proguard-minified-test-runner-rules.pro` 是未完成实验，不是最终放行配置；若架构方案改变，应仅回收这一专项自身的临时规则和契约，不得影响工作树其他改动。
+- UI 发行门禁仍为 NO-GO：此前截图运行存在 2 个 diff 失败、2 个缺 golden，且两处 Chat actual 有明显内容缺失；尚未进入本轮视觉整改。
+- 尚无完整 API 35/36 设备 E2E、稳定签名 R8 Release、冷安装真实 API smoke、最终提交/推送/标签/GitHub Release。
+
+### DIA
+
+DIA: 本轮新增 minifiedTest 构建与测试规则及设备运行时诊断记录；最终架构方案未定，README、CHANGELOG、架构和 release validation 文档留待门禁闭环后统一同步。
+
+### HLG
+
+HLG: 已追加标准时间戳暂停记录，continuity-key 继续使用 `v0.2-beta-release-readiness`；恢复入口为本记录的 Next。当前未发现需要新增到长期规则文件的候选。
+
+---
+
+## 2026-07-14T04:49:53+08:00 · v0.2-beta Provider 与设备超时专项闭环暂停
+
+type: implementation
+scope: native-ui, provider, device-e2e, release-engineering
+status: in-progress
+tags: [v0.2-beta, pause, provider-probe, concurrency, timeout-helper, device-e2e]
+continuity: resume
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+用户要求在当前动作完成后选择合适节点暂停，以更新工作环境。本轮已将恢复时正在执行的两项专项完整闭环：Provider 模型探测不再把空响应、仅 `Done` 或缺少 `Done` 的流误判为成功；取消后立即重试和 LAZY Job 启动窗口均由代际与 Job 登记门禁保护。Android 设备 E2E 的超时执行改为可移植 Python helper，并能在超时、SIGINT、SIGTERM 下清理整个进程组。所有委派任务、Gradle 和 CLI 进程均已自然结束；未启动模拟器、minified 构建、UI 视觉整改或发行阶段。
+
+### Changed
+
+- `SettingsViewModel.kt`：Provider 探测仅在收到至少一个非空 `TextDelta`/`Thinking` 且正常收到 `Done` 时判定成功；首个结构化 Error 不被后续 Done 翻转。
+- `SettingsViewModel.kt`：引入每模型 generation 门禁，阻止旧 Job 的晚到 Idle/Success/Error 覆盖取消后新任务；同模型只要 Job 已登记即拒绝第二次启动，关闭 `CoroutineStart.LAZY` 的并发窗口。
+- `ProviderModelReleaseBlockersTest.kt`：补空流、仅 Done、缺 Done、Error 后 Done、取消立即重试及确定性并发启动窗口回归测试。
+- `scripts/ci/run-with-timeout.py`：使用 `time.monotonic()` 与进程组 TERM/KILL 清理，保持超时 124、SIGINT 130、SIGTERM 143 语义。
+- `scripts/ci/android-device-core-e2e.sh`：两处 instrumentation 均通过 `python3 "${TIMEOUT_HELPER}"` 调用，不依赖执行位或 macOS 缺失的 GNU `timeout`。
+- 超时 helper 与设备脚本契约测试补齐顽固孙进程、父信号与真实调用形状覆盖。
+
+### Validation
+
+- 主控独立复跑 Provider 相关三类 JVM 测试：`ProviderModelReleaseBlockersTest` 12/12、`SettingsViewModelTest` 10/10、`ProviderManagerTest` 8/8，合计 30/30，`BUILD SUCCESSFUL in 50s`。
+- Provider 并发测试在旧 `isActive` 门禁上稳定 RED（同模型请求 2 次），改为 Job 登记门禁后 GREEN；独立只读复核最终 PASS。
+- 主控独立复跑超时 helper：8/8；设备脚本契约、Bash 语法、`python3 helper 1 /usr/bin/true` 与专项 `git diff --check` 均通过。
+- 独立只读复核实测顽固孙进程：超时返回 124、SIGINT 返回 130、SIGTERM 返回 143，三种路径均无后代残留，最终 PASS。
+- 工作树全局 `git diff --check` 通过；分支仍为 `codex/v0.2-beta`，HEAD `9ede2b006b18`，改动未提交、未推送、未发布。
+
+### Next
+
+1. 主控独立复跑 RAG 45 项与 Prompt 67 项相关测试及编译门禁，确认整合态无回归。
+2. 启动 Android 模拟器，构建最新 `minifiedTest` 三个 APK；API 36 先跑 DOCX/PDF 窄门禁，再跑完整设备 E2E，并补 API 35/36 证据。
+3. 修复当前截图门禁的两处严重 Chat 可见回归、两张缺失 Prompt golden 与时区不确定性；在人工视觉验收前禁止更新 golden。
+4. 补齐 Agent Hub、完整 Provider、RAG/FilesPanel、Settings 的双语/手机/平板/2x 字体视觉覆盖，并将专项 Compose 测试接入设备脚本。
+5. 完成 full clean JVM/Lint/截图、稳定签名 R8 Release、冷安装、真实 API smoke、DIA 文档、提交推送、标签与 GitHub Release 侧载 APK。
+
+### Risks
+
+- UI 发行门禁仍为 NO-GO：当前截图验证存在 2 个 diff 失败、2 个缺 golden，中文流式聊天与英文错误态 actual 有明显内容缺失；不得将现状写入新基准。
+- 当前还没有最新整合态的 minified DOCX/PDF 与完整 API 35/36 设备证据，也没有稳定签名 Release 产物。
+- `generations` 与模型状态在 ViewModel 生命周期内按曾见 modelId 保留；当前模型集合有限，不作为初版发行阻断，后续可随模型删除或改 attempt token 收敛。
+- 当前没有可用 GPG/SSH 标签签名身份，发行标签策略仍待最终阶段确认。
+- 工作树改动量大且未提交；恢复时必须保留全部现有改动，禁止 reset、clean 或回滚他人改动。
+
+### DIA
+
+DIA: Provider 用户可见探测结果、并发行为和设备 E2E 基础设施均有文档影响；本次先以 handover 忠实记录暂停状态，README、CHANGELOG、架构与 release validation 将在最终发行门禁统一复核和同步。
+
+### HLG
+
+HLG: 已追加标准时间戳暂停记录；恢复入口为本记录的 Next。未发现需要新增到 AGENTS.md 或 Skill 的长期规则候选；现有 Spark 路由与可移植脚本规则保持不变。
+
+## 2026-07-14T00:35:02+08:00 · v0.2-beta P0 集成与发行门禁暂停交接
+
+type: implementation
+scope: native-ui, provider, rag, prompt, release-engineering, r8, device-e2e
+status: in-progress
+tags: [v0.2-beta, pause, provider, rag, prompt, r8, pdfbox, minified-e2e, release]
+continuity: resume
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+用户要求在当前动作完成后暂停，以更新开发环境。本轮所有已启动 Agent 均已自然收尾，没有仍在运行的委派任务；工作树保持未提交、未推送、未发布。Prompt、RAG、Provider 主体实现已完成，R8 `minifiedTest` 构建与真实 DOCX/PDF `deviceTest` 分别闭环，但整合最新 R8 规则与 PDFBox 初始化后的 minified 文档设备 E2E 尚待恢复后执行。独立复审新增两项 Provider 阻断问题。
+
+### Changed
+
+- Prompt 保存契约改为挂起等待真实结果，仅成功关闭，失败/取消保留输入，并补同帧双击门禁。
+- RAG/FilesPanel 补齐单文档操作、移动/删除门禁、部分失败反馈、搜索祖先和目录/KG/Memory 语义。
+- Provider 模型页接入真实 Router 到 UnifiedLlmClient 探测、逐模型状态、提供商范围增删禁用、持久抑制与响应式布局。
+- 新增 release-equivalent `minifiedTest` 变体、API 35/36 CI 设备矩阵和动态设备脚本；修复 macOS Bash 3 兼容性。
+- 收窄 OOXML/XMLBeans R8 保留规则，替换过宽 keep；生成非空 mapping、seeds、usage，minified APK 约 17 MiB。
+- 新增真实 DOCX/PDF Android 设备夹具；在 `NexaraApplication` 启动期初始化 PDFBox，API 36 真实解析通过。
+
+### Validation
+
+- Prompt：主控独立复跑 67/67 JVM 测试通过；Agent 侧 API 36 Compose 6/6 通过。
+- Provider：主控独立复跑 31/31 JVM 测试通过；Agent 侧 API 36 Compose 6/6 通过。
+- RAG：Agent 侧 45/45 JVM 与 API 36 Compose 2/2 通过；主控独立复跑待恢复后执行。
+- 文档解析：API 36 `deviceTest` 真实 DOCX/PDF 2/2 通过。
+- R8：`assembleMinifiedTest` 通过；APK 17,847,989 字节，mapping/seeds/usage 均非空。
+- Release workflow 契约测试 10/10、设备脚本契约与 diff-check 通过。
+- 尚未完成当前整合态的 full clean、Lint、截图视觉验收、完整 minified 设备矩阵和稳定签名 Release 门禁。
+
+### Next
+
+1. 以 TDD 修复 Provider 空 Flow/仅 Done 被误判成功，以及取消后立即重试时旧 Job 覆盖新状态的竞态。
+2. 主控独立复跑 RAG 45 项测试及相关编译门禁。
+3. 构建并安装最新 `minifiedTest` 与测试 APK，在 API 36 先跑 DOCX/PDF 和完整 minified E2E，再扩展 API 35/36 CI。
+4. 执行 full clean JVM/Lint/截图门禁，基于当前构建做视觉对照并收敛 goldens。
+5. 生成稳定签名 R8 Release，执行验证、API 35/36 冷安装与真实 API smoke。
+6. 完成 DIA 文档、提交推送、标签签名决策与 GitHub Release 侧载 APK。
+
+### Risks
+
+- Provider 假成功与旧 Job 回写竞态是当前已知发行阻断，修复前不得放行。
+- 早期 R8 报告中的 PDFBox 初始化待处理结论已被后续文档夹具任务修复；但 minified 组合态仍未做设备验收。
+- 截图 goldens 与可见差异尚未最终收敛，UI 视觉门禁未放行。
+- 当前没有可用 GPG/SSH 标签签名身份，发行标签策略后续仍需用户决策。
+- 工作树改动量大且未提交；恢复时必须保留，禁止 reset 或回滚既有改动。
+
+### DIA
+
+DIA: 本轮 Provider、RAG、Prompt、PDFBox、minified E2E、R8、CI 和用户可见行为均有文档影响；README、CHANGELOG、架构、release 与 registry 草案已同步，最终门禁结果仍待完成后统一复核。
+
+### HLG
+
+HLG: 已追加暂停/恢复标准交接记录并将重建索引。发现一条候选长期规则：可调试 Android 变体启用 minify 时可能被工具链禁用优化/混淆，发行等价测试变体必须验证不可调试和 R8 证据；未经用户授权，未写入长期规则文件。
 
 ---
 

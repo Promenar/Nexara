@@ -2,7 +2,7 @@
 
 ## 核心文档（始终同步，不可跳过）
 - CHANGELOG.md — 版本变更记录
-- README.md — 项目概览（v0.1, 98% 完成度）
+- README.md — `v0.2-beta` 发行候选概览、Android 12+ 要求、侧载/密钥/后台生成/GGUF/Metro TUI 边界
 - .agent/handover.md — 跨会话交接
 - AGENTS.md — 开发者与 AI Agent 协同开发规范
 
@@ -13,6 +13,8 @@
 - docs/superpowers/plans/2026-07-12-v0.2-beta-phase2-core-business-flows.md — P1 Provider、工具幂等、工作区、索引、KG 与分享导入实施计划
 - docs/superpowers/plans/2026-07-12-v0.2-beta-phase3-background-ui.md — P2 后台生成、首次引导、双语、自适应、无障碍与视觉回归实施计划
 - docs/superpowers/plans/2026-07-12-v0.2-beta-phase4-release-engineering.md — P3 CI、签名、冷安装、文档与 GitHub Release 实施计划
+- docs/release/v0.2-beta.md — GitHub Release 发行正文草案；最终门禁关闭前保持 PENDING/NO-GO
+- docs/release/v0.2-beta-validation.md — 发行事实账本；区分已确证专项测试与待执行 R8/签名/冷安装/真实 API/设备/UI/远端 workflow 证据
 - docs/PRD.md — 产品需求文档 v2.0（进度已更新至 2026-05-15）
 - docs/ARCHITECTURE_DESIGN.md — 全局架构设计（含 §2.4.1 KG 双模式策略）
 - docs/ARCHITECTURE.md — 架构快速参考（含 ADR 索引，已至 ADR-019）
@@ -25,7 +27,7 @@
 - ADR-001: 取消 Super Assistant 概念
 - ADR-002: Embedding/Rerank 配置回退策略
 - ADR-003: 图像生成工具设计
-- ADR-004: 后台生成架构（GenerationService 计划中，待实施）
+- ADR-004: 后台生成架构（GenerationCoordinator + Foreground Service 已实施；发行级设备矩阵待最终验收）
 - ADR-005: NexaraPageLayout 架构重构
 - ADR-006: 数据库架构一致性校验修复
 - ADR-007: RAG 知识库现代化改造
@@ -102,15 +104,16 @@
 ## 其他参考文档
 - .agent/checklists/CODE_REVIEW.md — 代码评审清单
 
-## 关键指标 (2026-07-13)
+## 关键指标与发行门禁 (2026-07-13)
 - 主源码 Kotlin 文件: 337 个
 - JVM 测试 Kotlin 文件: 130 个
 - Android 设备测试 Kotlin 文件: 12 个
 - Room Entity: 18 个
 - Repository 覆盖率: 12/12 (100%)
 - 内置 Skill: 18 个
-- 当前门禁: P0/P1 完成；P2 后台生成与 UI、P3 发行工程未完成
-- 自动化证据: JVM 1232（0 失败，14 跳过）；Android 28（0 失败，2 跳过）；Lint 0 Error/Fatal
+- P0/P1 基线: 已完成；基线证据为 JVM 1232（0 失败，14 跳过）、Android 28（0 失败，2 跳过）、Lint 0 Error/Fatal、Debug APK 与备份/恢复多阶段流程。
+- P2 当前状态: 后台持续生成、结构化错误/取消、RAG/Prompt、资源树/设置与协议专项实现已完成；1632 JVM、Lint、36 张截图、API 31/35/36 设备矩阵及三版本 IME 5/5 已通过。TalkBack 自动语义已通过，人工听觉/全焦点遍历仍待最终验收。
+- P3 当前状态: R8/签名配置、APK 验证器、API 31/35/36 workflow 与冷安装/发布编排已实现，API 35/36 minified 冷启动及 PDF/DOCX 分享导入通过；真实签名 R8 APK、mapping、剩余 minified 业务验真、真实 API、远端 Actions、tag 与 GitHub Release 仍为 PENDING，当前仍是 NO-GO。
 
 ## DIA 清理记录
 ### 2026-05-19 本轮文档优化
