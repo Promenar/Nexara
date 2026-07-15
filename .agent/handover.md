@@ -2720,6 +2720,53 @@ HLG: 已追加标准时间戳交接记录；本轮未发现需要写入长期规
 
 ---
 
+## 2026-07-16T00:42:56+08:00 · Nexara Material 3 全站视觉重设计启动
+
+type: design
+scope: native-ui, design-system, chat, settings, provider-models, visual-qa
+status: in-progress
+tags: [material3, md3-expressive, redesign, compose, visual-qa]
+continuity: resume
+continuity-key: nexara-md3-redesign
+
+### Summary
+
+用户确认当前前端处于 Material 3 与零散自定义视觉混合状态，并批准采用“先回归统一 Material 3，再保留少量 Nexara 特征”的路线。在三张独立视觉方案中，用户选择方案 3 作为会话母版；新工作流从已通过 CI 的 `38fc1db` 建立独立分支 `codex/md3-redesign`，不修改 `codex/v0.2-beta` 发行候选。
+
+### Changed
+
+- 新增 `docs/superpowers/specs/2026-07-16-nexara-md3-redesign-design.md`，定义稳定 Material 3 技术基线、视觉令牌、页面范式、Nexara 专属表达、分阶段迁移和 UI 验收标准。
+- 更新 `.agent/registry.md` 注册该设计契约。
+- 设计决定：优先升级到稳定 Compose BOM `2026.06.00` / Material 3 `1.4.0`；第一阶段不依赖 `1.5.0-alpha`，只克制吸收 Material 3 Expressive 原则。
+
+### Validation
+
+- 用户明确选择方案 3；其核心特征为深色 edge-to-edge 基底、Material tonal surfaces、思考细轨迹、弱化元数据和单层底部输入区。
+- 设计契约完成 placeholder、矛盾、范围与格式自检；`git diff --cached --check` 通过。
+- 基线提交 `38fc1db` 对应 GitHub Android CI run `29422956320` 已通过 JVM、Lint、截图、Debug/deviceTest 构建及 API 31/35/36 设备 E2E。
+
+### Next
+
+1. 等待用户审阅并确认设计契约。
+2. 确认后使用 `superpowers:writing-plans` 拆分设计系统、会话母版、管理母版、全站迁移和视觉收口计划。
+3. 实施阶段按 TDD 与 Agent 路由执行；主控负责多模态视觉对照、截图验收和最终集成。
+
+### Risks
+
+- 方案 3 是视觉母版，不是可直接逐像素复制的完整组件规格；实现必须以设计契约和真实 Compose 约束为准。
+- Material 3 Expressive 部分移动端 API仍位于 Alpha；第一阶段禁止为视觉效果引入不稳定依赖。
+- 当前 `artifacts/` 为发行候选证据目录，保持未跟踪，不得纳入重设计提交。
+
+### DIA
+
+DIA: 已新增并注册 Material 3 重设计契约；尚未修改产品代码、API、数据结构或用户行为。
+
+### HLG
+
+HLG: 已建立 `nexara-md3-redesign` 连续工作流与恢复入口；本轮未发现需要写入长期规则文件的新候选。
+
+---
+
 ## 2026-07-15T22:08:13+08:00 · v0.2-beta 真机首轮反馈修复与新签名候选闭环
 
 type: implementation

@@ -7,6 +7,7 @@
 - AGENTS.md — 开发者与 AI Agent 协同开发规范
 
 ## 按需文档
+- docs/superpowers/specs/2026-07-16-nexara-md3-redesign-design.md — Nexara 全站 Material 3 视觉体系重设计契约（方案 3、稳定 M3 基线、Nexara 专属表达、分阶段迁移与 UI 验收）
 - docs/superpowers/specs/2026-07-12-v0.2-beta-release-readiness-design.md — v0.2-beta GitHub 侧载发行整改设计（安全、数据、业务、后台生成、UI/E2E 与发行门禁）
 - docs/superpowers/plans/2026-07-12-v0.2-beta-release-roadmap.md — v0.2-beta 四阶段发行整改主路线与门禁顺序
 - docs/superpowers/plans/2026-07-12-v0.2-beta-phase1-security-data.md — P0 密钥、日志、网络、Room、备份与 WebDAV 实施计划
