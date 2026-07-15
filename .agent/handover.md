@@ -2720,6 +2720,57 @@ HLG: 已追加标准时间戳交接记录；本轮未发现需要写入长期规
 
 ---
 
+## 2026-07-16T04:14:48+08:00 · Material 3 第一阶段实现与全门禁收口
+
+type: implementation
+scope: native-ui, material3, chat, accessibility, screenshot-qa, device-qa
+status: completed
+tags: [material3, chat-redesign, compose, accessibility, screenshot-test, android-device]
+continuity: resume
+continuity-key: nexara-md3-redesign
+
+### Summary
+
+在独立分支 `codex/md3-redesign` 完成 Material 3 重设计第一阶段：稳定主题基线与主会话视觉母版已经落地，且通过源码契约、截图、完整本地门禁和 API 36 设备回归。第一阶段最终独立复核无 P0/P1；全站重设计仍继续，当前不把管理面旧视觉误报为已完成。
+
+### Changed
+
+- Compose BOM 升级至 `2026.06.00`，稳定 Material 3 `1.4.0`；建立深色 edge-to-edge 色阶、shape、spacing 与 elevation 令牌。
+- 主会话采用 tonal 用户消息、全宽思考轨迹、正文直排、弱元信息、紧凑操作胶囊和单层 composer；审批、摘要、RAG 进度及 Token 菜单移除嵌套玻璃表面。
+- 输入、模型/Token 选择器、摘要展开和助手长按区达到 48dp；输入框同时保留 RequestFocus/SetText、IME 行为与大字体自然增高。
+- 模型元信息长 ID 单行省略并为行尾时间戳保留稳定空间；更新 3 张受影响的批准基线。
+
+### Validation
+
+- `./gradlew :app:validateDebugScreenshotTest`：36/36 通过；参考、实际与差异图已同屏人工复核。
+- `./gradlew :app:testDebugUnitTest :app:lintDebug :app:assembleDebug :mainactivity-e2e:assembleDeviceTest`：通过。
+- Pixel 7 API 36 目标组 `AccessibilitySmokeTest + ChatImeInteractionTest + ThinkingTraceTest + ApprovalCardTagsTest`：20/20 通过。
+- 常规设备套件排除 `GenerationForegroundServiceColdStartDeviceTest` 后：启动 124 项、最终结束 127 项，3 项按设计跳过、0 失败。
+- 两项冷启动恢复方法分别执行 `force-stop` 后单独运行：各 1/1 通过。
+- 独立最终静态复核：GO，P0/P1 为 0；`git diff --check` 通过。
+
+### Next
+
+- 以既有设计契约制定并执行第二阶段管理面计划，优先迁移 Provider/模型管理、RAG Home/Details、设置与资源管理器。
+- 把第一阶段遗留的 `RagDetailsSheet` 和无调用旧玻璃组件纳入对应子系统迁移，避免在聊天主面继续形成双重视觉语言。
+- 正式签名候选安装到真机后执行 TalkBack 人工专项，核查输入 placeholder 是否重复播报，以及空 `onClick` 长按区域是否暴露无效“激活”动作。
+
+### Risks
+
+- `GenerationStatusButton` 等少数组件仍有空闲态无限动画，属于后续功耗优化项，不阻断第一阶段视觉母版。
+- 源码字符串契约对结构回退敏感但依赖源码排版；后续应逐步以 Compose 语义和截图断言替代易碎部分。
+- 管理面尚未全部迁移，第一阶段完成不等于全站 Material 3 重设计完成。
+
+### DIA
+
+DIA: 已同步 `CHANGELOG.md`、`.agent/handover.md` 与现有 Material 3 设计/实施计划；本阶段未改业务数据结构或外部 API。
+
+### HLG
+
+HLG: 已追加标准时间戳交接记录并将后续阶段保持为 `resume`；未发现需要在未经用户授权时写入长期规则文件的新候选。
+
+---
+
 ## 2026-07-16T00:58:11+08:00 · Material 3 第一阶段实施计划完成
 
 type: planning
