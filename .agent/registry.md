@@ -113,7 +113,7 @@
 - 内置 Skill: 18 个
 - P0/P1 基线: 已完成；基线证据为 JVM 1232（0 失败，14 跳过）、Android 28（0 失败，2 跳过）、Lint 0 Error/Fatal、Debug APK 与备份/恢复多阶段流程。
 - P2 当前状态: 后台持续生成、结构化错误/取消、RAG/Prompt、资源树/设置与协议专项实现已完成；1632 JVM、Lint、36 张截图、API 31/35/36 设备矩阵及三版本 IME 5/5 已通过。TalkBack 自动语义已通过，人工听觉/全焦点遍历仍待最终验收。
-- P3 当前状态: R8/签名配置、APK 验证器、API 31/35/36 workflow 与冷安装/发布编排已实现，API 35/36 minified 冷启动及 PDF/DOCX 分享导入通过；真实签名 R8 APK、mapping、剩余 minified 业务验真、真实 API、远端 Actions、tag 与 GitHub Release 仍为 PENDING，当前仍是 NO-GO。
+- P3 当前状态: R8/签名配置、APK 验证器、API 31/35/36 workflow 与冷安装/发布编排已实现；API 35/36 minified 冷启动及 PDF/DOCX 分享导入通过，API 36 新增 TXT 索引失败/重试黑盒、Room close/reopen 测试及 8/8 alpha 归一化截图证据。首次远端 push CI 的 quality/API 31 通过，API 35/36 环境竞态已本地修复但第二轮远端结果待回填；真实签名 R8 APK、mapping、其余业务验真、真实 API、tag 与 GitHub Release 仍为 PENDING，当前仍是 NO-GO。
 
 ## DIA 清理记录
 ### 2026-05-19 本轮文档优化

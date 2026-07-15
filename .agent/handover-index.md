@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-07-15T12:31:22+08:00
+> generated_at: 2026-07-15T15:47:56+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -8,12 +8,13 @@
 
 | continuity-key | continuity | last update | status | scope | title | source |
 | :--- | :---: | :---: | :---: | :--- | :--- | :--- |
-| v0.2-beta-release-readiness | resume | 2026-07-15 | active | native-ui, ime, accessibility, doc-editor, screenshot, apk-verifier, release-readiness | IME/TalkBack/UI 门禁与现代 APK 验证器闭合 | `.agent/handover.md` · `2026-07-15T12:30:21+08:00` |
+| v0.2-beta-release-readiness | resume | 2026-07-15 | in_progress | release-readiness, android-ci, share-import, rag, ui-evidence | v0.2-beta 第二轮 Android CI 准备与 RAG/UI 证据闭合 | `.agent/handover.md` · `2026-07-15T15:47:10+08:00` |
 
 ## Recent 7-Day Catalog
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-07-15 | iso | in_progress | resume | release-readiness, android-ci, share-import, rag, ui-evidence | [v0.2-beta, android-ci, share-import, rag, ui-qa, png] | v0.2-beta 第二轮 Android CI 准备与 RAG/UI 证据闭合 | `.agent/handover.md` · `2026-07-15T15:47:10+08:00` |
 | 2026-07-15 | iso | active | resume | native-ui, ime, accessibility, doc-editor, screenshot, apk-verifier, release-readiness | [v0.2-beta, ime, talkback, accessibility, screenshot, apk, p3, release] | IME/TalkBack/UI 门禁与现代 APK 验证器闭合 | `.agent/handover.md` · `2026-07-15T12:30:21+08:00` |
 | 2026-07-14 | iso | paused | waiting | native-ui, doc-editor, resource-explorer, full-regression, release-readiness | [v0.2-beta, ui-gate, screenshots, regression, release, handover] | DocEditor 与 Resource Explorer 闭合后暂停全量发行回归 | `.agent/handover.md` · `2026-07-14T16:50:21+08:00` |
 | 2026-07-14 | iso | completed | resume | native-ui, doc-editor, state-machine, safe-save, concurrency, release-readiness | [v0.2-beta, doc-editor, p0, state-machine, cas, tdd, concurrency] | DocEditor P0 数据安全与竞态门禁闭合 | `.agent/handover.md` · `2026-07-14T13:53:34+08:00` |

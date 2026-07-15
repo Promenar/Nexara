@@ -1,5 +1,58 @@
 # 交接文档 (2026-05-20)
 
+## 2026-07-15T15:47:10+08:00 · v0.2-beta 第二轮 Android CI 准备与 RAG/UI 证据闭合
+
+type: implementation
+scope: release-readiness, android-ci, share-import, rag, ui-evidence
+status: in_progress
+tags: [v0.2-beta, android-ci, share-import, rag, ui-qa, png]
+continuity: resume
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+在首轮 GitHub Android CI 的 API 31 成功、API 35/36 失败之后，完成启动就绪、通知权限窗口选择和设备核心合约修复；补齐 Share 导入四操作在 2.0x 字体下的响应式布局与真实点击门禁，闭合 TXT MIME、Room 重开后向量化队列恢复及 minified TXT 失败重试。针对 Android `screencap` 透明度导致的截图证据不可靠问题，以测试先行新增无第三方依赖的 PNG alpha 归一化工具并接入黑盒脚本。最终 API 36 release-equivalent R8 黑盒业务通过，8/8 截图均为 1080×2400、全不透明且无中间文件残留；对同一 PNG 的不一致查看器渲染经哈希和 JPEG 副本交叉验证，确认不是 APK 或 Compose 裁切。
+
+### Changed
+
+- `ShareImportSheet.kt` / `ShareImportSheetTest.kt`：四个操作改为带 8dp 横纵间距的 `FlowRow`，新增 2.0x 字体下可见、可点击、48dp 触控目标和窗口边界验证。
+- `ShareImportMimeTypeTest.kt` / `VectorizationQueueRoomTest.kt` / `BlackBoxFixtureProvider.java`：覆盖已知 TXT MIME、Room 重开后的 pending 恢复与 minified TXT 失败重试链。
+- `OnboardingAndroidEndToEndTest.kt` / `MainActivityNotificationE2eTest.kt` / device-core 合约：修复远端模拟器启动就绪和 Android 权限控制器窗口优先级。
+- `normalize-android-screencap-png.py` 及测试：严格解析 RGBA8 非隔行 PNG、校验 chunk/CRC/尺寸、反解 filter 0–4、保持 RGB 并把 alpha 置 255，采用同目录原子替换且失败不覆盖目标。
+- `android-minified-blackbox-smoke.sh` 及合约：所有 launcher/阶段/最终截图均先捕获原始帧、选择稳定帧后归一化，清理 `.raw/.current/.previous/.tmp` 中间文件。
+- `CHANGELOG.md`、`.agent/registry.md` 与 `docs/release/v0.2-beta-validation.md`：同步首轮远端 CI 事实、本轮 Share/RAG/截图证据和仍待关闭的发行门禁。
+
+### Validation
+
+- `ShareImportSheetTest`：API 36 2/2 通过；主 AndroidTest Kotlin 编译通过。
+- `VectorizationQueueRoomTest` 与 `ShareImportMimeTypeTest`：目标 JVM 单测通过。
+- PNG 工具 4 组测试通过，覆盖 filter 0–4 RGB 保真、同路径原子替换、坏 CRC 不覆盖与不支持格式/尾随数据拒绝；Python 编译、Shell 语法与两个黑盒合约通过。
+- release-equivalent R8 构建通过：`app-minifiedTest.apk` 17,921,194 bytes；API 36 冷启动、PDF/DOCX 分享导入及 TXT 索引失败重试业务黑盒 exit=0，无 crash/ANR。
+- 最终 8/8 PNG 均为 1080×2400、alpha=255，且无 raw/current/previous/tmp 残留；历史异常 PNG 归一化前后 RGB 逐字节相同，JPEG 视觉副本确认 DOCX/TXT 状态、按钮、间距均完整无裁切。
+- `git diff --check` 通过。
+
+### Next
+
+1. 排除 `artifacts/` 和 `.agent/tmp-agent-reports/` 后提交并推送 `codex/v0.2-beta`，监控第二轮 GitHub Android CI 的 quality、API 31、35、36 全部结束。
+2. 若远端仍失败，按 job 原始日志做最小修复并复跑；若全绿，把 run URL、精确结论和 commit 回填发行账本。
+3. 继续保持 NO-GO，直到安全运行时明确注入真实 API Key、TalkBack 人工听觉/焦点遍历完成、远端签名材料匹配得到实证，并具备 GitHub 可验证 signed tag。
+4. 全部门禁关闭后才触发 release workflow，验签、冷安装并发布可侧载 prerelease APK。
+
+### Risks
+
+- API 35 修复尚无远端新鲜证据，不能用 API 36 本地结果替代；第二轮 CI 是当前硬门禁。
+- 当前进程未确认安全注入真实 API Key；聊天里出现过的明文不得拼入命令、文件、日志或报告。
+- 本地没有可用的 tag 签名身份；未经用户另行授权不得用未签名 annotated tag 降级发布。
+- 本轮 GLM-5.2 三次调用均未产出可验收文件：一次 PTY/TLS 存活约 62 分钟但无 stdout/报告后终止，一次误把项目内提示文件判为 prompt injection 并拒绝，一次直接提示调用 2 分钟无 STARTED 心跳后终止；相关实现由主控按 RED/GREEN 独立闭环。
+
+### DIA
+
+DIA: 已同步 CHANGELOG、registry、发行验证账本与本 handover；用户可见 Share 大字体布局、RAG 业务链和截图证据管线均已记录。
+
+### HLG
+
+HLG: 已追加标准时间戳交接记录，保留首轮 CI 缺口、GLM 三类失败、主控闭环证据和第二轮 CI 恢复入口；发现一条候选长期规则——Android screencap 的 alpha/查看器异常应先做 RGB/哈希/JPEG 交叉验证再归因 UI——未经用户明确授权未写入 AGENTS.md 或 Skill。
+
 ## 2026-07-15T12:30:21+08:00 · IME/TalkBack/UI 门禁与现代 APK 验证器闭合
 
 type: implementation
