@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-07-16T04:17:00+08:00
+> generated_at: 2026-07-16T07:03:30+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -8,13 +8,14 @@
 
 | continuity-key | continuity | last update | status | scope | title | source |
 | :--- | :---: | :---: | :---: | :--- | :--- | :--- |
-| nexara-md3-redesign | resume | 2026-07-16 | completed | native-ui, material3, chat, accessibility, screenshot-qa, device-qa | Material 3 第一阶段实现与全门禁收口 | `.agent/handover.md` · `2026-07-16T04:14:48+08:00` |
+| nexara-md3-redesign | resume | 2026-07-16 | completed | native-ui, material3, settings, provider, provider-models, accessibility, screenshot-qa, device-qa | Material 3 第二阶段管理母版实现与全门禁收口 | `.agent/handover.md` · `2026-07-16T06:45:00+08:00` |
 | v0.2-beta-release-readiness | resume | 2026-07-15 | in-progress | native-ui, onboarding, rag, provider-models, model-metadata, release-engineering | v0.2-beta 真机首轮反馈修复与新签名候选闭环 | `.agent/handover.md` · `2026-07-15T22:08:13+08:00` |
 
 ## Recent 7-Day Catalog
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-07-16 | iso | completed | resume | native-ui, material3, settings, provider, provider-models, accessibility, screenshot-qa, device-qa | [material3, settings-redesign, provider-management, progressive-disclosure, accessibility, screenshot-test, android-device] | Material 3 第二阶段管理母版实现与全门禁收口 | `.agent/handover.md` · `2026-07-16T06:45:00+08:00` |
 | 2026-07-16 | iso | completed | resume | native-ui, material3, chat, accessibility, screenshot-qa, device-qa | [material3, chat-redesign, compose, accessibility, screenshot-test, android-device] | Material 3 第一阶段实现与全门禁收口 | `.agent/handover.md` · `2026-07-16T04:14:48+08:00` |
 | 2026-07-16 | iso | completed | resume | native-ui, material3, theme, chat, accessibility, screenshot-testing | [material3, md3-redesign, chat-composer, thinking-trace, ui-qa] | Material 3 第一阶段实施计划完成 | `.agent/handover.md` · `2026-07-16T00:58:11+08:00` |
 | 2026-07-16 | iso | in-progress | resume | native-ui, design-system, chat, settings, provider-models, visual-qa | [material3, md3-expressive, redesign, compose, visual-qa] | Nexara Material 3 全站视觉重设计启动 | `.agent/handover.md` · `2026-07-16T00:42:56+08:00` |

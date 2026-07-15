@@ -2720,6 +2720,62 @@ HLG: 已追加标准时间戳交接记录；本轮未发现需要写入长期规
 
 ---
 
+## 2026-07-16T06:45:00+08:00 · Material 3 第二阶段管理母版实现与全门禁收口
+
+type: implementation
+scope: native-ui, material3, settings, provider, provider-models, accessibility, screenshot-qa, device-qa
+status: completed
+tags: [material3, settings-redesign, provider-management, progressive-disclosure, accessibility, screenshot-test, android-device]
+continuity: resume
+continuity-key: nexara-md3-redesign
+
+### Summary
+
+在独立分支 `codex/md3-redesign` 完成 Material 3 重设计第二阶段：设置首页、Provider 列表、Provider 表单/安全密钥字段与 Provider Models 已统一到稳定 Material 3 管理母版，并通过完整本地门禁、三版本 Android 设备矩阵、截图人工对照和独立最终复核。全站重设计继续推进，知识库、RAG 详情、资源管理器、回收站和文档编辑器仍属于后续阶段。
+
+### Changed
+
+- 建立管理面共享 Material 3 搜索、表单、分组与单层列表原语；设置 App/Provider 两个 Tab 不再使用卡片墙。
+- Provider 列表改为单层对象行，明确显示启用/停用以及 API Key、Vertex 或本地无需凭证状态，并以 `stateDescription` 提供 TalkBack 状态；主操作、overflow 与 TalkBack 焦点分级。添加、编辑、本地 Provider 表单统一为标准字段、下拉菜单和可滚动布局。
+- API Key 默认遮罩、显式查看、15 秒超时、失焦/离页/后台/重建回遮及可选完整备份契约保持不变；测试与保存互斥，取消异常继续传播。
+- Provider Models 搜索覆盖显示名、真实远端 ID 与稳定 ID；同步/添加位于首层，批量禁用/删除进入 overflow，新增模型使用可滚动标准 Bottom Sheet。
+- 模型卡改为单层 tonal `Surface` 与默认折叠的渐进披露：首层仅展示名称、真实 ID、启用状态和少量能力摘要；高级编辑、类型/能力、Context、输出/知识截止、测试和危险操作展开后才进入可访问树。
+- 类型切换原子替换基础能力并保留扩展能力；同 ID 外部刷新同步名称、类型、Context 与能力草稿；单模型删除增加取消/确认门禁。
+
+### Validation
+
+- `./gradlew :app:testDebugUnitTest :app:lintDebug :app:assembleDebug :mainactivity-e2e:assembleDeviceTest`：通过。
+- `./gradlew :app:validateDebugScreenshotTest`：41/41 通过；英文手机、中文 840dp/2× 展开态和中文横屏等变化基线均完成旧/新同尺寸人工对照。
+- API 31、35、36 的四类关键测试原门禁各 48/48；Provider 状态修复新增 3 个用例后，三档 API 的 `UserSettingsAccessibilityTest` 均为 18/18，未变更的其余三类继续沿用同阶段通过结果，当前矩阵各累计 51/51、0 失败。
+- API 36 常规设备套件排除 `GenerationForegroundServiceColdStartDeviceTest` 后：启动 149 项、最终结束 152 项，3 个多阶段 checkpoint 按设计跳过、0 失败。
+- 两项后台冷启动恢复方法逐次 `force-stop` 后单独运行：各 1/1 通过。
+- 系统 `window_animation_scale`、`transition_animation_scale`、`animator_duration_scale` 均为 0 时，Provider Models API 36 类级测试 14/14 通过。
+- 每个实施块均经主控复验和独立只读审查；阶段初次终审发现 Provider 状态/凭证可见性 P1 与固定 12sp 排版 P2，补充 RED/GREEN、三档设备测试和两张同尺寸 old/new 后复审 GO，P0/P1 为 0；`git diff --check` 通过。
+
+### Next
+
+1. 第三阶段优先迁移 RAG/资源管理共享原语：标准搜索与状态组件、`FilesPanel` 单层文件树及稳定 key。
+2. 依次迁移 RAG Home + Memory、RagFolder、RagDetails + 会话 RAG 入口、Resource Explorer + Recycle Bin；DocEditor 作为独立大页面处理。
+3. 每个阶段继续覆盖真实空/加载/失败、360dp/2×、横屏、IME、减少动效、TalkBack 语义、同尺寸截图对照和 API 31/35/36 设备矩阵。
+4. 正式签名候选安装到真机后，执行 TalkBack 人工听觉/全焦点遍历和完整业务手感验收，再合并到发行候选。
+
+### Risks
+
+- Task 6 尚有非阻断测试债务：Context 非数字/Int 溢出缺直接动态回归；删除对话框系统 dismiss 与双模型目标隔离主要由源码结构证明；中文 2× 展开 golden 未滚动到底部展示测试/删除区。
+- Provider 可见状态与父行 `stateDescription` 使用同一字符串；自动化确认信息完整且 overflow 焦点独立，但真实 TalkBack 可能重复朗读一次，留待正式签名包真机听觉验收。
+- `artifacts/` 是既有未跟踪发行证据目录，本阶段未读取、修改或提交；`secure_env/` 与签名/真实密钥均未进入重设计工作树。
+- 管理母版完成不等于全站视觉迁移完成；后续 RAG/资源页面仍存在旧 Glass 卡、固定高度 Sheet 和大字体密度风险。
+
+### DIA
+
+DIA: 已同步 `CHANGELOG.md`、`.agent/handover.md` 与第二阶段实施计划状态；`.agent/registry.md` 已登记设计规格和 Phase 2 计划，无需重复修改；本阶段未修改 README、架构、外部 API 或业务数据结构。
+
+### HLG
+
+HLG: 已追加标准时间戳交接记录，继续复用 `nexara-md3-redesign` 连续工作流并已重建派生索引；本轮未发现需要未经用户授权写入 AGENTS.md、Skill 或其它长期规则文件的新候选。
+
+---
+
 ## 2026-07-16T04:14:48+08:00 · Material 3 第一阶段实现与全门禁收口
 
 type: implementation
