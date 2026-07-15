@@ -2720,6 +2720,57 @@ HLG: 已追加标准时间戳交接记录；本轮未发现需要写入长期规
 
 ---
 
+## 2026-07-16T07:32:00+08:00 · Material 3 第三阶段状态原语完成后安全暂停
+
+type: pause-handover
+scope: native-ui, material3, rag, resource-management, status-components, files-panel
+status: paused
+tags: [material3, rag-redesign, files-panel, screenshot-qa, accessibility, safe-pause]
+continuity: waiting
+continuity-key: nexara-md3-redesign
+
+### Summary
+
+按用户要求在稳定边界阶段性安全暂停。Material 3 第二阶段已完整收口；第三阶段知识库与资源管理计划已冻结并通过独立反向复核，第一实施块 RAG 状态/进度原语已经实现、验证、独立复核并提交。FilesPanel 任务只完成了实施委派和只读审计，子 Agent 在写入任何文件前被中断，工作树没有半成品。
+
+### Changed
+
+- `e20927a`：登记第三阶段计划 `docs/superpowers/plans/2026-07-16-nexara-md3-phase3-rag-resources.md`；明确 Memory loading/error/retry 是独立产品可靠性 P1，不在视觉夹具中伪造。
+- `5ed773f`：`IndexStatusBadge`、`KgStatusIcon` 与 `IndexingProgressBar` 迁移到稳定 Material 3 tonal surface、标准 typography 和 `LinearProgressIndicator`；移除无限 pulse、伪单选图标、固定 11sp 与自绘进度。
+- 主控复核阶段追加“KG 进行中与未开始不可只靠颜色区分”的 RED/GREEN；最终分别使用 `Sync` 与 `AccountTree` 图标，公开 API 与状态回调不变。
+
+### Validation
+
+- Task 2 聚焦 JVM：最终 8/8 通过（Agent 7/7 后主控新增 1 条图标非颜色单一传达契约）。
+- API 36 `RagReleaseAccessibilityTest`：5/5 通过。
+- `:app:validateDebugScreenshotTest`：41/41 通过；3 张受影响 golden 已生成 old/new montage 并由实施 Agent、主控和独立复核 Agent 检查，无重叠、裁切或密度回退。
+- Task 2 独立复核：GO，P0/P1/P2 均为 0。
+- 暂停核验：无 Gradle、模拟器、Codex CLI、OpenCode 或 AGY 外部进程；原 API 36 模拟器已正常关闭，`adb devices -l` 为空。
+- `git status --short` 仅有既存未跟踪 `artifacts/`；本轮未读取、修改或提交该目录。
+
+### Next
+
+1. 恢复后从 Phase 3 Task 3 开始：先写 FilesPanel 可见节点投影、稳定 UUID key、展开/选择状态与移动目录 20 项滚动 RED。
+2. 实施单层 Material 3 文件树；保持目录导航、文件打开、多选、重命名、移动、KG、复制与删除回调不变。
+3. 将 RAG 文档首页 golden 切换到生产 `FilesPanel` fixture，完成 API 36 `RagFilesPanelNavigationTest`、41 张截图门禁和独立复核后提交。
+4. 后续依次执行 RagHome/Memory 展示、RagFolder、RagDetails、Resource Explorer/Recycle Bin；Memory loading/error/retry 继续作为另案产品可靠性 P1。
+
+### Risks
+
+- FilesPanel 当前仍使用递归 `Column + forEach`、每节点 Glass 卡、深度线性缩进和不可滚动移动目录列表；Task 3 尚未产生代码改动，不得误报为已修复。
+- `useScroll=false` 调用方需要在投影重构时保持父级滚动契约，禁止引入同轴无限约束。
+- `artifacts/`、`secure_env/`、签名与真实密钥仍为禁止读取/提交边界。
+
+### DIA
+
+DIA: 已在暂停记录中登记第三阶段计划、已提交状态组件、测试证据与恢复点；本次暂停本身未新增业务、API、数据结构或用户可见行为改动。
+
+### HLG
+
+HLG: 已追加标准时间戳安全暂停记录，continuity-key 继续使用 `nexara-md3-redesign`；将由 HLG 脚本重建索引。未发现需未经用户授权沉淀到 AGENTS.md、Skill 或其它长期规则文件的新候选。
+
+---
+
 ## 2026-07-16T06:45:00+08:00 · Material 3 第二阶段管理母版实现与全门禁收口
 
 type: implementation
