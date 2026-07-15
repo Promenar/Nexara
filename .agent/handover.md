@@ -2720,6 +2720,60 @@ HLG: 已追加标准时间戳交接记录；本轮未发现需要写入长期规
 
 ---
 
+## 2026-07-15T22:08:13+08:00 · v0.2-beta 真机首轮反馈修复与新签名候选闭环
+
+type: implementation
+scope: native-ui, onboarding, rag, provider-models, model-metadata, release-engineering
+status: in-progress
+tags: [v0.2-beta, real-device-feedback, onboarding, rag-crash, ui-layout, model-metadata, signed-apk]
+continuity: resume
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+针对用户在真机侧载候选上反馈的四类发行阻断完成修复与本地验收：首聊成功后不再跳回主界面；知识库、全局记忆设置和检索设置不再因工作区 Session/路径异常闪退；聊天输入胶囊和 Provider 模型管理的间距、标签、上下文字段完成紧凑布局收口；内置模型规格解析不再被通用规则遮蔽，并补齐当前测试模型的准确元数据。当前工作树已生成新的稳定证书签名 R8 APK，但尚未提交、推送或取得新提交的远端 API 31/35/36 CI，发行状态继续保持 NO-GO。
+
+### Changed
+
+- `MainActivity.kt` / `OnboardingNavigationPolicy.kt` / `NavGraph.kt`：启动目的地只读取 Activity 创建时快照；首次聊天以主界面作为返回栈基座，成功事件只持久化完成状态，不改写当前目的地。
+- `RagWorkspaceProvisioner.kt` / `RagViewModel.kt`：全局 RAG 使用应用私有默认工作区；保守接管既有合法目录，缺失的旧绝对路径回退到可信默认路径，初始化异常变为可见通知。
+- `ChatScreen.kt` / `ProviderModelsScreen.kt` / `UiTags.kt`：聊天胶囊、模型批量按钮、类型/能力标签及上下文字段统一可见面与 48dp 触控层，模型卡展示远端模型 ID。
+- `ModelSpecs.kt` / `ProviderManager.kt`：规格解析按精确到通用排序；修正 DeepSeek V4 与 MiniMax M3/M2.7 条目；只迁移完全匹配旧自动生成指纹的数据，保护用户自定义元数据。
+- 更新 9 张聊天/Provider 截图基线以及 JVM/Compose/真实 Activity 回归测试；同步 `README.md`、`CHANGELOG.md`、发行说明和验证账本。
+- 本机 `secure_env/secure.properties` 最后一行 CRLF 导致 key password 尾部混入 `\r`；已仅规范化行尾为 LF，未读取、输出或写入仓库任何秘密值。
+
+### Validation
+
+- clean 质量门禁：`:app:validateDebugScreenshotTest :app:testDebugUnitTest :app:lintDebug :app:assembleDebug` 通过；1665 JVM tests，0 failure/error，14 skipped；36/36 Screenshot validation 通过。
+- deviceTest 构建：`:app:assembleDeviceTest :app:assembleDeviceTestAndroidTest :mainactivity-e2e:assembleDeviceTest` 通过。
+- API 36 针对性设备回归：21 项，0 failed，1 个分阶段 force-stop 用例按设计 skipped；覆盖首聊停留/返回、知识库/记忆设置/检索设置真实点击及聊天/Provider 触控尺寸。
+- 稳定证书签名 R8 Release：17,987,619 bytes；mapping 95,818,205 bytes，seeds 768,628 bytes，usage 11,074,911 bytes，configuration 67,338 bytes。
+- APK fail-closed 验证：包名、versionCode 2、versionName `0.2-beta`、唯一签名者、登记证书、ZIP、50 MiB、敏感内容和本地推理制品扫描通过；SHA-256 `798fb92972c9fd11cf40ab415dbe497092837728c89d317b0175a1636994f53b`。
+- API 36 签名 APK smoke：卸载旧包、冷安装、设备 `base.apk` 字节回读、launcher/前台进程、5 秒 crash/ANR 观察通过；最终候选冷启动 268 ms，exit=0。候选及 checksum 位于未跟踪的 `artifacts/v0.2-beta-real-device-fixes-20260715/`。
+
+### Next
+
+1. 主控复核最终 diff、文档一致性与 `git diff --check`，执行提交并推送 `codex/v0.2-beta`。
+2. 等待并核验新提交的 Android CI quality、API 31、API 35、API 36 全部结论；失败时按证据修复并重跑。
+3. 将当前签名候选交给用户真机复测四类反馈和核心业务；完成 TalkBack 人工听觉/完整焦点遍历。
+4. 真机验收通过后处理可验证 tag、tag release workflow 与 GitHub prerelease 资产回读哈希。
+
+### Risks
+
+- 当前新增代码尚未取得远端多 API 矩阵证据；本地 API 36 针对性回归不替代新提交的 API 31/35/36 CI。
+- 当前签名 APK 只完成 API 36 新候选冷安装；API 35 的 PASS 来自前一签名候选，必须由后续 CI/tag workflow 对新提交复验。
+- TalkBack 人工听觉、完整焦点遍历和用户真机核心业务体验尚未验收，GitHub Release 仍不可放行。
+
+### DIA
+
+DIA: 已同步 `README.md`、`CHANGELOG.md`、`docs/release/v0.2-beta.md`、`docs/release/v0.2-beta-validation.md` 与本交接记录；架构边界未改变，无需新增 ADR。
+
+### HLG
+
+HLG: 已追加本标准时间戳记录，continuity-key 保持 `v0.2-beta-release-readiness`。发现候选长期规则：从 shell 加载签名 properties 前应验证并规范化 CRLF/控制字符，避免秘密值被行尾污染；建议后续获用户授权后写入发行工程 Skill 或项目开发规则，本轮未擅自沉淀。
+
+---
+
 ## 2026-07-14T07:43:31+08:00 · v0.2-beta API 36 完整设备门禁通过后安全暂停
 
 type: implementation
