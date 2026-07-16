@@ -11,6 +11,7 @@
 - docs/superpowers/plans/2026-07-16-nexara-md3-phase1-foundation-chat.md — Nexara Material 3 第一阶段实施计划（稳定主题基线、会话 composer、思考轨迹、IME/无障碍与截图验收）
 - docs/superpowers/plans/2026-07-16-nexara-md3-phase2-management.md — Nexara Material 3 第二阶段管理母版实施计划（设置列表、Provider、表单、模型渐进披露与视觉/设备门禁）
 - docs/superpowers/plans/2026-07-16-nexara-md3-phase3-rag-resources.md — Nexara Material 3 第三阶段知识库与资源管理实施计划（状态原语、文件树、Memory、RAG 详情、资源管理器与回收站）
+- docs/superpowers/plans/2026-07-16-nexara-md3-phase4-doceditor.md — Nexara Material 3 第四阶段 DocEditor 实施计划（保存/重命名/索引可靠性、长文档性能、视觉、响应式与无障碍）
 - docs/superpowers/specs/2026-07-12-v0.2-beta-release-readiness-design.md — v0.2-beta GitHub 侧载发行整改设计（安全、数据、业务、后台生成、UI/E2E 与发行门禁）
 - docs/superpowers/plans/2026-07-12-v0.2-beta-release-roadmap.md — v0.2-beta 四阶段发行整改主路线与门禁顺序
 - docs/superpowers/plans/2026-07-12-v0.2-beta-phase1-security-data.md — P0 密钥、日志、网络、Room、备份与 WebDAV 实施计划
