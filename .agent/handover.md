@@ -3670,3 +3670,54 @@ DIA: 已同步 `CHANGELOG.md` 与 `.agent/handover.md`；本轮新增/修改代�
 ### HLG
 
 HLG: 已追加标准时间戳交接记录；本轮未发现需要写入长期规则文件的新规则候选。
+
+---
+
+## 2026-07-17T05:08:14+08:00 · Material 3 第四阶段 DocEditor 可靠性检查点完成
+
+type: implementation
+scope: native-ui, doceditor, workspace, vectorization-queue, document-index, rag, accessibility
+status: in-progress
+tags: [material3, doceditor, rename-cas, versioned-index, deletion-barrier, cold-recovery, pending-retry, ui-test]
+continuity: resume
+continuity-key: nexara-md3-redesign
+
+### Summary
+
+第四阶段 Task 3 已在 `e6ef4f4`、`1ca2511` 与本次检查点中完整闭环：重命名 CAS、Room 目标版本、旧 worker/newer target 隔离、文件/目录/工作区删除屏障、Queue 重置交接、已提交文件的索引补偿与冷启动 missing-scan 均取得确定性证据。DocEditor 的索引待处理提示已拆为独立单层 MD3 notice，在加载、保存失败和冲突组合状态仍可见可重试。Task 4-8 尚未执行，第四阶段与整体发行仍为 NO-GO。
+
+### Changed
+
+- `PendingDocumentIndexCoordinator` 成为应用级共享失败目标源；首次登记使用短 NonCancellable 段，成功保留 latest watermark，永久删除记录进程内 UUID tombstone，Home/Folder/DocEditor 共享精确重试。
+- `VectorizationQueue` 与 DAO 对 reference target 的入队、处理中取消、完成/失败、清理、删除和恢复统一使用 hash+epoch CAS；删除以 cancel-and-join、fence 与提交/撤销屏障隔离并发 enqueue。
+- 文件写入、Patch、重命名与工具补偿区分物理/Room 已提交事实和索引接收事实；取消发生在提交后时保留 committed success 与 `indexQueued=false`，不再丢失当前目标。
+- 冷启动扫描无任务且 `vectorizedAt` 为空/落后的 FileEntry，按当前 hash、updatedAt 和 KG 配置重建 reference task；KG 开启为 `full`，关闭保持 null。
+- DocEditor pending notice 独立于 editor phase，唯一显示并提供 48dp 重试；新增 360×640dp、2× 字体、SaveConflict 双动作 + pending 的 Compose 仪器契约。
+
+### Validation
+
+- 主控最终全量 `:app:testDebugUnitTest :app:compileDebugAndroidTestKotlin`：1872 tests，0 failures，0 errors，14 skipped，`BUILD SUCCESSFUL`。
+- `:app:lintDebug`：`BUILD SUCCESSFUL`；全局 `git diff --check` 通过。
+- 聚焦门禁包括 Coordinator 20/20、Application wiring 2/2、Room 26/26、Queue reference 17/17，以及仓库、工具、RAG、DocEditor 与资源替换组合回归。
+- 两路独立只读终审在逐项纠正冷恢复与取消竞态后最终均为 `C0 / I0 / M0`、GO。
+- 当前 ADB 设备数为 0；新增紧凑屏/大字体仪器用例只完成 AndroidTest 编译，未宣称设备实跑。
+
+### Next
+
+1. 执行 Task 4：建立 10,000 行/近 1 MiB 长文档性能夹具，移除每次击键的重复 O(n) 工作，并保留统计/dirty/save 语义。
+2. 执行 Task 5-6：完成 DocEditor 标准 MD3 骨架、响应式 Edit/Preview/Split、IME、状态、对话框和 TalkBack 迁移。
+3. 执行 Task 7-8：更新 9+ 张视觉基线并做 reference/actual 组合审查，运行 API 31/35/36、完整构建与设备矩阵，再完成阶段 DIA/HLG。
+
+### Risks
+
+- 新增 Compose 仪器压力契约当前未在设备执行；无设备证据前不能宣称 360×640dp、2× 字体组合已通过真机布局门禁。
+- Task 4 长文档帧耗时/PSS、Task 5-7 视觉与 IME、API 31/35/36、截图和 TalkBack 自动语义均未开始，第四阶段不能标记 completed。
+- `artifacts/`、项目外 `secure_env`、签名材料和测试生成的 `.nexara-workspace-*` 未读取、未修改、不得进入提交。
+
+### DIA
+
+DIA: 已同步 CHANGELOG、README、Phase 4 计划、ADR-019、架构快速参考、registry 与本 handover；发行验证账本未提前写入设备/签名完成事实。
+
+### HLG
+
+HLG: 已追加标准时间戳检查点记录；continuity-key 保持 `nexara-md3-redesign` 并指向 Task 4。发现“同一进程内已永久删除 UUID 不得复用”的架构约束具备长期沉淀价值，已记录在 ADR-019 与 Phase 4 计划的既有范围内，无需再改全局规则。

@@ -23,7 +23,7 @@
 - docs/PRD.md — 产品需求文档 v2.0（进度已更新至 2026-05-15）
 - docs/ARCHITECTURE_DESIGN.md — 全局架构设计（含 §2.4.1 KG 双模式策略）
 - docs/ARCHITECTURE.md — 架构快速参考（含 ADR 索引，已至 ADR-019）
-- docs/ADR/ADR-019-transactional-workspace-indexing.md — 工作区文件、派生索引、永久删除与进程恢复的事务候选切换决策
+- docs/ADR/ADR-019-transactional-workspace-indexing.md — 工作区文件、版本化索引目标、删除屏障、补偿重试与进程恢复的事务候选切换决策
 - docs/IMPLEMENTATION_ANALYSIS.md — 当前实现分析（总体 98%）
 - docs/DOCUMENT_GOVERNANCE.md — 文档治理方案（v2.0, 2026-05-19 更新）
 - native-ui/AGENTS.md — Kotlin 迁移技术规范（归档参考用）
@@ -117,7 +117,7 @@
 - Repository 覆盖率: 12/12 (100%)
 - 内置 Skill: 18 个
 - P0/P1 基线: 已完成；基线证据为 JVM 1232（0 失败，14 跳过）、Android 28（0 失败，2 跳过）、Lint 0 Error/Fatal、Debug APK 与备份/恢复多阶段流程。
-- P2 当前状态: 后台持续生成、结构化错误/取消、RAG/Prompt、资源树/设置与协议专项实现已完成；当前最终候选 1641 JVM、Lint、36 张截图、API 31/35/36 设备矩阵及三版本 IME 5/5 已通过。TalkBack 自动语义已通过，人工听觉/全焦点遍历仍待最终签名 APK 真机验收。
+- P2 当前状态: 后台持续生成、结构化错误/取消、RAG/Prompt、资源树/设置与协议专项实现已完成；Material 3 第四阶段可靠性检查点已完成版本化索引、删除屏障、跨页面补偿与 KG 冷恢复，1872 JVM、AndroidTest 编译和 Lint 通过。DocEditor 长文档性能、视觉基线、API 31/35/36 设备矩阵及最终签名 APK 的 TalkBack 人工听觉/全焦点遍历仍待后续门禁。
 - P3 当前状态: R8/签名配置、APK 验证器、API 31/35/36 workflow 与冷安装/发布编排已实现；minified 业务黑盒、应用候选 `bf6f87c` 的远端 Android CI run `29408429117`、四模型真实 API 与稳定发行证书均已通过。本地稳定证书签名 R8 APK 为 17,971,235 bytes，mapping/seeds/usage/configuration、包身份/唯一签名、安全扫描、checksum、zipalign 及 API 35/36 冷安装全部 PASS。GitHub 可验证 signed tag、签名候选真机 TalkBack/人工业务验收与 GitHub Release 仍为 PENDING，当前仍是 NO-GO。
 
 ## DIA 清理记录

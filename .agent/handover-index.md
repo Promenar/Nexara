@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-07-16T22:41:50+08:00
+> generated_at: 2026-07-17T05:11:54+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -8,13 +8,14 @@
 
 | continuity-key | continuity | last update | status | scope | title | source |
 | :--- | :---: | :---: | :---: | :--- | :--- | :--- |
-| nexara-md3-redesign | resume | 2026-07-16 | completed | native-ui, rag, files-panel, resource-explorer, recycle-bin, accessibility, emulator-qa | Material 3 第三阶段知识库与资源管理完成 | `.agent/handover.md` · `2026-07-16T22:39:30+08:00` |
+| nexara-md3-redesign | resume | 2026-07-17 | in-progress | native-ui, doceditor, workspace, vectorization-queue, document-index, rag, accessibility | Material 3 第四阶段 DocEditor 可靠性检查点完成 | `.agent/handover.md` · `2026-07-17T05:08:14+08:00` |
 | v0.2-beta-release-readiness | resume | 2026-07-15 | in-progress | native-ui, onboarding, rag, provider-models, model-metadata, release-engineering | v0.2-beta 真机首轮反馈修复与新签名候选闭环 | `.agent/handover.md` · `2026-07-15T22:08:13+08:00` |
 
 ## Recent 7-Day Catalog
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-07-17 | iso | in-progress | resume | native-ui, doceditor, workspace, vectorization-queue, document-index, rag, accessibility | [material3, doceditor, rename-cas, versioned-index, deletion-barrier, cold-recovery, pending-retry, ui-test] | Material 3 第四阶段 DocEditor 可靠性检查点完成 | `.agent/handover.md` · `2026-07-17T05:08:14+08:00` |
 | 2026-07-16 | iso | completed | resume | native-ui, rag, files-panel, resource-explorer, recycle-bin, accessibility, emulator-qa | [material3, phase3, rag, files, resource-explorer, talkback, responsive-ui, device-matrix] | Material 3 第三阶段知识库与资源管理完成 | `.agent/handover.md` · `2026-07-16T22:39:30+08:00` |
 | 2026-07-16 | iso | paused | waiting | native-ui, material3, rag, resource-explorer, screenshot-qa, release-gate | [material3, rag-redesign, full-jvm, lint, screenshot-test, visual-qa, safe-pause] | Material 3 第三阶段全量本地门禁后安全暂停 | `.agent/handover.md` · `2026-07-16T19:12:18+08:00` |
 | 2026-07-16 | iso | paused | waiting | native-ui, material3, rag, resource-management, status-components, files-panel | [material3, rag-redesign, files-panel, screenshot-qa, accessibility, safe-pause] | Material 3 第三阶段状态原语完成后安全暂停 | `.agent/handover.md` · `2026-07-16T07:32:00+08:00` |
