@@ -3721,3 +3721,52 @@ DIA: 已同步 CHANGELOG、README、Phase 4 计划、ADR-019、架构快速参�
 ### HLG
 
 HLG: 已追加标准时间戳检查点记录；continuity-key 保持 `nexara-md3-redesign` 并指向 Task 4。发现“同一进程内已永久删除 UUID 不得复用”的架构约束具备长期沉淀价值，已记录在 ADR-019 与 Phase 4 计划的既有范围内，无需再改全局规则。
+
+---
+
+## 2026-07-17T06:29:35+08:00 · DocEditor Task 4 长文档性能门禁闭合
+
+type: implementation
+scope: native-ui, doceditor, performance, android-test, documentation
+status: in-progress
+tags: [material3, doceditor, performance-protection, frame-metrics, api36, ui-test]
+continuity: resume
+continuity-key: nexara-md3-redesign
+
+### Summary
+
+Phase 4 Task 4 Step 1-3 已闭合。初始设备基准暴露近 1 MiB Markdown 约 7 秒 Davey 帧与 10,000 行约 1.05 秒 Davey 帧；项目未放宽 50/150 ms 门禁，而是以单一 `DocEditorContentAccess` 事实将大文档降级为有界预览，并以阶梯设备数据将最终软线收口为严格超过 32K 个 UTF-16 代码单元、2,000 行或单行 16K 个 UTF-16 代码单元。第四阶段仍在进行，不代表整体发行已放行。
+
+### Changed
+
+- `DocEditorTextStatistics` 以单次扫描统计行数、字数和最长逻辑行；移除每击键 Regex 分词与完整行号字符串。
+- 严格大于 1 MiB 的文件在读取前进入 `MetadataOnly`；超过实测软线的已读取正文进入 `PerformanceProtected`，仅渲染最多 16K 个 UTF-16 代码单元的快照并提供复制完整全文。
+- 从 Editable 一次输入跨阈值时原子保留完整 dirty 正文和已修改标题；保存、冲突与复制路径始终消费完整 `content`，不使用预览 snippet。
+- 性能仪器契约将保护态有界重组与 Editable 真实 30 次输入追加/10 次可见模式切换分开测量，并保持逐轮独立 FrameMetrics。
+
+### Validation
+
+- 固定 API 36 `Pixel_7` AVD：arm64，1080×2400 / 420 dpi，4 核，约 2 GiB，SwiftShader；每项 3 轮预热、5 轮采样。
+- 最终两次 6/6 性能矩阵全部通过；取两次通过结果的最差值，保护态三组 p95 17–19 ms、最大帧 33 ms、PSS 增量 ≤477 KiB；Editable 三组软线边界 p95 19‑35 ms、最大帧 40 ms、PSS 增量 ≤1,685 KiB。
+- `64K UTF-16 代码单元总长 / 5,000 行 / 单行 32K UTF-16 代码单元` 候选边界未过门禁；最终 `32K UTF-16 代码单元总长 / 2,000 行 / 单行 16K UTF-16 代码单元` 边界矩阵通过。p95 ≤50 ms、单帧 ≤150 ms、PSS 增量 ≤64 MiB、轮间方差 ≤20% 均保持原值。
+- 聚焦 JVM：`DocEditorPerformanceTest` 16/16、`DocEditorViewModelTest` 40/40、`DocEditorScreenStateTest` 6/6，0 failure/error；AndroidTest 与 screenshot test 源码编译通过，`git diff --check` 通过。
+- 最终全量 JVM：1890 tests、0 failure/error、14 skip；`lintDebug` 通过；API 36 性能保护复制/保存/隐藏全文编辑器交互测试 1/1 通过；独立终审 C0/I0/M0、GO。
+
+### Next
+
+1. 进入 Task 5：重建 DocEditor 标准 Material 3 骨架，移除遗留 Glass/自定义描边与硬编码视觉入口。
+2. 随 Task 5-7 补视觉基线、响应式、IME、TalkBack 和 API 31/35/36 设备回归；不把 Task 4 通过误报为整个 Phase 4 完成。
+
+### Risks
+
+- 性能软线是当前固定 API 36 AVD 与 Compose 实现下的发行保护线，不代表所有真机的理论性能上限；后续只能用新设备证据调整，不得凭感觉放宽。
+- Task 5-8 的视觉、交互、TalkBack、截图、全量回归与发行包门禁仍未闭合，Phase 4 与整体 Release 仍为 NO-GO。
+- `artifacts/`、`secure_env/`、签名材料、`.env` 与测试生成目录未读取、未修改，不得进入提交。
+
+### DIA
+
+DIA: 已同步 Phase 4 计划、CHANGELOG、README、架构快速参考与本 handover；文档明确记录三态访问、有界预览、完整 CAS 保存和 API 36 性能证据。
+
+### HLG
+
+HLG: 已追加标准时间戳记录；`status: in-progress`、`continuity: resume`、`continuity-key: nexara-md3-redesign`，恢复点指向 Task 5。本轮未发现需要越过项目文档另行沉淀的长期规则候选。
