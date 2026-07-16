@@ -2720,6 +2720,54 @@ HLG: 已追加标准时间戳交接记录；本轮未发现需要写入长期规
 
 ---
 
+## 2026-07-16T19:12:18+08:00 · Material 3 第三阶段全量本地门禁后安全暂停
+
+type: pause-handover
+scope: native-ui, material3, rag, resource-explorer, screenshot-qa, release-gate
+status: paused
+tags: [material3, rag-redesign, full-jvm, lint, screenshot-test, visual-qa, safe-pause]
+continuity: waiting
+continuity-key: nexara-md3-redesign
+
+### Summary
+
+按用户要求在当前阶段动作完成后暂停。Phase 3 Task 7 已经双终审 GO；Task 8 的全量静态/JVM/Lint/构建和截图视觉门禁已闭合，未启动 API 31/35/36 设备矩阵。暂停点不存在半运行 Gradle 任务或模拟器。
+
+### Changed
+
+- `0aa19f2` / `9fe6e1e`：Resource Explorer/Recycle Bin 完成单层 Material 3、全高 Sheet、上下文动作隔离、长错误、48dp 和对象化 TalkBack 语义；双独立返修复核 GO，C/I/M 均为 0。
+- `814f8e3`：更新两个重构后陈旧的 JVM 源码字符串契约；产品代码未为测试退步。
+- 第三阶段计划已标记 Task 7 以及 Task 8 Step 1-2 完成；Step 3-6 保持待执行。
+
+### Validation
+
+- Task 7 终态：聚焦 JVM 21/21、API 36 Resource Explorer 两类 22/22、Screenshot 54/54；双独立审查 GO，C=0/I=0/M=0。
+- Task 8 Step 1：`./gradlew :app:testDebugUnitTest :app:lintDebug :app:assembleDebug :mainactivity-e2e:assembleDeviceTest`成功；JVM 1722（0 failure/error，14 skipped），Lint 417 条非阻断问题、0 Error/Fatal，Debug APK 与 deviceTest 建置成功。
+- Task 8 Step 2：Screenshot 54/54，0 failure/error/skipped。第三阶段 19 组变化 reference/actual 尺寸与 SHA-256 均一致；生成四张同画布对照并人工检查，未见裁切、重叠、间距、字体、描边、圆角或状态色回归。
+- `git diff --check` 通过；未跟踪 `artifacts/` 保持原状，未读取或纳入提交。
+
+### Next
+
+1. 从 Task 8 Step 3 恢复：查看 `adb devices -l` 和本机 AVD，依次执行 API 31/35/36 的五类 RAG/Resource Explorer 目标设备测试，每档保存 tests/failures/errors/skipped 并恢复系统设置。
+2. 在 API 36 运行常规 bulk suite，再逐次 `force-stop` 运行两个 GenerationForegroundService 冷启动恢复方法。
+3. 完成独立最终复核、DIA/HLG、CHANGELOG 与本阶段文档提交；`DocEditorScreen.kt` 继续作为下一独立视觉阶段，不误报为全站完成。
+
+### Risks
+
+- API 31/35/36 设备矩阵、API 36 bulk/cold-start 与第三阶段独立总复核尚未执行，当前不得宣称 Task 8 或第三阶段完成。
+- 正式签名候选的真机 TalkBack 人工听觉/全焦点遍历与用户核心业务手感仍属发行前门禁。
+- `artifacts/`、`secure_env/`、签名文件与真实密钥继续作为禁止读取/提交边界。
+
+### DIA
+
+DIA: 本次暂停已更新第三阶段实施计划状态与本交接记录；CHANGELOG 留待 Task 8 最终收口统一同步，本轮没有新的 API、数据结构或架构变更。
+
+### HLG
+
+HLG: 已追加标准时间戳安全暂停记录，continuity-key 继续使用 `nexara-md3-redesign`；将由 HLG 脚本重建派生索引。本轮未发现新的长期规则候选。
+
+---
+
 ## 2026-07-16T07:32:00+08:00 · Material 3 第三阶段状态原语完成后安全暂停
 
 type: pause-handover
