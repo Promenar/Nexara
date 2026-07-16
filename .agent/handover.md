@@ -2720,6 +2720,58 @@ HLG: 已追加标准时间戳交接记录；本轮未发现需要写入长期规
 
 ---
 
+## 2026-07-16T22:39:30+08:00 · Material 3 第三阶段知识库与资源管理完成
+
+type: implementation
+scope: native-ui, rag, files-panel, resource-explorer, recycle-bin, accessibility, emulator-qa
+status: completed
+tags: [material3, phase3, rag, files, resource-explorer, talkback, responsive-ui, device-matrix]
+continuity: resume
+continuity-key: nexara-md3-redesign
+
+### Summary
+
+完成全站 Material 3 重设计第三阶段：知识库首页与 Memory、文件树、文件夹、RAG 详情、资源管理器和回收站已统一为稳定 MD3 的单层列表/tonal surface/标准 Sheet 语言。阶段终审在首轮 NO-GO 后继续关闭父目录离屏订阅、重复 TalkBack 进度、固定 70% 移动 Sheet、资源管理器隐藏态常驻观察、同会话重开取消用户操作，以及旧 observer 迟到异常覆盖新状态等缺陷；最终代码审阅 C0/I0、UI 审阅 P0/P1/P2 清零。
+
+### Changed
+
+- `FilesPanel` 以当前组合节点及其展开祖先解析有界目录订阅；父行离屏但后代仍组合时持续接收更新，折叠/离开后释放；根 Flow 使用稳定 remember。
+- `IndexingProgressBar` 成为进度、状态描述和 LiveRegion 的唯一无障碍事实源；RagHome/RagFolder 移除外层重复语义，移动 Sheet 改为完整可用高度与加权懒列表。
+- `ResourceExplorerSheet` 只在 Workspace overlay 活动时组合，所有 StateFlow 使用生命周期感知收集；关闭时停止 session observers，但不中断用户已发起的导入/回收。
+- `ResourceExplorerViewModel` 区分业务 generation 与 observer epoch：同会话恢复仅重启观察；旧 observer 数据/异常无法污染新状态；已有 root 的 observer 失败只发布结构化错误，root ensure 失败与真正 session 切换仍执行完整清理。
+- `RagDetailsSheet` 对 `CancellationException` 继续传播，普通链接失败保留可见 Retry。
+- 增加真实 Compose 回归：RagFolder 360x800@2x 与 800x360 均可打开真实移动 Sheet、滚到第 20 项并触发正确回调；空白 ModalBottomSheet Preview golden 被识别为工具假证据并撤回。
+
+### Validation
+
+- 干净构建：JVM 1733，0 failure/error、14 skip；Lint 0 Error/Fatal；Debug APK、mainactivity deviceTest APK、Screenshot 54/54 全部通过；`git diff --check` 通过。
+- API 31/35/36 五类定向矩阵最终各 65/65，合计 195/195，0 failure/error/skip；每档均恢复字体、动画和方向配置并关闭临时 AVD。
+- API 36 bulk XML：195 tests、0 failures、0 errors、3 个设计中的分阶段 checkpoint skip。
+- 两项 `GenerationForegroundServiceColdStartDeviceTest` 均重新安装 target/test APK，启动目标包确认 PID 非空，force-stop `com.promenar.nexara.native.debug` 后确认 PID 为空，再直接调用 AndroidJUnitRunner；两项各 1/1 通过。
+- 独立最终复核：代码 C0/I0/M1、GO；UI P0/P1/P2=0、GO。唯一 Minor 为两条静态源码契约测试抗回归性弱于行为测试，生产实现未发现对应错误。
+
+### Next
+
+1. 以同一设计规格进入 DocEditor 独立 Material 3 阶段，先冻结页面状态、响应式布局、无障碍与截图/设备验收计划。
+2. 后续发行收口继续处理签名候选真机 TalkBack/人工核心业务验收、可验证 tag 与 GitHub Release 侧载 APK；第三阶段完成不代表整体 Release GO。
+3. Memory loading/error/retry 继续作为独立产品可靠性 P1，不在视觉夹具中伪造。
+
+### Risks
+
+- `RagDetailsDesignContractTest` 与 `ResourceExplorerMaterialContractTest` 含少量源码字符串契约，终审列为非阻塞 Minor；后续可替换为可执行生命周期/取消行为测试。
+- Preview Screenshot 引擎不捕获真实 `ModalBottomSheet` 弹层窗口；弹层不得用纯白 golden 作为证据，当前以三版本真实设备交互覆盖。
+- 整体初版发行仍需签名候选真机 TalkBack、人工业务验收和 GitHub Release 外部门禁。
+
+### DIA
+
+DIA: 已同步 `CHANGELOG.md`、第三阶段实施计划与本 handover；registry 已登记该计划，无需重复修改。外部 API、Room schema、架构边界、部署配置和 README 发行说明无变化。
+
+### HLG
+
+HLG: 已追加标准时间戳完成记录并将重建 handover-index。发现 1 条候选长期规则：Android 冷启动/force-stop 门禁必须先验证目标包已安装且停止前 PID 非空，若 Gradle 任务会卸载或重装目标包，应改用安装后直接 instrumentation；该规则已在本轮真实纠错中验证，但未经用户授权，未写入 AGENTS.md 或 Skill。
+
+---
+
 ## 2026-07-16T19:12:18+08:00 · Material 3 第三阶段全量本地门禁后安全暂停
 
 type: pause-handover

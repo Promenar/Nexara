@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-07-16T19:14:10+08:00
+> generated_at: 2026-07-16T22:41:50+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -8,13 +8,14 @@
 
 | continuity-key | continuity | last update | status | scope | title | source |
 | :--- | :---: | :---: | :---: | :--- | :--- | :--- |
-| nexara-md3-redesign | waiting | 2026-07-16 | paused | native-ui, material3, rag, resource-explorer, screenshot-qa, release-gate | Material 3 第三阶段全量本地门禁后安全暂停 | `.agent/handover.md` · `2026-07-16T19:12:18+08:00` |
+| nexara-md3-redesign | resume | 2026-07-16 | completed | native-ui, rag, files-panel, resource-explorer, recycle-bin, accessibility, emulator-qa | Material 3 第三阶段知识库与资源管理完成 | `.agent/handover.md` · `2026-07-16T22:39:30+08:00` |
 | v0.2-beta-release-readiness | resume | 2026-07-15 | in-progress | native-ui, onboarding, rag, provider-models, model-metadata, release-engineering | v0.2-beta 真机首轮反馈修复与新签名候选闭环 | `.agent/handover.md` · `2026-07-15T22:08:13+08:00` |
 
 ## Recent 7-Day Catalog
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-07-16 | iso | completed | resume | native-ui, rag, files-panel, resource-explorer, recycle-bin, accessibility, emulator-qa | [material3, phase3, rag, files, resource-explorer, talkback, responsive-ui, device-matrix] | Material 3 第三阶段知识库与资源管理完成 | `.agent/handover.md` · `2026-07-16T22:39:30+08:00` |
 | 2026-07-16 | iso | paused | waiting | native-ui, material3, rag, resource-explorer, screenshot-qa, release-gate | [material3, rag-redesign, full-jvm, lint, screenshot-test, visual-qa, safe-pause] | Material 3 第三阶段全量本地门禁后安全暂停 | `.agent/handover.md` · `2026-07-16T19:12:18+08:00` |
 | 2026-07-16 | iso | paused | waiting | native-ui, material3, rag, resource-management, status-components, files-panel | [material3, rag-redesign, files-panel, screenshot-qa, accessibility, safe-pause] | Material 3 第三阶段状态原语完成后安全暂停 | `.agent/handover.md` · `2026-07-16T07:32:00+08:00` |
 | 2026-07-16 | iso | completed | resume | native-ui, material3, settings, provider, provider-models, accessibility, screenshot-qa, device-qa | [material3, settings-redesign, provider-management, progressive-disclosure, accessibility, screenshot-test, android-device] | Material 3 第二阶段管理母版实现与全门禁收口 | `.agent/handover.md` · `2026-07-16T06:45:00+08:00` |
