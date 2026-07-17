@@ -3880,3 +3880,55 @@ DIA: 已同步 `CHANGELOG.md`、Phase 4 实施计划、Material 3 设计规格�
 ### HLG
 
 HLG: 已追加本标准时间戳完成记录；`status: completed` 关闭 DocEditor 第四阶段，`continuity: resume` 保留整体发行收口入口，索引将由 HLG 脚本重建。本轮未发现需要越过现有规则另行沉淀的新长期规则候选。
+
+---
+
+## 2026-07-17T13:37:27+08:00 · 当前源码最终本地签名候选生成并等待真机验收
+
+type: validation
+scope: release-readiness, signed-apk, r8, api35, api36, talkback
+status: waiting
+tags: [v0.2-beta, signed-apk, r8, zipalign, checksum, cold-install, api35, api36, talkback]
+continuity: waiting
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+基于当前 `d8d3109098ee3429439860b44ccb0d9ecdd904f8` clean 构建稳定证书签名 R8 APK，并在 API 35/36 完成同一 APK 的 fail-closed 身份/签名/内容校验、冷安装、设备字节回读、冷启动与 5 秒 crash/ANR 观察。自动化与本地发行候选已可交付用户真机验收；整体状态继续为 NO-GO，等待 TalkBack 人工听觉、完整焦点遍历和核心业务体验反馈，当前提交也尚未 push 或运行远端矩阵。
+
+### Changed
+
+- 生成 `native-ui/app/build/outputs/apk/release/nexara-v0.2-beta.apk` 与同目录 `.sha256`；两者位于忽略的构建输出，不进入 Git。
+- 更新 `CHANGELOG.md`、`docs/release/v0.2-beta.md` 与发行验证账本，使 56 张截图、Material 3 DocEditor、当前 APK 尺寸/哈希、R8 证据和 API 35/36 冷安装事实替换过期候选数据。
+- 签名属性仅在本地构建子进程内映射为四个 Gradle 环境变量；未输出、记录、委派或提交任何密码、别名、私钥或 properties 内容。
+
+### Validation
+
+- `./gradlew --no-daemon clean :app:assembleRelease`：`BUILD SUCCESSFUL`（1m29s）；66 tasks 中 52 executed、11 from cache、3 up-to-date。
+- APK：18,173,215 bytes；包名 `com.promenar.nexara.native`、versionCode 2、versionName `0.2-beta`、唯一签名者与登记证书均通过。
+- APK SHA-256：`9b4f109c203b5ce8b428e43d48e8fbe537c3f7907a788a67480e41dc4b1f546b`；命名副本与原始 `app-release.apk` 逐字节一致，`.sha256` 本目录复核通过。
+- `verify-release-apk.py`：ZIP、50 MiB、跨块敏感内容、GGUF/llama/ggml、本机路径与签名身份扫描通过；`zipalign -c -P 16 4` 通过。
+- R8：`mapping.txt` 97,627,145 bytes、`seeds.txt` 769,987 bytes、`usage.txt` 11,175,560 bytes、`configuration.txt` 67,338 bytes。
+- API 35：卸载旧包、安装、设备 `base.apk` 回读一致、前台启动、5 秒存活及 crash/ANR 观察通过；冷启动 143 ms。
+- API 36：同一流程通过；冷启动 188 ms。两个临时模拟器均已关闭，未把 smoke 证据写入受保护的既有 `artifacts/` 目录。
+
+### Next
+
+1. 用户将 `nexara-v0.2-beta.apk` 安装到真实 Android 12+ 设备，优先复测此前四类缺陷，再完成 TalkBack 人工听觉、完整焦点遍历和核心业务清单。
+2. 用户反馈若有缺陷，按真机证据修复并重建同一签名候选；若通过，再取得 push 授权并运行当前提交的远端 quality/API 31/35/36。
+3. 真机与远端均通过后，取得用户对可验证 tag/GitHub Release 的明确授权，触发 tag-only workflow，并回读远端 APK 与 checksum 哈希。
+
+### Risks
+
+- 当前 APK 是本机最终候选，不是 GitHub Release 资产；不得在用户人工验收前把验证账本改为 GO。
+- 自动 TalkBack 语义测试不能替代人类听觉、手势遍历顺序和真实设备 OEM/系统无障碍行为。
+- 当前 commit 尚未推送；前一远端 CI 只证明 `bf6f87c`，不能证明 `d8d31090`。
+- 构建输出会被后续 `clean` 删除；用户安装前不要再次清理工作树，正式 Release 必须由 tag workflow 重建并复验。
+
+### DIA
+
+DIA: 已同步 CHANGELOG、发行说明、发行验证账本与本 handover；当前候选、自动化证据和剩余人工/远端门禁均已按真实状态回写。
+
+### HLG
+
+HLG: 已追加标准时间戳 waiting 记录，并把 `v0.2-beta-release-readiness` 的恢复入口切换到用户真机验收；索引将由 HLG 脚本重建。未新增需要另行沉淀的长期规则候选。

@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-07-17T13:30:15+08:00
+> generated_at: 2026-07-17T13:39:32+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -9,12 +9,13 @@
 | continuity-key | continuity | last update | status | scope | title | source |
 | :--- | :---: | :---: | :---: | :--- | :--- | :--- |
 | nexara-md3-redesign | resume | 2026-07-17 | completed | native-ui, doceditor, material3, markdown, accessibility, performance, release-readiness | Material 3 第四阶段 DocEditor 自动化验收完成 | `.agent/handover.md` · `2026-07-17T13:29:31+08:00` |
-| v0.2-beta-release-readiness | resume | 2026-07-15 | in-progress | native-ui, onboarding, rag, provider-models, model-metadata, release-engineering | v0.2-beta 真机首轮反馈修复与新签名候选闭环 | `.agent/handover.md` · `2026-07-15T22:08:13+08:00` |
+| v0.2-beta-release-readiness | waiting | 2026-07-17 | waiting | release-readiness, signed-apk, r8, api35, api36, talkback | 当前源码最终本地签名候选生成并等待真机验收 | `.agent/handover.md` · `2026-07-17T13:37:27+08:00` |
 
 ## Recent 7-Day Catalog
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-07-17 | iso | waiting | waiting | release-readiness, signed-apk, r8, api35, api36, talkback | [v0.2-beta, signed-apk, r8, zipalign, checksum, cold-install, api35, api36, talkback] | 当前源码最终本地签名候选生成并等待真机验收 | `.agent/handover.md` · `2026-07-17T13:37:27+08:00` |
 | 2026-07-17 | iso | completed | resume | native-ui, doceditor, material3, markdown, accessibility, performance, release-readiness | [material3, doceditor, option-3, markdown, ime, accessibility, performance, api31, api35, api36, visual-qa] | Material 3 第四阶段 DocEditor 自动化验收完成 | `.agent/handover.md` · `2026-07-17T13:29:31+08:00` |
 | 2026-07-17 | iso | in-progress | resume | native-ui, doceditor, material3, responsive-ui, accessibility, screenshot-test | [material3, doceditor, option-3, 800x360, ime, large-font, visual-qa, paused] | DocEditor Task 5 方案 3 视觉迁移阶段性暂停 | `.agent/handover.md` · `2026-07-17T10:20:50+08:00` |
 | 2026-07-17 | iso | in-progress | resume | native-ui, doceditor, performance, android-test, documentation | [material3, doceditor, performance-protection, frame-metrics, api36, ui-test] | DocEditor Task 4 长文档性能门禁闭合 | `.agent/handover.md` · `2026-07-17T06:29:35+08:00` |
