@@ -3770,3 +3770,113 @@ DIA: 已同步 Phase 4 计划、CHANGELOG、README、架构快速参考与本 ha
 ### HLG
 
 HLG: 已追加标准时间戳记录；`status: in-progress`、`continuity: resume`、`continuity-key: nexara-md3-redesign`，恢复点指向 Task 5。本轮未发现需要越过项目文档另行沉淀的长期规则候选。
+
+---
+
+## 2026-07-17T10:20:50+08:00 · DocEditor Task 5 方案 3 视觉迁移阶段性暂停
+
+type: implementation
+scope: native-ui, doceditor, material3, responsive-ui, accessibility, screenshot-test
+status: in-progress
+tags: [material3, doceditor, option-3, 800x360, ime, large-font, visual-qa, paused]
+continuity: resume
+continuity-key: nexara-md3-redesign
+
+### Summary
+
+用户补充并确认方案 3 原始设计图，已将其作为暗色层级、MD3 容器质感、圆角、间距和信息密度的权威风格参照。Task 5 第一轮生产迁移与三项交互阻断修补已经完成源码落盘，但用户要求更新开发环境，因此在主控独立设备复验、性能复跑和视觉基线批准之前安全暂停；第四阶段与整体发行仍为 NO-GO。
+
+### Changed
+
+- 稳定保存方案 3 原图到 `docs/superpowers/specs/assets/nexara-md3-option-3-reference.png`，SHA-256 为 `a0065ea2aa606b1699c025d37ff35ac6467d75b0efebea95cd4414a87031395f`，并在 MD3 设计规格中登记其“风格参照而非 DocEditor 同态像素基线”的使用边界。
+- `DocEditorScreen.kt` 已迁移到标准 Material 3 TopAppBar、Surface、SegmentedButton、AlertDialog 与 tonal surface 层级；移除本页遗留 Glass、旧视觉 token、手绘描边和固定字号入口，加入生命周期感知状态收集、按文档身份保存滚动状态、响应式边距、短高紧凑布局与 `imePadding()`。
+- 针对独立终审暴露的 2× 字体冲突操作裁切、虚拟模式按钮语义、短高状态页裁切和索引重试同名节点问题，新增字体感知 compact 布局、把 48dp/Tag/Role.Tab 落到真实 SegmentedButton、让状态页纵向可达，并为索引重试建立唯一可访问描述。
+- 真实 IME 用例已从“合成 800×360 Compose 配置 + 物理竖屏系统窗口”的失真组合改为物理横屏方向等待；独立的精确 800×360 非 IME 布局门禁继续保留。临时诊断 `println` 已移除。
+- Spark CLI Worker 只在 `ReleasePreviewScreenshotTest.kt` 新增精确 800×360 英文深色 dirty 编辑态截图夹具；它未参与视觉判断。Spark 沙箱内因 `~/.gradle` wrapper lock 无写权限未完成编译，需由主控恢复后独立验证。
+- `UiTags.kt` 与 `DocEditorMaterialContractTest.kt` 已补 Task 5 稳定标签和 Material 3 静态契约；当前全部变更尚未提交。
+
+### Validation
+
+- 写入代理已通过 `:app:compileDebugKotlin :app:compileDebugAndroidTestKotlin` 与 `git diff --check`；Task 5 第一轮 JVM 契约、状态和 ViewModel 聚焦测试此前通过。
+- 修补前的独立终审设备证据为 DocEditor 交互 21/24 通过，失败项是 2× 冲突复制按钮不可见、失真的 synthetic 800×360 真 IME 输入区不可见，以及 Retry 文本双节点；对应源码修补已落盘，但主控尚未在修补后独立复跑，不能宣称通过。
+- 截图门禁修补前为 54 项中 9 个 DocEditor 基线差异；其中大字体冲突裁切是真缺陷，其余主要是预期 MD3 重构差异，均不得在逐图审查前批量更新 golden。
+- 性能复跑曾受同一模拟器并发安装/force-stop 干扰，结果无效；未把测试基础设施干扰误报为产品崩溃。
+- 暂停前已确认所有原生/外部代理结束，Spark PTY 已退出，并通过 `adb -s emulator-5554 emu kill` 正常关闭 API 36 模拟器；没有活跃测试或构建进程需要续接。
+
+### Next
+
+1. 环境更新后先核对工作树和工具链，再由主控独占启动 API 36 模拟器；不得并发运行第二路 ADB/UTP。
+2. 独立复跑 `DocEditorInteractionTest` 全类，重点确认物理横屏真实 IME、精确 800×360、360×800 2× 字体冲突双动作、真实 SegmentedButton 48dp/Tab 语义与短高状态页。
+3. 运行 screenshot test 编译与完整截图门禁，生成新 800×360 actual；逐张查看 10 个 DocEditor 状态，以方案 3 原图做风格对照、以同态旧 reference/新 actual/diff 做回归判断，修完 P0/P1/P2 后才批准 golden。
+4. 单独处理 `MarkdownText.kt` / `renderer/CodeBlockHeader.kt` 中长代码块末尾单字符换行问题；严禁在第三方 Markdown 回调中叠加横向滚动。
+5. 独占复跑 Task 4 六项性能矩阵、全量 JVM、Lint、API 31/35/36 与最终设计 QA；创建项目根 `design-qa.md`，只有全部可视门禁通过后写入精确 `final result: passed`。
+6. 完成 Task 5-8 的 Phase 4 计划、CHANGELOG、README、架构、registry、DIA/HLG 同步后，才提交 `feat: migrate DocEditor shell to Material 3`；未经用户要求不 push、不 merge。
+
+### Risks
+
+- 当前源码修补尚无主控独立设备证据，恢复后必须从交互全类复跑开始；不得依据代理编译通过或修补前截图宣称 Task 5 完成。
+- Markdown 长代码块横向可达问题尚未修复，属于跨层视觉/交互阻断，不能用更新 golden 掩盖。
+- 方案 3 原图是聊天页面的视觉语言参照，不是 DocEditor 同状态参考；最终 DocEditor actual 需经逐图人工/视觉审查后成为新同态基线。
+- `artifacts/`、`secure_env/`、签名材料、`.env` 和三个 `.nexara-workspace-*` 测试生成目录未读取、未修改，恢复与提交时继续禁止纳入。
+
+### DIA
+
+DIA: 本轮新增方案 3 参照资产并修改 DocEditor 用户可见布局、交互语义与截图测试，文档影响已在设计规格和本 handover 登记；CHANGELOG、README、Phase 4 计划与架构文档待 Task 5-8 真实验收后统一同步，当前不得写成已完成。
+
+### HLG
+
+HLG: 已追加标准时间戳暂停记录，保留 `continuity: resume` 与 `continuity-key: nexara-md3-redesign`；恢复入口是修补后 DocEditor 全类设备复跑。未新增需要越过现有项目规则另行沉淀的长期规则候选。
+
+---
+
+## 2026-07-17T13:29:31+08:00 · Material 3 第四阶段 DocEditor 自动化验收完成
+
+type: implementation
+scope: native-ui, doceditor, material3, markdown, accessibility, performance, release-readiness
+status: completed
+tags: [material3, doceditor, option-3, markdown, ime, accessibility, performance, api31, api35, api36, visual-qa]
+continuity: resume
+continuity-key: nexara-md3-redesign
+
+### Summary
+
+Material 3 第四阶段 Task 5-8 已完成实现、三版本 DocEditor 设备矩阵、API 36 完整 runner、两轮无样本替换性能门禁、截图与独立代码/视觉复核。DocEditor 阶段可以关闭，但 v0.2-beta 整体仍为 NO-GO：当前源码尚未重建最终签名 APK 并在真机完成 TalkBack 人工听觉/全焦点与核心业务验收，也尚未创建可验证 tag 和 GitHub Release。
+
+### Changed
+
+- `DocEditorScreen.kt` 完成标准 Material 3 顶栏、模式选择、内容表面、状态 notice、对话框、响应式与真实 IME 迁移；保存错误、冲突、NotFound 和索引待重试会在 IME 展开时优先显示可恢复反馈，并保留草稿、dirty 与局部提交事实。
+- `MarkdownText.kt` 以 AST 和真实文本测量识别宽代码/宽表格；顶层及任意深度引用/列表中的 GFM 表格由第一方外层负责横向滚动，`TableWidget.kt` 的第三方回调内不再叠加滚动。
+- `CodeBlockHeader.kt` 的全屏、导出、编辑/保存、复制使用真实 48dp 目标和中英双语内容描述；语言、行号与装饰分隔线移出无障碍树。
+- 9 张 DocEditor golden 更新，并新增精确 800×360 与 360×800 IndexPending 两张；`design-qa.md` 记录 11 状态人工验收并写入精确 `final result: passed`。
+- 性能测试固定 5 个原始样本，任意总帧 p95 >50 ms 或 max >150 ms 立即失败；移除自动拒绝/替换与无统计依据的 breakdown 百分位相减。
+- 实现与测试已提交为 `66a72ac`（`feat: complete Material 3 DocEditor phase`）；方案 3 原图 SHA-256 仍为 `a0065ea2aa606b1699c025d37ff35ac6467d75b0efebea95cd4414a87031395f`。
+
+### Validation
+
+- 新鲜 `--rerun-tasks` 组合门禁实际执行 130/130 Gradle tasks：1915 个 JVM 测试，0 failure/error、14 个既有条件 skip；56/56 截图，0 failure/error/skip；Lint、Debug APK、deviceTest APK 与 AndroidTest 编译通过。
+- `DocEditorInteractionTest` 在 API 31、35、36 分别 31/31，均 0 failure/error/skip；API 36 的 Markdown 宽内容聚焦测试 4/4、CodeBlock 无障碍测试 2/2。
+- API 36 首次把专用冷启动类混入普通 runner 时完成其余用例但两项按预期因 Application 已进入 `Ready` 而失败；该类源码注释、Phase 2/3 计划和 CI runbook 均要求逐项 force-stop 独立运行，因此未修改产品代码掩盖错误执行方式。
+- 按既有协议重跑后，API 36 常规 bulk 排除专用冷启动类，最终完成 228 tests、0 failure、3 个既有分阶段 checkpoint skip；两项冷启动方法分别重装 target/test APK、确认启动 PID 非空、force-stop 后 PID 为空，再直接 instrumentation，各 1/1 通过。
+- API 36 headless `-gpu host` Apple M5 / Metal 环境连续两次完整性能矩阵 6/6；共 60 个原始样本全部直接接受，最差 p95 35 ms、max 40 ms、PSS 增量 12,194 KiB。
+- 第四轮独立复核结论：C0/C1/C2/C3=0，P0/P1/P2=0；`git diff --check` 通过。
+
+### Next
+
+1. 从当前提交重建稳定证书签名 R8 APK，执行包身份、签名、zipalign、SHA-256、敏感内容/GGUF 排除与 API 35/36 冷安装 smoke。
+2. 将最终签名 APK 安装到用户真机，完成 TalkBack 人工听觉、完整焦点遍历与核心业务人工验收；只在用户确认后关闭商业级 UI 人工门禁。
+3. 运行当前分支远端 API 31/35/36 与质量矩阵，确认 tag workflow 所用 clean 环境一致。
+4. 完成可验证 tag、GitHub prerelease/Release 和侧载 APK + `.sha256` 上传；未经用户授权不 push、不创建 tag/Release。
+
+### Risks
+
+- 现有发行账本中的稳定签名 APK、SHA-256 和远端 run 是前一候选历史证据，不能替代从 `66a72ac` 及文档收口提交重建的最终发行包。
+- TalkBack 自动语义只能证明节点、角色、状态和动态播报契约，不能替代用户真机人工听觉与完整焦点顺序。
+- `artifacts/`、`secure_env/`、签名材料、真实凭证与三个 `.nexara-workspace-*` 测试目录未纳入本次提交，后续仍须保持隔离。
+
+### DIA
+
+DIA: 已同步 `CHANGELOG.md`、Phase 4 实施计划、Material 3 设计规格、`docs/release/v0.2-beta-validation.md`、`design-qa.md` 与本 handover；README 无新增安装/配置/用户能力边界，架构模块边界未在 Task 5-8 变化，因此无需重复修改 README 或架构总览。
+
+### HLG
+
+HLG: 已追加本标准时间戳完成记录；`status: completed` 关闭 DocEditor 第四阶段，`continuity: resume` 保留整体发行收口入口，索引将由 HLG 脚本重建。本轮未发现需要越过现有规则另行沉淀的新长期规则候选。
