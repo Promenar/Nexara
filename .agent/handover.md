@@ -3932,3 +3932,731 @@ DIA: 已同步 CHANGELOG、发行说明、发行验证账本与本 handover；�
 ### HLG
 
 HLG: 已追加标准时间戳 waiting 记录，并把 `v0.2-beta-release-readiness` 的恢复入口切换到用户真机验收；索引将由 HLG 脚本重建。未新增需要另行沉淀的长期规则候选。
+
+---
+
+## 2026-07-17T20:41:56+08:00 · Agent 首页连续 Material 3 列表与新签名候选闭环
+
+type: implementation
+scope: native-ui, agent-hub, material3, accessibility, screenshot-test, release-readiness
+status: completed
+tags: [material3, agent-hub, listitem, swipe, large-font, api36, signed-apk, spark]
+continuity: waiting
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+用户指出主界面助手逐项描边卡片不符合已经确认的方案 3/稳定 Material 3 语言，并授权执行。助手列表现已改为连续标准 `ListItem`，短滑误触的 dp/px 缺陷同步闭合；普通与 2.0x 长内容视觉、API 36 交互、全量 JVM/Lint/Debug 构建和新稳定证书签名 R8 候选均取得新鲜 PASS。整体发行仍为 NO-GO，下一入口是用户真机 TalkBack、完整焦点与核心业务人工验收；当前工作树尚未提交、推送或运行新的远端矩阵。
+
+### Changed
+
+- `AgentHubScreen.kt` 移除逐项 Glass 卡片、永久描边、8dp 卡片间隔和冗余 Chevron；改为连续 `ListItem`、40dp tonal 图标、Material 标题/辅助文本、正文起始位分隔线、整行主动作以及尾部置顶状态与 48dp 更多菜单。
+- `SwipeableItem.kt` 新增可配置 shape，Agent 首页使用矩形连续行；动作宽度、屏宽阈值和最大位移均由 dp 转 px，修复高密度设备短滑误删。不可点击的滑动背景图标从无障碍树移除，其他调用点保留 12dp 默认圆角。
+- 新增/更新源码契约、Compose 设备交互与 Preview Screenshot：覆盖无 Glass/无 Chevron、连续列表、手势单位、置顶语义、整行进入、菜单不误导航、短滑不误删、空态入口及中文 2.0x 长标题/长描述/空描述。
+- 同步 `CHANGELOG.md`、Material 3 设计规格、发行说明、发行验证账本和本 handover；README、API、Room schema、模块边界与架构总览未变化。
+- 从当前源码 clean 构建 `native-ui/app/build/outputs/apk/release/nexara-v0.2-beta.apk` 及 `.sha256`；签名属性只在本地主控构建子进程内映射，未输出、委派或提交密码、别名与私钥内容。
+
+### Validation
+
+- TDD RED：在隔离临时 worktree 中仅加入新契约，旧生产实现 7 项中 2 项按预期失败（缺少 `ListItem`；仍有 `Arrangement.spacedBy(8.dp)`）；实现后主工作树 9/9 契约通过。
+- Screenshot validation：57/57，0 failure/error/skip；标准英文与新增中文 2.0x 长内容 actual 均由主控逐图查看，无重叠、裁切或不可达动作。
+- Pixel 7 API 36：`AgentHubScreenContentTest` 6/6，覆盖整行进入、菜单隔离、置顶状态、120px 短滑不误删/导航和空态添加；模拟器已关闭。
+- 全量 `:app:testDebugUnitTest :app:lintDebug :app:assembleDebug --rerun-tasks`：`BUILD SUCCESSFUL`；1919 JVM、0 failure/error、14 个既有条件 skip；Lint 0 Error/Fatal（397 warning、24 hint）；Debug APK 生成。
+- 稳定证书 Release：`clean :app:assembleRelease` 1m34s 成功；66 tasks 中 45 executed、17 from cache、4 up-to-date。APK 18,173,163 bytes，SHA-256 `45732833504658a7e84f4ef0efee83bccbbd0c1bb7e9486b1519607c474509db`；包名、版本、唯一签名者、登记证书、ZIP/体积、敏感内容、GGUF/llama/ggml 与 16 KiB zipalign 全部 PASS。
+- 同一 APK 在 wipe-data 的 API 35/36 顺序执行冷安装：卸载检查、安装、设备 `base.apk` 字节回读、身份/版本/证书、launcher、前台进程和 5 秒 crash/ANR 观察全部 exit=0；冷启动分别 1306 ms、356 ms，两个模拟器均已关闭。
+- Agent 调度：本会话两次显式原生 `gpt-5.3-codex-spark`（实现任务与无文件最小 smoke）均在调度参数校验阶段返回 `Unknown model`，当前 schema 只列 Sol/Terra；这只证明本会话灰度分片未暴露 Spark，不否定用户另一会话的 `SPARK_NATIVE_SMOKE_OK`。随后 Spark CLI Worker 完成候选施工，Terra 原生只读复核发现手势 dp/px 和连续行细节，主控修复并独立验收；未修改全局路由规则。
+
+### Next
+
+1. 用户侧载当前 `nexara-v0.2-beta.apk` 到真实 Android 12+ 设备，复查助手列表视觉、整行/菜单/滑动交互，再完成 TalkBack 人工听觉、完整焦点遍历和核心业务清单。
+2. 若真机发现缺陷，按截图、设备型号、系统版本和复现路径修复后重建同一签名候选；若通过，再取得 push 授权并运行当前提交的远端 quality/API 31/35/36 矩阵。
+3. 真机与远端均通过后，取得用户对可验证 tag/GitHub Release 的明确授权，触发 tag-only workflow 并回读远端 APK/checksum 哈希。
+
+### Risks
+
+- 当前源码与文档尚未提交；本地 APK 是可侧载验收候选，不是 GitHub Release 资产，不能把发行账本改为 GO。
+- TalkBack 自动语义和 API 36 Compose 测试不能替代真实设备上的听觉、手势顺序与 OEM 无障碍行为。
+- 本会话 Spark 原生调用状态与另一会话不同；后续应继续按会话级最小 smoke 选择原生 Spark 或 CLI fallback，不能从单会话结果推导全局可用性。
+- `artifacts/`、项目外 `secure_env/`、三个 `.nexara-workspace-*` 测试目录及用户既有未跟踪内容均未纳入源码变更或提交。
+
+### DIA
+
+DIA: 已同步 CHANGELOG、Material 3 设计规格、发行说明、发行验证账本与本 handover；README、API、数据结构和架构模块边界无变化，因此无需修改 README、registry 或架构总览。
+
+### HLG
+
+HLG: 已追加标准时间戳完成记录，并把 `v0.2-beta-release-readiness` 的恢复入口保持为用户真机验收；索引将由 HLG Skill 脚本重建。未发现需要越过现有规则另行沉淀的新长期规则候选。
+
+---
+
+## 2026-07-17T23:03:41+08:00 · 模型元数据注册中心与会话尾注改造计划落盘
+
+type: planning
+scope: native-ui, model-catalog, provider-models, onboarding, chat, material3, testing, supply-chain
+status: ready-for-implementation
+tags: [model-metadata, models-dev, exact-id, reasoning, friendly-name, chat-footer, spark, handoff]
+continuity: resume
+continuity-key: nexara-model-catalog
+
+### Summary
+
+用户批准把手写模糊模型能力表升级为全量、可维护的分层模型元数据注册中心，并要求同步修正会话 UI：AI 消息尾部的模型名与时间需要作为左侧并列的弱化信息组，用户消息时间继续在右侧；会话输入框上方模型名称与 AI 消息尾注必须使用同一份改造后的友好名称。用户随后要求暂不实施源码，先把完整方案落盘并提供新会话启动指令，用于重新验证原生 Spark 子代理。
+
+### Changed
+
+- 新增 `docs/superpowers/plans/2026-07-17-model-catalog-and-chat-metadata.md`，共 10 个任务，覆盖三态能力、工作负载/推理/聊天端点分离、models.dev 离线快照、精确 ID 解析、Provider 用户覆盖迁移、onboarding、会话友好名称、AI 尾注布局、刷新 PR 和全量发行门禁。
+- `.agent/registry.md` 登记新计划；没有修改 Kotlin、Gradle、资源、测试、截图基线、APK 或当前既有 Agent Hub/MD3 实现。
+- 只读核验 models.dev 当前 provider-agnostic endpoint：258 条、209370 bytes、SHA-256 `d2baab07d79be35c9e0b6aa8fb70f3d13d31ef63735889bde4ea7a15181462db`；计划要求执行时写入真实 manifest、保留 MIT 归属并禁止 APK 运行时依赖第三方目录。
+- 当前工作树原有 Agent Hub、发行文档、截图和三个 `.nexara-workspace-*` 未跟踪目录均保持原状，没有清理、覆盖或纳入本轮方案文件。
+
+### Validation
+
+- 完整读取并应用 `$agent-router`、`superpowers:writing-plans`、`handover-lifecycle-governance` 与 `frontend-design-contract`；计划沿用已批准的 Material 3 方案 3。
+- 计划完成规格覆盖、文件边界、接口类型、测试命令、Agent 路由、停止条件和占位表达自检；`TBD/TODO/implement later/fill in details` 扫描无命中。
+- `git diff --check -- docs/superpowers/plans/2026-07-17-model-catalog-and-chat-metadata.md`：通过。
+- 当前分支确认是 `codex/md3-redesign`；实际开发工作树确认是 `/Users/promenar/Codex/Nexara/.worktrees/codex-v0.2-beta`。
+
+### Next
+
+1. 新会话进入实际工作树，先读取 `AGENTS.md`、registry、handover-index、本记录和完整计划，不从主工作树实施。
+2. 第一动作使用显式 `model: gpt-5.3-codex-spark`、`fork_turns: none` 创建无文件读写最小原生子代理，不传 `service_tier` 或 `reasoning_effort`；只有实际返回 `SPARK_NATIVE_SMOKE_OK` 才判定当前会话原生 Spark 可用。
+3. smoke 成功后按计划的 Agent Routing 执行；Spark 只承担 Task 1/3/6/8/9 中契约、文件边界和命令均明确的施工，主控负责 Task 2/4/5/10 的架构、迁移、集成与最终多模态验收。
+4. smoke 参数拒绝或运行失败时不重复碰运气，立即记录当前会话事实并切换 Spark CLI Worker；不得把另一会话成功或本会话失败上升为全局结论。
+
+### Risks
+
+- 当前 `ModelSpecs.kt` 的 `contains()` 身份匹配、`spec.note` 作为名称、unknown 默认 chat 和 onboarding 探测改类型是已定位的四个根因；在完整迁移前不能只补几条模型记录宣称根治。
+- models.dev 是广覆盖社区目录，不是单一权威；厂商/Provider 精确元数据、本地修正和用户覆盖必须按计划逐字段合并。
+- `SettingsViewModel.kt`、`ProviderManager.kt`、`PipelineBubble.kt`、`ChatScreen.kt` 与治理文档均为共享热点文件，写入 Agent 必须串行独占。
+- 本轮只有规划文档完成；应用行为、测试计数、签名 APK 和发行 NO-GO 状态均未变化。
+
+### DIA
+
+DIA: 已新增实施计划并同步 `.agent/registry.md` 与本 handover；产品代码和用户可见行为尚未变化，因此未更新 CHANGELOG、README、架构总览或发行验证账本。
+
+### HLG
+
+HLG: 已追加 `nexara-model-catalog` 标准时间戳工作流，恢复入口固定为新会话原生 Spark 最小 smoke 与计划 Task 1；本记录不改写既有 `v0.2-beta-release-readiness` 和 `nexara-md3-redesign` 历史。未发现需要额外写入 AGENTS.md 或 Skill 的长期规则候选。
+
+---
+
+## 2026-07-18T00:57:56+08:00 · 模型元数据 Task 1 RED 施工后暂停
+
+type: pause
+scope: native-ui, model-catalog, testing, onboarding, chat, agent-routing
+status: paused
+tags: [model-metadata, task-1, tdd, red, spark-cli, review, sequencing-risk, handoff]
+continuity: resume
+continuity-key: nexara-model-catalog
+
+### Summary
+
+按用户要求从计划 Task 1 开始 TDD 后，已经建立第一版 RED 测试并完成主控真实编译失败验证，但独立复审未通过。进一步审计发现计划存在跨任务测试编译顺序风险：Task 1 同时直接引用 Task 2、5、7、8 才会出现的 Kotlin 符号，而 Gradle `--tests` 仍先编译整个 unit-test 源集，因此后续聚焦测试可能被尚未实施的任务提前阻断。用户要求立即暂停，不恢复施工；当前停在 Task 1 返修/计划顺序裁决之前，Task 2 尚未开始。
+
+### Changed
+
+- `ModelSpecsTest.kt` 新增精确型号名称、unknown workload 和 reasoning 三态 RED 契约。
+- 新增 `OnboardingModelProbeTest.kt`，锁定 unknown 探测成功只记录聊天端点兼容、不改主要类型且不补 `chat` capability 的目标。
+- 新增 `ModelDisplayNameResolverTest.kt`，锁定稳定 ID 优先精确名称与历史缺失模型回退原始远端 ID。
+- `PipelineBubbleTest.kt` 已用 `AssistantMetadataRow` 左侧同组契约替换旧的“模型名占满剩余宽度”契约。
+- Spark CLI Worker 报告位于 `.agent/tmp-agent-reports/20260717-model-catalog-task1-spark.md`；`.superpowers/sdd/` 中有 Task 1 brief、prompt 和 review diff，仅作忽略型协调材料。
+- 没有修改任何生产 Kotlin、Gradle、资源、截图、供应链脚本或模型目录；没有开始 Task 2；没有 commit、push、tag 或 Release。
+
+### Validation
+
+- 原生 `collaboration.spawn_agent(model=gpt-5.3-codex-spark, fork_turns=none)` 在创建阶段返回精确错误：`Unknown model 'gpt-5.3-codex-spark' for spawn_agent. Available models: gpt-5.6-sol, gpt-5.6-terra`。按 2026-07-18 v1.21 规则，这表示当前新版 `collaboration` 路径不暴露原生 Spark，不是 Spark 后端全局失败；未使用同参数重试。
+- Spark CLI Worker 通过 `gpt-5.3-codex-spark`、`reasoning summaries: none` 完成测试施工；它的隔离运行时无法使用主控 Gradle 缓存，因此其报告初始标为 BLOCKED。
+- 主控在施工前运行现有 `ModelSpecsTest`、`SettingsViewModelModelClassificationTest`、`PipelineBubbleTest`：`BUILD SUCCESSFUL`。
+- 主控施工后运行计划完整 RED 命令：在 `:app:compileDebugUnitTestKotlin` 以退出码 1 失败，缺少 `resolveModelMetadata`、`ModelWorkload`、`ModelCapability`、`SupportState`、`resolveModelDisplayName` 和 `chatEndpointCompatible`；确认 RED 来自计划中的未实现契约，不是 Gradle 基础设施错误。
+- Task 1 独立 Terra 复审结论为 `Task quality: Needs fixes`；确认核心 RED 意图成立，但指出未来包导入、`fill = true` 权重防线及契约边界仍需裁决。主控尚未接受或返修这些发现。
+- `git diff --check` 在暂停前通过；工作树原有 Agent Hub、MD3、发行文档、截图和未跟踪目录均保留，未清理、回滚或覆盖。
+
+### Next
+
+1. 新会话必须先读取本记录、上一条 `2026-07-17T23:03:41+08:00` 计划记录和完整实施计划，并确认仍在真实 worktree `/Users/promenar/Codex/Nexara/.worktrees/codex-v0.2-beta`、分支 `codex/md3-redesign`。
+2. 先只读复核 Task 1 的四个测试文件、Spark 报告和 `.superpowers/sdd/task-1-review.diff`；不要直接开始 Task 2，也不要把 Task 1 标记完成。
+3. 在继续写入前裁决 TDD 顺序：验证 Task 1 的跨任务直接符号引用是否会阻断 Task 2/4/5/6/7 聚焦测试；优先选择“不提前实现后续生产接口、每个任务仍能观察自身 RED→GREEN”的最小方案。若需要把直接 RED 测试移动到各自任务，必须同步修订计划文件并保留原完成标准。
+4. 对 Terra 复审逐项裁决：catalog 类型 import 和未定义 facade 属于真实接口问题；`ModelInfo` 旧包需结合 Task 5 机械迁移时点判断；`.weight(1f, fill = true)` 必须被明确拒绝；双消费端统一解析属于 Task 7 契约，不应无依据扩张 Task 1；Settings 已有 unknown 不默认 chat 测试，不能只因文件未产生 diff 就重复造测试。
+5. Task 1 返修后重新生成任务限定 review diff，取得规格符合与代码质量双通过，再记录进度并进入 Task 2。后续仍按计划串行保护 `SettingsViewModel.kt`、`ProviderManager.kt`、`PipelineBubble.kt`、`ChatScreen.kt` 和治理文档。
+
+### Risks
+
+- 当前 Task 1 是未完成的 RED 中间态，unit-test 源集预期无法编译；不要把当前工作树当作可构建候选或 release candidate。
+- 若原样保留全部跨任务直接引用，Task 2 的聚焦测试可能在执行前就被 Task 5/7 未实现符号阻断；若用临时 stub、`@Disabled` 或注释规避，则会破坏 TDD 证据。必须先做显式裁决。
+- 计划 Task 1 示例调用 `resolveModelMetadata()`，而 Task 2 的主要接口描述为 `ModelMetadataResolver.resolve(...)`；是否提供顶层 facade 尚未冻结，禁止施工 Agent自行发明。
+- 当前工作树仍混有用户既有 Agent Hub/MD3、发行文档和截图改动；恢复时只能审阅本任务限定 diff，不得用全树回滚或清理命令。
+- 当前整体发行状态继续为 NO-GO；真机 TalkBack、核心业务人工验收和计划全部门禁均未闭合。
+
+### DIA
+
+DIA: 当前仅新增/修改测试契约并追加暂停交接；产品行为、生产架构、API、持久化和发行事实均未变化，因此暂停点不更新 CHANGELOG、README、架构文档或发行验证账本。计划若因 TDD 顺序裁决发生正文变更，恢复后必须再同步 registry/计划状态与最终文档影响。
+
+### HLG
+
+HLG: 已追加 `nexara-model-catalog` 暂停记录，明确 Task 1 未完成、Task 2 未开始、原生 collaboration 路由事实、Spark CLI 施工证据、独立复审状态和恢复前置裁决；随后由 HLG Skill 重建七天索引。未发现需越过现有 v1.21 规则另行沉淀的新长期规则候选。
+
+---
+
+## 2026-07-18T09:40:55+08:00 · 模型元数据 Task 1-9 完成与 Task 10 Provider 门禁阻断
+
+type: implementation
+scope: native-ui, model-catalog, provider-models, onboarding, chat, backup, testing, supply-chain, documentation
+status: blocked
+tags: [model-metadata, models-dev, exact-id, reasoning, friendly-name, chat-footer, task-10, provider-gate, no-go]
+continuity: blocked
+continuity-key: nexara-model-catalog
+
+### Summary
+
+完成 Task 1 的 TDD 顺序裁决后，已按计划串行实施并独立复核 Task 1-9；Task 10 的 JVM、Lint、截图、AndroidTest 编译、API 35/36 设备矩阵和文档治理均已闭合。当前 shell 未提供真实 Provider 测试要求的六项 `NEXARA_TEST_LLM_*` 环境变量，因此没有发起网络请求，Task 10 Step 4 与最终主控验收不能标记完成，整体发行继续 NO-GO。
+
+### Changed
+
+- 建立 `ModelMetadataResolver.resolve(...)` 唯一入口、精确 canonical ID/alias、三态能力、工作负载/推理/Chat endpoint 分离及逐字段来源追踪。
+- 引入 258 条 models.dev 离线快照、schema v2 manifest、Nexara 精确修正、MIT 第三方说明、确定性更新脚本和 draft-only 刷新 workflow。
+- `ModelInfo` 迁入 data/model，Provider 持久化和迁移保留用户编辑字段；引导探测只记录 Chat endpoint 兼容；会话输入区与 AI 尾注共享友好名称解析，AI 模型名与时间左侧并列。
+- Task 10 首轮全量回归发现新增 family、canonical ID、Chat endpoint、自动指纹和用户编辑字段未进入备份策略；先补失败测试，再更新备份白名单与恢复类型。
+- 新增 ADR-020；更新架构、旧模型数据库调研勘误、CHANGELOG、发行验证账本、registry、计划和本交接。未 stage、commit、push、创建 tag、PR 或 Release。
+
+### Validation
+
+- Task 1-9 全部完成主控复核；Task 9 Python 64/64、离线目录 check、Kotlin catalog 26/26，最终限定 diff SHA-256 `4414db3077a0d004f22920c25d681f72a1d7d70b65e25f74f1968d8149189020`，Terra/Sol 均 C0/I0/M0 PASS。
+- Task 10 定点模型 JVM 89/89；全量 JVM 1945 项，0 failure/error、14 skip；Lint 0 Error/Fatal；Screenshot 61/61；AndroidTest Kotlin 编译通过。
+- API 35 与 API 36 聚焦设备矩阵各 31 项，均 0 failure/error、1 个设计内 `forceStopPhaseCheckpoint` skip。两台模拟器已关闭，当前无 adb 设备。
+- 主控逐张检查四张新增聊天 actual：用户时间右对齐，AI 模型名与时间左侧同组；精确 DeepSeek 名称完整，长名称截断与 2.0x 字体均未遮挡时间。
+- Task 10 独立 Terra 规格复审与替代 Sol 文档/事实一致性复审均为 C0/I0/M0 PASS。Sol 明确未完成完整实现源码展开，因此实现验收仍以主控逐文件核对、Task 1-9 双复审和本地测试为准，不扩大其结论。
+- 当前候选真实 Provider 验证未运行：`NEXARA_TEST_LLM_BASE_URL`、`NEXARA_TEST_LLM_API_KEY` 与四个角色模型变量均缺失。默认集成测试 skip 不计证据，也未读取 `secure_env/`。
+
+### Next
+
+1. 在用户授权且六项环境变量只通过当前进程注入后，强制运行 `:app:realLlmIntegrationTest`，记录四模型 ID、HTTP/解析终态和显示矩阵，不记录 URL 细节或 Key。
+2. 真实 Provider 通过后，主控复核输入区/AI 尾注名称一致、AI 时间左侧并列、用户时间右侧，再完成 Task 10 Step 4/8 和计划 Completion Definition。
+3. 继续保留发行级阻断：当前签名候选真机 TalkBack 人工听觉/全焦点遍历、核心业务验收、当前提交远端矩阵、可验证 tag、tag workflow 与 GitHub Release。
+
+### Risks
+
+- 历史发行候选四模型真实 API PASS 证明此前协议基线，不证明当前元数据候选；禁止用历史结果替代 Task 10 Step 4。
+- 当前工作树同时包含用户既有 Agent Hub、MD3、发行文档、截图、`artifacts/` 与 `.nexara-workspace-*` 内容；不得回滚、清理或纳入自动 Git 操作。
+- Task 10 仍未完成，当前源码不是可宣称放行的最终候选；整体发行保持 NO-GO。
+
+### DIA
+
+DIA: 已同步 CHANGELOG、ARCHITECTURE、ADR-020、旧审计追加勘误、第三方说明索引、发行验证账本、实施计划、registry 与本 handover；README 和外部 API 无需因本次内部解析与 UI 元数据调整修改。
+
+### HLG
+
+HLG: 已追加 `nexara-model-catalog` 阻断记录，恢复入口固定为当前候选真实 Provider 复验与最终主控验收；索引由 HLG Skill 重建。当前未发现需越过既有 v1.21 路由与治理规则另行沉淀的新长期规则候选。
+
+---
+
+## 2026-07-19T04:05:02+08:00 · 模型元数据接管复核与无凭据门禁重放
+
+type: validation
+scope: native-ui, model-catalog, provider-gate, testing, android-device, agent-routing, release-readiness
+status: blocked
+tags: [model-metadata, takeover, task-10, provider-gate, spark-native, regression, no-go]
+continuity: blocked
+continuity-key: nexara-model-catalog
+
+### Summary
+
+新会话按固定 linked worktree、当前 diff、测试产物和三条相关 HLG 工作流完成只读接管，确认分支仍为 `codex/md3-redesign`、HEAD 仍为 `438578251b1412d6a50fc94245a78f1d83dcba9a`。本会话重新执行全部无凭据 Task 10 门禁，未发现生产代码失败；六项真实 Provider 环境变量仍全部缺失，因此没有发起网络请求，Task 10 Step 4/8 与 Completion Definition 继续保持未完成，整体发行继续 NO-GO。
+
+### Changed
+
+- 未修改生产代码、测试、计划、发行账本或截图基线。
+- 仅追加本条接管/验证记录并重建派生索引；未触碰 `artifacts/`、`secure_env/` 或任何 `.nexara-workspace-*` 目录。
+- 未 stage、commit、push、创建 tag、PR、GitHub Release，也未重建旧签名 APK。
+
+### Validation
+
+- 当前会话实际暴露旧版 `multi_agent_v1`；原生 `gpt-5.3-codex-spark` 最小无工具探针返回精确文本 `NEXARA_SPARK_NATIVE_SMOKE_OK`，记录为 `legacy_native=pass`，Agent 随后关闭。
+- 模型定点 JVM 使用 `--rerun-tasks` 强制执行：89 tests，0 failure/error/skipped。
+- Task 10 Step 2 使用 `--rerun-tasks` 完整执行：1945 JVM，0 failure/error、14 skip；Screenshot 61/61；Lint 0 Error/Fatal、397 warnings；AndroidTest Kotlin 编译通过。
+- 模型目录供应链当前重放：Python 64/64、离线 snapshot/manifest check 通过；全量 JVM XML 中 Kotlin catalog 两个 suite 共 26/26。
+- API 35 `Nexara_API_35` 与 API 36 `Pixel_7` 依次冷启动并运行同一聚焦五类测试；两端 XML 均为 31 tests、0 failure/error、1 个设计内 `forceStopPhaseCheckpoint` skip。两台 AVD 已依次关闭，收尾时 `adb devices -l` 为空。
+- `git diff --check` 无输出。测试前发现现存 JVM 报告目录已被后续 39 项定点运行覆盖；本会话已用全量强制重跑恢复可直接读取的 1945 项 XML，未再把 HLG 数字冒充当前磁盘产物。
+- 六项 `NEXARA_TEST_LLM_*` 变量仅检查存在性，结果全部为 `UNSET`；未读取、打印或拼接任何凭据，也未运行真实 Provider Gradle 任务。
+
+### Next
+
+1. 仅在六项 `NEXARA_TEST_LLM_*` 变量通过当前测试进程安全注入后，强制运行 `:app:realLlmIntegrationTest`；日志只保留模型 ID、端点类型、HTTP/解析与流式终态。
+2. Provider 通过后主控核对四个模型的精确友好名称、推理标签与 Chat endpoint 分离、输入区/AI 尾注一致、AI 左侧名称时间组和用户右侧时间，再完成 Task 10 Step 4/8 与 Completion Definition。
+3. Task 10 闭合后才重建当前源码 release APK，并继续 R8、zipalign、证书、checksum、API 35/36 冷安装、真机 TalkBack/核心业务、远端 CI、tag workflow 与 GitHub Release 门禁。
+
+### Risks
+
+- 历史 Provider PASS 仍不能替代当前候选复验；环境变量未注入时不得把默认 skip 或无网络回归记为 Provider PASS。
+- 现有 `native-ui/app/build/outputs/apk/release/nexara-v0.2-beta.apk` 生成于模型元数据改造之前，不是当前源码最终候选。
+- 工作树继续混有用户既有 Agent Hub、MD3、发行文档、截图、临时资产与未跟踪成果；不得清理、回滚或自动 Git 操作。
+
+### DIA
+
+DIA: 本次没有产品代码、API、数据结构、UI 或发行行为变化；现有 CHANGELOG、架构、ADR 和发行账本结论仍准确，仅新增本次验证交接记录，无需改写其它项目文档。
+
+### HLG
+
+HLG: 已按 `continuity-key: nexara-model-catalog` 追加阻断续记，恢复入口仍为六项运行时变量注入后的当前候选 Provider 复验；索引由 HLG Skill 重建。未发现新的长期规则候选。
+
+---
+
+## 2026-07-19T09:53:25+08:00 · 当前源码设备矩阵修复与签名发行包重建
+
+type: validation
+scope: native-ui, model-catalog, device-e2e, release-apk, visual-validation, release-readiness
+status: blocked
+tags: [model-metadata, task-10, device-matrix, signed-apk, r8, visual-review, provider-gate, no-go]
+continuity: blocked
+continuity-key: nexara-model-catalog
+
+### Summary
+
+按用户要求自主启动模拟器并执行本机可完成的全部当前候选门禁。设备预编译真实发现 `mainactivity-e2e` 两个测试文件遗漏 `ModelInfo` 包迁移，修复后 API 31 minimum、API 35/36 full 全部通过；随后安全使用本地签名材料强制重建当前源码 R8 APK，在 API 35/36 完成同一 APK 的冷安装、身份验真、字节回读与 release 等价黑盒。六项真实 Provider 环境变量仍未注入，因此 Task 10 Step 4/8 与 Completion Definition 继续未完成，发行状态保持 NO-GO。
+
+### Changed
+
+- `MainActivityChatFlowE2eTest.kt` 与 `MainActivityNotificationE2eTest.kt` 的 `ModelInfo` import 从已迁移的 `ui.settings` 修正为冻结后的 `data.model`。
+- 更新模型元数据实施计划与 v0.2-beta 发行验证账本，记录当前设备矩阵、签名 APK、R8、checksum、冷安装、黑盒和视觉证据。
+- 生成命名发行产物 `native-ui/app/build/outputs/apk/release/nexara-v0.2-beta.apk` 及同目录 checksum；构建产物不进入 Git 状态。
+- 未修改生产行为、截图基线或密钥配置；未触碰 `artifacts/`、`.nexara-workspace-*`，未 stage、commit、push、tag 或创建 Release。
+
+### Validation
+
+- 本轮通用脚本门禁：Python discover 93/93、R8 contract 5/5、release workflow reliability 18/18、timeout 8/8、PNG 4/4、Metro TUI 49/49；三组 Shell contract、`bash -n` 和三个 workflow 的 Ruby YAML parse 全部通过。
+- `mainactivity-e2e` 预编译先因两个旧 import 真实 RED；修复后 `:app:assembleDeviceTest :app:assembleDeviceTestAndroidTest :mainactivity-e2e:assembleDeviceTest` GREEN。
+- API 31 minimum、API 35 full、API 36 full 设备 E2E 全部 exit=0；API 35/36 覆盖通知权限、聊天、引导、无障碍、自适应导航、备份恢复、跨进程 relay、后台生成和真实 PDF/DOCX 解析。通用引导集合各有 1 个设计内 checkpoint skip，专用分阶段测试另行通过。
+- 当前源码签名 release 使用 `--rerun-tasks :app:assembleRelease` 强制执行 59/59 tasks，2m39s `BUILD SUCCESSFUL`。APK 18,197,900 bytes，SHA-256 `3af5bee52350e3a00f3aec7709305fff36a6afd63e3cf50d5b509853d00547ff`；包名 `com.promenar.nexara.native`、versionCode 2、versionName `0.2-beta`、唯一签名证书、敏感/GGUF 扫描、16 KiB zipalign 和 checksum readback 全部通过。
+- R8 证据非空：mapping 98,103,079 bytes、seeds 772,010 bytes、usage 11,195,743 bytes、configuration 67,338 bytes。
+- 同一签名 APK 在 API 35/36 冷安装、设备 base.apk 字节回读、launcher、前台进程和 5 秒 crash/ANR 观察均通过；release 等价黑盒的 PDF/DOCX 分享导入、持久化、TXT 索引失败与再次重试均通过。
+- Screenshot validation 61/61 为本会话既有强制重跑证据；再次人工检查四张模型元数据 actual、API 35/36 release 首屏与黑盒关键截图，未发现空白、截断时间、文本/按钮重叠或不可读状态。
+- 签名配置只在当前 Gradle 子进程环境中使用，未打印值、写入仓库或交给 Agent。六项 Provider 变量只检查存在性并仍为 UNSET，没有发起 Provider 网络请求。
+
+### Next
+
+1. 仅在六项 `NEXARA_TEST_LLM_*` 变量通过当前测试进程安全注入后，强制运行 `:app:realLlmIntegrationTest`，闭合四模型精确名称、推理/Chat endpoint 分离和流式终态。
+2. Provider 通过后完成 Task 10 Step 4/8 与 Completion Definition，并由用户在当前签名 APK 上执行真机 TalkBack 完整听觉/焦点遍历和核心业务人工验收。
+3. 获得明确授权后才可 stage/commit/push；随后运行当前 commit 的远端 CI、可验证 tag、tag workflow 与 GitHub Release。
+
+### Risks
+
+- 历史 Provider PASS 不能替代当前元数据候选；缺少六项运行时变量时，Task 10 与发行仍为 NO-GO。
+- 当前签名 APK 来自未提交共享工作树，仅是本地可安装编译成果，不是可追溯 tag workflow 产物。
+- 工作树仍包含大量用户既有 Agent Hub、MD3、发行文档、截图及未跟踪成果；不得清理、回滚或自动 Git 操作。
+
+### DIA
+
+DIA: 已同步模型元数据实施计划与 v0.2-beta 发行验证账本；本次 import 修复只恢复 E2E 测试对已冻结数据模型包的引用，不改变生产 API 或用户可见行为，CHANGELOG、README 与架构正文无需追加。
+
+### HLG
+
+HLG: 已按 `continuity-key: nexara-model-catalog` 追加本条阻断续记；恢复入口保持为当前候选真实 Provider 验证，索引需由 HLG Skill 重建。未发现新的长期规则候选。
+
+---
+
+## 2026-07-19T09:56:38+08:00 · 发行证据最终一致性与 HLG 索引闭合
+
+type: validation
+scope: model-catalog, release-readiness, handover-governance
+status: blocked
+tags: [task-10, release-evidence, hlg-index, provider-gate, no-go]
+continuity: blocked
+continuity-key: nexara-model-catalog
+
+### Summary
+
+对上一条签名发行包记录完成最终 readback：修正发行账本中仍残留的旧 APK 体积与旧 clean 表述；命名 APK、checksum、无设备状态、旧 `ModelInfo` import 和 diff whitespace 均复核完成。真实 Provider 变量仍缺失，整体状态不变。
+
+### Changed
+
+- 仅修正 `docs/release/v0.2-beta-validation.md` 的两处当前候选事实表述并追加本条记录。
+- 未修改代码、测试或构建产物内容，未执行任何 Git 外部状态操作。
+
+### Validation
+
+- `nexara-v0.2-beta.apk` readback 为 18,197,900 bytes，SHA-256 `3af5bee52350e3a00f3aec7709305fff36a6afd63e3cf50d5b509853d00547ff`。
+- `rg` 未发现 `com.promenar.nexara.ui.settings.ModelInfo` 残留；`git diff --check` 无输出；`adb devices -l` 无设备。
+- 六项 `NEXARA_TEST_LLM_*` 变量仍全部为 UNSET，未运行真实 Provider 测试。
+
+### Next
+
+恢复入口仍为安全注入六项运行时变量后的当前候选 Provider 验证；其余外部门禁继续按上一条记录执行。
+
+### Risks
+
+当前本地 APK 仍不是可追溯 tag workflow 产物，发行保持 NO-GO。
+
+### DIA
+
+DIA: 已完成发行验证账本的当前候选事实校准，无其它文档影响。
+
+### HLG
+
+HLG: HLG Skill 索引已在上一条记录后成功重建；追加本条后将再次重建，确保派生索引指向最新阻断状态。未发现新的长期规则候选。
+
+---
+
+## 2026-07-19T10:10:21+08:00 · 模型元数据 Task 10 真实 Provider 与最终验收闭合
+
+type: validation
+scope: native-ui, model-catalog, real-provider, task-10, release-readiness
+status: complete
+tags: [model-metadata, task-10, real-provider, streaming, final-acceptance, no-go]
+continuity: none
+continuity-key: nexara-model-catalog
+
+### Summary
+
+用户重新提供内网聚合站运行时凭据后，主控完成当前模型元数据候选的真实 Provider 门禁。首轮以站点根地址运行得到真实 RED，脱敏探针定位为缺少标准 `/v1` API 前缀；仅规范化本次测试 Base URL 后四模型同 Router 新鲜请求全部通过。Task 10 Step 4/8 与 Completion Definition 已闭合，模型元数据 Task 1-10 完成；v0.2-beta 仍因真机、远端 CI 与发布外部门禁保持 NO-GO。
+
+### Changed
+
+- 更新模型实施计划与发行验证账本，将当前候选真实 Provider 从 PENDING 改为有证据的 PASS，并勾选 Task 10 Step 4/8。
+- 未修改生产代码、测试代码、API、截图基线或 APK；未把凭据或内网地址写入任何文件。
+- 未 stage、commit、push、tag、创建 PR 或 GitHub Release。
+
+### Validation
+
+- 凭据通过关闭终端回显的交互输入，仅导出到当前 Gradle 子进程；Gradle 使用 `--no-build-cache --rerun-tasks`，没有复用历史结果。
+- 首轮真实 RED：`MiniMax-M2.7-highspeed` 产生 error chunk，payload/Done 均未出现。脱敏 HTTP 探针确认四模型均为 HTTP 200、`text/event-stream`、有效 payload 与 `[DONE]`，并确认服务使用标准 `/v1/chat/completions`。
+- 将本次运行时 Base URL 规范为带 `/v1` 的 API 基址后，`:app:realLlmIntegrationTest` 1/1 通过、0 failure/error/skip，29 tasks 全部执行，1m12s `BUILD SUCCESSFUL`。四模型在同一 Router 中各请求一次。
+- `MiniMax-M3` 与 `MiniMax-M2.7-highspeed` 的 `delta.reasoning_content`、`deepseek-v4-flash` 的推理流、`sensenova-6.7-flash-lite` 的 `delta.reasoning` 均得到有效 payload 和 Done；协议层现有兼容逻辑无需修改。
+- 四个调用 ID 精确解析为 `MiniMax M3`、`MiniMax M2.7 Highspeed`、`DeepSeek V4 Flash`、`SenseNova 6.7 Flash Lite`。DeepSeek 推理能力为 `SUPPORTED`；MiniMax M2.7 与 SenseNova 的缺失证据保持 `UNKNOWN`；Chat endpoint 兼容性未被混同为普通聊天主要类型。
+- 输入区与 AI 尾注继续复用同一显示解析器；AI 左侧名称时间组、用户右侧时间由既有 JVM、设备断言与 actual 共同覆盖。
+
+### Next
+
+1. 模型元数据工作流无需继续施工；后续模型资料更新按现有离线目录供应链与逐字段证据规则执行。
+2. v0.2-beta 发行继续完成用户真机 TalkBack 完整听觉/焦点遍历、核心业务人工验收、当前 commit 远端 CI、可验证 tag、tag workflow 与 GitHub Release。
+3. 任何 stage/commit/push/tag/Release 仍须用户明确授权。
+
+### Risks
+
+- 当前真实 Provider 使用的是内网 HTTP 聚合站，仅作为受控测试环境；发行版 HTTPS-only 策略未改变，不能据此允许公网明文 HTTP Provider。
+- 当前本地签名 APK 来自未提交共享工作树，仍不是可追溯 tag workflow 产物。
+- 历史与本次测试均不得在文档或日志中保存凭据；后续新鲜验证仍需运行时注入。
+
+### DIA
+
+DIA: 已同步模型元数据实施计划与 v0.2-beta 发行验证账本；本次只新增验证事实，没有生产代码、API、数据结构或 UI 行为变化，CHANGELOG、README 与架构正文无需修改。
+
+### HLG
+
+HLG: 已按 `continuity-key: nexara-model-catalog` 追加完成记录；模型元数据工作流 continuity 设为 none，追加后由 HLG Skill 重建索引。未发现新的长期规则候选。
+
+---
+
+## 2026-07-19T11:11:23+08:00 · 可见模拟器视觉验收、设备套件稳定化与当前签名 APK 重建
+
+type: validation
+scope: native-ui, visual-validation, device-e2e, release-apk, release-readiness
+status: complete
+tags: [visible-emulator, api-35, api-36, large-font, landscape, ime, signed-apk, no-go]
+continuity: waiting
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+纠正此前仅凭自动截图和设备测试不足以声称完整模拟器视觉验收的问题：主控实际启动可见 API 36 模拟器，逐页检查常规/2.0x 字体、横竖屏、IME、长名称和中英文状态，发现并修正知识图谱空态文字贴边。随后修复通知权限设备套件的 Package Manager 异步竞态，强制重建当前源码的稳定证书签名 R8 APK，并在可见 API 35/36 模拟器完成同一 APK 的冷安装与实际首屏复核。
+
+### Changed
+
+- `KnowledgeGraphScreen.kt` 为知识图谱空态文字增加 16dp 横向留白与居中对齐，避免中文在紧凑屏幕上贴边。
+- `android-device-core-e2e.sh` 在通知权限的 clear/revoke/grant 后等待 Package Manager 前后台 handler 空闲；对应 Shell 契约先 RED 后 GREEN。
+- 更新 CHANGELOG 与 v0.2-beta 发行验证账本，记录本次视觉缺陷、设备稳定化、当前签名 APK 和可见模拟器证据。
+- 未修改 Provider、模型元数据、密钥配置或截图基线；未 stage、commit、push、tag 或创建 GitHub Release。
+
+### Validation
+
+- JVM 1945 tests，0 failure/error、14 skip；Lint 0 Error/Fatal；Screenshot 61/61；AndroidTest Kotlin 编译通过。
+- API 36 完整设备套件在 ARM64 可见模拟器执行 36 项，0 failure/error/skip；专用 relay 进程死亡阶段按脚本独立通过，测试前后 crash buffer 均为空。
+- 可见 API 36 模拟器保存并人工检查 28 张应用画面，覆盖 Hub、会话列表、聊天、Documents、Memory、Knowledge Graph、设置、Provider 列表/表单、常规与 2.0x 字体、横竖屏、IME、长名称及中英文；知识图谱修正后的 actual 再次确认无贴边。
+- 当前源码稳定证书签名 R8 APK 为 18,197,900 bytes，SHA-256 `27bbc840ee27a3d0b69fd79125f3d1f1d7723b117ceead0c0ae5f126d43fb466`；R8 mapping 98,104,227 bytes，seeds/usage/configuration 非空。
+- 统一 APK 验证器、唯一签名者、登记证书、敏感/GGUF 扫描、ZIP 完整性和 16 KiB zipalign 全部通过。
+- 同一 APK 在可见 API 35/36 模拟器完成卸载、冷安装、设备 base.apk 字节回读、包身份、launcher、前台进程及 5 秒 crash/ANR 观察；冷启动分别 134 ms 与 2,361 ms，实际首屏均人工确认无裁切、重叠或空白。
+
+### Next
+
+1. 用户在当前签名 APK 上完成真机 TalkBack 完整听觉/焦点遍历与核心业务人工验收。
+2. 获得明确授权后才可 stage/commit/push，并对当前 commit 运行远端 CI。
+3. 远端矩阵通过后仍需明确授权创建可验证 tag，由 tag workflow clean 重建并复验 GitHub Release 资产。
+
+### Risks
+
+- 模拟器自动语义与可见画面检查不能替代用户真机 TalkBack 音频、真实触控手感和核心业务体验验收。
+- 当前 APK 来自未提交共享工作树，不是可追溯 tag workflow 产物；发行状态继续 NO-GO。
+- 工作树包含大量既有 Agent Hub、MD3、发行文档、截图及未跟踪成果，后续不得清理、回滚或自动 Git 操作。
+
+### DIA
+
+DIA: 已同步 CHANGELOG 与 v0.2-beta 发行验证账本，记录知识图谱可见布局修正、设备测试稳定化和当前签名 APK 证据；无需修改架构或 API 文档。
+
+### HLG
+
+HLG: 已按 `continuity-key: v0.2-beta-release-readiness` 追加本条记录；索引由 HLG Skill 重建。未发现新的长期规则候选。
+
+---
+
+## 2026-07-19T11:15:02+08:00 · 可见模拟器与发行产物最终 readback 勘误
+
+type: validation
+scope: native-ui, visual-validation, release-apk, handover-governance
+status: complete
+tags: [large-font, knowledge-graph, checksum, screenshot-report, readback, no-go]
+continuity: waiting
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+完成可见模拟器与发行产物最终 readback，并忠实记录两次本地读取路径错误：checksum 首次从仓库根目录执行时无法解析产物目录内的相对文件名，Screenshot 首次解析了不存在的结果目录而得到 0；两项均在正确目录/报告路径重跑并通过，不是 APK 或测试失败。补充在可见 API 35 模拟器以 2.0x 字体检查知识图谱英文长空态。
+
+### Changed
+
+- 仅补充发行验证账本的知识图谱 2.0x 字体可见证据并追加本条勘误记录。
+- 未修改生产代码、测试代码或构建产物内容，未执行 Git 外部状态操作。
+
+### Validation
+
+- `nexara-v0.2-beta.apk` 与 `app-release.apk` 字节一致；在产物目录执行 `shasum -a 256 -c` 为 OK，SHA-256 仍为 `27bbc840ee27a3d0b69fd79125f3d1f1d7723b117ceead0c0ae5f126d43fb466`。
+- `validateDebugScreenshotTest/TEST-preview-screenshot-test-engine.xml` 时间戳为 2026-07-19 10:43:31，61 tests、0 skipped/failure/error。
+- 可见 API 35、2.0x 字体下的知识图谱英文空态正文 bounds 为 `[42,1230][1038,1559]`，自动分行且保留左右边距；标题和三个筛选项均在 1080×2400 屏内，actual 人工检查无重叠或裁切。
+- 最终 Shell 契约通过，`git diff --check` 无输出；HLG inspect 为 0 invalid continuity、0 continuity without key。
+
+### Next
+
+发行外部门禁仍为用户真机 TalkBack/核心业务验收、当前 commit 远端 CI、可验证 tag、tag workflow 与 GitHub Release。
+
+### Risks
+
+模拟器视觉与自动语义结果不能替代真机听觉和完整焦点遍历；当前未提交工作树 APK 仍不是可追溯发布资产。
+
+### DIA
+
+DIA: 已补充 v0.2-beta 发行验证账本的 2.0x 可见画面证据，无其它文档影响。
+
+### HLG
+
+HLG: 已追加 readback 勘误记录并将按 Skill 重建索引；未发现新的长期规则候选。
+
+---
+
+## 2026-07-19T16:02:46+08:00 · 知识库空态、生成终态、流式动效与设置密度闭环
+
+type: development
+scope: native-ui, rag, chat-generation, settings, visual-qa, release-readiness
+status: complete
+tags: [knowledge-library, generation-terminal, streaming-fade, settings-density, api-31, api-35, api-36, signed-apk, no-go]
+continuity: waiting
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+针对用户真机截图与生成体验反馈，完成空知识库幽灵索引失败、生成终态偶发滞留、流式输出生硬和设置首页密度偏大的修复。主控启动可见 API 31/35/36 模拟器，完成当前全量 JVM/Lint/Screenshot/AndroidTest、真实 Provider、三档设备矩阵、签名 R8 APK 重建及 API 35/36 冷安装；Terra/Sol 最终双复审无未关闭问题。整体发行仍因真机人工验收和远端发布门禁保持 NO-GO。
+
+### Changed
+
+- `VectorizationQueue` 启动恢复只归一化旧版 `document` 任务：保留仍有当前文件的任务，删除缺失身份或已确认文件不存在的孤儿任务及对应派生数据，不触碰现代 `document_reference` 目标。
+- 索引错误态不再显示伪 `0%` 或进度语义；空知识库实际画面恢复为“暂无文件”。
+- `GenerationPresentationStore` 与协调器兜底路径在活动状态结束前发布失败/取消终态，聊天页无需重新进入即可解除生成中/思考中状态。
+- 流式正文保持 chunk 即时显示，仅对正在生成的非空尾部使用 140ms Material 淡入和 28dp 底部轻遮罩；未使用整段离屏合成或人工打字队列。
+- 设置首页收紧条目留白、图标、头像、分组间距和文字层级，保留 48dp 触摸目标及系统字体缩放。
+- 备份恢复结果在列表滚动后自动回到可见位置；onboarding 懒列表设备测试改用确定性节点滚动，关闭 API 35/36 预取差异。
+- 同步 CHANGELOG、架构说明与发行验证账本；未 stage、commit、push、tag、创建 PR 或 GitHub Release。
+
+### Validation
+
+- 当前全量 Gradle 聚合门禁 `BUILD SUCCESSFUL`：JVM 1952 项，0 failure/error、14 skip；Lint 0 Error/Fatal（397 Warning、24 Hint）；Screenshot 61/61；AndroidTest Kotlin 编译通过。
+- 主控将 61 张 rendered actual 组成四张 contact sheet 并逐张复核；另检查可见 API 36 的设置常规、空知识库、2.0x 竖屏/横屏，以及 API 35/36 当前 release 首屏，未发现裁切、重叠或不可读状态。静态图不冒充连续动画，流式淡入另由 140ms 时序契约覆盖。
+- API 31 minimum、API 35 full、API 36 full 设备脚本均 exit=0；预期的 relay 进程死亡阶段由后续恢复阶段验证，不计作 PASS 项。onboarding 通用套件保留 1 个设计内 checkpoint skip，后续专用阶段通过。
+- 当前四角色真实 Provider 任务禁用构建缓存并强制新鲜执行，1/1、0 failure/error/skip，四种模型的精确名称、推理标签、Chat endpoint 兼容性及流式终态通过；凭据未写入文件或交给子 Agent。
+- Python 模型目录 64/64、Kotlin 模型目录 26/26、APK 验证器 23/23；Terra 与 Sol 最终结论均为 Critical 0 / Important 0 / Minor 0。
+- 当前稳定证书签名 R8 APK 为 18,214,284 bytes，SHA-256 `37a1addb240e0562baafc35dc748e2277437a3fbeab7c03a6ecd60b03bba9b4d`；包名、版本、唯一签名者、登记证书、敏感/GGUF/ZIP/体积、16 KiB zipalign 全部通过。R8 mapping 98,165,764 bytes，seeds 772,010 bytes，usage 11,196,230 bytes，configuration 67,338 bytes。
+- 同一 APK 在可见 API 35/36 模拟器完成卸载、冷安装、设备字节回读、冷启动、前台存活及 5 秒 crash/ANR 观察。
+
+### Next
+
+1. 用户在当前签名 APK 上完成真机 TalkBack 完整听觉/焦点遍历与核心业务人工验收。
+2. 获得明确授权后才可 stage/commit/push，并对当前提交运行远端 CI。
+3. 远端矩阵通过后仍需明确授权创建可验证 tag，由 tag workflow clean 重建并复验 GitHub Release 资产。
+
+### Risks
+
+- 自动语义、截图与模拟器设备测试不能替代用户真机 TalkBack 音频、真实触控手感和核心业务体验验收。
+- 当前 APK 来自未提交共享工作树，不是可追溯 tag workflow 产物；发行状态继续 NO-GO。
+- 工作树包含大量既有 Agent Hub、MD3、发行文档、截图及未跟踪成果，后续不得清理、回滚或自动执行 Git 外部操作。
+
+### DIA
+
+DIA: 已同步 CHANGELOG、架构说明与 v0.2-beta 发行验证账本，记录用户可见修复、状态契约、当前测试矩阵及签名 APK 证据。
+
+### HLG
+
+HLG: 已按 `continuity-key: v0.2-beta-release-readiness` 追加本记录；将使用 HLG Skill 重建索引。未发现新的长期规则候选。
+
+## 2026-07-20T00:24:49+08:00 · 交付 Git 授权记录顺序勘误
+
+type: correction
+scope: Nexara repository delivery workflow
+status: done
+tags: [handover, git, governance, correction]
+continuity: waiting
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+- 前一条 `2026-07-20T00:24:06+08:00` 授权记录因追加锚点重复，物理位置落在既有 `2026-07-20T00:13:21+08:00` 记录之前；原内容和时间戳有效，本记录在文件末尾忠实补充顺序勘误，不回写或删除历史。
+
+### Changed
+
+- 无代码变化；确认交付前自动 commit/push 授权继续生效。
+
+### Validation
+
+- HLG 索引将按 ISO 时间戳重建，最新工作流状态应指向本勘误记录。
+
+### Next
+
+1. 完成暂存复核、commit 与 push。
+
+### Risks
+
+- handover 物理顺序存在一处已记录的时间倒置；恢复时以 ISO 时间戳和本勘误为准。
+
+### DIA
+
+DIA: 无新增项目文档影响。
+
+### HLG
+
+HLG: 通过追加记录修正顺序语义，未回写历史正文。
+
+## 2026-07-20T00:24:06+08:00 · 交付前自动提交与推送授权落盘
+
+type: governance
+scope: Nexara repository delivery workflow
+status: done
+tags: [git, delivery, governance, authorization]
+continuity: waiting
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+- 用户明确授权：每轮任务完成验证并准备交付前，主控应主动 commit 并 push 当前工作分支，不再等待逐次提醒。
+- 授权不扩展到 tag、PR、GitHub Release、强推或历史改写；用户当轮最新指令可覆盖该默认行为。
+
+### Changed
+
+- 项目级 `AGENTS.md` 新增“交付 Git 闭环”，要求提交前复核 staged diff，并排除密钥、签名材料、`secure_env/`、`artifacts/`、构建产物和 `.nexara-workspace-*`。
+
+### Validation
+
+- 当前待提交清单已识别 123 条既有成果与临时目录；本次只暂存产品、测试、截图基线、发行文档和治理记录，禁止目录继续保持未跟踪、未暂存。
+
+### Next
+
+1. 暂存允许纳管的当前成果并执行 staged diff/敏感路径复核。
+2. 创建本轮提交并推送 `codex/md3-redesign`。
+3. 后续每轮交付复用同一规则；tag、PR 与 GitHub Release仍需单独授权。
+
+### Risks
+
+- 共享工作树可能包含多轮既有成果；提交前必须以当前计划、验证证据和路径边界确认纳管范围，不能用 `git add -A` 无审查吞入临时产物。
+
+### DIA
+
+DIA: 已同步项目级 `AGENTS.md` 的交付 Git 工作流规则。
+
+### HLG
+
+HLG: 已追加本授权记录；重建索引后与当前成果一并提交。该规则已获用户明确授权，属于适合项目级长期沉淀的工作流约束。
+
+## 2026-07-20T00:13:21+08:00 · 覆盖安装四缺陷、并发复审闭环与最终签名候选
+
+type: release-validation
+scope: Nexara v0.2-beta Android native candidate
+status: done
+tags: [android, material3, rag, generation, workspace, concurrency, release]
+continuity: waiting
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+- 针对覆盖安装实测的设置密度、新会话闪退、空知识库幽灵索引失败、会话工作区无法加载，以及生成终态与流式观感问题完成实现、TDD、模拟器视觉检查和发行回归。
+- 设置首页与 Provider 页使用连续、无逐项卡片的 Material 3 列表；空知识库不再显示无来源失败/加载；新会话与旧版工作区迁移按数据库和受信路径契约恢复；生成终态即时收口，流式尾部使用 140ms 淡入。
+- 四轮独立 Sol 复审逐步发现并关闭工作区符号链接、生成生命周期、稳定 flow identity、会话目录并发覆盖等 Critical/Important 风险；最终结论 Critical 0、Important 0，保留 3 个不阻断 Minor。
+
+### Changed
+
+- `WorkspaceRepository` 对普通与 RAG 旧版根在 canonicalize 前拒绝符号链接，并复核 canonical identity/fileKey，避免覆盖安装迁移越界。
+- `VectorizationQueue` 只清理缺少身份或文件已确认不存在的旧版孤儿任务；现代 reference 目标保留。
+- `GenerationPresentationStore` 与 `DefaultGenerationCoordinator` 原子化 begin/release 生命周期并保持同 Session flow identity；终态清理不再让 UI 停留生成态。
+- `ChatStore` 增加目录版本、幂等 upsert/remove 与一次性 CAS；数据库刷新决定成员和顺序，同 ID 复用 CAS 时刻 Store Session，避免旧 DB 快照覆盖流式消息、标题或运行状态；数据库读取固定最多两次。
+- `MainActivityNotificationE2eTest` 在 `notify()` 后有界等待系统 active notification，再点击验证返回精确会话，消除 Android 通知服务异步发布竞态。
+- 发行说明与验证账本同步当前测试、视觉、复审和签名候选证据。
+
+### Validation
+
+- RED/GREEN：同 ID 数据库快照覆盖较新 Store 内容的新增测试先稳定失败，目录成员合并修正后定向 `SessionListViewModelTest` 与 `SessionManagerTest` 通过。
+- JVM：`--rerun-tasks :app:testDebugUnitTest` 1982 项，0 failure/error，14 skip。
+- Screenshot：62/62，0 failure/error/skip；主控已逐张检查当前 actual。Lint：0 Error/Fatal，399 warning、24 hint。AndroidTest Kotlin 编译通过。
+- 设备：API 31 minimum 18 项、API 35 full 37 项、API 36 full 37 项均 0 failure/error，每台各 1 个设计内 checkpoint skip。API 31 首轮误用 x86_64 ABI 导致安装失败，修正为设备真实 arm64-v8a 后通过，不记作产品失败。
+- 设备排障：API 35 首轮在立即读取 active notification 时失败，补有界等待后 full 矩阵通过；API 36 首轮权限说明请求出现一次超时，完全相同环境定向复验及随后 full 矩阵均通过，未以单项重试替代最终 full 结果。
+- 真实 Provider：当前模型元数据候选四角色新鲜流式验证 1/1 通过；凭据只注入测试进程，未写入源码、报告或构建产物。Task 10 Step 4 与 Step 8 已闭合。
+- Release：`--rerun-tasks :app:assembleRelease` 成功，R8/资源收缩通过。APK 18,214,452 bytes，SHA-256 `5b09ed2876e639d611b80d8d3b68f2f331f1720ecc8e9f3023521ff7b98eb9da`；包名、versionCode 2、versionName `0.2-beta`、唯一签名者、登记证书、敏感/GGUF/ZIP/体积、16 KiB zipalign 全部通过。API 35/36 冷安装、设备 base.apk 回读和冷启动通过。
+
+### Next
+
+1. 用户在当前签名 APK 上完成真机 TalkBack 完整听觉/焦点遍历与核心业务人工验收。
+2. 获得明确授权后才可 stage/commit/push，并对当前提交运行远端 CI。
+3. 远端矩阵通过后仍需明确授权创建可验证 tag，由 tag workflow clean 重建并复验 GitHub Release 资产。
+
+### Risks
+
+- 当前 Store-wins 的同 ID 合并依赖运行时写入同时更新 DB 与 Store；未来若引入 DB-only worker/恢复写入，需要增加字段版本或显式回灌契约。
+- 会话成员比较在高频流式更新中会分配短生命周期 Set；生成状态为保持 flow identity 会保留已观察 Session ID 的空 flow 壳，当前均为不阻断性能 Minor。
+- 静态截图不能证明 140ms 流式淡入的完整连续观感；模拟器自动语义也不能替代用户真机 TalkBack 音频、焦点顺序和真实触控体验。
+- 当前 APK 来自未提交共享工作树，不是可追溯 tag workflow 产物；发行状态继续 NO-GO。
+
+### DIA
+
+DIA: 已同步 `CHANGELOG.md`、`docs/release/v0.2-beta.md` 与 `docs/release/v0.2-beta-validation.md`，记录用户可见修复、并发契约、当前测试矩阵及最终签名候选。
+
+### HLG
+
+HLG: 已按 `continuity-key: v0.2-beta-release-readiness` 追加本记录；将使用 HLG Skill 重建索引。未发现新的长期规则候选。
+
+## 2026-07-20T00:25:22+08:00 · 交付 Git 授权记录位置最终勘误
+
+type: correction
+scope: Nexara repository delivery workflow
+status: done
+tags: [handover, git, governance, correction]
+continuity: waiting
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+- `00:24:06` 授权记录与 `00:24:49` 首次勘误均因重复锚点位于 `00:13:21` 记录之前；`00:24:49` 中“本记录在文件末尾”的表述不准确。本记录实际追加到文件末尾，作为最终顺序勘误；三条记录内容均保留，不回写历史。
+
+### Changed
+
+- 无代码变化；交付前自动 commit/push 授权继续生效。
+
+### Validation
+
+- 文件末尾现为本记录；HLG 索引按 ISO 时间戳重建后应指向 `00:25:22`。
+
+### Next
+
+1. 完成暂存复核、commit 与 push。
+
+### Risks
+
+- handover 中保留两条物理位置倒置记录及明确勘误；恢复时以 ISO 时间戳和本记录为准。
+
+### DIA
+
+DIA: 无新增项目文档影响。
+
+### HLG
+
+HLG: 已通过文件末尾追加记录完成顺序勘误，未删除或改写先前记录。

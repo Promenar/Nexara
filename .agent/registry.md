@@ -12,6 +12,7 @@
 - docs/superpowers/plans/2026-07-16-nexara-md3-phase2-management.md — Nexara Material 3 第二阶段管理母版实施计划（设置列表、Provider、表单、模型渐进披露与视觉/设备门禁）
 - docs/superpowers/plans/2026-07-16-nexara-md3-phase3-rag-resources.md — Nexara Material 3 第三阶段知识库与资源管理实施计划（状态原语、文件树、Memory、RAG 详情、资源管理器与回收站）
 - docs/superpowers/plans/2026-07-16-nexara-md3-phase4-doceditor.md — Nexara Material 3 第四阶段 DocEditor 实施计划（保存/重命名/索引可靠性、长文档性能、视觉、响应式与无障碍）
+- docs/superpowers/plans/2026-07-17-model-catalog-and-chat-metadata.md — 分层模型元数据注册中心、离线目录供应链、Provider/引导迁移、友好名称统一与 AI 消息尾注左对齐实施计划
 - docs/superpowers/specs/2026-07-12-v0.2-beta-release-readiness-design.md — v0.2-beta GitHub 侧载发行整改设计（安全、数据、业务、后台生成、UI/E2E 与发行门禁）
 - docs/superpowers/plans/2026-07-12-v0.2-beta-release-roadmap.md — v0.2-beta 四阶段发行整改主路线与门禁顺序
 - docs/superpowers/plans/2026-07-12-v0.2-beta-phase1-security-data.md — P0 密钥、日志、网络、Room、备份与 WebDAV 实施计划
@@ -22,8 +23,10 @@
 - docs/release/v0.2-beta-validation.md — 发行事实账本；记录设备/UI/真实 API/分支 CI、本地稳定证书签名 R8 与双版本冷安装证据，并区分待执行的 TalkBack 真机、核心业务人工验收与 tag release workflow
 - docs/PRD.md — 产品需求文档 v2.0（进度已更新至 2026-05-15）
 - docs/ARCHITECTURE_DESIGN.md — 全局架构设计（含 §2.4.1 KG 双模式策略）
-- docs/ARCHITECTURE.md — 架构快速参考（含 ADR 索引，已至 ADR-019）
+- docs/ARCHITECTURE.md — 架构快速参考（含 ADR 索引，已至 ADR-020）
 - docs/ADR/ADR-019-transactional-workspace-indexing.md — 工作区文件、版本化索引目标、删除屏障、补偿重试与进程恢复的事务候选切换决策
+- docs/ADR/ADR-020-layered-model-metadata-registry.md — 分层模型元数据来源、逐字段优先级、离线快照、三态能力、精确匹配、用户覆盖与回滚决策
+- docs/legal/THIRD_PARTY_NOTICES.md — models.dev 离线模型目录的来源、MIT 许可、冻结快照校验锚点与非单一权威边界
 - docs/IMPLEMENTATION_ANALYSIS.md — 当前实现分析（总体 98%）
 - docs/DOCUMENT_GOVERNANCE.md — 文档治理方案（v2.0, 2026-05-19 更新）
 - native-ui/AGENTS.md — Kotlin 迁移技术规范（归档参考用）
@@ -47,6 +50,8 @@
 - ADR-016: CancellationException 传播模式与 channelFlow 生命周期规范（2026-05-18）
 - ADR-017: 知识图谱可视化 176+ 大数据量防崩溃与性能优化（2026-05-18）
 - ADR-018: 极致原生化 Jetpack Compose Canvas 知识图谱引擎演进（2026-05-18）
+- ADR-019: 工作区文件、派生索引与删除恢复采用事务候选切换（2026-07-13）
+- ADR-020: 分层模型元数据注册中心（2026-07-18）
 
 ## 专项审计报告（docs/audit/）
 - 20260706-final-business-flow-cross-audit.md — APP 业务流程终版交叉审计报告（整合 GLM-5.2 并行审计与 Codex 原审计，作为修复排期主入口）
@@ -55,7 +60,7 @@
 - RAG_SETTINGS_AUDIT_20260516.md — RAG 四页设置全量审计
 - PROVIDER_MANAGEMENT_AUDIT_20260516.md — 提供商管理系统全量审计
 - PROVIDER_MODELS_AUDIT_20260516.md — 服务商管理与模型管理全量架构审计
-- MODEL_DATABASE_RESEARCH_20260516.md — 模型能力数据库调研报告
+- MODEL_DATABASE_RESEARCH_20260516.md — 模型能力数据库调研报告（保留 2026-05-16 原文，并追加 2026-07-17 结构化目录勘误）
 - EMBEDDING_RESOLUTION_DIAGNOSIS_20260516.md — 向量化 Embedding 配置解析失败合并诊断
 - RAG_INDICATOR_ARCHITECTURE_DESIGN_20260517.md — RAG 检索指示器架构审计与 UI 设计方案
 - RAG_INDICATOR_ACCEPTANCE_20260517.md — RAG 指示器 6 会话全量验收报告

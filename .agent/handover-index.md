@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-07-17T13:39:32+08:00
+> generated_at: 2026-07-20T00:27:14+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -9,12 +9,27 @@
 | continuity-key | continuity | last update | status | scope | title | source |
 | :--- | :---: | :---: | :---: | :--- | :--- | :--- |
 | nexara-md3-redesign | resume | 2026-07-17 | completed | native-ui, doceditor, material3, markdown, accessibility, performance, release-readiness | Material 3 第四阶段 DocEditor 自动化验收完成 | `.agent/handover.md` · `2026-07-17T13:29:31+08:00` |
-| v0.2-beta-release-readiness | waiting | 2026-07-17 | waiting | release-readiness, signed-apk, r8, api35, api36, talkback | 当前源码最终本地签名候选生成并等待真机验收 | `.agent/handover.md` · `2026-07-17T13:37:27+08:00` |
+| v0.2-beta-release-readiness | waiting | 2026-07-20 | done | Nexara repository delivery workflow | 交付 Git 授权记录位置最终勘误 | `.agent/handover.md` · `2026-07-20T00:25:22+08:00` |
 
 ## Recent 7-Day Catalog
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-07-20 | iso | done | waiting | Nexara repository delivery workflow | [handover, git, governance, correction] | 交付 Git 授权记录位置最终勘误 | `.agent/handover.md` · `2026-07-20T00:25:22+08:00` |
+| 2026-07-20 | iso | done | waiting | Nexara repository delivery workflow | [handover, git, governance, correction] | 交付 Git 授权记录顺序勘误 | `.agent/handover.md` · `2026-07-20T00:24:49+08:00` |
+| 2026-07-20 | iso | done | waiting | Nexara repository delivery workflow | [git, delivery, governance, authorization] | 交付前自动提交与推送授权落盘 | `.agent/handover.md` · `2026-07-20T00:24:06+08:00` |
+| 2026-07-20 | iso | done | waiting | Nexara v0.2-beta Android native candidate | [android, material3, rag, generation, workspace, concurrency, release] | 覆盖安装四缺陷、并发复审闭环与最终签名候选 | `.agent/handover.md` · `2026-07-20T00:13:21+08:00` |
+| 2026-07-19 | iso | complete | waiting | native-ui, rag, chat-generation, settings, visual-qa, release-readiness | [knowledge-library, generation-terminal, streaming-fade, settings-density, api-31, api-35, api-36, signed-apk, no-go] | 知识库空态、生成终态、流式动效与设置密度闭环 | `.agent/handover.md` · `2026-07-19T16:02:46+08:00` |
+| 2026-07-19 | iso | complete | waiting | native-ui, visual-validation, release-apk, handover-governance | [large-font, knowledge-graph, checksum, screenshot-report, readback, no-go] | 可见模拟器与发行产物最终 readback 勘误 | `.agent/handover.md` · `2026-07-19T11:15:02+08:00` |
+| 2026-07-19 | iso | complete | waiting | native-ui, visual-validation, device-e2e, release-apk, release-readiness | [visible-emulator, api-35, api-36, large-font, landscape, ime, signed-apk, no-go] | 可见模拟器视觉验收、设备套件稳定化与当前签名 APK 重建 | `.agent/handover.md` · `2026-07-19T11:11:23+08:00` |
+| 2026-07-19 | iso | complete | none | native-ui, model-catalog, real-provider, task-10, release-readiness | [model-metadata, task-10, real-provider, streaming, final-acceptance, no-go] | 模型元数据 Task 10 真实 Provider 与最终验收闭合 | `.agent/handover.md` · `2026-07-19T10:10:21+08:00` |
+| 2026-07-19 | iso | blocked | blocked | model-catalog, release-readiness, handover-governance | [task-10, release-evidence, hlg-index, provider-gate, no-go] | 发行证据最终一致性与 HLG 索引闭合 | `.agent/handover.md` · `2026-07-19T09:56:38+08:00` |
+| 2026-07-19 | iso | blocked | blocked | native-ui, model-catalog, device-e2e, release-apk, visual-validation, release-readiness | [model-metadata, task-10, device-matrix, signed-apk, r8, visual-review, provider-gate, no-go] | 当前源码设备矩阵修复与签名发行包重建 | `.agent/handover.md` · `2026-07-19T09:53:25+08:00` |
+| 2026-07-19 | iso | blocked | blocked | native-ui, model-catalog, provider-gate, testing, android-device, agent-routing, release-readiness | [model-metadata, takeover, task-10, provider-gate, spark-native, regression, no-go] | 模型元数据接管复核与无凭据门禁重放 | `.agent/handover.md` · `2026-07-19T04:05:02+08:00` |
+| 2026-07-18 | iso | blocked | blocked | native-ui, model-catalog, provider-models, onboarding, chat, backup, testing, supply-chain, documentation | [model-metadata, models-dev, exact-id, reasoning, friendly-name, chat-footer, task-10, provider-gate, no-go] | 模型元数据 Task 1-9 完成与 Task 10 Provider 门禁阻断 | `.agent/handover.md` · `2026-07-18T09:40:55+08:00` |
+| 2026-07-18 | iso | paused | resume | native-ui, model-catalog, testing, onboarding, chat, agent-routing | [model-metadata, task-1, tdd, red, spark-cli, review, sequencing-risk, handoff] | 模型元数据 Task 1 RED 施工后暂停 | `.agent/handover.md` · `2026-07-18T00:57:56+08:00` |
+| 2026-07-17 | iso | ready-for-implementation | resume | native-ui, model-catalog, provider-models, onboarding, chat, material3, testing, supply-chain | [model-metadata, models-dev, exact-id, reasoning, friendly-name, chat-footer, spark, handoff] | 模型元数据注册中心与会话尾注改造计划落盘 | `.agent/handover.md` · `2026-07-17T23:03:41+08:00` |
+| 2026-07-17 | iso | completed | waiting | native-ui, agent-hub, material3, accessibility, screenshot-test, release-readiness | [material3, agent-hub, listitem, swipe, large-font, api36, signed-apk, spark] | Agent 首页连续 Material 3 列表与新签名候选闭环 | `.agent/handover.md` · `2026-07-17T20:41:56+08:00` |
 | 2026-07-17 | iso | waiting | waiting | release-readiness, signed-apk, r8, api35, api36, talkback | [v0.2-beta, signed-apk, r8, zipalign, checksum, cold-install, api35, api36, talkback] | 当前源码最终本地签名候选生成并等待真机验收 | `.agent/handover.md` · `2026-07-17T13:37:27+08:00` |
 | 2026-07-17 | iso | completed | resume | native-ui, doceditor, material3, markdown, accessibility, performance, release-readiness | [material3, doceditor, option-3, markdown, ime, accessibility, performance, api31, api35, api36, visual-qa] | Material 3 第四阶段 DocEditor 自动化验收完成 | `.agent/handover.md` · `2026-07-17T13:29:31+08:00` |
 | 2026-07-17 | iso | in-progress | resume | native-ui, doceditor, material3, responsive-ui, accessibility, screenshot-test | [material3, doceditor, option-3, 800x360, ime, large-font, visual-qa, paused] | DocEditor Task 5 方案 3 视觉迁移阶段性暂停 | `.agent/handover.md` · `2026-07-17T10:20:50+08:00` |
@@ -54,8 +69,6 @@
 | 2026-07-14 | iso | in-progress | resume | native-ui, minified-test, androidtest, device-e2e, release-engineering | [v0.2-beta, pause, r8, androidtest, instrumentation, emulator] | v0.2-beta minifiedTest 设备运行时诊断暂停 | `.agent/handover.md` · `2026-07-14T05:15:02+08:00` |
 | 2026-07-14 | iso | in-progress | resume | native-ui, provider, device-e2e, release-engineering | [v0.2-beta, pause, provider-probe, concurrency, timeout-helper, device-e2e] | v0.2-beta Provider 与设备超时专项闭环暂停 | `.agent/handover.md` · `2026-07-14T04:49:53+08:00` |
 | 2026-07-14 | iso | in-progress | resume | native-ui, provider, rag, prompt, release-engineering, r8, device-e2e | [v0.2-beta, pause, provider, rag, prompt, r8, pdfbox, minified-e2e, release] | v0.2-beta P0 集成与发行门禁暂停交接 | `.agent/handover.md` · `2026-07-14T00:35:02+08:00` |
-| 2026-07-13 | iso | p1-completed | unknown | security, backup, provider, tools, workspace, rag, kg, share-import, android-qa | [v0.2-beta, p0, p1, room, provider-router, tool-ledger, workspace, transactional-index, share, emulator] | v0.2-beta P0/P1 核心门禁完成 | `.agent/handover.md` · `2026-07-13T04:49:16+08:00` |
-| 2026-07-12 | iso | ready-for-implementation | unknown | release-readiness, security, data, core-flows, background-generation, ui-qa, github-release | [v0.2-beta, apk, security, backup, provider, workspace, rag, background, ui-test, release] | v0.2-beta 发行设计与四阶段实施计划冻结 | `.agent/handover.md` · `2026-07-12T03:38:50+08:00` |
 
 ## Undated Records
 
