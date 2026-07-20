@@ -4856,3 +4856,53 @@ DIA: 已同步 CHANGELOG、架构快速参考、实施计划与 v0.2-beta 验证
 ### HLG
 
 HLG: 已按 `continuity-key: nexara-md3-redesign` 追加 Task 2 完成记录；索引将由 HLG Skill 重建。未发现需要另行沉淀到 AGENTS.md 或 Skill 的新长期规则候选。
+
+## 2026-07-20T14:32:00+08:00 · Material 3 总收敛 Task 3 共享管理原语完成
+
+type: implementation-checkpoint
+scope: Nexara Android Material 3 convergence Task 3
+status: done
+tags: [android, material3, search, settings, accessibility, screenshot]
+continuity: resume
+continuity-key: nexara-md3-redesign
+
+### Summary
+
+- Task 3 已完成：建立连续设置分组与 Top App Bar 搜索模式，统一分组标题 Material 语义，并保留页面 system/IME Insets、透明设置行与 48dp 契约。
+- 下一恢复点为 Task 4 手机浮动导航坞；具体设置树和搜索页面尚未迁移。
+
+### Changed
+
+- 新增 `NexaraSettingsSection`：透明 Column、语义标题、正文起点对齐 `HorizontalDivider`，不使用 GlassCard 或逐行 Surface。
+- 新增受控 `NexaraSearchTopBar`：正常/搜索态、actions、自动焦点、IME Search、清除、两级返回优先级和遵循系统 duration scale 的淡入过渡。
+- `SettingsSectionHeader` 移除硬编码 10sp、Manrope、静态 NexaraColors，改用 Material typography/colorScheme 与 48dp `TextButton`。
+- Backup Settings 的唯一预期 screenshot reference 已在人工对照 rendered/reference/diff 后更新。
+
+### Validation
+
+- RED：定点 JVM 9 项中 6 项因两个冻结组件缺失失败；AndroidTest 编译因新 Top Bar 缺失失败，未掩盖。
+- GREEN：定点 JVM 9/9；全量 JVM 2034 项，0 failure/error、14 skip；AndroidTest Kotlin 编译通过。
+- API 36 可见 Pixel 7 新增设备方法 2/2：覆盖 2.0x、长标题、48dp、actions、焦点、IME、清除、系统 Back、0x reduced-motion 和分隔线真实 bounds。
+- Screenshot 64/64；Lint 0 Error/Fatal、403 warnings、24 hints；`git diff --check` 通过。
+- 独立 Terra 首轮 1 个 Important 已用真实设备断言关闭，最终 Critical/Important/Minor 均为 0，Verdict Approve。
+- 系统时间已进入 14:00 后高峰期，本任务未调用 GLM-5.2。
+
+### Next
+
+1. Task 4 为手机端实现 `Surface + NavigationBar + NavigationBarItem` tonal 浮动导航坞，大屏继续使用 `NavigationRail`。
+2. 为深浅 phone/tablet 导航写 screenshot RED，逐张审阅 actual 后更新基线，并在设备上验证系统手势区 clearance。
+3. 后续 Task 继续逐页消费本轮原语；整体发行保持 NO-GO。
+
+### Risks
+
+- 新 `NexaraSearchTopBar` 尚未迁入各业务页面，当前业务仍可继续使用旧固定搜索栏；不能提前宣称空间回收完成。
+- Backup Settings 仍是旧卡片型页面，本轮只修正共享标题；完整设置视觉迁移属于后续 Task。
+- `artifacts/` 与三个 `.nexara-workspace-*` 仍是受保护未跟踪目录，未读取、未修改、未暂存。
+
+### DIA
+
+DIA: 已同步 CHANGELOG、架构快速参考、实施计划、Screenshot reference 与 v0.2-beta 验证账本，记录共享组件契约、用户可见标题变化及设备证据；README 无范围变化。
+
+### HLG
+
+HLG: 已按 `continuity-key: nexara-md3-redesign` 追加 Task 3 完成记录；索引将由 HLG Skill 重建。未发现需要另行沉淀到 AGENTS.md 或 Skill 的新长期规则候选。
