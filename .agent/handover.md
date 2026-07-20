@@ -4761,3 +4761,50 @@ DIA: 已新增并登记 Material 3 总收敛规格与实施计划；无产品行
 ### HLG
 
 HLG: 已按 `continuity-key: nexara-md3-redesign` 追加 ready-for-implementation 记录；将使用 HLG Skill 重建索引。未发现需要另行写入 AGENTS.md 或 Skill 的新长期规则候选。
+
+## 2026-07-20T13:36:00+08:00 · Material 3 总收敛 Task 1 基线冻结完成
+
+type: implementation-checkpoint
+scope: Nexara Android Material 3 convergence Task 1
+status: done
+tags: [android, material3, baseline, screenshot, lint, governance]
+continuity: resume
+continuity-key: nexara-md3-redesign
+
+### Summary
+
+- Task 1 已完成：冻结当前 JVM、Screenshot、Lint、AndroidTest 编译与视觉静态扫描基线，并逐张分类 35 张设置、Provider、模型、RAG、资源管理和 Agent actual。
+- 当前候选只建立迁移证据，不包含产品源码或视觉行为变更；下一恢复点为 Task 2 主题偏好持久化 RED。
+
+### Changed
+
+- 新增 `native-ui/app/src/test/resources/md3-theme-surface-patterns.txt`，作为后续全树静态主题扫描的唯一规则源。
+- 新增 `.agent/plans/20260720-md3-convergence-task13-manifest.txt`，冻结 69 个需要检查或迁移的 UI/theme/renderer 文件。
+- `docs/release/v0.2-beta-validation.md` 追加当前提交的新鲜基线和 35 张 actual 的逐测试函数前缀分类；实施计划已勾选 Task 1。
+
+### Validation
+
+- 在提交 `72f3f487` 上以 `--no-build-cache --rerun-tasks` 新鲜执行：JVM 2021 项、0 failure/error、14 skip；Screenshot 64 张通过；Lint 0 Error/Fatal、401 warning、24 hint；AndroidTest Kotlin 编译通过。
+- 静态规则命中 1341 行、67 个自然命中文件；加计划指定 renderer/theme 文件后 manifest 为 69 个唯一且全部存在的路径；`NexaraSearchBar` 当前调用点 10 处。
+- 原生 Spark 无副作用冒烟 1 轮成功，精确返回 `SPARK_NATIVE_SMOKE_OK`，记为 `legacy_native=pass`；本轮未调用 GLM-5.2。
+- 独立 Terra 首轮复审报告 2 个 Important，主控以强制新鲜执行和逐文件视觉映射关闭；定点复审 Remaining Critical/Important 为 0，Verdict 为 Approve。
+
+### Next
+
+1. 从 Task 2 写入 `ThemePreferenceStoreTest`、`SettingsViewModelTest` 和备份白名单 RED，确认缺少冻结主题接口时真实失败。
+2. 串行实现唯一 Application 级主题状态所有者、深浅 ColorScheme、系统/动态色和备份恢复监听，再运行定点 GREEN 与编译。
+3. Task 2 独立复审通过后单独提交、推送；整体发行继续保持 NO-GO。
+
+### Risks
+
+- 当前 64 张截图只证明旧视觉基线稳定；35 张管理相关 actual 仍是待迁移输入，不是新方案视觉 PASS。
+- 浅色、系统跟随、动态色、二三级设置、模型选择器、上下文搜索和自适应导航仍缺新方案 actual；不得提前放行。
+- `artifacts/` 与三个 `.nexara-workspace-*` 仍是受保护未跟踪目录，未读取、未修改、未暂存。
+
+### DIA
+
+DIA: 已同步实施计划 Task 1 进度与 `docs/release/v0.2-beta-validation.md` 当前候选基线；本轮无产品行为、API 或架构变化。
+
+### HLG
+
+HLG: 已按 `continuity-key: nexara-md3-redesign` 追加 Task 1 完成记录；索引将由 HLG Skill 重建。未发现需要另行沉淀到 AGENTS.md 或 Skill 的新长期规则候选。
