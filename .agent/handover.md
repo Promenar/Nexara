@@ -5200,3 +5200,55 @@ DIA: 已同步 CHANGELOG、架构快速参考、Material 3 实施计划、Screen
 ### HLG
 
 HLG: 已按 `continuity-key: nexara-md3-redesign` 追加 Task 6 done 记录；使用 HLG Skill 重建索引。未发现需要另行沉淀到 AGENTS.md 或 Skill 的新长期规则候选。
+
+## 2026-07-21T01:13:03+08:00 · Material 3 总收敛 Task 7 统一模型选择器完成
+
+type: implementation-checkpoint
+scope: Nexara Android Material 3 convergence Task 7
+status: done
+tags: [android, material3, model-metadata, model-picker, accessibility, screenshot, signed-apk, agent-routing]
+continuity: resume
+continuity-key: nexara-md3-redesign
+
+### Summary
+
+- 通用模型面板、会话设置、Agent Hub、设置与 RAG 的模型选择入口已统一为冻结元数据投影和连续 Material 3 列表；Task 7 的 RED、GREEN、全量质量门禁、API 31/35/36、81 张 Screenshot、actual 人工检查与 Terra/Sol 双复审全部闭合。
+- 主实现提交 `6912952724afbfa20ae86c7105440d78632dba26` 已推送至 `origin/codex/md3-redesign`。当前源码已构建稳定证书签名 R8 APK并在 API 35/36 完成同哈希冷安装启动；下一恢复点为 Task 8 设置首页信息架构和 Provider 二级入口，整体发行继续 NO-GO。
+
+### Changed
+
+- 新增 `ModelSelectionUiModel` 与 `ModelSelectionListItem`。`ModelInfo` 的 Provider 数据和 `userEditedFields` 先转换为分层 override，再调用唯一入口 `ModelMetadataResolver.resolve(...)`；没有新增顶层 facade 或兼容壳。
+- 通用模型面板与会话设置共用同一 `ListItem` 行、稳定 `selectionId`、tonal 选中容器与 RadioButton 语义；移除旧 UI 专用 `ModelItem`/`ModelCapability`、能力胶囊和硬编码颜色。
+- Chat 候选过滤明确遵循 endpoint 三态：`SUPPORTED` 放行、`UNSUPPORTED` 拒绝、`UNKNOWN` 仅在生成式工作负载时放行；当前已选旧模型继续保留，推理能力不再等价于 Chat endpoint 兼容。
+- Sheet 改为 90% 近全高，搜索 debounce 保留；120 模型目录、长官方名称、未知能力、浅色与 2.0x 字体新增 Screenshot fixture。`RagViewModel` 删除了重复的偏好表模型列表事实源。
+- 全局 Codex 规则与 `$agent-router` 已按用户授权更新外部 Agent 写入策略：AGY 写任务使用显式全权限非交互模式，OpenCode 写任务使用自动批准；文件系统权限与 CLI 内部审批分开判断。代理节点切换后 AGY 全权限 smoke 输出 `AGY_FULL_ACCESS_OK`，此前地域错误不再视为 Agent 或权限故障。
+
+### Validation
+
+- TDD：初始 RED 锁定三态能力、用户覆盖、Chat endpoint 独立性、共享行与消费端契约；实现后定点测试闭合。独立复审发现显式 `UNSUPPORTED` 被生成式 fallback 放行、Sheet 高度不足、重复 TalkBack 选中播报、类型大小写和投影重算问题，全部返修并补测试。
+- clean 后最终全量 JVM 2085 项，0 failure/error、14 skip；Lint 0 Error/Fatal、405 warnings、25 hints；AndroidTest Kotlin 编译通过；Screenshot 81/81，0 failure/error/skip。skip 未记为 PASS。
+- API 31、API 35、API 36 的 `ModelPickerAccessibilityTest,ChatProviderSwitchSurfaceTest` 各 2/2，0 failure/error/skip；覆盖 2.0x、RadioButton/selected/48dp 与会话 Provider 切换表面。
+- 主控逐张检查 120 模型深色与长名称浅色 2.0x 两张新增 actual，未发现裁切、重叠、低对比或未知能力伪标签。Terra 与 Sol 复审最终均为 Critical 0、Important 0。
+- AGY Gemini 3.5 Flash High 完成边界明确的 Kotlin/Compose 初版施工；Spark 完成只读契约复核；主控独立检查全部 diff、修复复审问题并重跑门禁。GLM-5.2 的初始 RED 测试施工只作为可复核输入，不替代主控验收。
+- 签名构建首次等待 macOS Keychain 访问确认，主控中断后确认构建已进入 release 编译；权限缓存后立即重跑，`:app:assembleRelease --rerun-tasks` 59 tasks 全部执行并成功。APK 验证器自身 23/23。
+- 当前 `nexara-v0.2-beta.apk` 为 18,316,200 bytes，SHA-256 `0114f525b8be881967f3389386505ebd11d2f611e1bf1149e8ada512610460ba`；包身份、单一 V2 signer、登记证书、敏感/GGUF 扫描、mapping、checksum 与 16 KiB zipalign 全部通过。API 35/36 同一字节 APK 冷安装、安装后回拉比对、冷启动、前台进程与 crash buffer 均通过。
+
+### Next
+
+1. 从 Task 8 的设置 IA RED 开始，重建设置首页、Provider 列表与四角色默认模型二级页；复用 Task 7 共享模型选择器，不回引旧 Provider Tab 或行内四个模型选择器。
+2. 后续 Task 9-14 继续串行闭合 RAG 设置、Provider 表单/模型页、知识库/资源列表、浅色全站 actual、500 模型性能和最终签名候选，每轮独立复审后 commit/push。
+3. 最终候选仍须完成用户真机 TalkBack 与核心业务人工验收、当前提交远端 CI、可验证 tag、tag workflow 和 GitHub Release。
+
+### Risks
+
+- 当前签名 APK 是 Task 7 阶段预览候选；Task 8 及后续 Material 3 迁移会继续改变源码和哈希，不能视为最终 GitHub Release 资产。
+- 81 张静态 Screenshot 证明终态布局，不替代真实 TalkBack 音频、完整焦点遍历、滚动性能采样或用户真机核心业务验收。
+- `artifacts/` 与三个 `.nexara-workspace-*` 仍是受保护未跟踪目录，未读取、未修改、未暂存；签名材料只由主控从本机安全存储注入 Gradle 子进程，未写入源码、报告或 Agent 提示词。
+
+### DIA
+
+DIA: 已同步 CHANGELOG、架构快速参考、Material 3 实施计划、两张 Screenshot reference、v0.2-beta 验证账本和本 handover；README、公开 API、数据库与 Provider 协议无范围变化。
+
+### HLG
+
+HLG: 已按 `continuity-key: nexara-md3-redesign` 追加 Task 7 done 记录；将使用 HLG Skill 重建索引。外部 Agent 全权限非交互调用策略已按用户明确授权沉淀到全局 AGENTS.md 与 `$agent-router`，本轮不再产生新的长期规则候选。

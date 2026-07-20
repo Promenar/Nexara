@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-07-20T23:09:49+08:00
+> generated_at: 2026-07-21T01:14:03+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -8,13 +8,14 @@
 
 | continuity-key | continuity | last update | status | scope | title | source |
 | :--- | :---: | :---: | :---: | :--- | :--- | :--- |
-| nexara-md3-redesign | resume | 2026-07-20 | done | Nexara Android Material 3 convergence Task 6 | Material 3 总收敛 Task 6 助手会话与顶栏搜索完成 | `.agent/handover.md` · `2026-07-20T23:08:30+08:00` |
+| nexara-md3-redesign | resume | 2026-07-21 | done | Nexara Android Material 3 convergence Task 7 | Material 3 总收敛 Task 7 统一模型选择器完成 | `.agent/handover.md` · `2026-07-21T01:13:03+08:00` |
 | v0.2-beta-release-readiness | waiting | 2026-07-20 | done | Nexara chat full-context documents and branching | 会话完整文档上下文、导出与消息分支交付 | `.agent/handover.md` · `2026-07-20T09:25:25+08:00` |
 
 ## Recent 7-Day Catalog
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-07-21 | iso | done | resume | Nexara Android Material 3 convergence Task 7 | [android, material3, model-metadata, model-picker, accessibility, screenshot, signed-apk, agent-routing] | Material 3 总收敛 Task 7 统一模型选择器完成 | `.agent/handover.md` · `2026-07-21T01:13:03+08:00` |
 | 2026-07-20 | iso | done | resume | Nexara Android Material 3 convergence Task 6 | [android, material3, search, sessions, accessibility, screenshot, signed-apk] | Material 3 总收敛 Task 6 助手会话与顶栏搜索完成 | `.agent/handover.md` · `2026-07-20T23:08:30+08:00` |
 | 2026-07-20 | iso | done | resume | Nexara Android Material 3 convergence Task 4.1 ripple follow-up | [android, material3, navigation, ripple, accessibility, visual-validation, signed-apk] | 流体导航 Tab 水波纹胶囊裁剪闭环 | `.agent/handover.md` · `2026-07-20T21:37:47+08:00` |
 | 2026-07-20 | iso | done | resume | Nexara Android Material 3 convergence Task 4.1 | [android, material3, navigation, animation, accessibility, screenshot, signed-apk] | Material 3 总收敛 Task 4.1 流体胶囊导航返修完成 | `.agent/handover.md` · `2026-07-20T19:51:10+08:00` |
@@ -62,24 +63,6 @@
 | 2026-07-15 | iso | completed | resume | release-readiness, android-ci, api31, api35, api36, restore-relay, rag | [v0.2-beta, android-ci, device-e2e, restore, rag, ui-qa] | v0.2-beta 最终候选 Android CI 全绿与设备门禁闭合 | `.agent/handover.md` · `2026-07-15T17:17:45+08:00` |
 | 2026-07-15 | iso | in_progress | resume | release-readiness, android-ci, share-import, rag, ui-evidence | [v0.2-beta, android-ci, share-import, rag, ui-qa, png] | v0.2-beta 第二轮 Android CI 准备与 RAG/UI 证据闭合 | `.agent/handover.md` · `2026-07-15T15:47:10+08:00` |
 | 2026-07-15 | iso | active | resume | native-ui, ime, accessibility, doc-editor, screenshot, apk-verifier, release-readiness | [v0.2-beta, ime, talkback, accessibility, screenshot, apk, p3, release] | IME/TalkBack/UI 门禁与现代 APK 验证器闭合 | `.agent/handover.md` · `2026-07-15T12:30:21+08:00` |
-| 2026-07-14 | iso | paused | waiting | native-ui, doc-editor, resource-explorer, full-regression, release-readiness | [v0.2-beta, ui-gate, screenshots, regression, release, handover] | DocEditor 与 Resource Explorer 闭合后暂停全量发行回归 | `.agent/handover.md` · `2026-07-14T16:50:21+08:00` |
-| 2026-07-14 | iso | completed | resume | native-ui, doc-editor, state-machine, safe-save, concurrency, release-readiness | [v0.2-beta, doc-editor, p0, state-machine, cas, tdd, concurrency] | DocEditor P0 数据安全与竞态门禁闭合 | `.agent/handover.md` · `2026-07-14T13:53:34+08:00` |
-| 2026-07-14 | iso | completed | resume | native-ui, rag-navigation, files-panel, rag-folder, doc-editor-route, accessibility, release-readiness | [v0.2-beta, rag, navigation, files-panel, compose, tdd, accessibility] | RAG 稳定 ID 导航链与行为门禁闭合 | `.agent/handover.md` · `2026-07-14T13:17:49+08:00` |
-| 2026-07-14 | iso | completed | resume | native-ui, rag-home, files-panel, accessibility, screenshot-qa, ui-release-contract, release-readiness | [v0.2-beta, rag-home, files-panel, compose, tdd, accessibility, screenshot, visual-qa] | RAG Home 单一批量入口与删除确认门禁闭合 | `.agent/handover.md` · `2026-07-14T12:51:00+08:00` |
-| 2026-07-14 | iso | completed | resume | native-ui, provider-models, accessibility, screenshot-qa, ui-release-contract, release-readiness | [v0.2-beta, provider-models, compose, tdd, accessibility, screenshot, visual-qa] | Provider Models 发行级交互与视觉门禁闭合并继续 RAG | `.agent/handover.md` · `2026-07-14T12:01:00+08:00` |
-| 2026-07-14 | iso | completed | resume | native-ui, settings-home, provider-summary, accessibility, screenshot-qa, ui-release-contract, release-readiness | [v0.2-beta, settings, provider-summary, compose, tdd, accessibility, screenshot, visual-qa] | Settings 发行级交互与视觉门禁闭合并继续 Provider Models | `.agent/handover.md` · `2026-07-14T11:34:43+08:00` |
-| 2026-07-14 | iso | completed | resume | native-ui, agent-hub, accessibility, screenshot-qa, ui-release-contract, release-readiness | [v0.2-beta, agent-hub, compose, tdd, accessibility, screenshot, visual-qa] | Agent Hub 发行级 UI 门禁闭合并继续 Settings | `.agent/handover.md` · `2026-07-14T10:36:59+08:00` |
-| 2026-07-14 | iso | in-progress | resume | native-ui, chat-error-state, screenshot-qa, ui-release-contract, release-readiness | [v0.2-beta, pause, chat-state, structured-error, tdd, ui-coverage] | v0.2-beta 结构化错误锚点修复后即时暂停 | `.agent/handover.md` · `2026-07-14T08:39:20+08:00` |
-| 2026-07-14 | iso | in-progress | resume | native-ui, screenshot-qa, ui-release-audit, phase4-release-audit, release-readiness | [v0.2-beta, pause, screenshot, timezone, structured-error, ui-coverage, release-gap] | v0.2-beta 截图确定性门禁闭合后安全暂停 | `.agent/handover.md` · `2026-07-14T08:25:16+08:00` |
-| 2026-07-14 | iso | in-progress | resume | native-ui, api31-device-e2e, api35-device-e2e, minified-blackbox, screenshot-qa, release-readiness | [v0.2-beta, pause, api31, api35, device-matrix, minified, screenshot, ui-qa] | v0.2-beta 多 API 设备矩阵闭合后安全暂停 | `.agent/handover.md` · `2026-07-14T08:07:09+08:00` |
-| 2026-07-14 | iso | in-progress | resume | native-ui, onboarding, api36-device-e2e, android-toolchain, release-readiness | [v0.2-beta, pause, api36, onboarding, locale, device-e2e, android-sdk] | v0.2-beta API 36 完整设备门禁通过后安全暂停 | `.agent/handover.md` · `2026-07-14T07:43:31+08:00` |
-| 2026-07-14 | iso | in-progress | resume | native-ui, onboarding, api36-device-e2e, release-readiness | [v0.2-beta, pause, api36, onboarding, local-inference, device-e2e] | v0.2-beta onboarding Local 发行边界聚焦修复后暂停 | `.agent/handover.md` · `2026-07-14T07:23:59+08:00` |
-| 2026-07-14 | iso | in-progress | resume | native-ui, mainactivity-e2e, api36-device-e2e, release-readiness | [v0.2-beta, pause, api36, mainactivity, notification-permission, device-e2e] | v0.2-beta API 36 聊天主流程夹具修复后安全暂停 | `.agent/handover.md` · `2026-07-14T06:57:00+08:00` |
-| 2026-07-14 | iso | completed | resume | release-engineering, environment, handover | [pause, process-audit, xcode, environment-update] | 安全暂停进程核对补记 | `.agent/handover.md` · `2026-07-14T06:38:41+08:00` |
-| 2026-07-14 | iso | in-progress | resume | native-ui, minified-test, r8, docx, pdf, device-e2e, release-engineering | [v0.2-beta, pause, r8, blackbox, api-36, docx, pdf] | v0.2-beta API 36 发行等价黑盒门禁通过并安全暂停 | `.agent/handover.md` · `2026-07-14T06:36:19+08:00` |
-| 2026-07-14 | iso | in-progress | resume | native-ui, minified-test, androidtest, device-e2e, release-engineering | [v0.2-beta, pause, r8, androidtest, instrumentation, emulator] | v0.2-beta minifiedTest 设备运行时诊断暂停 | `.agent/handover.md` · `2026-07-14T05:15:02+08:00` |
-| 2026-07-14 | iso | in-progress | resume | native-ui, provider, device-e2e, release-engineering | [v0.2-beta, pause, provider-probe, concurrency, timeout-helper, device-e2e] | v0.2-beta Provider 与设备超时专项闭环暂停 | `.agent/handover.md` · `2026-07-14T04:49:53+08:00` |
-| 2026-07-14 | iso | in-progress | resume | native-ui, provider, rag, prompt, release-engineering, r8, device-e2e | [v0.2-beta, pause, provider, rag, prompt, r8, pdfbox, minified-e2e, release] | v0.2-beta P0 集成与发行门禁暂停交接 | `.agent/handover.md` · `2026-07-14T00:35:02+08:00` |
 
 ## Undated Records
 
