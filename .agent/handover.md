@@ -4906,3 +4906,51 @@ DIA: 已同步 CHANGELOG、架构快速参考、实施计划、Screenshot refere
 ### HLG
 
 HLG: 已按 `continuity-key: nexara-md3-redesign` 追加 Task 3 完成记录；索引将由 HLG Skill 重建。未发现需要另行沉淀到 AGENTS.md 或 Skill 的新长期规则候选。
+
+## 2026-07-20T14:54:00+08:00 · Material 3 总收敛 Task 4 自适应标准导航完成
+
+type: implementation-checkpoint
+scope: Nexara Android Material 3 convergence Task 4
+status: done
+tags: [android, material3, navigation, adaptive, screenshot, accessibility]
+continuity: resume
+continuity-key: nexara-md3-redesign
+
+### Summary
+
+- Task 4 已完成：手机主导航迁移为标准 Material 3 tonal 浮动导航坞，大屏保留标准 NavigationRail，深浅主题与系统导航栏 Insets 均接通。
+- 下一恢复点为 Task 5 锚定式附件动作簇；整体发行继续 NO-GO。
+
+### Changed
+
+- `MainTabScaffold` 手机端使用单层 `Surface + NavigationBar + NavigationBarItem`，删除自绘 Row、glow、阴影、缩放和静态 NexaraColors；内容节点通过 Scaffold padding 避让导航。
+- 大屏 Rail 改用 MaterialTheme 色，手机与 Rail 三个目的地共用稳定 tag、Role.Tab、selected 与 48dp 语义。
+- 新增手机/平板、深色/浅色四张导航 Screenshot reference；`AdaptiveNavigationTest` 补三项语义、点击切换和真实滚动末项 clearance。
+
+### Validation
+
+- RED：四张新 screenshot 因无 reference 失败；API 36 新增两项因导航目的地 tag 缺失失败，旧断点测试保持通过。
+- GREEN：API 36 可见 Pixel 7 `AdaptiveNavigationTest` 4/4；Screenshot 68/68；全量 JVM 2034 项，0 failure/error、14 skip；Lint 0 Error/Fatal、403 warnings、24 hints。
+- 主控逐张检查四张 actual，确认手机深浅坞、平板深浅 Rail 均无裁切、重叠或低对比；内容末项设备测试滚动 50 项后仍位于导航顶边之上。
+- 独立 Luna Critical/Important 为 0，Verdict Approve；提出的滚动末项 Minor 已补测关闭，截图占位内容保留为隔离导航视觉的测试设计。
+- 系统时间处于 14:00 后高峰期，本任务未调用 GLM-5.2。
+
+### Next
+
+1. Task 5 为聊天输入栏实现锚定式附件动作簇，覆盖展开、返回/外部关闭、禁用态、IME、2.0x 与窗口边缘。
+2. 保持 `ChatScreen.kt` 热点文件串行，先写真实设备 RED，再实现 overlay 与 reduced-motion 动效。
+3. 后续继续逐任务 commit/push；真机 TalkBack、当前远端 CI、tag 与 GitHub Release 未闭合前保持 NO-GO。
+
+### Risks
+
+- 四张导航截图使用隔离占位业务内容，只证明导航视觉；实际滚动末项 clearance 由 API 36 设备测试单独证明，不能混淆两种证据。
+- Task 5 仍会修改聊天输入区与 overlay，必须复验导航/IME 组合，但不得回退本任务的 Scaffold padding 契约。
+- `artifacts/` 与三个 `.nexara-workspace-*` 仍是受保护未跟踪目录，未读取、未修改、未暂存。
+
+### DIA
+
+DIA: 已同步 CHANGELOG、架构快速参考、实施计划、四张深浅自适应导航 Screenshot reference 与 v0.2-beta 验证账本；README 无范围变化。
+
+### HLG
+
+HLG: 已按 `continuity-key: nexara-md3-redesign` 追加 Task 4 完成记录；索引将由 HLG Skill 重建。未发现需要另行沉淀到 AGENTS.md 或 Skill 的新长期规则候选。
