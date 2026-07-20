@@ -5252,3 +5252,50 @@ DIA: 已同步 CHANGELOG、架构快速参考、Material 3 实施计划、两张
 ### HLG
 
 HLG: 已按 `continuity-key: nexara-md3-redesign` 追加 Task 7 done 记录；将使用 HLG Skill 重建索引。外部 Agent 全权限非交互调用策略已按用户明确授权沉淀到全局 AGENTS.md 与 `$agent-router`，本轮不再产生新的长期规则候选。
+
+## 2026-07-21T03:52:56+08:00 · Material 3 总收敛 Task 8 设置首页与默认模型完成
+
+type: implementation-checkpoint
+scope: Nexara Android Material 3 convergence Task 8
+status: done
+tags: [android, material3, settings, provider, model-picker, accessibility, screenshot]
+continuity: resume
+continuity-key: nexara-md3-redesign
+
+### Summary
+
+- 设置首页、Provider 列表与四角色默认模型页面已完成 Task 8 的 RED、GREEN、全量质量门禁、API 31/35/36、85 张 Screenshot、actual 人工检查和 Terra/Sol 双复审，可以标记 done。
+- 下一恢复点为 Task 9 记忆、索引和检索设置迁移；后续 Task 9-14 仍需串行闭合，整体发行继续 NO-GO。
+
+### Changed
+
+- 设置首页移除应用/Provider 双 Tab、内嵌 Provider 列表和四个首页模型 Picker，改为账户、通用、AI/模型、知识/检索、工具/数据、关于六个连续 Material 3 分组；主题偏好继续由 typed `ThemePreferenceStore` 投影。
+- 新增独立 Provider 列表与默认模型二级路由。Provider 行整行进入模型管理，顶栏新增，溢出菜单编辑/删除；默认 Provider 在 UI 和生产层不可删除，额外 Provider 删除同步清理所属模型与四预设引用。
+- 默认模型页严格保留摘要、图像、嵌入、重排四角色，共用 Task 7 模型选择器和统一元数据投影；选择立即持久化，返回不二次写入。设备 fixture 使用每次唯一 ID 并恢复 onboarding 偏好，避免污染模拟器用户数据。
+
+### Validation
+
+- TDD：IA、导航和默认模型契约先对旧实现取得真实 RED；复审先后补充 Provider 删除一致性，以及禁止首页同步全量刷新/删除模型清理持久化键两组测试，各取得 2/2 预期 RED，生产修正后转为 GREEN，未使用 disabled、注释或临时 stub。
+- 全量 JVM 2100 项，0 failure/error、14 skip；Lint 0 Error/Fatal；AndroidTest Kotlin 编译通过；Screenshot 85/85，0 failure/error/skip。skip 未记为 PASS。
+- API 31、API 35、API 36 的 `UserSettingsAccessibilityTest,DefaultModelsInteractionTest` 各 22/22，0 failure/error/skip；覆盖六段 IA、Provider 二级路由、四角色即时持久化、角色过滤、48dp 与按钮语义。
+- 主控逐张检查 9 张设置首页、Provider 与默认模型 actual，确认常规、2.0x、横屏和平板无裁切、重叠或不可读状态。Terra/Sol 最终独立复审均为 Critical 0、Important 0。
+
+### Next
+
+1. 从 Task 9 的 RAG/Search 业务保持和 Material 契约 RED 开始，串行迁移五个记忆、索引和检索设置页面。
+2. 后续 Task 10-13 继续迁移 Provider 表单/模型页、其余设置树和全站主题；每个 Task 独立复审、commit 与 push。
+3. Task 14 完成 500 模型性能、完整设备矩阵、当前签名候选与最终 DIA/HLG；真机 TalkBack、核心业务、当前提交远端 CI、tag workflow 和 GitHub Release 未闭合前保持 NO-GO。
+
+### Risks
+
+- Task 8 只完成设置 IA、Provider 列表与默认模型页；RAG 高级设置、Provider 表单/模型页和全站浅色迁移仍未完成。
+- 85 张静态 Screenshot 不替代真实 TalkBack 音频、完整焦点遍历、滚动性能采样或用户真机核心业务验收。
+- `artifacts/` 与三个 `.nexara-workspace-*` 仍是受保护未跟踪目录，未读取、未修改、未暂存；本任务未接触签名材料或 API Key。
+
+### DIA
+
+DIA: 已同步 CHANGELOG、架构快速参考、Material 3 实施计划、发行验证账本、Screenshot reference 与本 handover；README、公开 API、数据库 schema 与 Provider 协议无范围变化。
+
+### HLG
+
+HLG: 已按 `continuity-key: nexara-md3-redesign` 追加 Task 8 done 记录；使用 HLG Skill 重建索引。未发现新的长期规则候选。
