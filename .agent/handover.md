@@ -5299,3 +5299,51 @@ DIA: 已同步 CHANGELOG、架构快速参考、Material 3 实施计划、发行
 ### HLG
 
 HLG: 已按 `continuity-key: nexara-md3-redesign` 追加 Task 8 done 记录；使用 HLG Skill 重建索引。未发现新的长期规则候选。
+
+## 2026-07-21T05:41:27+08:00 · Material 3 总收敛 Task 9 记忆与检索设置完成
+
+type: implementation-checkpoint
+scope: Nexara Android Material 3 convergence Task 9
+status: done
+tags: [android, material3, rag, search, accessibility, concurrency, screenshot]
+continuity: resume
+continuity-key: nexara-md3-redesign
+
+### Summary
+
+- 全局 RAG、Web Search、高级检索、知识图谱高级配置和 Agent 检索五个设置页已迁移为连续 Material 3 参数表面；Task 9 的 RED、GREEN、全量质量门禁、API 31/35/36、90 张 Screenshot、actual 人工检查和 Terra/Sol 双复审全部闭合。
+- 下一恢复点为 Task 10 Provider 表单与密钥交互；Task 10-14 仍需串行完成，整体发行继续 NO-GO。
+
+### Changed
+
+- 五页移除 Glass、硬编码页面颜色与嵌套卡片，统一使用 `ListItem`、标准 segmented control、Slider、Switch、RadioButton、分隔线和确认对话框；禁用态只使用 Material 标准颜色。
+- Global、Advanced 和 Agent 的 UI 动作使用基于当前值的 receiver transform；`RagViewModel` 在同一串行临界区内执行当前配置变换、状态发布、持久化和运行时重建，避免 CAS 回调副作用与并发旧值后写。
+- Global 预设与清理单选、Advanced 开关、Agent 三个开关均具备单一父级操作节点；子 Switch/RadioButton 不再重复创建点击焦点。Agent 恢复自然视觉遍历顺序，设备测试从未合并语义树验证开关节点顺序。
+- Tavily 密钥继续通过短生命周期编辑器完成掩码、揭示、保存和清除，明文不进入持久 UI State；域名添加/删除朗读包含规则类型与目标。
+
+### Validation
+
+- TDD：五页旧视觉合同取得预期 RED；Sol 首轮复审发现 `StateFlow.update` CAS 回调内持久化副作用后，并发 JVM 契约先因缺少可控保存入口取得编译 RED，再以双线程屏障和完整保存序列转为 GREEN。
+- 最终全量 JVM 2106 项，0 failure/error、14 skip；Lint 0 Error/Fatal；AndroidTest Kotlin 编译通过；Screenshot 90/90，0 failure/error/skip。skip 未记为 PASS。
+- API 31、API 35、API 36 的 `RagSettingsAccessibilityTest` 各 6/6，0 failure/error/skip；覆盖真实 Slider、Preset、Tavily、域名、清理确认、父子唯一操作、角色、选中状态、配置变换和自然语义顺序。
+- 主控逐张检查 5 张新增 actual，常规、浅色/深色、横屏与 2.0x 均无裁切、重叠或低对比。Terra/Sol 最终独立复审均为 Critical 0、Important 0，Sol 最终质量复审 Minor 0。
+
+### Next
+
+1. 从 Task 10 Provider 表单与密钥交互的 RED 开始，保持协议、测试连接和保存行为不变，迁移为无嵌套卡片的标准 Material 3 表单。
+2. 后续 Task 11-13 继续迁移 Provider 模型页、主题/其余设置树和全站主题表面，每个 Task 独立复审、commit 与 push。
+3. Task 14 完整复跑本地发行门禁、500 模型性能、当前签名候选与 API 35/36 冷安装；真机 TalkBack、核心业务、当前提交远端 CI、tag workflow 和 GitHub Release 未闭合前保持 NO-GO。
+
+### Risks
+
+- 同步配置保存器仍在调用线程内执行，后续性能轮次应观察高频 Slider 操作；当前行为与既有即时生效语义一致，未发现设备卡顿证据。
+- 90 张静态 Screenshot 不替代真实 TalkBack 音频、完整真机焦点遍历或用户核心业务人工验收。
+- `artifacts/` 与三个 `.nexara-workspace-*` 仍是受保护未跟踪目录，未读取、未修改、未暂存；本任务未接触签名材料或 API Key。
+
+### DIA
+
+DIA: 已同步 CHANGELOG、架构快速参考、Material 3 实施计划、发行验证账本、五张 Screenshot reference 与本 handover；README、数据库 schema、Provider 协议与公开 API 无范围变化。
+
+### HLG
+
+HLG: 已按 `continuity-key: nexara-md3-redesign` 追加 Task 9 done 记录；使用 HLG Skill 重建索引。未发现新的长期规则候选。
