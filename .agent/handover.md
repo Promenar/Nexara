@@ -5103,3 +5103,50 @@ DIA: 已同步 CHANGELOG、Material 3 设计规格与实施计划、四张 Scree
 ### HLG
 
 HLG: 已按 `continuity-key: nexara-md3-redesign` 追加 Task 4.1 done 记录；使用 HLG Skill 重建索引。未发现需要另行沉淀到 AGENTS.md 或 Skill 的新长期规则候选。
+
+## 2026-07-20T21:37:47+08:00 · 流体导航 Tab 水波纹胶囊裁剪闭环
+
+type: implementation-checkpoint
+scope: Nexara Android Material 3 convergence Task 4.1 ripple follow-up
+status: done
+tags: [android, material3, navigation, ripple, accessibility, visual-validation, signed-apk]
+continuity: resume
+continuity-key: nexara-md3-redesign
+
+### Summary
+
+- 用户在实机反馈流体选中指示器已经满意，但底层三个 Tab 的 Material bounded ripple 仍按矩形槽位绘制，按压时露出方形边界。已把每个 Tab 的交互层裁剪为 `CircleShape`，保留原生水波纹和既有水滴切换动画。
+- 本跟进修复已完成 API 35 真按压帧验证、导航设备回归、全量 JVM/Lint、签名 APK 重建与冷安装；下一恢复点仍为 Task 6，整体发行继续 NO-GO。
+
+### Changed
+
+- `MainTabScaffold.kt`：在三个 Tab 的 `minimumInteractiveComponentSize()` 与 `selectable(...)` 之间增加 `clip(CircleShape)`；没有关闭 indication，没有改变 `Role.Tab`、48dp 点击区、选中状态、水滴位移或形变参数。
+- 设计规格、实施计划、CHANGELOG 和发行验证账本同步冻结“保留 Material bounded ripple，但只能在完整胶囊边界内扩散”的契约。
+
+### Validation
+
+- 原生 Spark Agent `Jason`（`019f7fb2-08c6-7a30-9894-811470c7a81d`）只修改 `MainTabScaffold.kt` 的 import 与交互层裁剪，未执行测试；主控独立检查完整 diff 和 modifier 顺序。
+- 定点 JVM `FluidNavigationMotionTest`、AndroidTest Kotlin 编译与 Screenshot validation 通过；Screenshot 仍为 75/75，静态终态无基线变化。
+- 可见 API 35 `AdaptiveNavigationTest` 6/6，0 failure/error/skip；水滴形变、快速切换、0x 动画缩放、Tab 语义和内容避让保持通过。
+- 主控在 API 35 Debug 运行态选中“设置”并对未选中的“知识库”发送真实 DOWN 事件，分别抓取同状态基线与按压帧。导航区域 44,040 个变化像素全部位于知识库 Tab 的胶囊边界内，胶囊外变化像素为 0；多模态检查确认不再出现方形 ripple 边框。
+- 全量 JVM 2037 项，0 failure/error、14 skip；Lint 0 Error/Fatal、403 warnings。skip 未记为 PASS。
+- 当前签名 APK 为 18,283,400 bytes，SHA-256 `e6c1532461f8e1ae1595a06aac0115268cc6e481961dc08b366e8a2bf533e969`；统一验证器、单一 V2 签名者、登记证书与 16 KiB zipalign 通过。API 35 冷安装后启动耗时 200ms，5 秒后进程存活且 crash buffer 为空。
+
+### Next
+
+1. 从 Task 6 助手会话和低频列表顶栏搜索模式 RED 恢复，不继续回改 Task 4.1 导航视觉。
+2. 后续视觉任务继续逐轮真实按压/滚动检查、独立复核、commit/push；当前新哈希 API 36、真机 TalkBack、核心业务验收、远端 CI、tag workflow 和 GitHub Release 仍待闭合。
+
+### Risks
+
+- 当前设备像素验证覆盖 API 35 深色运行态；深浅静态终态由既有 75 张 Screenshot 覆盖，但浅色按压帧未单独抓取。
+- 当前签名 APK 是阶段预览候选；Task 6 及后续 Material 3 迁移会继续改变源码和哈希，不能视为最终 GitHub Release 资产。
+- `artifacts/` 与三个 `.nexara-workspace-*` 仍是受保护未跟踪目录，未读取、未修改、未暂存；签名材料未提供给 Agent 或写入仓库。
+
+### DIA
+
+DIA: 已同步 Material 3 设计规格与计划、CHANGELOG、v0.2-beta 验证账本和本 handover；README、架构/API、Provider、RAG 与数据契约无变化。
+
+### HLG
+
+HLG: 已按 `continuity-key: nexara-md3-redesign` 追加 ripple follow-up done 记录；使用 HLG Skill 重建索引。未发现新的长期规则候选。
