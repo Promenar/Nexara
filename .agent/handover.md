@@ -4713,3 +4713,51 @@ DIA: 已同步 CHANGELOG、README、架构、ADR-021、规格、实施计划、r
 ### HLG
 
 HLG: 已按 `continuity-key: v0.2-beta-release-readiness` 追加本记录；使用 HLG Skill 重建索引。未发现需要越过现有 ADR/项目文档另行沉淀的长期规则候选。
+
+## 2026-07-20T12:12:06+08:00 · Material 3 交互、设置与主题总收敛方案落盘
+
+type: design-plan
+scope: Nexara Android Material 3 convergence
+status: ready-for-implementation
+tags: [android, material3, settings, navigation, theme, accessibility, plan]
+continuity: resume
+continuity-key: nexara-md3-redesign
+
+### Summary
+
+- 在既有四阶段 MD3 改造基础上，冻结新的总收敛方向：设置首页与二三级页改为连续 Material 列表/表单语言，Provider 与默认模型进入独立二级页，模型管理使用摘要列表与独立编辑表面。
+- 会话附件入口改为位于输入栏裁剪外父级 overlay 的锚定动作簇；低频搜索迁入 Top App Bar 搜索模式；手机使用标准 `NavigationBarItem` tonal 浮动导航，大屏继续使用 `NavigationRail`。
+- 浅色、深色、系统模式与 Android 12+ 动态色进入正式范围；主题由 Application 级 `ThemePreferenceStore` 作为唯一事实源，完整 UI、Markdown、WebView、图表与 LaTeX 统一消费语义色。
+
+### Changed
+
+- 新增 `docs/superpowers/specs/2026-07-20-nexara-md3-convergence-design.md`，冻结信息架构、组件边界、模型三态投影、主题数据契约、性能、无障碍和非目标。
+- 新增 `docs/superpowers/plans/2026-07-20-nexara-md3-convergence.md`，拆为 14 个串行 Task，包含真实 RED→GREEN、golden 逐路径纳管、完整 UI 静态扫描、API 31/35/36、500 模型性能、签名 APK 与发行门禁。
+- registry 已登记两份新文档；未修改产品源码、测试、截图或发行候选。
+
+### Validation
+
+- 主控完成全部 Read/Modify/Create 路径核验、占位符扫描、Task/commit 数量、现有 `FrameMetricsAggregator` 夹具、renderer 文件与 Git 忽略规则检查；`git diff --check` 通过。
+- 第一轮独立 Sol 复审为 Needs fixes，报告 2 个 Critical、8 个 Important；主控逐项修订模型投影、完整 UI 扫描、默认模型页、附件 overlay、TDD、golden、manifest、动态色资源和最终发行命令。
+- 第二轮 Sol 复审继续发现 1 个 Critical、4 个 Important；补齐用户字段 `ModelMetadataOverride`、共享扫描规则、真实默认模型交互 RED、可跟踪 manifest 与签名环境预检后，定点复审确认全部 Closed，Verdict 为 Approve。
+- 本轮仅文档/治理变更，未运行 Android 构建、JVM、截图或设备测试；这些从计划 Task 1 的当前候选基线开始执行。
+
+### Next
+
+1. 从 Task 1 开始，只读确认规划基线已跟踪，并冻结当前 JVM、Screenshot、Lint、AndroidTest 编译与完整 UI 静态清单。
+2. 按 Task 2–13 串行实施主题状态、共享原语、导航/附件/搜索/模型选择、设置树和全站主题迁移；每个 Task 独立 RED→GREEN、视觉审阅、复审、commit 与 push。
+3. Task 14 运行 API 31/35/36、500 模型性能、当前 release APK、API 35/36 冷安装、DIA/HLG；真机 TalkBack、核心业务、远端 CI、tag workflow 和 GitHub Release 未闭合前保持 NO-GO。
+
+### Risks
+
+- 总收敛横跨 61+ 现有静态主题消费文件和多个共享热点，必须遵守任务串行与显式 manifest，禁止目录级暂存夹带用户改动。
+- 截图自动 PASS 不等于视觉通过；每轮更新 golden 前后都要检查 actual，最终自动语义测试仍不能替代用户真机 TalkBack 听觉/焦点遍历。
+- 本记录只证明设计和计划可执行，不证明任何 UI 改造、设备矩阵或发行门禁已经通过；整体发行继续 NO-GO。
+
+### DIA
+
+DIA: 已新增并登记 Material 3 总收敛规格与实施计划；无产品行为变化，因此本轮不更新 CHANGELOG 或发行验证账本。
+
+### HLG
+
+HLG: 已按 `continuity-key: nexara-md3-redesign` 追加 ready-for-implementation 记录；将使用 HLG Skill 重建索引。未发现需要另行写入 AGENTS.md 或 Skill 的新长期规则候选。

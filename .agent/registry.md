@@ -12,6 +12,8 @@
 - docs/superpowers/plans/2026-07-16-nexara-md3-phase2-management.md — Nexara Material 3 第二阶段管理母版实施计划（设置列表、Provider、表单、模型渐进披露与视觉/设备门禁）
 - docs/superpowers/plans/2026-07-16-nexara-md3-phase3-rag-resources.md — Nexara Material 3 第三阶段知识库与资源管理实施计划（状态原语、文件树、Memory、RAG 详情、资源管理器与回收站）
 - docs/superpowers/plans/2026-07-16-nexara-md3-phase4-doceditor.md — Nexara Material 3 第四阶段 DocEditor 实施计划（保存/重命名/索引可靠性、长文档性能、视觉、响应式与无障碍）
+- docs/superpowers/specs/2026-07-20-nexara-md3-convergence-design.md — Nexara Material 3 交互、设置与主题总收敛规格（导航、附件、搜索、模型选择、完整设置层级、浅色/系统/动态主题与视觉门禁）
+- docs/superpowers/plans/2026-07-20-nexara-md3-convergence.md — Nexara Material 3 总收敛 14-Task 实施计划（TDD、逐任务提交、完整 UI 主题迁移、API 31/35/36、性能、截图、TalkBack 与发行收口）
 - docs/superpowers/plans/2026-07-17-model-catalog-and-chat-metadata.md — 分层模型元数据注册中心、离线目录供应链、Provider/引导迁移、友好名称统一与 AI 消息尾注左对齐实施计划
 - docs/superpowers/specs/2026-07-20-chat-full-context-documents-and-branching.md — 输入栏 TXT/MD 完整上下文、路由后预算硬门禁、可回传导出与消息分支冻结规格
 - docs/superpowers/plans/2026-07-20-chat-full-context-documents-and-branching.md — 会话完整文档、草稿时序、导出、分支、设备与发行验证实施计划
