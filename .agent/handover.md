@@ -5051,3 +5051,55 @@ DIA: 已同步 CHANGELOG、架构快速参考、Material 3 总收敛实施计划
 ### HLG
 
 HLG: 已按 `continuity-key: nexara-md3-redesign` 追加 Task 5 done 记录；将使用 HLG Skill 重建索引。未发现需要另行沉淀到 AGENTS.md 或 Skill 的新长期规则候选。
+
+## 2026-07-20T19:51:10+08:00 · Material 3 总收敛 Task 4.1 流体胶囊导航返修完成
+
+type: implementation-checkpoint
+scope: Nexara Android Material 3 convergence Task 4.1
+status: done
+tags: [android, material3, navigation, animation, accessibility, screenshot, signed-apk]
+continuity: resume
+continuity-key: nexara-md3-redesign
+
+### Summary
+
+- 延续 Task 4 与 Task 5 完成记录，按用户实机视觉反馈把手机底部导航返修为更矮的全胶囊坞和单一流体选中指示器；Task 4.1 的 TDD、API 35 设备门禁、四张 actual、全量回归与独立复审全部闭合，可标记 done。
+- 当前源码已构建新的稳定证书签名 APK 并完成 API 35 冷安装启动 smoke；下一恢复点为 Task 6 助手会话与低频列表顶栏搜索迁移。当前新哈希尚未完成 API 36 冷安装、真机 TalkBack/核心业务验收、远端 CI、tag workflow 与 GitHub Release，整体发行继续 NO-GO。
+
+### Changed
+
+- `MainTabScaffold` 手机端改为 64dp `CircleShape` tonal Surface；三个目的地保留完整 48dp 点击区域，选中项由一枚 48dp 高移动胶囊显示图标与标签，未选中项只显示图标。600dp 及以上继续使用既有 `NavigationRail`。
+- 指示器使用弹簧横向位移和 340ms 有界横向拉伸/纵向收缩；快速反向切换从当前形变接续，不在中途重置。动画值在 placement 与 graphics layer 阶段消费，避免逐帧重组；系统 `MotionDurationScale=0` 时直接到终态。
+- 指示器改用 `surfaceContainerHigh` 与 `primary` 的不透明预混色，并以 `zIndex(1f)` 覆盖图标层，关闭移动首帧旧图标穿透。三项目的地继续提供 `Role.Tab`、selected、完整名称与至少 48dp 触控语义。
+- 新增 `FluidNavigationMotionTest`，扩展 `AdaptiveNavigationTest` 与 Screenshot fixture；深色、浅色、英文 2.0x、599dp 紧凑横屏四张手机 reference 已更新，平板 Rail reference 保持不变。
+
+### Validation
+
+- RED：定点 JVM 首次进入 `compileDebugUnitTestKotlin`，只因缺少 `fluidNavigationIndicatorScale` 和 `fluidNavigationTargetIndex` 失败；未使用 disabled、注释或临时 stub。GREEN 后定点测试与 AndroidTest Kotlin 编译通过。
+- 可见 Pixel 7 API 35 `AdaptiveNavigationTest` 6/6，0 failure/error/skip；覆盖断点、Tab/selected/48dp、内容避让、快速连点、形变中点、反向切换首帧连续性与 0x 动画缩放。
+- Screenshot 75/75；主控逐张检查深色、浅色、英文 2.0x 与紧凑横屏 actual，并在实际 Agent Hub debug 运行态检查手机坞，无裁切、重叠、标签溢出或系统 Insets 异常。
+- 全量 JVM 2037 项，0 failure/error、14 skip；Lint 0 Error/Fatal、403 warnings；`git diff --check` 通过。skip 未记为 PASS。
+- 原生 Spark 会话 smoke 输出 `SPARK_NATIVE_SMOKE_OK`；Spark Agent `Banach` 只施工 RED 测试。独立 Sol `Locke` 三轮复审关闭动画中断重置、双指示内容、设备时序覆盖、逐帧重组与旧图标穿透，最终 Critical/Important/Minor 均为 0，Task 4.1 代码级 GO。
+- Luna `Copernicus` 的静态视觉复核中，“预览占位内容不是启动页”和“用户明确选择仅选中项显示标签”两项不采纳为缺陷；其“静态截图不能证明动画”的有效意见已由 API 35 中点、反向连续性与 0x 时序测试闭合。
+- 签名构建首次在 `:app:clean` 被 `app/build/.DS_Store` 临时文件阻断；仅删除该构建目录临时文件后，`clean :app:assembleRelease --rerun-tasks` 66 tasks 成功。APK 验证器 23/23，包身份、单一 V2 签名者、登记证书、敏感/GGUF 扫描、16 KiB zipalign 与 checksum 全通过。
+- 当前 APK 为 18,283,400 bytes，SHA-256 `c506a95114deed4f593e55acd5e187d0a4ddb5b92e0c49164d8853a4721c8901`。API 35 完成卸载旧包、冷安装、明确 launcher Activity 启动，冷启动 206ms，5 秒后应用仍在前台且 crash buffer 为空；当前新哈希的 API 36 冷安装未执行。
+
+### Next
+
+1. 从 Task 6 写助手会话列表连续 Material 3 行和顶栏搜索模式 RED；不回改已闭合的附件动作簇与流体导航契约。
+2. 后续模型选择器、设置树、浅色全站 actual 与 500 模型性能继续按计划串行推进，每轮独立复审后 commit/push。
+3. 最终候选仍须补当前新哈希 API 36 冷安装、真机 TalkBack 与核心业务验收、当前提交远端 CI、可验证 tag、tag workflow 和 GitHub Release。
+
+### Risks
+
+- 静态 screenshot 只证明终态布局；水滴形变与中断连续性由 API 35 时序测试证明，两类证据不得互相替代。
+- 当前签名 APK 是用户实机预览包，不是最终可发行结论；Task 6 及后续视觉迁移会继续改变源码和产物哈希。
+- `artifacts/` 与三个 `.nexara-workspace-*` 仍是受保护未跟踪目录，未读取、未修改、未暂存；签名材料仅由主控向本地 Gradle 子进程注入，未写入源码、报告或 Agent 提示词。
+
+### DIA
+
+DIA: 已同步 CHANGELOG、Material 3 设计规格与实施计划、四张 Screenshot reference、v0.2-beta 验证账本和本 handover；README、架构/API、Provider、RAG 与数据契约无变化。
+
+### HLG
+
+HLG: 已按 `continuity-key: nexara-md3-redesign` 追加 Task 4.1 done 记录；使用 HLG Skill 重建索引。未发现需要另行沉淀到 AGENTS.md 或 Skill 的新长期规则候选。
