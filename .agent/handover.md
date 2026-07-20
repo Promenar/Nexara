@@ -4660,3 +4660,56 @@ DIA: 无新增项目文档影响。
 ### HLG
 
 HLG: 已通过文件末尾追加记录完成顺序勘误，未删除或改写先前记录。
+
+## 2026-07-20T09:25:25+08:00 · 会话完整文档上下文、导出与消息分支交付
+
+type: implementation
+scope: Nexara chat full-context documents and branching
+status: done
+tags: [android, chat, documents, export, branching, release]
+continuity: waiting
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+- 输入栏现支持一次选择多个 TXT/Markdown，并把正文快照作为完整上下文发送；知识库继续只承担关联度检索，两条语义不混用。
+- 会话 Markdown/TXT 导出包含角色、时间、实际模型与文档全文，可重新作为附件上传；稳定消息可创建独立会话分支。
+- 最终 Provider 路由后以完整 Prompt 执行 fail-closed 容量门禁；未知或超限不截断、不摘要、不转 RAG，并在网络请求前结束。
+- 重试期间保留旧 AI 回复；新回复成功后才替换。失败或取消按生成前消息基线回滚本轮全部 Assistant、工具结果与占位，避免多轮工具链残留。
+
+### Changed
+
+- 新增 `MessageDocumentAttachment`、受限 SAF 文本读取、完整上下文格式化、最终 Prompt 预算门禁与 `BranchSessionUseCase`。
+- 聊天输入区新增文档选择、附件草稿与发送后摘要；消息菜单新增分支动作，导出强化为可回传文本。
+- 文本、图片与文档草稿只在 `promptAccepted` 后消费；重试旧回复在新候选失败时保持可恢复。
+- 同步 CHANGELOG、README、架构、ADR-021、规格、实施计划、registry 与 v0.2-beta 发行验证账本。
+
+### Validation
+
+- TDD：多轮工具重试失败回滚测试先取得预期 RED，再以消息基线补偿后 GREEN；定点 JVM 76 项通过。
+- 全量：`--rerun-tasks` 执行 2021 项 JVM，0 failure/error、14 skip；64/64 Screenshot；Lint 0 errors、401 warnings、24 hints；AndroidTest Kotlin 编译及 Debug/Test APK 构建通过。
+- 设备：API 31/35/36 相关 `ChatScreenContentStateTest` 各 8/8。API 35/36 当前签名 release 首屏 actual 已人工检查，无空白、裁切或系统栏重叠。
+- 复审：Terra/Sol 最终均为 Critical/Important 0；Sol 指出的多轮工具消息残留已完成 RED→GREEN 并经复核关闭。
+- Release：R8 签名 APK 18,250,632 bytes，SHA-256 `50ccd9a2906dff4a7b54f6304be253bdbe1ffc6414df70fb33002acfc9558286`；包身份、唯一签名者、登记证书、敏感/GGUF/ZIP/体积、16 KiB zipalign 通过。API 35/36 同哈希冷安装、设备字节回读、前台启动和应用级 crash/ANR 复验通过。API 36 首轮全局 crash buffer 出现系统 Google TTS SIGILL，Nexara 始终存活且位于前台；清空后按应用包名复验无 Nexara crash/ANR。
+- Git：实现候选提交 `54a968774521afcf6e8c7181a63a82dff9e98fcb` 已推送至 `origin/codex/md3-redesign`。
+
+### Next
+
+1. 等待并核对当前候选的远端 quality、API 31、API 35、API 36 CI 矩阵；旧 run 不替代当前提交。
+2. 用户在当前签名 APK 上完成真机 TalkBack 完整听觉/焦点遍历与核心业务人工验收。
+3. 当前提交远端矩阵与真机验收闭合后，仍需用户单独授权才能创建可验证 tag、运行 tag release workflow 和发布 GitHub Release。
+
+### Risks
+
+- 本会话未注入六项 `NEXARA_TEST_LLM_*` 运行时变量，因此没有重跑真实 Provider；2026-07-19 的 Provider PASS 仅是前一候选历史证据，不计为本候选复验。
+- TXT/Markdown 首轮按完整上下文发送；PDF、DOCX、网页、音视频和 Provider Files API 仍为明确非目标。
+- 自动语义、截图和模拟器不能替代用户真机 TalkBack 音频、真实触控手感与核心业务验收。
+- 当前远端 CI、真机验收、tag workflow 与 GitHub Release 未闭合，整体发行保持 NO-GO。
+
+### DIA
+
+DIA: 已同步 CHANGELOG、README、架构、ADR-021、规格、实施计划、registry 与 v0.2-beta 发行验证账本，记录数据契约、用户可见行为、测试矩阵和签名 APK 证据。
+
+### HLG
+
+HLG: 已按 `continuity-key: v0.2-beta-release-readiness` 追加本记录；使用 HLG Skill 重建索引。未发现需要越过现有 ADR/项目文档另行沉淀的长期规则候选。
