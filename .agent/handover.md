@@ -5003,3 +5003,51 @@ DIA: 当前仅追加阶段性交接；Task 5 的 CHANGELOG、架构、计划和�
 ### HLG
 
 HLG: 已按 `continuity-key: nexara-md3-redesign` 追加 Task 5 阶段暂停记录；索引将由 HLG Skill 重建。未发现新的长期规则候选。
+
+## 2026-07-20T18:44:21+08:00 · Material 3 总收敛 Task 5 锚定式附件动作簇完成
+
+type: implementation-checkpoint
+scope: Nexara Android Material 3 convergence Task 5
+status: done
+tags: [android, material3, attachment, animation, accessibility, screenshot]
+continuity: resume
+continuity-key: nexara-md3-redesign
+
+### Summary
+
+- 延续 `2026-07-20T15:53:03+08:00` 阶段记录，Task 5 已完成最终返修、全量门禁、API 31/35/36 设备矩阵、五张视觉检查及 Sol/Luna 双复审，可标记 done。
+- 下一恢复点为 Task 6 助手会话与低频列表顶栏搜索迁移；整体发行仍为 NO-GO。
+
+### Changed
+
+- `AttachmentActionMenu` 作为整个聊天 `Scaffold` 的后置覆盖层，关闭层覆盖顶栏并在退出动画期间继续拦截触摸；首次点击顶栏只关闭菜单，不触发底层动作。
+- `ChatScreenContent` 使用可提升的展开状态；首轮布局坐标尚未回报时使用根容器内受约束位置，之后切换真实按钮与 composer 坐标。生成或文档导入开始后自动关闭并禁用。
+- 截图夹具删除手工叠加菜单，只渲染单一生产菜单；原“IME viewport”更名为“compact viewport”，真实 IME 由设备测试单独证明。
+- 新增顶栏不穿透、禁用动作不回调及 320dp + 2.0x 真实聊天页集成测试；五张 reference 覆盖普通、英/中 2.0x、紧凑视口和 RTL。
+
+### Validation
+
+- 全量 JVM 2034 项，0 failure/error、14 skip；skip 未记为 PASS。
+- Lint 0 Error/Fatal、403 warnings、25 hints；AndroidTest Kotlin 编译与 Screenshot 73/73 通过。
+- 可见模拟器 API 31、35、36 相关组合各 29/29，0 failure/error/skip；API 36 0x 动画倍率下附件测试 12/12，结束后动画倍率 readback 为 `1/1/1`。
+- 主控逐张检查五张 Task 5 reference，无重复菜单、裁切、重叠或控制区遮挡。
+- 独立 Sol `019f7f04-6684-7463-b31c-dd58701057ab` 与 Luna `019f7f04-984b-7cc3-8707-393b53082558` 最终均为 Critical 0、Important 0、Minor 0、PASS。
+
+### Next
+
+1. 从 Task 6 写助手会话列表连续 Material 3 行与顶栏搜索模式 RED，不回改 Task 5 热点逻辑。
+2. 后续任务继续逐轮独立复审、提交并推送；设置树、模型选择器、浅色全站 actual 与最终发行门禁仍按计划串行闭合。
+3. 真机 TalkBack/核心业务人工验收、当前最终候选远端 CI、可验证 tag、tag workflow 与 GitHub Release 完成前保持 NO-GO。
+
+### Risks
+
+- 静态 compact viewport 只证明紧凑布局视觉，真实 IME 证据来自设备测试，二者不得互相替代。
+- `artifacts/` 与三个 `.nexara-workspace-*` 仍是受保护未跟踪目录，未读取、未修改、未暂存。
+
+### DIA
+
+DIA: 已同步 CHANGELOG、架构快速参考、Material 3 总收敛实施计划、五张 Screenshot reference 与 v0.2-beta 验证账本；README 无范围变化。
+
+### HLG
+
+HLG: 已按 `continuity-key: nexara-md3-redesign` 追加 Task 5 done 记录；将使用 HLG Skill 重建索引。未发现需要另行沉淀到 AGENTS.md 或 Skill 的新长期规则候选。

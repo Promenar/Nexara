@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-07-20T15:53:49+08:00
+> generated_at: 2026-07-20T18:45:20+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -8,13 +8,14 @@
 
 | continuity-key | continuity | last update | status | scope | title | source |
 | :--- | :---: | :---: | :---: | :--- | :--- | :--- |
-| nexara-md3-redesign | resume | 2026-07-20 | in-progress | Nexara Android Material 3 convergence Task 5 | Material 3 总收敛 Task 5 设备门禁后阶段暂停 | `.agent/handover.md` · `2026-07-20T15:53:03+08:00` |
+| nexara-md3-redesign | resume | 2026-07-20 | done | Nexara Android Material 3 convergence Task 5 | Material 3 总收敛 Task 5 锚定式附件动作簇完成 | `.agent/handover.md` · `2026-07-20T18:44:21+08:00` |
 | v0.2-beta-release-readiness | waiting | 2026-07-20 | done | Nexara chat full-context documents and branching | 会话完整文档上下文、导出与消息分支交付 | `.agent/handover.md` · `2026-07-20T09:25:25+08:00` |
 
 ## Recent 7-Day Catalog
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-07-20 | iso | done | resume | Nexara Android Material 3 convergence Task 5 | [android, material3, attachment, animation, accessibility, screenshot] | Material 3 总收敛 Task 5 锚定式附件动作簇完成 | `.agent/handover.md` · `2026-07-20T18:44:21+08:00` |
 | 2026-07-20 | iso | in-progress | resume | Nexara Android Material 3 convergence Task 5 | [android, material3, attachment, animation, accessibility, screenshot] | Material 3 总收敛 Task 5 设备门禁后阶段暂停 | `.agent/handover.md` · `2026-07-20T15:53:03+08:00` |
 | 2026-07-20 | iso | done | resume | Nexara Android Material 3 convergence Task 4 | [android, material3, navigation, adaptive, screenshot, accessibility] | Material 3 总收敛 Task 4 自适应标准导航完成 | `.agent/handover.md` · `2026-07-20T14:54:00+08:00` |
 | 2026-07-20 | iso | done | resume | Nexara Android Material 3 convergence Task 3 | [android, material3, search, settings, accessibility, screenshot] | Material 3 总收敛 Task 3 共享管理原语完成 | `.agent/handover.md` · `2026-07-20T14:32:00+08:00` |
