@@ -5150,3 +5150,53 @@ DIA: 已同步 Material 3 设计规格与计划、CHANGELOG、v0.2-beta 验证�
 ### HLG
 
 HLG: 已按 `continuity-key: nexara-md3-redesign` 追加 ripple follow-up done 记录；使用 HLG Skill 重建索引。未发现新的长期规则候选。
+
+## 2026-07-20T23:08:30+08:00 · Material 3 总收敛 Task 6 助手会话与顶栏搜索完成
+
+type: implementation-checkpoint
+scope: Nexara Android Material 3 convergence Task 6
+status: done
+tags: [android, material3, search, sessions, accessibility, screenshot, signed-apk]
+continuity: resume
+continuity-key: nexara-md3-redesign
+
+### Summary
+
+- 助手首页与会话列表已完成顶栏上下文搜索和连续 Material 3 列表迁移；Task 6 的 RED、GREEN、API 31/35/36、79 张 Screenshot、全量质量门禁、actual 人工检查和 Terra/Sol 双复审全部闭合，可标记 done。
+- 当前源码已 clean 构建稳定证书签名 R8 APK，并对同一哈希完成 API 35/36 冷安装启动 smoke。下一恢复点为 Task 7 模型选择器标准 Sheet 连续列表；真机 TalkBack/核心业务人工验收、当前提交远端 CI、tag workflow 与 GitHub Release 仍未闭合，整体发行继续 NO-GO。
+
+### Changed
+
+- `AgentSessionsScreen` 使用 `NexaraSearchTopBar` 和透明连续 `ListItem`，保留整行进入、时间、预览、滑动置顶/删除及删除确认；无会话和无匹配结果使用明确空态。
+- `AgentHubScreen` 的低频搜索移入顶栏，保留既有助手创建、导航和操作。两页进入搜索时记录稳定条目 ID、回退索引、像素偏移与原始数量，退出并恢复原列表后用稳定 ID 定位，避免过滤后索引漂移。
+- 会话行新增 TalkBack 置顶/取消置顶和删除自定义动作；2.0x 字体下标题与预览最多四行。新增/扩展 ViewModel、源码契约、设备和 Screenshot 测试以及中英文空态字符串。
+
+### Validation
+
+- RED：Task 6 初始 22 项中 7 项按预期失败，原因是旧固定搜索框和 Glass 会话行。新增非空短结果恢复契约后，API 35 首次真实 RED 暴露 Session 与 Hub 两处搜索退出位置恢复错误；稳定 ID + 像素偏移修复后 GREEN，未使用 disabled、注释或临时 stub。
+- 全量 JVM 2046 项，0 failure/error、14 skip；Lint 0 Error/Fatal、406 warnings；AndroidTest Kotlin 编译通过；Screenshot 79/79，0 failure/error/skip。skip 未记为 PASS。
+- API 31、API 35、API 36 的 `AgentSessionsMaterialTest,AgentHubScreenContentTest` 各 15/15，0 failure/error/skip；覆盖返回优先级、非空短结果后位置恢复、整行导航、无障碍动作、删除确认、2.0x 与空态。
+- 主控逐张检查 7 张新增或变化的 Agent Hub/Session actual，确认搜索态返回箭头、空态、长标题、长预览和 2.0x 无裁切、重叠或操作区遮挡。
+- Terra 与 Sol 最终独立只读复审均为 Critical 0、Important 0、Minor 0，Verdict PASS。OpenCode GLM-5.2 执行未产出 diff/report 后终止；AGY Gemini 因写文件权限拒绝未产出报告，二者未冒充复审通过或施工证据。
+- clean 签名构建首次因 `app/build/.DS_Store` 抢占失败；只删除构建目录可再生元数据后重跑，`clean :app:assembleRelease --rerun-tasks` 66 tasks 成功。当前 APK 为 18,315,976 bytes，SHA-256 `f54fb3f457637175544a2a2401cddd3099e6243b20411b299e53dfb14c9d457a`；统一验证器、单一 V2 签名者、登记证书、敏感/GGUF 扫描和 16 KiB zipalign 全部通过。
+- 同一 APK 在 API 35/36 均完成冷安装和明确 launcher Activity 冷启动，耗时分别为 253ms、374ms；5 秒后进程仍存活且 crash buffer 为空。
+
+### Next
+
+1. 按计划从 Task 7 模型选择器投影与 Material 契约 RED 开始，不回改已闭合的 Task 6 搜索、列表和无障碍契约。
+2. 后续设置树、搜索迁移、浅色全站 actual 与 500 模型性能继续串行推进，每轮独立复审后 commit/push。
+3. 最终候选仍须闭合用户真机 TalkBack 与核心业务人工验收、当前提交远端 CI、可验证 tag、tag workflow 和 GitHub Release。
+
+### Risks
+
+- 当前签名 APK 是 Task 6 阶段预览候选；Task 7 及后续 Material 3 迁移会继续改变源码和哈希，不能视为最终 GitHub Release 资产。
+- 79 张静态 Screenshot 证明终态布局，不替代真实 TalkBack 音频、完整焦点遍历或所有业务交互的真机人工验收。
+- `artifacts/` 与三个 `.nexara-workspace-*` 仍是受保护未跟踪目录，未读取、未修改、未暂存；签名材料只由主控注入本地 Gradle 子进程，未写入源码、报告或 Agent 提示词。
+
+### DIA
+
+DIA: 已同步 CHANGELOG、架构快速参考、Material 3 实施计划、Screenshot reference、v0.2-beta 验证账本和本 handover；README、Provider、RAG、数据结构与公开 API 无变化。
+
+### HLG
+
+HLG: 已按 `continuity-key: nexara-md3-redesign` 追加 Task 6 done 记录；使用 HLG Skill 重建索引。未发现需要另行沉淀到 AGENTS.md 或 Skill 的新长期规则候选。

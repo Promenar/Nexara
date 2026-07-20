@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-07-20T21:38:40+08:00
+> generated_at: 2026-07-20T23:09:49+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -8,13 +8,14 @@
 
 | continuity-key | continuity | last update | status | scope | title | source |
 | :--- | :---: | :---: | :---: | :--- | :--- | :--- |
-| nexara-md3-redesign | resume | 2026-07-20 | done | Nexara Android Material 3 convergence Task 4.1 ripple follow-up | 流体导航 Tab 水波纹胶囊裁剪闭环 | `.agent/handover.md` · `2026-07-20T21:37:47+08:00` |
+| nexara-md3-redesign | resume | 2026-07-20 | done | Nexara Android Material 3 convergence Task 6 | Material 3 总收敛 Task 6 助手会话与顶栏搜索完成 | `.agent/handover.md` · `2026-07-20T23:08:30+08:00` |
 | v0.2-beta-release-readiness | waiting | 2026-07-20 | done | Nexara chat full-context documents and branching | 会话完整文档上下文、导出与消息分支交付 | `.agent/handover.md` · `2026-07-20T09:25:25+08:00` |
 
 ## Recent 7-Day Catalog
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-07-20 | iso | done | resume | Nexara Android Material 3 convergence Task 6 | [android, material3, search, sessions, accessibility, screenshot, signed-apk] | Material 3 总收敛 Task 6 助手会话与顶栏搜索完成 | `.agent/handover.md` · `2026-07-20T23:08:30+08:00` |
 | 2026-07-20 | iso | done | resume | Nexara Android Material 3 convergence Task 4.1 ripple follow-up | [android, material3, navigation, ripple, accessibility, visual-validation, signed-apk] | 流体导航 Tab 水波纹胶囊裁剪闭环 | `.agent/handover.md` · `2026-07-20T21:37:47+08:00` |
 | 2026-07-20 | iso | done | resume | Nexara Android Material 3 convergence Task 4.1 | [android, material3, navigation, animation, accessibility, screenshot, signed-apk] | Material 3 总收敛 Task 4.1 流体胶囊导航返修完成 | `.agent/handover.md` · `2026-07-20T19:51:10+08:00` |
 | 2026-07-20 | iso | done | resume | Nexara Android Material 3 convergence Task 5 | [android, material3, attachment, animation, accessibility, screenshot] | Material 3 总收敛 Task 5 锚定式附件动作簇完成 | `.agent/handover.md` · `2026-07-20T18:44:21+08:00` |
