@@ -4808,3 +4808,51 @@ DIA: 已同步实施计划 Task 1 进度与 `docs/release/v0.2-beta-validation.m
 ### HLG
 
 HLG: 已按 `continuity-key: nexara-md3-redesign` 追加 Task 1 完成记录；索引将由 HLG Skill 重建。未发现需要另行沉淀到 AGENTS.md 或 Skill 的新长期规则候选。
+
+## 2026-07-20T14:08:00+08:00 · Material 3 总收敛 Task 2 自适应主题基础完成
+
+type: implementation-checkpoint
+scope: Nexara Android Material 3 convergence Task 2
+status: done
+tags: [android, material3, theme, persistence, backup, tdd]
+continuity: resume
+continuity-key: nexara-md3-redesign
+
+### Summary
+
+- Task 2 已完成：建立 Application 级唯一主题状态所有者、深浅双 ColorScheme、系统/动态色选择、系统栏明暗适配和备份恢复监听。
+- 当前只完成主题基础，不代表主题设置页或全站浅色迁移完成；下一恢复点为 Task 3 共享页面、列表、搜索与操作区原语。
+
+### Changed
+
+- 新增 `NexaraThemeMode`、`NexaraColorSource`、`NexaraThemePreferences` 与 `ThemePreferenceStore`；持久化键冻结为 `theme_mode`、`theme_color_source`，未知值回退为深色 Nexara 配色。
+- `NexaraApplication` 持有唯一 Store，`MainActivity` 按生命周期收集主题状态；`SettingsViewModel` 只保留兼容投影和委托，不再直接写主题偏好。
+- `NexaraTheme` 补齐浅色语义角色、Android 12+ 动态明暗分支和系统栏图标外观；备份白名单同步覆盖实际 `settings` 与兼容 `ui` 命名空间。
+
+### Validation
+
+- 主控保留真实 RED：定点测试在单元测试编译阶段因冻结主题接口尚不存在而失败；未使用 disabled、注释或临时 stub 掩盖。
+- 定点 GREEN 28 项，0 failure/error/skip；Debug Kotlin 与 AndroidTest Kotlin 编译通过。
+- 全量 JVM 2028 项，0 failure/error、14 skip；Screenshot 64/64；Lint 0 Error/Fatal；`git diff --check` 通过。
+- 独立 Sol 最终复审 Critical 0、Important 0、Verdict Approve；设备级系统栏/主题分支验证作为后续计划内 Minor 保留。
+- 系统时间进入 14:00 后高峰期，本轮未调用 GLM-5.2。
+
+### Next
+
+1. 从 Task 3 写共享页面、连续列表、搜索模式与操作区原语的 RED 契约。
+2. 迁移共享原语并运行定点 JVM、截图和独立复审，按任务单独提交推送。
+3. 浅色、系统跟随、动态色 actual 与 API 31/35/36 设备门禁在后续主题任务闭合；整体发行继续 NO-GO。
+
+### Risks
+
+- 主题选择 UI 尚未接通，用户当前不能从设置页切换新模式；这不影响主题状态基础的内部契约，但禁止将其描述为完整用户能力。
+- 当前 64 张截图仍是深色基线，尚未证明浅色、动态色、WebView、Markdown、图表和 LaTeX 的全站视觉一致性。
+- `artifacts/` 与三个 `.nexara-workspace-*` 仍是受保护未跟踪目录，未读取、未修改、未暂存。
+
+### DIA
+
+DIA: 已同步 CHANGELOG、架构快速参考、实施计划与 v0.2-beta 验证账本，记录主题状态架构、备份契约、验证结果和阶段边界；README 暂不宣称尚无 UI 入口的主题能力。
+
+### HLG
+
+HLG: 已按 `continuity-key: nexara-md3-redesign` 追加 Task 2 完成记录；索引将由 HLG Skill 重建。未发现需要另行沉淀到 AGENTS.md 或 Skill 的新长期规则候选。
