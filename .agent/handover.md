@@ -4954,3 +4954,52 @@ DIA: 已同步 CHANGELOG、架构快速参考、实施计划、四张深浅自�
 ### HLG
 
 HLG: 已按 `continuity-key: nexara-md3-redesign` 追加 Task 4 完成记录；索引将由 HLG Skill 重建。未发现需要另行沉淀到 AGENTS.md 或 Skill 的新长期规则候选。
+
+## 2026-07-20T15:53:03+08:00 · Material 3 总收敛 Task 5 设备门禁后阶段暂停
+
+type: implementation-checkpoint
+scope: Nexara Android Material 3 convergence Task 5
+status: in-progress
+tags: [android, material3, attachment, animation, accessibility, screenshot]
+continuity: resume
+continuity-key: nexara-md3-redesign
+
+### Summary
+
+- Task 5 的锚定式附件动作簇已完成生产实现、测试返修和 API 31/35/36 设备矩阵；用户要求在当前可验证步骤结束后阶段暂停。
+- Task 5 尚未完成独立 Sol/Luna 复审、最终全量 JVM/Lint 复跑和正式完成文档收口，因此不得标记为 done；整体发行继续 NO-GO。
+
+### Changed
+
+- 新增父布局内 `AttachmentActionMenu`，使用真实按钮/输入栏坐标、Material 3 Surface、48dp 动作行、淡入缩放与向锚点滑动过渡，不使用 `DropdownMenu` 或 Popup 偏移猜测。
+- `ChatScreenContent` 提升附件菜单状态和测量结果；`+` 展开时旋转为关闭语义，生成或文档导入开始后自动关闭并禁用。
+- 退出动画期间透明 dismiss layer 继续拦截触摸，避免点击穿透；极短高度使用受限滚动，RTL 使用右边缘锚定。
+- 新增五张真实 ChatScreen/生产菜单组合 screenshot reference，覆盖普通中文、英文 2.0x、中文 2.0x、紧凑可视区和 RTL。
+
+### Validation
+
+- 主代码、AndroidTest 与 ScreenshotTest Kotlin 编译通过。
+- `AttachmentActionMenuTest` API 36 为 9/9；附件 + 会话状态 + 无障碍组合在 API 31、35、36 各为 26/26，均 0 skip/failure。
+- API 36 系统动画缩放 0x 下附件测试 9/9；随后已恢复并 readback 为 `1/1/1`。
+- Screenshot 73/73，0 failure/error/skip；主控已逐张检查五张 Task 5 reference，菜单可见且未遮挡模型、令牌或发送区。
+- 首次复审发现的锚点动效、静态截图夹具、退出穿透、短窗口、RTL 和语义覆盖问题均已返修，但尚未向 Sol/Luna 发起最终复审。
+
+### Next
+
+1. 恢复后先检查本阶段提交和工作树，仅继续 Task 5 收口，不直接进入 Task 6。
+2. 复跑全量 JVM、Lint、AndroidTest Kotlin 编译与 screenshot validate；将当前最终 diff 交给 Sol 和 Luna 复审，关闭全部 Critical/Important。
+3. 同步 CHANGELOG、架构、实施计划和 v0.2-beta 验证账本；追加 Task 5 done 记录并重建索引，再提交推送最终收口。
+
+### Risks
+
+- 五张静态 Preview 使用真实 `ChatScreenContent` 与真实 `AttachmentActionMenu`，但因 Preview 不等待 `onGloballyPositioned` 二次组合，菜单坐标由截图夹具确定；真实坐标、IME、RTL 和边界行为由设备测试证明，证据用途不可混淆。
+- 当前提交是用户要求暂停时的可恢复阶段点，不是 Task 5 完成或发行候选。
+- `artifacts/` 与三个 `.nexara-workspace-*` 仍是受保护未跟踪目录，未读取、未修改、未暂存。
+
+### DIA
+
+DIA: 当前仅追加阶段性交接；Task 5 的 CHANGELOG、架构、计划和发行验证账本将在最终复审通过后同步，不在暂停点提前宣称完成。
+
+### HLG
+
+HLG: 已按 `continuity-key: nexara-md3-redesign` 追加 Task 5 阶段暂停记录；索引将由 HLG Skill 重建。未发现新的长期规则候选。
