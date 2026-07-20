@@ -5395,3 +5395,51 @@ DIA: 已同步 CHANGELOG、架构快速参考、Material 3 实施计划、发行
 ### HLG
 
 HLG: 已按 `continuity-key: nexara-md3-redesign` 追加 Task 10 done 记录；使用 HLG Skill 重建索引。未发现新的长期规则候选。
+
+## 2026-07-21T07:36:51+08:00 · Material 3 总收敛 Task 11 Provider 模型摘要与独立编辑完成
+
+type: implementation-checkpoint
+scope: Nexara Android Material 3 convergence Task 11
+status: done
+tags: [android, material3, provider-models, accessibility, performance, screenshot]
+continuity: resume
+continuity-key: nexara-md3-redesign
+
+### Summary
+
+- Provider Models 已完成摘要列表与独立编辑 Sheet 的 RED、GREEN、全量质量门禁、API 31/35/36、固定 API 36 性能、真实 modal 截图和 Terra/Sol/Luna 独立复审，可以标记 Task 11 done。
+- 下一恢复点为 Task 12 主题页面与其余设置二三级表面；Task 12-14 仍需串行闭合，整体发行继续 NO-GO。
+
+### Changed
+
+- 模型列表行只保留友好名称、精确远端 ID、最多两个能力摘要、剩余数量和独立 Switch；整行打开 `ModelEditorSheet`，不再在 500 模型列表内嵌完整编辑器。
+- Sheet 保留名称、类型、能力、上下文、输出/知识截止显示、测试/取消、错误状态、删除确认及用户覆盖来源；选中 ID 使用 `rememberSaveable`，当前模型始终从最新同步列表按 ID 派生，同 ID 刷新会更新已打开编辑器，移除模型会关闭旧编辑表面。
+- 500 模型夹具使用稳定 key、真实搜索状态、深列表触摸滚动、真实开关状态变化和 Sheet 打开/关闭；测试搜索通过 `SemanticsActions.SetText` 避免把 IME 焦点噪声误记为产品路径。
+
+### Validation
+
+- TDD：Task 11 初始 6 项 RED 精确拒绝行内完整表单、缺少独立 Sheet/标签和非持久搜索；生产实现后定点 JVM 24 项通过。复审新增的错误状态、用户覆盖来源和同 ID Sheet 刷新测试均先在真实设备上验证断言，再纳入三档完整类。
+- 性能夹具施工中，首轮因约 125 帧样本的 p95 档位量化触发 40% 方差失败；扩大为每轮 10 个完整循环后，强停 Google 系统包反而触发系统组件持续重启并产生一次 207ms 布局帧。移除该反效果的强停动作、保留全部交互与原始门槛后，最终五轮约 268–271 帧，p95 `23,22,22,23,22ms`、max `50,51,75,68,51ms`、PSS 增量 `333KiB`，方差约 4.48%，满足 50ms/150ms/64MiB/20% 原门槛。
+- 最终全量 JVM 2109 项，0 failure/error、14 skip；Lint 0 Error/Fatal；AndroidTest Kotlin 编译通过；Screenshot 91/91，0 failure/error/skip。skip 未记为 PASS。
+- API 31、API 35、API 36 的 `ProviderModelsAccessibilityTest` 各 16/16，0 failure/error/skip；覆盖摘要/开关独立性、2.0x、搜索、同步、Sheet 编辑/刷新、测试取消/错误语义、用户覆盖来源和删除确认。
+- 主控逐张检查三张列表 reference、一张共享编辑内容 reference，以及 API 36 真实 `ModalBottomSheet` 设备截图；静态 reference 不冒充独立 modal Window。Terra 规格、Sol 代码/性能和 Luna 多模态复审最终均为 Critical 0、Important 0；Sol 两项 Minor 已由主控清理无用映射并补同 ID Sheet 刷新测试关闭。
+
+### Next
+
+1. 按 Task 12 先写 `ThemeViewModelTest` RED，建立主题页面的单一持久化状态所有者，再迁移 Backup、Skills、Token Usage、Local Models 与 Developer 页面。
+2. Task 12 必须在 API 31/35/36 覆盖主题动态色可用性与备份设置，并逐页检查深/浅色、双语和 2.0x actual；完成独立复审后单独 commit/push。
+3. Task 13 清除冻结清单内全站静态深色与 WebView/富文本颜色；Task 14 再执行最终设备、性能、Provider、签名 APK 与治理门禁。
+
+### Risks
+
+- `FrameMetricsAggregator` 只注册 Activity Window；夹具会执行 Sheet 打开/关闭并验证功能，但独立 Modal Window 的动画帧未被错误声明为 Activity 帧证据。最终 Task 14 仍需两次固定 AVD 性能复跑并采用较差结果。
+- Task 12 主题页面、其余设置树与 Task 13 全站浅色语义色仍未完成；91 张当前截图不能表示全站主题已收口。
+- `artifacts/` 与三个 `.nexara-workspace-*` 仍是受保护未跟踪目录，未读取、未修改、未暂存；本任务未接触签名材料或 API Key。
+
+### DIA
+
+DIA: 已同步 CHANGELOG、架构快速参考、Material 3 实施计划、发行验证账本、四张 Screenshot reference 和本 handover；README、数据库 schema、Provider 协议与公开 API 无范围变化。
+
+### HLG
+
+HLG: 已按 `continuity-key: nexara-md3-redesign` 追加 Task 11 done 记录；将使用 HLG Skill 重建索引。未发现新的长期规则候选。
