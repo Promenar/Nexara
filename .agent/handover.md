@@ -5347,3 +5347,51 @@ DIA: 已同步 CHANGELOG、架构快速参考、Material 3 实施计划、发行
 ### HLG
 
 HLG: 已按 `continuity-key: nexara-md3-redesign` 追加 Task 9 done 记录；使用 HLG Skill 重建索引。未发现新的长期规则候选。
+
+## 2026-07-21T06:27:40+08:00 · Material 3 总收敛 Task 10 Provider 表单与密钥交互完成
+
+type: implementation-checkpoint
+scope: Nexara Android Material 3 convergence Task 10
+status: done
+tags: [android, material3, provider, secrets, accessibility, screenshot]
+continuity: resume
+continuity-key: nexara-md3-redesign
+
+### Summary
+
+- Provider 表单与密钥交互已完成 Task 10 的 RED、GREEN、全量质量门禁、API 31/35/36、90 张 Screenshot、actual 人工检查和 Terra/Sol 双复审，可以标记 done。
+- 下一恢复点为 Task 11 Provider Models 摘要列表与独立编辑表面；Task 11-14 仍需串行闭合，整体发行继续 NO-GO。
+
+### Changed
+
+- 云端与本地 Provider 配置移除大块配置 `Surface`，字段统一为标准 `OutlinedTextField`，协议改为 `ListItem + RadioButton`；保留原有协议、HTTPS 校验、保存、本地模型引导和测试取消行为。
+- 测试与保存移至固定底部响应式动作区，测试为 outlined、保存为唯一 filled 主动作；横屏和 2.0x 字体下动作等高、可达且不被滚动内容挤出视口。
+- API Key 继续复用短生命周期掩码/揭示合同。测试按钮在 Testing、Success、Error 三态持有稳定本地化 `stateDescription`，不再依赖滚动区结果文本向 TalkBack 暴露终态。
+
+### Validation
+
+- TDD：Provider 表单静态合同在旧实现上 14 项中仅两项新合同取得预期 RED，分别拒绝大配置卡与堆叠主动作；生产改造后转为 GREEN，未使用 disabled、注释或临时 stub。
+- 最终全量 JVM 2108 项，0 failure/error、14 skip；Lint 0 Error/Fatal；AndroidTest Kotlin 编译通过；Screenshot 90/90，0 failure/error/skip。skip 未记为 PASS。
+- API 31、API 35、API 36 的 `ProviderFormInteractionTest,SecureSecretFieldTest` 各 20/20，0 failure/error/skip；覆盖新增/编辑/本地流程、掩码揭示、失败终态、固定动作、横屏、2.0x 与可访问状态。
+- 主控逐张检查新增 Provider、编辑 2.0x 与本地失败三张受影响 actual，未发现裁切、重叠、低对比或动作层级错误。Terra/Sol 最终独立复审均为 Critical 0、Important 0、Minor 0。
+- AGY Gemini 3.5 Flash High 完成初版边界施工；其越界创建的临时计划文件已由主控立即删除，未进入治理事实源。主控独立复核全部 diff、返修复审问题并重跑门禁。
+
+### Next
+
+1. 从 Task 11 的摘要/编辑分离 RED 开始，把 Provider Models 改为摘要列表与独立编辑 Sheet，保持元数据来源、用户编辑字段和测试取消合同。
+2. 为确定性 500 模型夹具补齐 API 36 两轮性能门禁，并逐张检查模型列表与编辑 Sheet actual。
+3. 后续 Task 12-14 完成其余设置、全站主题和最终发行候选；真机 TalkBack、核心业务、当前提交远端 CI、tag workflow 和 GitHub Release 未闭合前保持 NO-GO。
+
+### Risks
+
+- Task 10 只收敛 Provider 表单；Provider Models、其余设置页与全站浅色渲染仍未完成。
+- 90 张静态 Screenshot 不替代真实 TalkBack 音频、完整真机焦点遍历或 500 模型性能采样。
+- `artifacts/` 与三个 `.nexara-workspace-*` 仍是受保护未跟踪目录，未读取、未修改、未暂存；本任务未读取签名材料或 API Key。
+
+### DIA
+
+DIA: 已同步 CHANGELOG、架构快速参考、Material 3 实施计划、发行验证账本、三张 Screenshot reference 与本 handover；README、数据库 schema、Provider 协议与公开 API 无范围变化。
+
+### HLG
+
+HLG: 已按 `continuity-key: nexara-md3-redesign` 追加 Task 10 done 记录；使用 HLG Skill 重建索引。未发现新的长期规则候选。
