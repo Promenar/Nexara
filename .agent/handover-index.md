@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-07-22T04:11:35+08:00
+> generated_at: 2026-07-22T04:55:09+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -9,12 +9,13 @@
 | continuity-key | continuity | last update | status | scope | title | source |
 | :--- | :---: | :---: | :---: | :--- | :--- | :--- |
 | nexara-md3-redesign | waiting | 2026-07-21 | done | Nexara Android Material 3 convergence Task 14 remote CI | Material 3 Task 14 当前提交远端矩阵闭合 | `.agent/handover.md` · `2026-07-21T21:39:14+08:00` |
-| v0.2-beta-release-readiness | waiting | 2026-07-22 | partial | v0.2-beta device harness remote CI follow-up | 设备门禁首轮远端竞态修复待复验 | `.agent/handover.md` · `2026-07-22T04:09:29+08:00` |
+| v0.2-beta-release-readiness | waiting | 2026-07-22 | partial | v0.2-beta device harness remote CI closure | 设备门禁补强远端矩阵闭合 | `.agent/handover.md` · `2026-07-22T04:52:08+08:00` |
 
 ## Recent 7-Day Catalog
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-07-22 | iso | partial | waiting | v0.2-beta device harness remote CI closure | [android, github-actions, device-harness, api31, api35, api36, release-readiness, no-go] | 设备门禁补强远端矩阵闭合 | `.agent/handover.md` · `2026-07-22T04:52:08+08:00` |
 | 2026-07-22 | iso | partial | waiting | v0.2-beta device harness remote CI follow-up | [android, github-actions, vectorization-queue, flaky-test, api31, api35, api36, release-readiness, no-go] | 设备门禁首轮远端竞态修复待复验 | `.agent/handover.md` · `2026-07-22T04:09:29+08:00` |
 | 2026-07-22 | iso | partial | waiting | v0.2-beta backup restore and background generation device gates | [android, backup, restore-relay, background-generation, keyguard, api31, api35, api36, release-readiness, no-go] | 自动化发行设备门禁补强待远端复验 | `.agent/handover.md` · `2026-07-22T03:40:46+08:00` |
 | 2026-07-22 | iso | partial | waiting | v0.2-beta signed candidate remote Android CI | [android, github-actions, api31, api35, api36, system-ui-anr, release-readiness, no-go] | 当前签名候选远端 Android CI 闭合 | `.agent/handover.md` · `2026-07-22T01:53:05+08:00` |

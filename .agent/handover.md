@@ -6031,3 +6031,51 @@ DIA: 已同步 v0.2-beta 发行验证账本与本 handover；测试调度断言�
 ### HLG
 
 HLG: 已按 `continuity-key: v0.2-beta-release-readiness` 追加本记录；将使用 HLG Skill 重建索引。未发现需要新增到 AGENTS.md 或 Skill 的长期规则候选。
+
+## 2026-07-22T04:52:08+08:00 · 设备门禁补强远端矩阵闭合
+
+type: validation
+scope: v0.2-beta device harness remote CI closure
+status: partial
+tags: [android, github-actions, device-harness, api31, api35, api36, release-readiness, no-go]
+continuity: waiting
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+- 测试稳定态修复提交 `52d038a6925c84a0c796da93166f94f43994d9ba` 已推送；远端 Android CI run `29864872637` 的 quality、API 31、API 35、API 36 全部成功，新增设备 harness 的提交、推送与远端 readback 门禁闭合。
+- 首轮 run `29862967856` 的失败被保留为可审计证据；本轮没有以盲目重跑掩盖竞态，而是先读取 JUnit XML、形成独立测试修复提交并完成本地全量复验，再取得 Linux runner 新鲜结果。
+- 本轮只改变测试和治理资料，签名 APK 生产字节保持不变。发行仍为 NO-GO，剩余阻断是物理真机 TalkBack、核心业务人工验收，以及需要用户另行明确授权的 tag workflow 和 GitHub Release。
+
+### Changed
+
+- `docs/release/v0.2-beta-validation.md` 追加成功 run 和产物回读，并将当前全量 JVM、Android instrumentation 状态更新为最新提交的本地与远端共同证据。
+- `docs/superpowers/plans/2026-07-20-nexara-md3-convergence.md` 关闭新增设备 harness 的 DIA/HLG、提交、推送与远端 CI readback 项。
+- 未修改生产代码、数据库 schema、Provider 协议、签名配置、敏感材料或受保护目录。
+
+### Validation
+
+- run `29864872637`：quality 21m00s、API 31 10m09s、API 35 12m48s、API 36 10m23s，全部成功。
+- 远端 quality 产物：JVM 2118 tests、0 failure/error、14 skip；Lint 0 Error/Fatal、420 warning、25 hint；Screenshot 96/96。远端截图报告存在阈值内诊断 diff，但测试全绿；本轮没有把其记作新增人工逐张审阅，人工视觉结论继续引用此前本地 96 张 actual 的逐张检查。
+- API 31/35/36 产物均为 `exit-code=0`，`crash-log.txt` 与 `crash-after-tests.txt` 均为 0 bytes。API 35/36 的通知后台生命周期、无 Key restore verify 与 no-replay 各为精确 `OK (1 test)`；expected-death 记录目标进程退出，relay/main PID 分离且 `payload=none`。
+- 当前签名 APK 仍为 18,367,648 bytes，SHA-256 `cc3934f506c3e307d6666195e0abed6f3271cc2f358d601bc9f285142c1fda3e`；测试与文档变化不要求重建生产字节，最终 tag workflow 仍须重新 clean 构建并验真远端产物。
+
+### Next
+
+1. 用户在当前签名 APK 上完成物理真机 TalkBack 完整音频、焦点顺序与遍历测试，以及核心业务人工验收。
+2. 仅在用户另行明确授权后创建 tag、执行 tag workflow 和 GitHub Release；届时重新 clean 构建、校验签名、R8、zipalign、checksum 与远端产物。
+3. 本轮治理提交推送后监督其文档后继 CI；不为记录该后继自身再制造无限文档追认循环。
+
+### Risks
+
+- 自动语义、可见模拟器和托管模拟器矩阵不能替代 TalkBack 听觉体验、OEM 生命周期差异与真实用户核心业务体验。
+- 远端 Screenshot 的阈值内诊断 diff 未在本轮新增人工逐张复核，因此只把 96/96 记作自动门禁；既有本地 actual 人工视觉验收结论保持独立。
+- 未经用户授权不得创建 tag 或 GitHub Release；当前成功 run 不是 tag workflow，也不构成最终可发行声明。
+
+### DIA
+
+DIA: 已同步 v0.2-beta 发行验证账本、MD3 收敛计划与本 handover；生产用户行为未变化，CHANGELOG 无需更新。
+
+### HLG
+
+HLG: 已按 `continuity-key: v0.2-beta-release-readiness` 追加远端闭合记录；将使用 HLG Skill 重建索引。未发现需要新增到 AGENTS.md 或 Skill 的长期规则候选。
