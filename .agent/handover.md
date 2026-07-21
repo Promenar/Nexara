@@ -5640,3 +5640,52 @@ DIA: 已同步发行验证账本、Material 3 计划、Android 设备测试合�
 ### HLG
 
 HLG: 已按 `continuity-key: nexara-md3-redesign` 追加本记录并重建索引；2026-07-21T15:06:15+08:00 记录中的“需重建索引”是当时待办，本次以新记录确认索引已重建。保护目录、密钥和历史记录均未修改。
+
+## 2026-07-21T19:58:09+08:00 · Material 3 Task 14 本地返修与双复审闭合
+
+type: implementation
+scope: Nexara Android Material 3 convergence Task 14
+status: done
+tags: [android, material3, provider-models, performance, ime, review, release-readiness, no-go]
+continuity: resume
+continuity-key: nexara-md3-redesign
+
+### Summary
+
+- Task 14 在固定 API 36 headless 夹具下取得两轮可审计有效性能结果，并补齐 Provider Models 从搜索进入编辑 Sheet 时清焦和真实收起 IME 的生产行为与设备断言。
+- Terra 与 Sol 最终独立复审均判定 Task 14 GO，Critical/Important 清零；本地 Material 3 总收敛施工已闭合，但真实 Provider、当前签名 release、API 35/36 当前包冷安装、用户真机与远端发行门禁尚未全部闭合，整体发行继续 NO-GO。
+
+### Changed
+
+- `ProviderModelsPerformanceTest` 移除固定等待，要求唯一 fixture ID，并把 START/END 窗口、每条 raw histogram、汇总和设备指纹绑定到同一运行证据。
+- `ProviderModelsScreen` 在打开模型编辑 Sheet 前清除搜索焦点并隐藏软件键盘；`ProviderModelsAccessibilityTest` 使用真实 Window Insets 验证 IME 先可见，再在 Sheet 打开后持续不可见且底部 inset 为 0。
+- 性能计划冻结单一 API 36 Pixel_7、`-no-window -no-snapshot -gpu host`、构建安装一次、三项动画缩放为 0、30 秒事件驱动安静窗口、五分钟上限、三态分类与 instrumentation 退出码门禁。
+- CHANGELOG、Material 3 实施计划与 v0.2-beta 发行验证账本同步本轮结果和外部门禁边界。
+
+### Validation
+
+- 全量 JVM 2117 项，0 failure/error，14 skip；Lint 0 Error/Fatal、420 warning、25 hint；Screenshot 96/96 且 96 张 actual 已人工检查；AndroidTest Kotlin 编译通过。
+- API 31/35/36 冻结类集合各 101/101；broader harness 分别 39/41/41 个显式测试并各保留 1 个设计内 phase checkpoint skip，三档 exit 0。
+- API 36 Provider Models 完整设备回归 17/17；证据目录保存当前测试源码与 debug/test APK SHA-256、设备指纹、完整命令、原始 instrumentation 输出和退出码 0，`openingModelEditorClearsSearchFocus` 确实执行。
+- 性能有效 run 1/run 4 各含 45 条 raw histogram、单一窗口标记且污染为 0，独立复算匹配；较差样本 p95 35ms、max 51ms、PSS +2763KiB，低于原始 50ms/150ms/64MiB 门槛。run 2/run 3 的周期系统包事件样本保留为 `FIXTURE_INVALID`，未替换或冒充有效样本。
+- Terra 最终复审 Critical 0 / Important 0 / Minor 0；Sol 为 Critical 0 / Important 0 / Minor 2。两项 Minor 是性能 runner 示例未自动验证五轮九指标唯一性/分片/bucket 复算，以及 JVM 源码字符串合同对格式调整较敏感；真实设备与独立 raw 复算已覆盖关键行为，不阻断 Task 14。
+
+### Next
+
+1. 提交并推送 Task 14 当前源码与正式文档，仅暂存明确文件，不触碰 `artifacts/`、`.nexara-workspace-*` 或敏感材料。
+2. 对该远端提交显式触发并监控 `android-ci.yml`，把质量与 API 31/35/36 真实结论追加回发行账本和本工作流。
+3. 六项 Provider 与五项签名变量由安全运行时注入后，执行当前 Provider、签名 R8 release、验证器、zipalign、checksum 和 API 35/36 当前包冷安装；用户真机 TalkBack/核心业务、tag workflow 与 GitHub Release 继续等待外部闭合或授权。
+
+### Risks
+
+- 当前进程只确认六项 Provider 与五项签名变量均缺失，未读取 `secure_env` 或任何值；真实 Provider、签名 APK 和当前包冷安装仍为 PENDING，历史结果不能替代。
+- 真机 TalkBack 完整听觉和焦点遍历、核心业务人工验收、可验证 tag、tag workflow 与 GitHub Release 尚未闭合。
+- Sol 的两项 Minor 已记录但不阻断当前行为；若后续维护性能 runner 或重排 Provider Models 源码，应优先把 raw 结构复算与行为测试从字符串合同迁移到更稳定的执行级断言。
+
+### DIA
+
+DIA: 已同步 CHANGELOG、Material 3 实施计划、v0.2-beta 发行验证账本与本 handover；README、registry 结构、数据库 schema、Provider 协议和公开 API 无新增变化。
+
+### HLG
+
+HLG: 已按 `continuity-key: nexara-md3-redesign` 追加 Task 14 done 记录；将使用 HLG Skill 重建索引。未发现需要另行沉淀到 AGENTS.md 或 Skill 的新长期规则候选。
