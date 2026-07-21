@@ -5984,3 +5984,50 @@ DIA: 已同步 v0.2-beta 发行验证账本、MD3 收敛计划、四阶段历史
 ### HLG
 
 HLG: 已按 `continuity-key: v0.2-beta-release-readiness` 追加本记录；将使用 HLG Skill 重建索引。未发现需要新增到 AGENTS.md 或 Skill 的长期规则候选。
+
+## 2026-07-22T04:09:29+08:00 · 设备门禁首轮远端竞态修复待复验
+
+type: validation
+scope: v0.2-beta device harness remote CI follow-up
+status: partial
+tags: [android, github-actions, vectorization-queue, flaky-test, api31, api35, api36, release-readiness, no-go]
+continuity: waiting
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+- 设备 harness 补强已由提交 `4a08a3c06481b0156cbc84728be5e5977f5f73cd` 推送到 `origin/codex/md3-redesign`；远端 Android CI run `29862967856` 的模型目录校验通过，但 quality 在 2118 项 JVM 中出现 1 项既有 `VectorizationQueueRoomTest` 失败，设备矩阵按依赖未启动。
+- 主控下载并读取远端 JUnit XML，确认失败发生在 completed 持久任务已删除、内存队列 finally 尚未移除同一任务的合法瞬间。测试此前立即分别读取 Room 与内存快照，存在调度竞态；不是新增设备 harness 或生产队列行为回归。
+- 测试已改为先运行共享 `TestCoroutineScheduler` 到当前稳定态，再同时断言 Room 与内存队列清空；生产 `VectorizationQueue` 未修改。新提交和远端复验尚未完成，整体发行继续 NO-GO。
+
+### Changed
+
+- `VectorizationQueueRoomTest` 的 reset/replacement 恢复用例新增 `runCurrent()` 稳定态等待，移除允许中间态的分支断言，并显式关闭 replacement queue。
+- `docs/release/v0.2-beta-validation.md` 记录失败 run、XML 根因、本地修复证据和远端 PENDING 边界。
+- 未修改生产代码、数据库 schema、Provider 协议、签名材料或受保护目录。
+
+### Validation
+
+- 远端 run `29862967856`：模型目录 PASS；JVM 2118 项、1 failure、0 error、14 skip；唯一失败为 `VectorizationQueueRoomTest.配置reset等待旧queue停止并把处理中任务交接给新queue恢复`，设备 jobs 未启动。
+- 修复后定点用例：`--no-build-cache --rerun-tasks` BUILD SUCCESSFUL。
+- 修复后完整 `VectorizationQueueRoomTest`：28 项全部通过。
+- 修复后全量 JVM：2118 tests、0 failure/error、14 skip，BUILD SUCCESSFUL。
+
+### Next
+
+1. 提交并推送测试稳定态修复、账本与本 HLG，重建 handover 索引。
+2. 观察新提交远端 Android CI 的 quality、API 31、API 35、API 36；成功后追加最终事实记录并关闭计划中的远端 readback 项。
+3. 用户在签名 APK 上完成物理真机 TalkBack 与核心业务人工验收；仅在用户另行明确授权后创建 tag、运行 tag workflow 和 GitHub Release。
+
+### Risks
+
+- 本地稳定态回归不能替代 Linux runner 的新鲜复验；在新 run 全绿前，最新 harness 后继的远端状态保持 PENDING。
+- 本轮仍只修改测试与发行证据，签名 APK 生产字节和 SHA-256 不变；自动设备门禁不能替代真机 TalkBack/OEM 行为。
+
+### DIA
+
+DIA: 已同步 v0.2-beta 发行验证账本与本 handover；测试调度断言变化不产生用户可见行为，CHANGELOG 无需更新。
+
+### HLG
+
+HLG: 已按 `continuity-key: v0.2-beta-release-readiness` 追加本记录；将使用 HLG Skill 重建索引。未发现需要新增到 AGENTS.md 或 Skill 的长期规则候选。
