@@ -5540,3 +5540,56 @@ DIA: 已同步 CHANGELOG、架构快速参考、Material 3 实施计划、v0.2-b
 ### HLG
 
 HLG: 已按 `continuity-key: nexara-md3-redesign` 追加 Task 13 done 记录；使用 HLG Skill 重建索引。未发现需要另行沉淀到 AGENTS.md 或 Skill 的新长期规则候选。
+## 2026-07-21T15:06:15+08:00 · Material 3 Task 14 本地门禁闭合后阶段性暂停
+
+type: implementation
+scope: native-ui
+status: partial
+tags: [material3, task-14, device-matrix, screenshot, performance, r8, pause, no-go]
+continuity: resume
+continuity-key: nexara-md3-redesign
+
+### Summary
+
+用户要求在当前动作结束后阶段性暂停。Task 14 的本地 JVM、Lint、Screenshot、AndroidTest 编译、API 31/35/36 设备矩阵、500 模型性能双跑和 R8 `minifiedTest` 诊断构建已经闭合；最终独立双复审尚未执行，Task 14 不能标记全部完成。真实 Provider、签名 release APK、当前包冷安装和真机验收仍未闭合，整体发行继续 NO-GO。
+
+### Changed
+
+- Provider Models 性能测试冻结单一 API 36、动画缩放、预热与结构化指标合同；设备脚本为每轮保留可审计日志。
+- API 31 只跳过 Android 13+ 通知权限测试，仍执行通知打开会话；前台服务测试等待真实 active notification 并触发已发布通知动作。
+- DocEditor 标题最多两行，输入换行归一为空格，IME Done 收起键盘；新增对应设备交互测试。
+- DocEditor 5 张受影响 Screenshot reference 在首次新鲜验证失败后逐张检查并更新。
+- CHANGELOG、发行说明、验证账本与 Task 14 计划已同步当前证据和阻断边界。
+
+### Validation
+
+- JVM：2117 tests，0 failure/error，14 skip。
+- Lint：0 Error/Fatal，420 warning，25 hint。
+- Screenshot：首次新鲜运行 91/96，5 张均为标题两行布局的预期差异；逐张确认无裁切、重叠或不可达控件并更新 reference 后 96/96。
+- AndroidTest Kotlin 编译通过；API 36 `DocEditorInteractionTest` 32/32。
+- 冻结设备类集合：API 31/35/36 各 101/101，均 0 failure/error/skip。
+- broader harness：API 31/35/36 分别 39/41/41 个显式测试，各保留 1 个设计内 phase checkpoint skip，三档 `exit-code.txt` 均为 0。API 35 首轮因 Pixel Launcher ANR 属于无效系统夹具，重启隔离 AVD 后完整复跑通过。
+- 固定 API 36 性能双跑较差有效样本：p95 35ms、max 68ms、稳定 PSS +455KiB。
+- `assembleMinifiedTest --rerun-tasks` 通过：APK 18,318,268 bytes；mapping 100,599,111 bytes；seeds 773,487 bytes；usage 11,272,652 bytes；configuration 67,338 bytes。该包不是签名 release。
+- `scripts/ci/tests/android-device-core-e2e-contract-test.sh` 与脚本语法检查通过；`git diff --check` 通过。
+
+### Next
+
+1. 恢复后先检查实时 HEAD、工作树和本记录对应 diff，不重复已完成的长矩阵。
+2. 对 Task 14 最终 diff、验证账本、性能与 96 张 actual 执行独立规格复审和代码质量/视觉复审；Critical/Important 与 P0/P1 必须清零。
+3. 根据复审结果更新计划 Step 8、Completion Definition 与本工作流的新 HLG 记录。
+4. 六项 Provider 与五项签名运行时变量可用后，再执行真实 Provider、签名 release、验证器、zipalign、checksum 和 API 35/36 当前包冷安装；不得复用旧候选冒充当前 PASS。
+
+### Risks
+
+- 当前进程缺少真实 Provider 与签名变量，且按边界未读取 `secure_env`；签名 APK 和 Provider 结果仍为 PENDING。
+- 用户真机 TalkBack 完整听觉/焦点遍历、核心业务人工验收、当前提交远端 CI、tag workflow 和 GitHub Release 均未完成。
+- Task 14 尚缺最终独立双复审，阶段提交只表示可恢复本地施工点，不表示发行可用。
+
+### DIA
+
+已同步 `CHANGELOG.md`、`docs/release/v0.2-beta.md`、`docs/release/v0.2-beta-validation.md` 与 Material 3 总收敛计划。
+
+### HLG
+
+已追加本记录；需重建 `.agent/handover-index.md`。保护目录、密钥材料与历史记录均未修改。
