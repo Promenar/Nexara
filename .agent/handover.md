@@ -5737,3 +5737,52 @@ DIA: 已同步 CHANGELOG、Material 3 实施计划、v0.2-beta 发行验证账�
 ### HLG
 
 HLG: 已按 `continuity-key: nexara-md3-redesign` 追加本记录；使用 HLG Skill 重建索引。未发现需要另行沉淀到 AGENTS.md 或 Skill 的新长期规则候选。
+
+## 2026-07-21T22:23:26+08:00 · v0.2-beta 无发布候选签名入口收敛与远端策略阻断确认
+
+type: implementation
+scope: v0.2-beta release workflow candidate validation
+status: partial
+tags: [android, github-actions, release, signing, workflow-dispatch, security, no-go]
+continuity: waiting
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+- release workflow 新增不发布的手动候选模式：仅接受 `codex/md3-redesign`，并要求检出 HEAD、`GITHUB_SHA` 与管理员控制的完整 `NEXARA_RELEASE_COMMIT_SHA` 完全一致；候选继续经过设备、R8 签名和 API 35/36 冷安装链，publish 只允许固定 `refs/tags/v0.2-beta`。
+- 本地可靠性契约 25/25、两项设备脚本合同、shell 语法、YAML 解析和 `git diff --check` 通过；Terra 首轮无 Critical/Important，Sol 提出的可变分支信任与字符串假阳性 Important 已返修并复审关闭。
+- 当前入口仍不能在远端执行：GitHub 要求 `workflow_dispatch` 文件先存在默认分支，而默认分支 `B-native-refactor` 当前没有任何 workflow；`release` Environment 的部署分支策略也只允许固定 tag `v0.2-beta`。主控未擅自创建 PR、合并默认分支、修改 Environment、设置受控 SHA、创建 tag 或 Release，发行继续 NO-GO。
+
+### Changed
+
+- `.github/workflows/release.yml` 增加 fail-closed 候选输入校验，并把发布条件收紧到固定发行 tag。
+- `scripts/ci/tests/release-workflow-reliability-test.py` 增加 workflow job 层级提取、受控完整 SHA、候选前置 job、文档检查顺序和固定 tag 发布条件断言。
+- `docs/release/v0.2-beta-validation.md` 更新最近一次首轮全绿远端 run `29835588741`，并记录候选签名入口的代码状态与远端策略阻断。
+
+### Validation
+
+- `python3 scripts/ci/tests/release-workflow-reliability-test.py`：25/25 PASS。
+- `bash scripts/ci/tests/android-device-core-e2e-contract-test.sh`、`bash scripts/ci/tests/android-minified-blackbox-contract-test.sh`、`bash -n scripts/ci/android-release-apk-smoke.sh`：PASS。
+- Ruby 解析 `.github/workflows/release.yml`：PASS；`git diff --check`：PASS。
+- GitHub 只读核对：默认分支为 `B-native-refactor` 且其 `.github/workflows/` 为空；仓库级变量列表为空；`release` Environment 只有证书指纹公开变量，部署策略为 custom branch policy 且仅允许 `v0.2-beta` tag。未读取任何 Secret 值。
+
+### Next
+
+1. 获用户明确授权后，把候选 workflow 纳入默认分支，设置当前受审完整 SHA，并为 `release` Environment 临时增加精确候选分支策略；运行成功后移除临时分支策略。任何一步失败都保持 fail-closed。
+2. 通过安全运行时注入六项 `NEXARA_TEST_LLM_*`，执行当前候选 Provider 复验；不得从聊天或报告拼接、打印凭据。
+3. 对同一签名 APK 完成 API 35/36 冷安装后，由用户在真机完成 TalkBack 听觉/完整焦点遍历和核心业务人工验收。
+4. 仅在所有账本门禁变为 GO 且用户另行明确授权后，创建可验证 tag 并运行 tag workflow/GitHub prerelease。
+
+### Risks
+
+- 当前没有可交付的 Task 14 后签名 APK；历史签名包和历史 Provider PASS 均不能替代当前提交复验。
+- `workflow_dispatch`、受控 SHA 与 Environment 分支策略缺一不可；仅把 workflow 提交到当前功能分支不会出现手动运行入口。
+- 用户真机 TalkBack、核心业务验收、tag 和 GitHub Release 属于外部人工或授权门禁，模拟器和自动语义测试不能替代。
+
+### DIA
+
+DIA: 已同步 release workflow 可靠性合同、v0.2-beta 发行事实账本与本 handover；未改变应用生产代码、数据库 schema、Provider 协议或用户数据。
+
+### HLG
+
+HLG: 已按 `continuity-key: v0.2-beta-release-readiness` 追加本记录；将使用 HLG Skill 重建索引。未发现需要新增到 AGENTS.md 或 Skill 的长期规则候选。
