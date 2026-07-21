@@ -6127,3 +6127,50 @@ DIA: 已同步 v0.2-beta 发行验证账本、MD3 收敛计划与本 handover；
 ### HLG
 
 HLG: 已按 `continuity-key: v0.2-beta-release-readiness` 追加确定性同步修复待复验记录；将使用 HLG Skill 重建索引。未发现需要新增到 AGENTS.md 或 Skill 的长期规则候选。
+
+## 2026-07-22T06:34:32+08:00 · 后台生成通知停止防重放本地闭合待远端复验
+
+type: validation
+scope: v0.2-beta generation notification stop replay hardening
+status: partial
+tags: [android, pending-intent, foreground-service, api35, github-actions, release-readiness, no-go]
+continuity: waiting
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+- 提交 `6fd0227b` 的远端 Android CI run `29870166426` 中，quality 与 API 31 成功；API 35 attempt 1 真实暴露通知 stop `PendingIntent` 首次消费后仍可被重放并短暂重建 Service/通知。API 36 attempt 1 被 `System UI isn't responding` 阻断；只重跑失败 job 后 API 36 完整通过。API 35 attempt 2 在更早的权限阶段被 `Quickstep isn't responding` 阻断，未到达后台生命周期，不记作第二次产品失败。
+- 主控在可见 API 35 上证伪动态 Receiver 方案：首次 stop 无法稳定投递。最终保留已验证的显式、不可变、私有 Service `PendingIntent`，增加 Android 官方建议的 `FLAG_ONE_SHOT`，让已消费停止动作的后续发送由系统明确拒绝。
+- 当前补丁已完成本机 API 35 full、clean 全量质量门禁与 Sol/Terra 双复审；尚未提交、推送或取得当前生产字节的远端矩阵。历史签名 APK 早于该生产修复，降级为历史证据，发行继续 NO-GO。
+
+### Changed
+
+- `GenerationNotificationFactory` 的 stop action 增加 `FLAG_ONE_SHOT`，继续使用显式 `GenerationForegroundService`、`FLAG_IMMUTABLE` 与按 taskId 隔离的 identity；未新增 Receiver、导出组件或 manifest 表面。
+- JVM 契约把 one-shot flags 绑定到实际 `stopPendingIntent` 构造块；app instrumentation 验证 action 是 Service 而非 Broadcast。Service 与 MainActivity 设备测试均要求首次 stop 成功、第二次发送抛出 `PendingIntent.CanceledException`，并在静默窗口内保持服务和通知消失。
+- CHANGELOG、v0.2-beta 验证账本与 MD3 收敛计划记录远端两次尝试、本地修复证据，并重新打开当前 release APK 构建与同哈希冷安装门禁。
+
+### Validation
+
+- 当前补丁本机 API 35 full：`exit-code=0`。通知权限拒绝/允许、通知打开准确会话、真实锁屏/唤醒/旋转、首次 stop、重复发送拒绝、冷启动 stop/track、备份恢复、文档解析与其余核心设备链全部通过；onboarding 保留 1 个设计内 phase checkpoint skip。
+- clean 本地质量门禁：JVM 2119 tests、0 failure/error、14 skip；Screenshot 96/96；Lint 0 Error/Fatal、420 warning、25 hint；Debug APK 成功。
+- Terra 质量复审与 Sol 安全/规格复审均为 Critical 0、Important 0。两项不阻断 Minor 已记录：源码契约绑定范围已当轮收紧；未消费旧 token 遇到新任务的专门设备顺序尚未单列，但生产 taskId guard、冷启动测试和当前设备链证明不会取消新任务。
+
+### Next
+
+1. 重新运行收紧后的定点 JVM 与 Android 测试编译，检查 diff 后提交并推送当前生产、测试、账本、计划和 HLG。
+2. 监督当前提交远端 quality、API 31、API 35、API 36；全绿并回读产物后追加闭合记录，不沿用旧 run。
+3. 在不泄露签名材料的安全运行时重新 clean 构建当前签名 APK，完成 R8、签名、zipalign、checksum 与 API 35/36 同哈希冷安装；用户物理真机 TalkBack/核心业务及需单独授权的 tag workflow/GitHub Release 继续独立阻断。
+
+### Risks
+
+- `FLAG_ONE_SHOT` 关闭的是成功消费后的重放。未消费但已过期的旧 token 仍可能首次瞬时启动私有 Service，但精确 taskId guard 会立即拒绝，不会取消新任务或恢复旧通知；若未来要求连瞬时实例化也禁止，需要在自然完成时主动取消 token 并另立规格。
+- 当前签名 APK 哈希 `cc3934f506c3e307d6666195e0abed6f3271cc2f358d601bc9f285142c1fda3e` 不含本轮生产修复，不能继续作为当前源码候选。
+- 托管模拟器 System UI/Quickstep ANR 与应用 crash 已按窗口、UI tree 和 crash buffer 分层，但当前生产补丁仍必须取得新的远端 API 31/35/36 证据。
+
+### DIA
+
+DIA: 已同步 CHANGELOG、v0.2-beta 发行验证账本、MD3 收敛计划与本 handover；生产通知停止行为发生防重放修复。
+
+### HLG
+
+HLG: 已按 `continuity-key: v0.2-beta-release-readiness` 追加本记录；将使用 HLG Skill 重建索引。未发现需要新增到 AGENTS.md 或 Skill 的长期规则候选。
