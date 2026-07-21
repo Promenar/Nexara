@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-07-21T22:26:06+08:00
+> generated_at: 2026-07-21T23:55:45+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -9,12 +9,13 @@
 | continuity-key | continuity | last update | status | scope | title | source |
 | :--- | :---: | :---: | :---: | :--- | :--- | :--- |
 | nexara-md3-redesign | waiting | 2026-07-21 | done | Nexara Android Material 3 convergence Task 14 remote CI | Material 3 Task 14 当前提交远端矩阵闭合 | `.agent/handover.md` · `2026-07-21T21:39:14+08:00` |
-| v0.2-beta-release-readiness | waiting | 2026-07-21 | partial | v0.2-beta release workflow candidate validation | v0.2-beta 无发布候选签名入口收敛与远端策略阻断确认 | `.agent/handover.md` · `2026-07-21T22:23:26+08:00` |
+| v0.2-beta-release-readiness | waiting | 2026-07-21 | partial | v0.2-beta current candidate provider and Android CI | 当前候选 Provider 与远端 Android CI 复验闭合 | `.agent/handover.md` · `2026-07-21T23:53:36+08:00` |
 
 ## Recent 7-Day Catalog
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-07-21 | iso | partial | waiting | v0.2-beta current candidate provider and Android CI | [android, provider, github-actions, api31, api35, api36, room, release-readiness, no-go] | 当前候选 Provider 与远端 Android CI 复验闭合 | `.agent/handover.md` · `2026-07-21T23:53:36+08:00` |
 | 2026-07-21 | iso | partial | waiting | v0.2-beta release workflow candidate validation | [android, github-actions, release, signing, workflow-dispatch, security, no-go] | v0.2-beta 无发布候选签名入口收敛与远端策略阻断确认 | `.agent/handover.md` · `2026-07-21T22:23:26+08:00` |
 | 2026-07-21 | iso | done | waiting | Nexara Android Material 3 convergence Task 14 remote CI | [android, material3, screenshot, github-actions, api31, api35, api36, release-readiness, no-go] | Material 3 Task 14 当前提交远端矩阵闭合 | `.agent/handover.md` · `2026-07-21T21:39:14+08:00` |
 | 2026-07-21 | iso | done | resume | Nexara Android Material 3 convergence Task 14 | [android, material3, provider-models, performance, ime, review, release-readiness, no-go] | Material 3 Task 14 本地返修与双复审闭合 | `.agent/handover.md` · `2026-07-21T19:58:09+08:00` |

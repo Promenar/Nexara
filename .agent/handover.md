@@ -5786,3 +5786,53 @@ DIA: 已同步 release workflow 可靠性合同、v0.2-beta 发行事实账本�
 ### HLG
 
 HLG: 已按 `continuity-key: v0.2-beta-release-readiness` 追加本记录；将使用 HLG Skill 重建索引。未发现需要新增到 AGENTS.md 或 Skill 的长期规则候选。
+
+## 2026-07-21T23:53:36+08:00 · 当前候选 Provider 与远端 Android CI 复验闭合
+
+type: validation
+scope: v0.2-beta current candidate provider and Android CI
+status: partial
+tags: [android, provider, github-actions, api31, api35, api36, room, release-readiness, no-go]
+continuity: waiting
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+- 提交 `a1dca2d8ad42feb41c5cd453e1351b25fd325d04` 已完成当前真实 Provider 复验、本地全量 JVM 和远端 Android CI；run `29843119722` 的 quality、API 31、API 35、API 36 均首轮成功。
+- 两轮远端 CI 先后暴露 `VectorizationQueueRoomTest` 的 worker/Room 快照调度竞态；主控逐例审计后只修正测试夹具，生产代码未改变。Terra 与 Sol 最终复审均为 GO，Critical/Important/Minor 清零。
+- 当前候选仍没有签名 release APK、API 35/36 同哈希冷安装和用户真机验收；tag 与 GitHub Release 也未获授权，整体发行继续 NO-GO。
+
+### Changed
+
+- 严格断言 `pending` 的 Room 用例改用独立且未推进的测试调度器，避免 worker 抢先进入 `extracting_source`；需要验证注意事项、知识图谱策略或旧数据迁移的用例使用阻塞索引服务保留可观察中间态。
+- `docs/release/v0.2-beta-validation.md` 回填当前 SHA、真实 Provider、两轮竞态暴露与最终远端矩阵的原始产物结论。
+- 未修改生产业务代码、数据库 schema、Provider 协议、签名配置或受保护目录。
+
+### Validation
+
+- `VectorizationQueueRoomTest`：28/28，`--rerun-tasks`，BUILD SUCCESSFUL。
+- 本地全量 JVM：2118 tests，0 failure/error，14 skip，`--rerun-tasks`，BUILD SUCCESSFUL。
+- 当前真实 Provider：以安全运行时输入执行 `:app:realLlmIntegrationTest`，1 test、0 failure/error/skip；四个模型各请求一次并取得有效流式终态。首次服务根路径请求失败，确认受保护端点位于 `/v1` 后复跑通过；凭据未落盘或写入报告。
+- 远端 run `29843119722`：quality 20m40s、API 31 10m56s、API 35 12m07s、API 36 13m19s，全部首轮成功。质量产物为 JVM 2118 项、0 failure/error、14 skip；Lint 0 Error/Fatal、420 Warning、25 Hint；Screenshot 96/96；AndroidTest 编译成功。
+- 设备原始产物：API 31 minimum 22 项，API 35/36 full 各 41 项；三档各 1 个 onboarding phase checkpoint skip，`exit-code=0`，`crash-log.txt` 与 `crash-after-tests.txt` 均为空。API 35/36 的恢复中继 expected-death 阶段按合同触发进程退出并完成后续验证。
+- 原生 Spark 会话 smoke 通过；Terra 首轮指出阻塞服务发生在状态推进之后，主控改为独立调度器后 Terra/Sol 最终均 GO。所有委派结论均由主控通过 diff、定点与全量测试独立复核。
+
+### Next
+
+1. 当前 release workflow 的 `workflow_dispatch` 尚不在默认分支，`release` Environment 也只允许固定 tag；未经用户授权不改变默认分支、Environment、受控 SHA、tag 或 Release。
+2. 获得明确授权并具备安全签名运行时后，为当前源码重建 R8 签名 APK，执行签名者、证书、zipalign、checksum、敏感/GGUF 扫描和 API 35/36 同哈希冷安装。
+3. 用户在最终签名 APK 上完成真机 TalkBack 人工听觉、完整焦点遍历与核心业务体验验收；全部门禁闭合后再单独请求 tag 与 GitHub prerelease 授权。
+
+### Risks
+
+- 当前没有可交付的 Task 14 后签名 APK；旧 APK、旧哈希和旧冷安装结果不能替代当前源码候选。
+- 自动语义、截图和模拟器矩阵不能替代真机 TalkBack 听觉、完整焦点顺序与 OEM 行为。
+- 本轮真实 Provider 只证明协议、路由、流式终态与多模态输入兼容，不放宽 Release 的 HTTPS-only 网络策略。
+
+### DIA
+
+DIA: 已同步 v0.2-beta 发行验证账本与本 handover；生产代码、数据库 schema、Provider 协议和公开 API 无变化，CHANGELOG 无新增用户可见行为需要记录。
+
+### HLG
+
+HLG: 已按 `continuity-key: v0.2-beta-release-readiness` 追加本记录；将使用 HLG Skill 重建索引。未发现需要新增到 AGENTS.md 或 Skill 的长期规则候选。
