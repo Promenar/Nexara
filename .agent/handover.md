@@ -5689,3 +5689,51 @@ DIA: 已同步 CHANGELOG、Material 3 实施计划、v0.2-beta 发行验证账�
 ### HLG
 
 HLG: 已按 `continuity-key: nexara-md3-redesign` 追加 Task 14 done 记录；将使用 HLG Skill 重建索引。未发现需要另行沉淀到 AGENTS.md 或 Skill 的新长期规则候选。
+
+## 2026-07-21T21:39:14+08:00 · Material 3 Task 14 当前提交远端矩阵闭合
+
+type: validation
+scope: Nexara Android Material 3 convergence Task 14 remote CI
+status: done
+tags: [android, material3, screenshot, github-actions, api31, api35, api36, release-readiness, no-go]
+continuity: waiting
+continuity-key: nexara-md3-redesign
+
+### Summary
+
+- Task 14 本地门禁、跨时区 Screenshot 确定性修复和当前提交远端 Android CI 已闭合；提交 `c192ccea` 的 run `29831794553` 最终为 `success`。
+- API 36 首轮失败已确认是托管模拟器 `Process system isn't responding` 系统 ANR 对话框遮挡通知权限按钮，不是 Nexara 崩溃或产品断言失败；保留原始失败证据后仅重跑失败 job 并通过。
+- 当前签名 release、API 35/36 当前包冷安装、用户真机 TalkBack/核心业务、tag workflow 与 GitHub Release 仍未闭合，整体发行继续 NO-GO。
+
+### Changed
+
+- `MarkdownText` 在 Preview/Screenshot 检查模式固定渲染流式尾部淡入终态，真实应用继续保留 140ms 淡入；新增四组合真值表单测并更新三张受影响 reference。
+- CHANGELOG、Material 3 实施计划与 v0.2-beta 验证账本回填三轮远端 CI 的真实演进、当前成功 run 和仍受阻的外部门禁。
+- 未修改生产 Provider、数据库 schema、公开 API、签名配置或受保护目录。
+
+### Validation
+
+- 本地外部 `TZ=UTC` 下三张流式 Screenshot 两轮逐张 SHA-256 一致；完整 Screenshot validation 96/96，三张新 reference 已人工检查。
+- 独立 Terra 最终复审 Critical 0 / Important 0，补齐的 Minor 真值表分支已关闭；Sol 最终复审 Critical 0 / Important 0 / Minor 0。
+- 远端 run `29831794553`：quality 20m48s、API 31 10m55s、API 35 12m18s 首轮通过。API 36 首轮 9m42s 失败，截图显示系统 ANR 对话框，Nexara crash buffer 为 0 字节；attempt 2 同一设备链 13m43s 通过，下载证据 `exit-code=0` 且 `crash-log.txt` 为 0 字节。
+- 最终 run head SHA 为 `c192cceacdddc47ddfc6bde4e1a53c1ee7d05ab3`，attempt 2、status `completed`、conclusion `success`。
+
+### Next
+
+1. 五项签名变量安全注入后，重建当前 R8 release APK，执行签名者、证书、zipalign、checksum、敏感/GGUF 扫描和 API 35/36 同哈希冷安装。
+2. 用户在最终签名 APK 上完成真机 TalkBack 人工听觉、完整焦点遍历与核心业务验收。
+3. 仅在用户另行明确授权后创建可验证 tag、运行 tag workflow 并创建 GitHub prerelease。
+
+### Risks
+
+- 当前进程仍缺六项 Provider 与五项签名运行时变量；未读取 `secure_env` 或任何值，未把历史 Provider/签名包结果冒充当前候选。
+- 托管 API 36 模拟器可能出现系统 UI ANR；本次按证据保留首轮失败并只重跑受影响 job，未通过放宽产品或测试断言掩盖宿主问题。
+- 自动语义和模拟器矩阵不能替代用户真机 TalkBack 听觉、完整焦点顺序与 OEM 行为。
+
+### DIA
+
+DIA: 已同步 CHANGELOG、Material 3 实施计划、v0.2-beta 发行验证账本与本 handover；README、registry、数据库 schema、Provider 协议和公开 API 无新增变化。
+
+### HLG
+
+HLG: 已按 `continuity-key: nexara-md3-redesign` 追加本记录；使用 HLG Skill 重建索引。未发现需要另行沉淀到 AGENTS.md 或 Skill 的新长期规则候选。
