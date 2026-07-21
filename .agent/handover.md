@@ -5443,3 +5443,52 @@ DIA: 已同步 CHANGELOG、架构快速参考、Material 3 实施计划、发行
 ### HLG
 
 HLG: 已按 `continuity-key: nexara-md3-redesign` 追加 Task 11 done 记录；将使用 HLG Skill 重建索引。未发现新的长期规则候选。
+
+## 2026-07-21T10:14:00+08:00 · Material 3 总收敛 Task 12 外观与其余设置表面完成
+
+type: implementation
+scope: Nexara Android Material 3 convergence Task 12
+status: done
+tags: [android, material3, theme, settings, accessibility, visual-regression]
+continuity: resume
+continuity-key: nexara-md3-redesign
+
+### Summary
+
+- 外观页已经接通应用级 `ThemePreferenceStore` 与 `ThemeViewModel`，系统跟随、浅色、深色和 Android 12+ 动态色使用单一持久化状态源；Backup、Skills、Token Usage、Local Models 与 Developer 已迁移为连续 Material 3 设置表面。
+- Task 12 完成 RED、GREEN、全量质量门禁、API 31/35/36、深浅色/双语/2.0x actual 人工检查和 Terra/Sol 独立复审；下一恢复点为 Task 13 全站浅色语义色与富文本渲染迁移，整体发行继续 NO-GO。
+
+### Changed
+
+- `ThemeScreen` 移除本地假状态和强调色假面板，标准单选行与动态色 Switch 通过 `ThemeViewModel` 写入同一应用 Store；不可用设备使用同一 effective checked 值驱动视觉与 TalkBack 语义。
+- Backup 保留核心内容固定、密钥可选、密码门禁、WebDAV 异步测试/保存和安全重置，普通选项改为连续列表；本地导出/导入改为响应式 tonal 按钮，2.0x 下纵向排列。
+- Skills、Token Usage、Local Models 与 Developer 清除普通设置卡片和静态深色；本地模型插槽在手机宽度下纵向排列，技能内部 ID 单行省略，设备信息大字体上下布局，开发者页和模型选择对话框完成双语资源化。
+- `NexaraBackButton` 改用 `onSurface` 解决浅色主题前景低对比；`SettingsToggle` 改为标准 `ListItem + Switch` 单一切换语义。
+
+### Validation
+
+- RED：`ThemeViewModelTest` 与 `ThemeSettingsInteractionTest` 初始仅因缺少冻结 ViewModel/UI 状态与持久化入口失败；未使用 disabled、注释或临时 stub。GREEN 后定点 Theme/Backup/静态备份合同通过。
+- 全量 JVM 2115 项，0 failure/error、14 个既有条件 skip；Screenshot 95/95；Lint 0 Error/Fatal（424 warning、25 hint）；AndroidTest Kotlin 编译通过，`git diff --check` 通过。
+- API 31、35、36 的 Backup/Theme 组合各 6/6，0 failure/error/skip；API 36 clean AVD 一次性生成六个迁移页的英文深色、中文浅色、英文浅色 2.0x、中文深色 2.0x 共 24 张 actual。主控检查后发现并关闭技能 ID 竖排、本地插槽三列拥挤和设备信息标签拆字三处问题；临时截图夹具因会实例化真实 ViewModel、公开写图且只覆盖首屏，按 Sol 复审删除，未把它保留或冒充自动回归门禁。
+- 全量 JVM 首轮发现旧 `BackupContentUiContractTest` 仍匹配已移除的 `ActionButton` 排版；确认生产异步保存与安全恢复合同完整后，测试改为验证新标准保存入口并重跑通过。
+- Terra 首轮提出主题单选/Switch 角色和根传播/actual 证据缺口；语义已补，根 Store 由 `MainActivity` 收集且重建有 JVM 覆盖。Sol 首轮 4 项 Important 分别通过删除不安全截图夹具、统一动态色 effective state、补 unavailable+DYNAMIC 设备断言和模型选择双语关闭；定向复核无新增阻断。
+
+### Next
+
+1. 按 Task 13 冻结清单清除生产 UI、WebView 与富文本渲染中的静态主题色，建立空 allowlist 的 `ThemeSurfaceContractTest`。
+2. Task 13 完成全量 JVM、Lint、Screenshot、AndroidTest 编译与深浅色 actual 后单独 commit/push，再进入 Task 14 最终本地发行门禁。
+3. Task 14 重新执行 API 31/35/36、两轮固定 API 36 性能、当前 Provider、新签名 R8 APK 与 API 35/36 冷安装；用户真机 TalkBack/业务验收、远端 CI、tag workflow 和 GitHub Release 仍需独立闭合。
+
+### Risks
+
+- Task 13 尚未完成，浅色和动态色入口虽已可用，但冻结清单内仍可能存在静态深色角色；不得把 Task 12 描述为全站主题已经完成。
+- 一次性 24 张设备 actual 仅是主控人工视觉证据，不是持久 golden；长期自动回归仍由 95 张 Preview Screenshot 和设备语义测试承担。
+- `artifacts/` 与三个 `.nexara-workspace-*` 仍是受保护未跟踪目录，未读取、未修改、未暂存；本任务未接触签名材料或 API Key。
+
+### DIA
+
+DIA: 已同步 CHANGELOG、Material 3 实施计划、发行验证账本与本 handover；README、数据库 schema、Provider 协议和公开 API 无范围变化。
+
+### HLG
+
+HLG: 已按 `continuity-key: nexara-md3-redesign` 追加 Task 12 done 记录；使用 HLG Skill 重建索引。未发现需要另行沉淀到 AGENTS.md 或 Skill 的新长期规则候选。
