@@ -6079,3 +6079,51 @@ DIA: 已同步 v0.2-beta 发行验证账本、MD3 收敛计划与本 handover；
 ### HLG
 
 HLG: 已按 `continuity-key: v0.2-beta-release-readiness` 追加远端闭合记录；将使用 HLG Skill 重建索引。未发现需要新增到 AGENTS.md 或 Skill 的长期规则候选。
+
+## 2026-07-22T05:28:19+08:00 · 设备门禁文档后继同步假设修复待复验
+
+type: validation
+scope: v0.2-beta vectorization queue deterministic test synchronization
+status: partial
+tags: [android, github-actions, vectorization-queue, deterministic-test, api31, api35, api36, release-readiness, no-go]
+continuity: waiting
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+- 仅文档后继提交 `af58c46017964d377f4657313eeb30a08a2255a4` 的远端 Android CI run `29867832809` 在 quality 的 2118 项 JVM 中出现 2 项 `VectorizationQueueRoomTest` 失败，设备 jobs 按依赖跳过；这证明前一轮 `runCurrent()` 修复仍不足以作为跨 Room 执行器的确定性同步，计划中的远端闭合项已恢复为 pending。
+- 主控读取上传的 JUnit XML 和生产队列顺序后确认：reset 用例把 `runCurrent()` 误当 Room DAO 完成屏障；finally 边界用例的可取消测试门闩会被生产 supersede 取消合法穿透。两者都是测试调度假设问题，没有生产回归或测试间资源污染证据。
+- 当前补丁以明确 finally 到达/放行门闩证明 `interrupted -> Room 删除 -> 内存移除`，并仅在测试钩子中使用 `NonCancellable`；所有门闩均由 `finally` 释放，失败路径不会挂起。生产代码、签名 APK 字节和哈希未改变，整体发行继续 NO-GO。
+
+### Changed
+
+- `VectorizationQueueRoomTest` 的 reset 用例新增旧实例关闭后 `interrupted` 断言；replacement 到达 finally 前断言 Room 已删除且内存队列仍保留，放行后再断言内存清空。
+- finally 边界用例将测试门闩包裹在 `NonCancellable` 中，使生产 supersede 取消无法穿透人为边界；两处门闩均使用 `try/finally` 保证断言失败时仍释放。
+- 发行账本与 MD3 收敛计划恢复当前远端 PENDING 边界；未修改生产 `VectorizationQueue`、数据库 schema、Provider 协议、签名配置或受保护目录。
+
+### Validation
+
+- RED：run `29867832809` 的远端 XML 为 JVM 2118 tests、2 failure、0 error、14 skip；失败精确落在 reset 的 completed 中间态读取和 finally 门闩被取消穿透后的提前启动断言。
+- GREEN：两个精确用例新鲜通过；完整 `VectorizationQueueRoomTest` 28 项连续多轮通过；最终补丁后的全量 JVM 使用 `--no-build-cache --rerun-tasks` 为 2118 tests、0 failure/error、14 skip。
+- Sol 独立诊断确认两项均为测试调度假设，不建议修改生产取消或 completion 兜底；Terra 最终复审 Critical 0、Important 0、Minor 0，确认三阶段断言、`NonCancellable` 范围和资源清理正确。
+- `git diff --check`：PASS。Linux runner 新鲜复验尚未取得，因此当前全量 JVM 状态为 LOCAL PASS / REMOTE PENDING。
+
+### Next
+
+1. 提交并推送确定性测试修复、账本、计划与本 HLG，重建 handover 索引。
+2. 监督新提交远端 quality、API 31、API 35、API 36；全绿并回读产物后重新关闭计划项，不沿用旧 run。
+3. 用户在签名 APK 上完成物理真机 TalkBack 与核心业务人工验收；仅在用户另行明确授权后创建 tag、运行 tag workflow 和 GitHub Release。
+
+### Risks
+
+- 本地多轮 GREEN 不能替代 Linux runner；新提交全绿前，最新测试实现保持远端 PENDING。
+- `NonCancellable` 仅用于测试门闩，若未来扩展钩子必须继续确保 `finally` 无条件放行，禁止把该模式复制到生产取消路径。
+- 自动设备门禁仍不能替代物理真机 TalkBack、OEM 生命周期差异和用户核心业务体验。
+
+### DIA
+
+DIA: 已同步 v0.2-beta 发行验证账本、MD3 收敛计划与本 handover；生产用户行为未变化，CHANGELOG 无需更新。
+
+### HLG
+
+HLG: 已按 `continuity-key: v0.2-beta-release-readiness` 追加确定性同步修复待复验记录；将使用 HLG Skill 重建索引。未发现需要新增到 AGENTS.md 或 Skill 的长期规则候选。
