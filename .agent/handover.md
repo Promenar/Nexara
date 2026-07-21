@@ -5836,3 +5836,56 @@ DIA: 已同步 v0.2-beta 发行验证账本与本 handover；生产代码、数�
 ### HLG
 
 HLG: 已按 `continuity-key: v0.2-beta-release-readiness` 追加本记录；将使用 HLG Skill 重建索引。未发现需要新增到 AGENTS.md 或 Skill 的长期规则候选。
+
+## 2026-07-22T01:04:26+08:00 · 当前签名 APK 与 API 35/36 同哈希冷安装闭合
+
+type: validation
+scope: v0.2-beta signed candidate and release workflow reliability
+status: partial
+tags: [android, release, signing, r8, screenshot, api35, api36, cold-install, github-actions, no-go]
+continuity: waiting
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+- 当前工作树已生成稳定证书签名、R8 混淆的 `nexara-v0.2-beta.apk`，并完成包身份、唯一签名者、登记证书、ZIP、敏感内容、本地推理制品排除、16 KiB zipalign 与 checksum 验真。
+- 同一 APK 已在可见 API 35 与 API 36 模拟器完成卸载旧包、逐字节一致冷安装、前台启动、进程存活与 crash/ANR 检查；双档 onboarding actual 已由主控人工查看。
+- Compose Screenshot 插件在 Screenshot 与 `clean` 或其它 Android 变体处于同一次 Gradle 调用时会触发 `androidx.fragment.R` InnerClasses 初始化冲突。release workflow 改为独立 clean、独立 Screenshot、独立 JVM/Lint/Debug/Release 三个 fail-closed 进程。
+- 用户真机 TalkBack、核心业务人工验收、可验证 tag、tag workflow 与 GitHub Release 尚未闭合，整体发行继续 NO-GO。
+
+### Changed
+
+- `.github/workflows/release.yml`：签名构建步骤拆为三个 `--no-daemon --no-build-cache` Gradle 调用，保留完整门禁和 `set -euo pipefail` 失败短路。
+- `scripts/ci/tests/release-workflow-reliability-test.py`：解析真实续行命令并精确锁定三组 argv、任务顺序、wrapper 身份与 errexit；拒绝额外任务、伪 wrapper、`echo set -euo pipefail` 和后续 `set +e`。
+- `docs/release/v0.2-beta-validation.md`：回填当前签名 APK、R8、统一验真、API 35/36 同哈希冷安装和剩余阻断。
+- 未修改应用生产代码、数据库 schema、Provider 协议、签名材料或受保护目录；密钥值未进入命令输出、报告或文档。
+
+### Validation
+
+- 根因复现：同一次 Gradle 调用包含 `clean + Screenshot + 其它门禁` 时 96/96 在 Preview 初始化阶段失败；禁用 build cache 后仍失败。独立 clean 后把 Screenshot 与其它变体放在同一调用仍 96/96 初始化失败。
+- 三段验证：独立 clean 通过；独立 Screenshot 96/96；独立 JVM/Lint/Debug/Release 通过，耗时 4m44s。JVM 2118 项、0 failure/error、14 skip；Lint 0 Error/Fatal、420 Warning、25 Hint。
+- release workflow 可靠性契约 26/26；Ruby YAML parse 与 `git diff --check` 通过。
+- 签名 APK：18,367,648 bytes；SHA-256 `cc3934f506c3e307d6666195e0abed6f3271cc2f358d601bc9f285142c1fda3e`；包名 `com.promenar.nexara.native`、versionCode 2、versionName `0.2-beta`；单一 signer、登记证书、ZIP、敏感扫描、GGUF/llama/ggml 排除与 `zipalign -c -P 16 4` 全部通过。
+- 签名 release R8：mapping 100,602,563 bytes、seeds 773,487 bytes、usage 11,272,586 bytes、configuration 67,338 bytes。
+- API 35/36：两档均回拉设备 `base.apk` 与候选逐字节一致；冷启动、前台 resumed、5 秒存活与 crash/ANR 检查通过。API 36 首张 trap 截图只捕获状态栏，后续实时截图与 UI tree 均确认完整 onboarding 内容，未把瞬时截图误判为视觉失败。
+- 原生 Spark 完成首版 TDD 补丁；Terra 与 Sol 分别两轮审阅并推动关闭命令绑定、额外任务、伪 wrapper 和 errexit 假阳性，最终 Critical/Important 清零后方可提交。主控独立复跑全部合同、构建、验真和设备 smoke。
+
+### Next
+
+1. 提交并推送本轮 workflow、契约、账本与 HLG，观察当前提交远端 Android CI；不因文档提交形成无限追认循环。
+2. 用户安装当前签名 APK，在真机完成 TalkBack 人工听觉、完整焦点遍历和核心业务体验验收，并回报设备/API 与结果。
+3. 仅在真机验收完成且用户另行明确授权后，创建可验证 tag，运行 tag workflow 并回读 GitHub prerelease 资产与 checksum。
+
+### Risks
+
+- 本地 JDK 为 21，release workflow 使用 JDK 17；应用字节与设备 smoke 已闭合，但最终 tag workflow 仍须在远端官方环境重新构建和验真。
+- 当前本地 APK 是可供真机验收的候选，不是已发布 GitHub Release；不得省略 tag provenance、远端产物回读和用户人工验收。
+- 自动语义、96 张静态 actual 和模拟器冷启动不能替代真机 TalkBack 听觉、焦点顺序、OEM 行为和完整核心业务体验。
+
+### DIA
+
+DIA: 已同步 release workflow 可靠性合同、v0.2-beta 发行验证账本与本 handover；应用生产行为、数据库 schema、Provider 协议和公开 API 无变化，CHANGELOG 无新增用户可见行为需要记录。
+
+### HLG
+
+HLG: 已按 `continuity-key: v0.2-beta-release-readiness` 追加本记录；将使用 HLG Skill 重建索引。未发现需要新增到 AGENTS.md 或 Skill 的长期规则候选。
