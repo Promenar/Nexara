@@ -5593,3 +5593,50 @@ continuity-key: nexara-md3-redesign
 ### HLG
 
 已追加本记录；需重建 `.agent/handover-index.md`。保护目录、密钥材料与历史记录均未修改。
+
+## 2026-07-21T18:35:57+08:00 · Material 3 Task 14 独立复审返修后暂停
+
+type: implementation
+scope: native-ui
+status: partial
+tags: [material3, task-14, review, performance, androidtest, pause, no-go]
+continuity: resume
+continuity-key: nexara-md3-redesign
+
+### Summary
+
+用户要求阶段性暂停并合盖离开。Task 14 已完成独立规格复审和代码质量/视觉复审；规格复审无问题，质量复审提出 2 个 Important 与 4 个 Minor。发行账本矛盾、API 31 skip 计数、DocEditor 受控状态与 IME Done、前台服务遗留通知隔离、性能原始直方图保留均已返修。性能复跑受到 Play Store API 36 AVD 内持续 `artd` 后台扫描干扰，未取得新的有效双跑样本，因此不把本轮性能结果记为 PASS；Task 14 与整体发行继续 NO-GO。
+
+### Changed
+
+- Provider Models 性能测试保留每轮完整 `SparseIntArray` bucket，并以可分片的 `PROVIDER_MODELS_PERF_RAW` 日志输出，继续保持既有阈值、预热和循环次数。
+- DocEditor 测试改为受控状态回写，并新增 IME Done 关闭键盘断言。
+- 前台生成服务设备测试在执行前后清理固定通知；Android 13+ 独立运行时确保通知权限可用，避免遗留通知假阳性。
+- 发行验证账本将旧签名包冷安装改为历史证据；计划与账本的 API 31 通知权限 skip 数量修正为 2。
+
+### Validation
+
+- `compileDebugAndroidTestKotlin` 通过。
+- DocEditor 与前台服务组合定点共 34 项，其中 DocEditor 33 项通过；前台服务首次因通知权限失败。修正权限夹具后，前台服务独立 1/1 通过。
+- 性能测试返修后两次测量均未作为有效证据：一次 Gradle 正式跑因帧 p95 方差 0.4033、max 168ms 失败；一次直接 instrumentation 因 max 199ms 失败。两次系统日志均显示测量期间 `artd` 约每 10 秒扫描 Google 组件，违反安静夹具前提。原始日志与源码绑定信息保留在构建报告目录，未删除或覆盖。
+- 本暂停收口未继续运行 Gradle、设备矩阵或视觉测试；模拟器已关闭，独立复审 Agent 已关闭。
+
+### Next
+
+1. 恢复后先核对本提交、工作树和性能报告，诊断 API 36 AVD 的周期性 `artd` 活动，冻结可审计的安静窗口判定；不得放宽性能阈值或丢弃失败样本。
+2. 在有效夹具下取得两轮完整 raw histogram、exit、设备状态与源码绑定证据，再由独立复审确认 Important 全部关闭。
+3. 更新 Task 14 Step 8/Completion Definition；Provider 与签名运行时变量仍缺失时保持相应门禁 PENDING。
+
+### Risks
+
+- 当前性能生产实现没有确认回归，但新 raw-evidence 测试合同尚缺两轮有效运行，不能仅复用旧汇总日志完成独立复算。
+- 当前进程仍缺六项 Provider 与五项签名运行时变量；未读取 `secure_env`，未生成当前签名 release APK。
+- 用户真机 TalkBack、核心业务人工验收、当前提交远端 CI、tag workflow 与 GitHub Release 仍未闭合。
+
+### DIA
+
+DIA: 已同步发行验证账本、Material 3 计划、Android 设备测试合同与本暂停交接记录；生产业务代码、数据库 schema 和 Provider 协议未变化。
+
+### HLG
+
+HLG: 已按 `continuity-key: nexara-md3-redesign` 追加本记录并重建索引；2026-07-21T15:06:15+08:00 记录中的“需重建索引”是当时待办，本次以新记录确认索引已重建。保护目录、密钥和历史记录均未修改。
