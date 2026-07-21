@@ -5889,3 +5889,48 @@ DIA: 已同步 release workflow 可靠性合同、v0.2-beta 发行验证账本�
 ### HLG
 
 HLG: 已按 `continuity-key: v0.2-beta-release-readiness` 追加本记录；将使用 HLG Skill 重建索引。未发现需要新增到 AGENTS.md 或 Skill 的长期规则候选。
+
+## 2026-07-22T01:53:05+08:00 · 当前签名候选远端 Android CI 闭合
+
+type: validation
+scope: v0.2-beta signed candidate remote Android CI
+status: partial
+tags: [android, github-actions, api31, api35, api36, system-ui-anr, release-readiness, no-go]
+continuity: waiting
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+- 提交 `702181e53113f7936b57b1936134bb8b7b4c78ed` 的远端 Android CI run `29851653351` 最终 attempt 2 为 `success`；quality、API 31、API 35 与 API 36 全部通过。
+- API 36 首轮失败已由原始截图和 UI tree 确认为托管模拟器 `System UI isn't responding` 对话框遮挡通知权限面板，Nexara crash 记录为空；本机可见 API 36 上同一用例 1/1 通过后，仅重跑失败 job并闭合。
+- 当前可自动执行的签名候选本地/模拟器/远端 CI 门禁已闭合；用户真机 TalkBack、核心业务人工验收、可验证 tag、tag workflow 与 GitHub Release 尚未闭合，整体发行继续 NO-GO。
+
+### Changed
+
+- `docs/release/v0.2-beta-validation.md` 回填当前签名候选提交、首轮宿主 System UI ANR、重试依据与最终远端矩阵。
+- 未修改应用生产代码、测试断言、数据库 schema、Provider 协议、签名材料或受保护目录；未通过放宽断言掩盖基础设施失败。
+
+### Validation
+
+- 远端 run `29851653351`：quality 19m54s、API 31 9m26s、API 35 12m02s，均首轮成功；API 36 第二轮 10m42s 成功，最终 run conclusion 为 `success`。
+- API 36 首轮产物：`notification-permission-deny` 在点击系统拒绝按钮前失败；最终 screenshot 与 UI tree 均显示 `System UI isn't responding`，Nexara `crash-log.txt` 为空。
+- 本机可见 API 36：同一 `denyingSystemNotificationPermissionContinuesForegroundOnlyWithoutFgs` 用例 1/1，4.393s，instrumentation exit 0。
+- API 36 第二轮产物：full 41/41，设计内恢复中继 expected-death checkpoint 1 项，`exit-code=0`；`crash-log.txt` 与 `crash-after-tests.txt` 均为 0 bytes。
+
+### Next
+
+1. 用户安装 SHA-256 `cc3934f506c3e307d6666195e0abed6f3271cc2f358d601bc9f285142c1fda3e` 的当前签名 APK，在真机完成 TalkBack 人工听觉、完整焦点遍历和核心业务体验验收。
+2. 仅在真机验收完成且用户另行明确授权后，创建可验证 tag，运行 tag workflow 并回读 GitHub prerelease APK 与 checksum。
+
+### Risks
+
+- GitHub 托管 API 36 模拟器已再次出现 System UI ANR；失败必须以截图、UI tree、crash 与本机对照证据分类，不能无条件重跑或把宿主失败记为产品 PASS。
+- 当前本地 APK 是可供真机验收的候选，不是已发布 GitHub Release；自动语义、模拟器与 CI 不能替代真机 TalkBack/OEM 行为。
+
+### DIA
+
+DIA: 已同步 v0.2-beta 发行验证账本与本 handover；应用生产行为、测试断言、数据库 schema、Provider 协议和公开 API 无变化。
+
+### HLG
+
+HLG: 已按 `continuity-key: v0.2-beta-release-readiness` 追加本记录并使用 HLG Skill 重建索引。未发现需要新增到 AGENTS.md 或 Skill 的长期规则候选。
