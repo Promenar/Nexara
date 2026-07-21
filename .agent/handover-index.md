@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-07-22T01:56:36+08:00
+> generated_at: 2026-07-22T03:41:32+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -9,12 +9,13 @@
 | continuity-key | continuity | last update | status | scope | title | source |
 | :--- | :---: | :---: | :---: | :--- | :--- | :--- |
 | nexara-md3-redesign | waiting | 2026-07-21 | done | Nexara Android Material 3 convergence Task 14 remote CI | Material 3 Task 14 当前提交远端矩阵闭合 | `.agent/handover.md` · `2026-07-21T21:39:14+08:00` |
-| v0.2-beta-release-readiness | waiting | 2026-07-22 | partial | v0.2-beta signed candidate remote Android CI | 当前签名候选远端 Android CI 闭合 | `.agent/handover.md` · `2026-07-22T01:53:05+08:00` |
+| v0.2-beta-release-readiness | waiting | 2026-07-22 | partial | v0.2-beta backup restore and background generation device gates | 自动化发行设备门禁补强待远端复验 | `.agent/handover.md` · `2026-07-22T03:40:46+08:00` |
 
 ## Recent 7-Day Catalog
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-07-22 | iso | partial | waiting | v0.2-beta backup restore and background generation device gates | [android, backup, restore-relay, background-generation, keyguard, api31, api35, api36, release-readiness, no-go] | 自动化发行设备门禁补强待远端复验 | `.agent/handover.md` · `2026-07-22T03:40:46+08:00` |
 | 2026-07-22 | iso | partial | waiting | v0.2-beta signed candidate remote Android CI | [android, github-actions, api31, api35, api36, system-ui-anr, release-readiness, no-go] | 当前签名候选远端 Android CI 闭合 | `.agent/handover.md` · `2026-07-22T01:53:05+08:00` |
 | 2026-07-22 | iso | partial | waiting | v0.2-beta signed candidate and release workflow reliability | [android, release, signing, r8, screenshot, api35, api36, cold-install, github-actions, no-go] | 当前签名 APK 与 API 35/36 同哈希冷安装闭合 | `.agent/handover.md` · `2026-07-22T01:04:26+08:00` |
 | 2026-07-21 | iso | partial | waiting | v0.2-beta current candidate provider and Android CI | [android, provider, github-actions, api31, api35, api36, room, release-readiness, no-go] | 当前候选 Provider 与远端 Android CI 复验闭合 | `.agent/handover.md` · `2026-07-21T23:53:36+08:00` |

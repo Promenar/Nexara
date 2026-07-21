@@ -5934,3 +5934,53 @@ DIA: 已同步 v0.2-beta 发行验证账本与本 handover；应用生产行为�
 ### HLG
 
 HLG: 已按 `continuity-key: v0.2-beta-release-readiness` 追加本记录并使用 HLG Skill 重建索引。未发现需要新增到 AGENTS.md 或 Skill 的长期规则候选。
+
+## 2026-07-22T03:40:46+08:00 · 自动化发行设备门禁补强待远端复验
+
+type: validation
+scope: v0.2-beta backup restore and background generation device gates
+status: partial
+tags: [android, backup, restore-relay, background-generation, keyguard, api31, api35, api36, release-readiness, no-go]
+continuity: waiting
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+- 本轮在不修改生产业务代码的前提下补齐无 Key 备份恢复 relay 全链，以及前台生成在真实锁屏、唤醒、旋转、通知返回和重复停止下的确定性设备门禁。
+- API 31 minimum、API 35 full 与 API 36 full 已在本机可见模拟器新鲜通过；API 35/36 的两条 relay expected-death 均要求精确目标测试终态和专属 PID 日志，并保留 crash buffer 到最终检查。
+- 当前新增 harness 尚未提交、推送或取得远端 CI 结果；远端 run `29855101996` 只覆盖前一提交 `ca687188`，不得作为本轮新 harness 的远端证据。整体发行继续 NO-GO。
+
+### Changed
+
+- `AndroidRestoreRelayEndToEndTest` 新增未加密、无密钥导出、stage/authorize、relay 杀进程恢复、可备份凭据清除、排除项保留和冷启 no-replay 链；读取的密钥字节均在 `finally` 清零。
+- `MainActivityNotificationE2eTest` 新增真实 Keyguard 锁定、Activity 离开并恢复 `RESUMED`、旋转实例重建、生产前台服务/通知保持、准确会话返回及两次 stop 完成系统投递后稳定不复活；teardown 分离状态并聚合清理失败。
+- 设备 host 脚本收紧 expected-death 解析和 relay 专属日志证据，只清 main buffer；补充对应可执行 parser 与设备脚本契约。
+- 发行账本与历史阶段计划增加状态对账，明确 `deviceTest` 直接证据不等于非调试签名 APK 黑盒或物理真机验收。未修改数据库 schema、Provider 协议、签名配置或生产 UI。
+
+### Validation
+
+- 模型目录检查：PASS。
+- 主机质量门禁使用 `--no-build-cache --rerun-tasks`：JVM 2118 tests、0 failure/error、14 skip；Screenshot 96/96；Lint 0 Error/Fatal、420 warning、25 hint；Debug APK 与 AndroidTest Kotlin 编译通过。
+- API 31 minimum：exit 0；核心会话、新建会话、onboarding、无障碍与自适应布局全部通过。
+- API 35 full、API 36 full：均 exit 0；新增锁屏生命周期、无 Key/含 Key restore relay、no-replay 及既有完整业务链通过；最终 `crash-after-tests.txt` 均为 0 bytes。
+- shell/parser 合同、`git diff --check`：PASS。Terra 回查 Critical 0、Important 0；Sol 确认代码层旧 Critical/Important 全部关闭。Sol 指出的治理提前声明已改为 pending，服务清理超时补最终断言；字符串型静态契约的 Minor 由真实三档设备运行降低风险，后续可逐步结构化。
+
+### Next
+
+1. 完成最终定点编译与 diff readback，提交并推送本轮 harness、计划、账本和 HLG。
+2. 观察该提交远端 Android CI 的 quality、API 31、API 35、API 36；成功后追加事实记录并重建索引，不用旧 run 代替。
+3. 用户在签名 APK 上完成物理真机 TalkBack 与核心业务人工验收；仅在用户另行明确授权后创建 tag、运行 tag workflow 和 GitHub Release。
+
+### Risks
+
+- 本轮只增强测试与发行证据，不改变签名 APK 的生产字节；现有签名候选仍是 SHA-256 `cc3934f506c3e307d6666195e0abed6f3271cc2f358d601bc9f285142c1fda3e`，但完整签名包业务黑盒仍需真机人工验收。
+- 自动语义、可见模拟器和确定性协调器状态注入不能替代真实网络稳定性、TalkBack 听觉、OEM 生命周期差异或用户核心业务体验。
+- `android-device-core-e2e-contract-test.sh` 仍有静态字符串合同；当前有 API 31/35/36 行为证据兜底，后续修改脚本时应优先扩充可执行 helper 测试。
+
+### DIA
+
+DIA: 已同步 v0.2-beta 发行验证账本、MD3 收敛计划、四阶段历史计划状态对账与本 handover；本轮无生产用户行为变化，因此 CHANGELOG 无新增条目。
+
+### HLG
+
+HLG: 已按 `continuity-key: v0.2-beta-release-readiness` 追加本记录；将使用 HLG Skill 重建索引。未发现需要新增到 AGENTS.md 或 Skill 的长期规则候选。
