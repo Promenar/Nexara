@@ -5492,3 +5492,51 @@ DIA: 已同步 CHANGELOG、Material 3 实施计划、发行验证账本与本 ha
 ### HLG
 
 HLG: 已按 `continuity-key: nexara-md3-redesign` 追加 Task 12 done 记录；使用 HLG Skill 重建索引。未发现需要另行沉淀到 AGENTS.md 或 Skill 的新长期规则候选。
+
+## 2026-07-21T11:28:27+08:00 · Material 3 总收敛 Task 13 自适应语义色与富文本主题完成
+
+type: implementation
+scope: Nexara Android Material 3 convergence Task 13
+status: done
+tags: [android, material3, theme, rich-content, webview, screenshot, accessibility]
+continuity: resume
+continuity-key: nexara-md3-redesign
+
+### Summary
+
+- 冻结清单内的全站静态深色与 Glass 消费已迁移到 Material 3 语义色；`NexaraColors` 与 `NexaraGlassCard` 兼容桥已完全删除，Task 13 的 RED、GREEN、全量门禁、actual 人工检查和独立代码/多模态复审均闭合。
+- 下一恢复点为 Task 14 最终设备、性能、当前 Provider、签名 APK、冷安装和治理门禁；用户真机 TalkBack/核心业务、当前提交远端 CI、tag workflow 与 GitHub Release 未闭合前，整体发行继续 NO-GO。
+
+### Changed
+
+- 正式 UI 只消费 `MaterialTheme.colorScheme`；成功、警告、信息、RAG 状态与代码语法角色通过深浅配对的 `NexaraDomainColors` 注入。冻结 manifest 的 51 个实际生产改动路径均在既定 69 路径范围内，非主题文件静态扫描为 0。
+- Markdown、LaTeX、Mermaid、PlantUML、ECharts 与 HTML WebView 从当前主题生成背景、前景、surface、outline、primary、error 与代码 CSS/色板，并把 palette 纳入 Compose 重建与 WebView 重载判定。
+- 新增 `ThemeSurfaceContractTest`、API 36 `RichContentThemeTest` 以及浅色富 Markdown Screenshot；`PipelineBubbleTest` 按静态合同拒绝 `drawBehind`，继续要求连接轨迹在 `drawWithContent` 中先绘制内容。
+
+### Validation
+
+- RED：全树合同最初因生产静态颜色及旧兼容桥失败；新增浅色富文本 Preview 首次因缺少 reference 以 96 项中 1 项失败。未使用 disabled、注释或临时 stub。
+- GREEN：全量 JVM 2117 项，0 failure/error、14 skip；Lint 0 Error/Fatal、420 warning；Screenshot 96/96；AndroidTest Kotlin 编译通过；`git diff --check` 通过。skip 未记为 PASS。
+- API 36 真 WebView 在同一 `ComponentActivity` 内将 typed preferences 从 DARK 切换到 LIGHT，`getComputedStyle(document.body).backgroundColor` 由 `rgb(19, 19, 21)` 变为 `rgb(251, 248, 251)`，Activity 实例未变化，1/1 通过。
+- 主控逐张检查聊天、附件、引导、Provider Models、RAG/资源确认、RTL、横屏、平板、2.0x 与深浅富文本 actual；Luna 多模态复审 P0=0、P1=0。Terra 首轮唯一 Important 指出缺少主题实时重载证据，补 API 36 真 WebView 与浅色富文本图后定向复审为 Critical=0、Important=0、Minor=0。
+- Agent 调用：原生 Spark 完成 RED 合同施工；OpenCode GLM-5.2 读取后未产出有效 diff/报告并由主控终止；AGY Gemini 两个边界施工批次完成聊天与 Hub/RAG 迁移，越界治理文件已精确撤销且错误静态零命中声明由主控返修；原生 Sol 完成 theme/common/renderer 主体施工；所有 Agent diff、声明和测试均由主控独立复核。
+
+### Next
+
+1. 执行 Task 14 的完整本地质量门禁与 API 31/35/36 闭合集合，报告 failure/error/skip，不复用历史候选。
+2. 在固定 API 36 AVD 复跑两轮 500 模型性能并采用较差结果；随后由主控安全使用当前 Provider 与签名运行时变量，重建并验真 R8 release APK。
+3. 在 API 35/36 对当前同哈希 APK 做冷安装和关键路径 smoke，更新发行账本、HLG 和索引；不经用户明确授权不创建 tag、PR 或 GitHub Release。
+
+### Risks
+
+- 多模态复审记录三个非阻断产品 P2：横屏引导页留白较大、超长 Provider 标题较早省略、2.0x 聊天尾注发送者会压缩；导航截图中的 `Nexara workspace` 留白是隔离夹具，不是产品空态。Task 14 设备 actual 仍需复核前三项是否在真实路径恶化。
+- 96 张静态 Screenshot 与 API 36 WebView 主题回归不替代最终签名 APK 的真机 TalkBack 音频、完整焦点遍历或用户核心业务人工验收。
+- `artifacts/` 与三个 `.nexara-workspace-*` 仍是受保护未跟踪目录，未读取、未修改、未暂存；本任务未读取签名材料或 API Key。
+
+### DIA
+
+DIA: 已同步 CHANGELOG、架构快速参考、Material 3 实施计划、v0.2-beta 发行说明、发行验证账本、24 张受影响 Screenshot reference、新增浅色富文本 reference 与本 handover；数据库 schema、Provider 协议和公开 API 无范围变化。
+
+### HLG
+
+HLG: 已按 `continuity-key: nexara-md3-redesign` 追加 Task 13 done 记录；使用 HLG Skill 重建索引。未发现需要另行沉淀到 AGENTS.md 或 Skill 的新长期规则候选。

@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-07-21T10:15:36+08:00
+> generated_at: 2026-07-21T11:29:11+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -8,13 +8,14 @@
 
 | continuity-key | continuity | last update | status | scope | title | source |
 | :--- | :---: | :---: | :---: | :--- | :--- | :--- |
-| nexara-md3-redesign | resume | 2026-07-21 | done | Nexara Android Material 3 convergence Task 12 | Material 3 总收敛 Task 12 外观与其余设置表面完成 | `.agent/handover.md` · `2026-07-21T10:14:00+08:00` |
+| nexara-md3-redesign | resume | 2026-07-21 | done | Nexara Android Material 3 convergence Task 13 | Material 3 总收敛 Task 13 自适应语义色与富文本主题完成 | `.agent/handover.md` · `2026-07-21T11:28:27+08:00` |
 | v0.2-beta-release-readiness | waiting | 2026-07-20 | done | Nexara chat full-context documents and branching | 会话完整文档上下文、导出与消息分支交付 | `.agent/handover.md` · `2026-07-20T09:25:25+08:00` |
 
 ## Recent 7-Day Catalog
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-07-21 | iso | done | resume | Nexara Android Material 3 convergence Task 13 | [android, material3, theme, rich-content, webview, screenshot, accessibility] | Material 3 总收敛 Task 13 自适应语义色与富文本主题完成 | `.agent/handover.md` · `2026-07-21T11:28:27+08:00` |
 | 2026-07-21 | iso | done | resume | Nexara Android Material 3 convergence Task 12 | [android, material3, theme, settings, accessibility, visual-regression] | Material 3 总收敛 Task 12 外观与其余设置表面完成 | `.agent/handover.md` · `2026-07-21T10:14:00+08:00` |
 | 2026-07-21 | iso | done | resume | Nexara Android Material 3 convergence Task 11 | [android, material3, provider-models, accessibility, performance, screenshot] | Material 3 总收敛 Task 11 Provider 模型摘要与独立编辑完成 | `.agent/handover.md` · `2026-07-21T07:36:51+08:00` |
 | 2026-07-21 | iso | done | resume | Nexara Android Material 3 convergence Task 10 | [android, material3, provider, secrets, accessibility, screenshot] | Material 3 总收敛 Task 10 Provider 表单与密钥交互完成 | `.agent/handover.md` · `2026-07-21T06:27:40+08:00` |
