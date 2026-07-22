@@ -6268,3 +6268,50 @@ DIA: 已同步 CHANGELOG、v0.2-beta 发行验证账本、MD3 收敛计划与本
 ### HLG
 
 HLG: 已按 `continuity-key: v0.2-beta-release-readiness` 追加双复审闭合记录；将使用 HLG Skill 重建索引。未发现新的长期规则候选。
+
+## 2026-07-22T10:25:06+08:00 · 当前签名 R8 APK 重建与静态验真闭合
+
+type: validation
+scope: v0.2-beta signed release APK build and verification
+status: done
+tags: [android, release-apk, r8, signing, zipalign, checksum, release-readiness, no-go]
+continuity: resume
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+- 主控从当前文档后继提交 `9a62392e` 执行独立 clean 与无构建缓存、全任务重跑的 Release 构建；`:app:assembleRelease` 在 1m56s 内成功，当前生产代码仍对应已由远端 run `29877797382` 验证的 `98ec89bf`。
+- 当前稳定证书签名 R8 APK 为 18,367,648 bytes，SHA-256 `2627b00750cdd98765a29ede75ed3f042b44e7a17c0a41cc335039bd4dfb674d`。包身份、版本、唯一 signer、登记证书、敏感内容、GGUF/本地推理制品、ZIP/体积、checksum 和 16 KiB zipalign 全部通过。
+- Task 14 Step 5 已关闭；API 35/36 对当前 APK 的卸载、冷安装、设备回拉同哈希、冷启动与 crash/ANR 检查仍属于 Step 6，尚未执行，因此整体发行继续 NO-GO。
+
+### Changed
+
+- `CHANGELOG.md` 新增当前签名候选的大小、哈希与验证边界。
+- v0.2-beta 发行验证账本将当前 APK 的构建和静态验真更新为 PASS，并保留运行时冷安装、真机与外部发布门禁 PENDING。
+- MD3 收敛计划勾选 Task 14 Step 5，写入当前构建命令、R8 四类输出、签名与 zipalign 证据；未改动生产源码、签名配置或受保护目录。
+
+### Validation
+
+- `clean`：BUILD SUCCESSFUL；`:app:assembleRelease`：59 actionable tasks 全部执行，BUILD SUCCESSFUL。
+- `scripts/verify-release-apk.py`：包名 `com.promenar.nexara.native`、versionCode `2`、versionName `0.2-beta`、单一 signer 与登记证书通过；敏感内容与 GGUF/llama/ggml 扫描无命中。
+- R8 输出非空：mapping 100,602,563 bytes、seeds 773,487 bytes、usage 11,272,586 bytes、configuration 67,338 bytes；checksum 已生成，Build Tools `zipalign -c -P 16 4` 退出 0。
+- 签名材料仅由主控在本地安全运行时读取；没有输出值、写入仓库/报告或传递给任何 Agent。
+
+### Next
+
+1. 重建 handover 索引，检查并提交推送本轮正式证据文档。
+2. 启动可见 API 35/36 模拟器，对同一 SHA-256 APK 执行卸载、冷安装、设备 APK 回拉同哈希、冷启动、前台存活与 crash/ANR 检查，并保留到 `native-ui/app/build/reports/`。
+3. 用户在同一签名 APK 上完成物理真机 TalkBack、音频/全焦点遍历与核心业务人工验收；tag、tag workflow 和 GitHub Release 继续等待单独明确授权。
+
+### Risks
+
+- 当前 APK 已通过静态发行验真，但在 API 35/36 的当前包运行时证据尚未形成，不能交付为最终发行候选。
+- 文档后继 CI 与当前 APK 构建可以证明治理与字节来源，但不能替代 tag workflow 对最终远端 artifact 的重建和哈希回读。
+
+### DIA
+
+DIA: 已同步 CHANGELOG、v0.2-beta 发行验证账本、MD3 收敛计划与本 handover；本轮未改变生产代码或用户行为。
+
+### HLG
+
+HLG: 已按 `continuity-key: v0.2-beta-release-readiness` 追加当前签名 APK 验真记录；将使用 HLG Skill 重建索引。未发现新的长期规则候选。

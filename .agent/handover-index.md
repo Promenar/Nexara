@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-07-22T10:14:18+08:00
+> generated_at: 2026-07-22T10:25:40+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -9,12 +9,13 @@
 | continuity-key | continuity | last update | status | scope | title | source |
 | :--- | :---: | :---: | :---: | :--- | :--- | :--- |
 | nexara-md3-redesign | waiting | 2026-07-21 | done | Nexara Android Material 3 convergence Task 14 remote CI | Material 3 Task 14 当前提交远端矩阵闭合 | `.agent/handover.md` · `2026-07-21T21:39:14+08:00` |
-| v0.2-beta-release-readiness | resume | 2026-07-22 | done | v0.2-beta release ledger and remote artifact readback | 当前候选远端证据账本双复审闭合 | `.agent/handover.md` · `2026-07-22T10:13:47+08:00` |
+| v0.2-beta-release-readiness | resume | 2026-07-22 | done | v0.2-beta signed release APK build and verification | 当前签名 R8 APK 重建与静态验真闭合 | `.agent/handover.md` · `2026-07-22T10:25:06+08:00` |
 
 ## Recent 7-Day Catalog
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-07-22 | iso | done | resume | v0.2-beta signed release APK build and verification | [android, release-apk, r8, signing, zipalign, checksum, release-readiness, no-go] | 当前签名 R8 APK 重建与静态验真闭合 | `.agent/handover.md` · `2026-07-22T10:25:06+08:00` |
 | 2026-07-22 | iso | done | resume | v0.2-beta release ledger and remote artifact readback | [android, release-ledger, historical-evidence, design-skip, terra, sol, review, no-go] | 当前候选远端证据账本双复审闭合 | `.agent/handover.md` · `2026-07-22T10:13:47+08:00` |
 | 2026-07-22 | iso | done | resume | v0.2-beta generation notification stop replay remote CI | [android, pending-intent, api31, api35, api36, github-actions, artifact-readback, release-readiness, no-go] | 后台生成通知防重放当前提交远端矩阵闭合 | `.agent/handover.md` · `2026-07-22T10:01:45+08:00` |
 | 2026-07-22 | iso | partial | waiting | v0.2-beta generation notification stop replay hardening | [android, pending-intent, foreground-service, api35, github-actions, release-readiness, no-go] | 后台生成通知停止防重放本地闭合待远端复验 | `.agent/handover.md` · `2026-07-22T06:34:32+08:00` |
