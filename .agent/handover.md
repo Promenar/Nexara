@@ -6174,3 +6174,97 @@ DIA: 已同步 CHANGELOG、v0.2-beta 发行验证账本、MD3 收敛计划与本
 ### HLG
 
 HLG: 已按 `continuity-key: v0.2-beta-release-readiness` 追加本记录；将使用 HLG Skill 重建索引。未发现需要新增到 AGENTS.md 或 Skill 的长期规则候选。
+
+## 2026-07-22T10:01:45+08:00 · 后台生成通知防重放当前提交远端矩阵闭合
+
+type: validation
+scope: v0.2-beta generation notification stop replay remote CI
+status: done
+tags: [android, pending-intent, api31, api35, api36, github-actions, artifact-readback, release-readiness, no-go]
+continuity: resume
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+- 当前分支与远端同步于提交 `98ec89bfcd9e44d44fbda45358ca40fb5b969783`；Android CI run `29877797382` 的 quality、API 31 minimum、API 35 full、API 36 full 均首轮成功。
+- 主控下载全部 6 个 run artifacts 到系统临时目录；各 ZIP 的 SHA-256 与 GitHub API digest 一致。XML 和设备文本回读确认当前 `FLAG_ONE_SHOT` 生产修复已取得 Linux runner 与三档托管模拟器证据。
+- 当前签名变量仍未注入，`nexara-v0.2-beta.apk` 在 clean 后不存在；历史哈希 `cc3934f506c3e307d6666195e0abed6f3271cc2f358d601bc9f285142c1fda3e` 早于本轮生产修复，不能作为当前候选。整体发行继续 NO-GO。
+
+### Changed
+
+- 发行验证账本将当前应用候选更新为 `98ec89bf`，新增 run `29877797382` 的 artifact readback，并把 JVM、Lint、Screenshot 与 Android instrumentation 从远端 PENDING 更新为当前提交 PASS。
+- MD3 收敛计划保留 Task 14 Step 5/6 未勾选，但明确远端设备矩阵已经闭合，剩余范围缩小为当前签名候选、API 35/36 同哈希冷安装和用户物理真机验收。
+- CHANGELOG 将当前提交远端矩阵从待执行更新为已验证，同时保留旧签名包失效与 NO-GO 边界。
+
+### Validation
+
+- GitHub run `29877797382`：quality 19m18s、API 31 10m16s、API 35 12m38s、API 36 12m28s，四项均 `success` 且未重跑。
+- 远端 JVM XML：2119 tests、0 failure、0 error、14 skip；Screenshot report：96 tests、0 failure/error/skip、100%；Lint XML：0 Error/Fatal、420 warning、25 hint。
+- API 31/35/36 的 `exit-code.txt` 均为 0；三档 `crash-log.txt` 与 `crash-after-tests.txt` 均为空。API 35/36 的后台生命周期测试 1/1、通知权限拒绝 1/1、允许 1/1；每档 onboarding 的 `forceStopPhaseCheckpoint` 保留 1 个设计内 `AssumptionViolatedException`，未记作 PASS。
+- 工作树仍只有 `artifacts/` 与三项 `.nexara-workspace-*` 受保护未跟踪目录；未读取、修改或暂存这些目录及任何签名材料。
+
+### Next
+
+1. 重建 HLG 索引，检查治理 diff 后仅提交并推送本轮正式文档。
+2. 由主控在安全运行时取得五项签名变量后 clean 构建当前 release APK，执行 R8、包身份、唯一签名者、登记证书、敏感/GGUF 扫描、16 KiB zipalign 和 SHA-256 验真。
+3. 对同一当前 APK 在 API 35/36 完成卸载、冷安装、回拉同哈希、冷启动和关键路径 smoke；随后交付用户物理真机 TalkBack、音频/焦点遍历及核心业务人工验收。
+4. tag、tag workflow 和 GitHub Release 继续等待用户单独明确授权。
+
+### Risks
+
+- 当前没有可交付的最新签名 APK；远端 Debug/deviceTest 绿色不能替代非调试签名包的黑盒验证。
+- 用户物理真机 TalkBack 与核心业务验收不应由模拟器自动语义测试冒充；任一新缺陷都会重新打开相关门禁。
+- 本轮文档提交推送会触发新的分支 CI；它只改变治理资料，不应形成无限追加“文档后继 CI”记录链。
+
+### DIA
+
+DIA: 已同步 CHANGELOG、v0.2-beta 发行验证账本、MD3 收敛计划与本 handover；生产代码和发行字节未变化。
+
+### HLG
+
+HLG: 已按 `continuity-key: v0.2-beta-release-readiness` 追加远端矩阵闭合记录；将使用 HLG Skill 重建索引。未发现需要新增到 AGENTS.md 或 Skill 的长期规则候选。
+
+## 2026-07-22T10:13:47+08:00 · 当前候选远端证据账本双复审闭合
+
+type: review
+scope: v0.2-beta release ledger and remote artifact readback
+status: done
+tags: [android, release-ledger, historical-evidence, design-skip, terra, sol, review, no-go]
+continuity: resume
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+- Terra 与 Sol 独立只读复审当前治理 diff；首轮发现旧签名包仍被部分章节称作当前、Android instrumentation 裸 `PASS` 会掩盖设计内 skip、历史 CI 标题与 GitHub 治理表仍使用“当前”字样，以及 Step 6/最终签字区对当前签名包阻断表达不完整。
+- 主控逐项修正后，两路最终复审均为 Critical 0、Important 0、Minor 0。当前签名 R8 APK、API 35/36 同哈希冷安装、用户物理真机 TalkBack/核心业务、tag、tag workflow、发布产物回读与 GitHub Release 保持未关闭，整体发行继续 NO-GO。
+
+### Changed
+
+- 发行账本的 R8、APK、签名、zipalign、SHA-256、logcat、GGUF 和冷安装旧结果统一标为 `HISTORICAL PASS / CURRENT PENDING`，最终签字区补回当前包重建与同哈希冷安装阻断。
+- Android instrumentation 状态改为 `PASS + 1 DESIGN-SKIP / API`，明确 `forceStopPhaseCheckpoint` 只允许主控分阶段显式调用，常规套件 skip 不计入 PASS 数。
+- 历史 CI 标题、GitHub 治理表和 MD3 Step 6 均明确旧 run/旧哈希边界；当前 Android CI 只绑定 `98ec89bf` / `29877797382`。
+
+### Validation
+
+- Terra 最终复审：Critical 0、Important 0、Minor 0。
+- Sol 最终复审：Critical 0、Important 0、Minor 0。
+- `git diff --check` 通过；HLG inspect 无 invalid continuity 或 continuity-without-key。复审 Agent 均未修改文件、读取密钥或访问受保护目录。
+
+### Next
+
+1. 重建 handover 索引，提交并推送本轮治理闭合。
+2. 安全取得五项签名运行时变量后继续当前 release APK 构建、验真和 API 35/36 同哈希冷安装。
+3. 将当前 APK 交付用户完成物理真机 TalkBack、音频/焦点遍历和核心业务人工验收；外部发布动作继续等待单独授权。
+
+### Risks
+
+- 历史 PASS 只能证明验证链曾可运行，不能替代当前生产字节；后续账本更新必须继续区分 historical、current 和 tag artifact。
+- 设计内 skip 已单列，但若未来把该 checkpoint 纳入常规 suite，应重新定义其执行与统计方式，不得沿用当前 DESIGN-SKIP 结论。
+
+### DIA
+
+DIA: 已同步 CHANGELOG、v0.2-beta 发行验证账本、MD3 收敛计划与本 handover；本轮仅修正证据归属和发行边界，生产代码未变化。
+
+### HLG
+
+HLG: 已按 `continuity-key: v0.2-beta-release-readiness` 追加双复审闭合记录；将使用 HLG Skill 重建索引。未发现新的长期规则候选。
