@@ -6409,3 +6409,48 @@ DIA: 已同步 CHANGELOG、v0.2-beta 发行验证账本、MD3 收敛计划与本
 ### HLG
 
 HLG: 已按 `continuity-key: v0.2-beta-release-readiness` 追加冷安装证据复审闭合记录；将使用 HLG Skill 重建索引。未发现新的长期规则候选。
+
+## 2026-07-22T11:34:58+08:00 · 当前治理 HEAD 远端矩阵定向重跑闭合
+
+type: validation
+scope: v0.2-beta current governance HEAD Android CI
+status: done
+tags: [android, github-actions, api36, system-ui-anr, artifact-readback, release-readiness, no-go]
+continuity: waiting
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+- 当前治理文档 HEAD `e7e7bd4fa6e8fcb35d9f695e06e88a6dae4129c9` 的 Android CI run `29886387249` 最终 attempt 2 为 `success`；quality、API 31、API 35 与 API 36 全部成功。
+- API 36 首轮唯一失败发生在 `MainActivityNotificationE2eTest.denyingSystemNotificationPermissionContinuesForegroundOnlyWithoutFgs` 点击系统拒绝按钮之前。首轮截图与 UI tree 显示 `System UI isn't responding` ANR 对话框遮挡权限面板，进程证据确认 `com.android.systemui` 为 not responding，Nexara crash 文件为空；该失败归类为本次托管模拟器宿主故障，不是产品断言失败。
+- 保留首轮 artifact 后仅重跑失败 job；同一 HEAD 的 API 36 第二轮完整通过。当前可自动执行的本地签名候选、API 35/36 同哈希冷安装与分支 CI 门禁已闭合；用户物理真机 TalkBack/核心业务、tag、tag workflow 与 GitHub Release 仍未闭合，发行继续 NO-GO。
+
+### Changed
+
+- `docs/release/v0.2-beta-validation.md` 回填当前 HEAD、首轮宿主 SystemUI ANR、定向重跑依据、第二轮 artifact 计数，并修正深层仍把当前签名 APK 标为 stale 的过期条目。
+- `docs/superpowers/plans/2026-07-20-nexara-md3-convergence.md` 追加当前 HEAD 远端矩阵闭合证据；未修改生产源码、测试断言、签名配置或受保护目录。
+
+### Validation
+
+- run `29886387249` attempt 2：quality 21m07s、API 31 10m08s、API 35 13m00s、API 36 13m47s，最终 run conclusion 为 `success`。
+- 当前 run artifact 回读：API 31 为 21 PASS + 1 DESIGN-SKIP，API 35/36 各为 44 PASS + 1 DESIGN-SKIP；三档 `exit-code=0`，`crash-log.txt` 与 `crash-after-tests.txt` 均为 0 bytes。API 36 第二轮 artifact id `8517442332`，ZIP SHA-256 `48064fbddf4866a1f951b09685696b0caeb9cfb30f7a28ca86720bf7289855b4`，与 GitHub API digest 一致；通知权限拒绝与允许用例各 1/1 通过。
+- 独立 Sol 只读复审：Critical 0；当前无需为放行紧急修改测试。保留两项 Important 风险为后续 test-harness hardening：宿主 ANR 恢复必须限定 `Quickstep`/`System UI` allowlist、最多一次、Wait 点击成功且权限窗口恢复，不能扩成通用重试或掩盖产品 ANR。
+
+### Next
+
+1. 重建 HLG 索引，检查正式文档 diff 后提交并推送本轮证据闭合。
+2. 用户安装当前 SHA-256 `2627b00750cdd98765a29ede75ed3f042b44e7a17c0a41cc335039bd4dfb674d` 的签名 APK，在物理真机完成 TalkBack 音频、完整焦点遍历和核心业务人工验收。
+3. 仅在用户另行明确授权后创建可验证 tag、运行 tag workflow、回读最终远端 artifact 并创建 GitHub prerelease。
+
+### Risks
+
+- 当前 `handleBlockingQuickstepAnr()` 只恢复 Quickstep，且 Wait 按钮缺失或点击失败时仍返回已处理；这是非阻断 test-harness 风险。若后续修正，必须以严格 allowlist、单次恢复、证据截图和权限窗口重新出现作为合同，不能放宽产品断言或使用 skip。
+- 当前本地 APK 是供物理真机验收的签名候选，不是 tag workflow 的最终远端 artifact；自动语义、模拟器与 CI 不能替代 TalkBack 听觉、OEM 行为和用户核心业务体验。
+
+### DIA
+
+DIA: 已同步 v0.2-beta 发行验证账本、MD3 收敛计划与本 handover；生产代码和用户行为无变化，CHANGELOG 无新增用户可见行为需要记录。
+
+### HLG
+
+HLG: 已按 `continuity-key: v0.2-beta-release-readiness` 追加当前 HEAD 远端矩阵闭合记录；将使用 HLG Skill 重建索引。未发现需要新增到 AGENTS.md 或 Skill 的长期规则候选。
