@@ -6315,3 +6315,97 @@ DIA: 已同步 CHANGELOG、v0.2-beta 发行验证账本、MD3 收敛计划与本
 ### HLG
 
 HLG: 已按 `continuity-key: v0.2-beta-release-readiness` 追加当前签名 APK 验真记录；将使用 HLG Skill 重建索引。未发现新的长期规则候选。
+
+## 2026-07-22T10:32:05+08:00 · 当前签名 APK API 35/36 同哈希冷安装闭合
+
+type: validation
+scope: v0.2-beta signed APK API 35 and API 36 cold-install smoke
+status: partial
+tags: [android, release-apk, api35, api36, cold-install, visual-review, talkback, release-readiness, no-go]
+continuity: waiting
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+- 当前 SHA-256 `2627b00750cdd98765a29ede75ed3f042b44e7a17c0a41cc335039bd4dfb674d` 的同一签名 APK 已在可见 API 35/Android 15 与 API 36/Android 16 模拟器完成卸载、冷安装、设备 APK 回拉同哈希、冷启动、前台存活和 crash/ANR 检查，两套脚本均退出 0。
+- 主控继续通过 UI tree 定位并真实点击 API 35 中文、API 36 英文语言选项；两台均进入 Provider onboarding，交互后进程继续存活且 crash buffer 无应用匹配。两张实际截图经主控与独立 Sol 原图复审，P0/P1 为 0，保留 2 项不阻断 P2。
+- 自动冷安装与 onboarding 首段黑盒已闭合；完整非调试签名包业务黑盒、物理真机 TalkBack 人工听觉/全焦点遍历与核心业务体验仍需用户参与，整体发行继续 NO-GO。
+
+### Changed
+
+- `CHANGELOG.md` 新增当前签名 APK 在 API 35/36 的同哈希冷安装和双语 onboarding 结果。
+- v0.2-beta 发行验证账本关闭当前包静态验真和模拟器冷安装阻断，同时把完整业务黑盒、真机 TalkBack 与外部发布动作继续保留为 PENDING。
+- MD3 收敛计划完成定义中的当前签名、R8、zipalign、checksum 与 API 35/36 同哈希冷安装已勾选；Step 6 因包含用户物理真机边界继续保持未勾选。
+
+### Validation
+
+- API 35：卸载后包不存在、安装成功、versionCode `2`、versionName `0.2-beta`、设备 `base.apk` SHA-256 与本地产物一致、冷启动 `LaunchState: COLD`、前台 resumed、5 秒观察窗进程存活，exit 0。
+- API 36：同上，exit 0；两台 `crash-log.txt`、`crash-after-start.txt` 与语言选择后 crash buffer 均无 Nexara crash/ANR 匹配。
+- 两套报告文本经 Bearer、边界化 `sk-`、CGNAT 与签名材料模式扫描无命中；报告位于 `native-ui/app/build/reports/release-smoke-api-*-current-20260722-1028/`，未写入受保护 `artifacts/`。
+- UI tree 证明 API 35 为中文 Provider Step 2、API 36 为英文 Provider Step 2；主控逐张查看原图，无裁切、重叠或系统 Insets 异常。独立 Sol 视觉复审为 P0 0、P1 0、P2 2：中文大面积留白略空，英文说明第二行节奏略松；均不影响可读性、操作或 Material 3 一致性。
+
+### Next
+
+1. 重建 HLG 索引，完成当前冷安装证据的规格/质量复审后提交并推送正式文档。
+2. 用户安装当前 APK，完成 TalkBack 音频、完整焦点遍历和核心业务人工验收；主控根据用户反馈关闭或重开对应门禁。
+3. 仅在用户另行明确授权后创建可验证 tag、执行 tag workflow、回读最终 artifact 并创建 GitHub prerelease。
+
+### Risks
+
+- 首次安装的 Release 包必须通过 HTTPS Provider onboarding；本轮没有增加测试后门或把密钥注入报告，因此模拟器冷安装只覆盖双语首段，不冒充已登录后的完整签名包业务验收。
+- 模拟器语义与截图不能替代物理真机的 TalkBack 音频、OEM 系统栏/键盘和用户真实数据路径。
+
+### DIA
+
+DIA: 已同步 CHANGELOG、v0.2-beta 发行验证账本、MD3 收敛计划与本 handover；本轮只新增运行证据，生产代码和用户行为未变化。
+
+### HLG
+
+HLG: 已按 `continuity-key: v0.2-beta-release-readiness` 追加当前签名 APK 冷安装记录；将使用 HLG Skill 重建索引。未发现新的长期规则候选。
+
+## 2026-07-22T10:38:20+08:00 · 当前签名 APK 冷安装证据复审闭合
+
+type: review
+scope: v0.2-beta signed APK cold-install evidence and release ledger
+status: done
+tags: [android, release-apk, api35, api36, digest, terra, sol, review, release-readiness, no-go]
+continuity: waiting
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+- Terra 首轮只读复审发现两项 Important：发行账本第 4/5 节仍保留历史 `CURRENT PENDING` 文案；两套冷安装报告虽然保留设备回拉 APK，但缺少无需读取二进制即可复核的文本哈希摘要。
+- 主控将当前 R8、APK、签名、zipalign、SHA-256、logcat、GGUF 与 API 35/36 冷安装细项统一更新为当前 PASS；两套报告各生成 `apk-digests.txt`，记录本地与设备 APK 的完整 SHA-256 均为 `2627b00750cdd98765a29ede75ed3f042b44e7a17c0a41cc335039bd4dfb674d` 且 `byte_identical=true`。
+- Terra 最终复审为 Critical 0 / Important 0 / Minor 1；Sol 原图视觉复审为 P0 0 / P1 0 / P2 2。自动冷安装门禁闭合，但完整业务黑盒、用户物理真机与外部发布门禁继续 PENDING，整体发行保持 NO-GO。
+
+### Changed
+
+- 修正 `docs/release/v0.2-beta-validation.md` 第 4/5 节的历史状态残留，避免顶部结论与细项冲突。
+- 在两套 `native-ui/app/build/reports/release-smoke-api-*-current-20260722-1028/` 中新增生成型 `apk-digests.txt`；这些 build reports 不进入 Git 提交，也不位于受保护 `artifacts/`。
+- 未回写此前 HLG 历史记录；本条以追加方式记录复审发现、返修和最终计数。
+
+### Validation
+
+- `git diff --check`：PASS；发行 validator 按预期因顶部仍为 `NO-GO / PENDING` 退出 1，未误放行。
+- HLG inspect：invalid continuity 0、continuity without key 0。
+- 两份 digest 摘要可直接读取完整本地/设备 SHA-256 和 `byte_identical=true`；账本、计划与 CHANGELOG 不再把当前冷安装标为 PENDING。
+- Terra 最终：Critical 0、Important 0、Minor 1。保留 Minor 为视觉结论没有独立报告引用；正式 HLG 已记录精确截图目录、主控原图检查及 Sol P0/P1/P2 计数，该项不影响安装、身份、哈希、启动或 crash/ANR 门禁。
+
+### Next
+
+1. 重建 HLG 索引，仅提交并推送五个正式文档文件；build reports 与 APK 保留在本机交付路径，不纳入 Git。
+2. 用户安装当前 APK，完成 TalkBack 音频、完整焦点遍历和核心业务人工验收。
+3. tag、tag workflow、最终远端 artifact 回读与 GitHub prerelease 继续等待用户单独明确授权。
+
+### Risks
+
+- 当前分支后继提交只改文档，可能触发并取消上一文档提交的 CI；生产代码已由 `98ec89bf` / run `29877797382` 验证，禁止为追逐每个文档后继 run 形成无限记录链。
+- 当前 APK 是本地签名候选，不是 tag workflow 的最终远端 artifact；最终发布仍须对 tag 产物重新验签和回读哈希。
+
+### DIA
+
+DIA: 已同步 CHANGELOG、v0.2-beta 发行验证账本、MD3 收敛计划与本 handover；未改变生产源码或用户行为。
+
+### HLG
+
+HLG: 已按 `continuity-key: v0.2-beta-release-readiness` 追加冷安装证据复审闭合记录；将使用 HLG Skill 重建索引。未发现新的长期规则候选。
