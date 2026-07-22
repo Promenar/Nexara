@@ -6454,3 +6454,52 @@ DIA: 已同步 v0.2-beta 发行验证账本、MD3 收敛计划与本 handover；
 ### HLG
 
 HLG: 已按 `continuity-key: v0.2-beta-release-readiness` 追加当前 HEAD 远端矩阵闭合记录；将使用 HLG Skill 重建索引。未发现需要新增到 AGENTS.md 或 Skill 的长期规则候选。
+
+## 2026-07-22T13:10:59+08:00 · 宿主 ANR 证据链与双 API 设备矩阵加固闭合
+
+type: validation
+scope: v0.2-beta notification permission host ANR hardening
+status: done
+tags: [android, test-harness, api35, api36, notification-permission, host-anr, evidence-chain, terra, sol, release-readiness, no-go]
+continuity: waiting
+continuity-key: v0.2-beta-release-readiness
+
+### Summary
+
+- 通知权限 E2E 的宿主异常恢复已收敛为三个完整系统标题、单次恢复、Wait 前截图、Wait 可用且点击成功、权限窗口限时恢复；第二次命中直接 fail closed，不提供通用重试、skip 或产品 ANR 豁免。
+- 设备脚本现在无论测试成功或失败都先回拉截图；远程枚举和每次 `adb pull` 均显式检查退出状态，只统计成功回拉，并在校验预期 dialog 前保存全部已发现 PNG。EXIT trap 仅对未完成回拉做最佳努力，不覆盖原始失败。
+- API 36 首轮发现启动通知尚未被完整前台通知替换时测试过早读取 actions；测试现等待唯一通知包含停止动作，并以语义化错误处理缺失动作，不再产生无上下文 NPE。
+- Terra 最终规格复审与 Sol 最终质量复审均为 Critical 0 / Important 0 / Minor 0，当前变更集 GO。该结论只覆盖测试基础设施与证据链；整体发行继续 NO-GO。
+
+### Changed
+
+- 修改 `native-ui/mainactivity-e2e/src/main/java/com/promenar/nexara/MainActivityNotificationE2eTest.kt`，增加严格宿主 ANR allowlist、单次恢复、恢复前截图和完整通知就绪条件。
+- 修改 `scripts/ci/android-device-core-e2e.sh`，增加权限截图回拉 wrapper、失败传播和 EXIT trap 恢复。
+- 修改 `scripts/ci/tests/android-device-core-e2e-contract-test.sh`，冻结精确标题、禁止模糊匹配、截图先于 Wait、单次恢复以及回拉失败传播和证据保存顺序。
+- 同步 v0.2-beta 发行说明、发行验证账本与 MD3 收敛计划；未修改生产应用源码，当前签名 APK 字节保持不变。
+
+### Validation
+
+- Shell 语法检查与设备脚本契约测试通过；`:mainactivity-e2e:compileDeviceTestKotlin` 为 `BUILD SUCCESSFUL`；`git diff --check` 通过。
+- API 35 `host-system-anr-hardening-api35-final4-20260722`：26 个结果文件含 `OK`、`exit-code=0`、测试前后 crash buffer 均为 0 bytes、4 张权限截图；此前实际命中的 `Pixel Launcher isn't responding` 恢复前截图保留在 API 35 `final2` 目录。
+- API 36 `host-system-anr-hardening-api36-final4-20260722`：同为 26 个含 `OK` 的结果文件、`exit-code=0`、双 crash buffer 0 bytes、4 张权限截图。两档证据时间均晚于当前 Kotlin 与脚本。
+- 当前签名 APK 仍为 18,367,648 bytes，SHA-256 `2627b00750cdd98765a29ede75ed3f042b44e7a17c0a41cc335039bd4dfb674d`；本轮未改变产品字节。发行 validator 按预期仅因顶部 `NO-GO / PENDING` 退出 1，没有误放行。
+
+### Next
+
+1. 提交并推送本轮测试基础设施与正式治理文档，等待当前远端 HEAD 的 Android CI 四项矩阵闭合。
+2. 用户在物理真机安装当前签名 APK，完成 TalkBack 音频、完整焦点遍历和核心业务人工验收。
+3. 仅在用户另行明确授权后创建 tag、运行 tag workflow、回读最终 artifact 并创建 GitHub prerelease。
+
+### Risks
+
+- Android 宿主 ANR 标题未来可能变化；未知标题会按 fail closed 保留失败，而不会被模糊匹配自动越过。
+- `deviceTest` 仍是可测试构建，不能冒充当前签名 APK 的物理真机完整业务黑盒；模拟器语义也不能替代 TalkBack 听觉和 OEM 行为。
+
+### DIA
+
+DIA: 已同步 v0.2-beta 发行说明、发行验证账本、MD3 收敛计划与本 handover；本轮只改变测试基础设施和发行证据，生产 APK 与用户行为未变化，CHANGELOG 无新增用户可见行为需要记录。
+
+### HLG
+
+HLG: 已按 `continuity-key: v0.2-beta-release-readiness` 追加宿主 ANR 证据链闭合记录；将使用 HLG Skill 重建索引。未发现新的长期规则候选。

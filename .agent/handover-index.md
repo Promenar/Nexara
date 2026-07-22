@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-07-22T11:41:37+08:00
+> generated_at: 2026-07-22T13:11:42+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -9,12 +9,13 @@
 | continuity-key | continuity | last update | status | scope | title | source |
 | :--- | :---: | :---: | :---: | :--- | :--- | :--- |
 | nexara-md3-redesign | waiting | 2026-07-21 | done | Nexara Android Material 3 convergence Task 14 remote CI | Material 3 Task 14 当前提交远端矩阵闭合 | `.agent/handover.md` · `2026-07-21T21:39:14+08:00` |
-| v0.2-beta-release-readiness | waiting | 2026-07-22 | done | v0.2-beta current governance HEAD Android CI | 当前治理 HEAD 远端矩阵定向重跑闭合 | `.agent/handover.md` · `2026-07-22T11:34:58+08:00` |
+| v0.2-beta-release-readiness | waiting | 2026-07-22 | done | v0.2-beta notification permission host ANR hardening | 宿主 ANR 证据链与双 API 设备矩阵加固闭合 | `.agent/handover.md` · `2026-07-22T13:10:59+08:00` |
 
 ## Recent 7-Day Catalog
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-07-22 | iso | done | waiting | v0.2-beta notification permission host ANR hardening | [android, test-harness, api35, api36, notification-permission, host-anr, evidence-chain, terra, sol, release-readiness, no-go] | 宿主 ANR 证据链与双 API 设备矩阵加固闭合 | `.agent/handover.md` · `2026-07-22T13:10:59+08:00` |
 | 2026-07-22 | iso | done | waiting | v0.2-beta current governance HEAD Android CI | [android, github-actions, api36, system-ui-anr, artifact-readback, release-readiness, no-go] | 当前治理 HEAD 远端矩阵定向重跑闭合 | `.agent/handover.md` · `2026-07-22T11:34:58+08:00` |
 | 2026-07-22 | iso | done | waiting | v0.2-beta signed APK cold-install evidence and release ledger | [android, release-apk, api35, api36, digest, terra, sol, review, release-readiness, no-go] | 当前签名 APK 冷安装证据复审闭合 | `.agent/handover.md` · `2026-07-22T10:38:20+08:00` |
 | 2026-07-22 | iso | partial | waiting | v0.2-beta signed APK API 35 and API 36 cold-install smoke | [android, release-apk, api35, api36, cold-install, visual-review, talkback, release-readiness, no-go] | 当前签名 APK API 35/36 同哈希冷安装闭合 | `.agent/handover.md` · `2026-07-22T10:32:05+08:00` |
