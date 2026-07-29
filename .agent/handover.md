@@ -6535,3 +6535,35 @@ DIA: 已同步 README、CHANGELOG、v0.2-beta 发行说明、验证账本、Rele
 
 ### HLG
 HLG: 通过 Skill append 追加本记录并自动重建索引；continuity-key 延续 v0.2-beta-release-readiness。
+
+## 2026-07-29T12:29:30+08:00 · v0.2-beta SSH 签名标签与 GitHub prerelease 发布闭环
+
+type: release
+scope: ["nexara", "v0.2-beta-release-readiness"]
+status: done
+tags: ["release", "android", "github", "signed-tag", "apk", "validation"]
+continuity: waiting
+continuity-key: v0.2-beta-release-readiness
+event-date: 2026-07-29
+record-fingerprint: 274e812f4938e52eaeb39f33526b89c7bb64b5f15e0ae059671e08a43ff87c83
+
+### Summary
+用户授权后，使用本机既有 Ed25519 公钥注册 GitHub SSH Signing Key，创建并推送 SSH 签名 annotated tag v0.2-beta。受保护 Release workflow 全绿并公开非草稿 prerelease；既有 v0.1-beta 按用户最终指示保留。
+
+### Changed
+针对首轮 API 35 minifiedTest 被宿主 Quickstep ANR 阻断的问题，以 TDD 增加严格的一次性宿主 Launcher/SystemUI ANR 恢复；只接受 android 包、精确系统标题与可点击 Wait，截图后重新取树并复核，第二次宿主 ANR、Nexara 自身 ANR、按钮消失或点击失败均 fail-closed。提交 a7c94f03 已推送。发行账本、发行说明、CHANGELOG 与 registry 已回填最终远端事实。
+
+### Validation
+Sol 独立复审最终 Critical 0、Important 0。Release workflow 30420324239 全绿：API 31/35/36 deviceTest、API 35/36 release-equivalent minifiedTest、签名 R8 构建、API 35/36 无密钥冷安装与 prerelease 发布均成功。GitHub 将 tag 签名验证为 valid，目标提交 a7c94f03c321c3e8588649eac34c9a1bb4703296。远端 APK 与 checksum 独立下载后通过 shasum -a 256 -c，SHA-256 为 59d641b6b8f04a15bc9f4ce064a7a116df3def4efabf8231feb408612246fe9a。Release URL: https://github.com/Promenar/Nexara/releases/tag/v0.2-beta。
+
+### Next
+用户在测试机可用时继续物理真机 TalkBack 完整听觉与焦点遍历、核心业务人工验收及更广泛 OEM/IME 体验；这些 beta 后续项不得回写为当前自动化 PASS。
+
+### Risks
+GitHub Release 已发布且自动化发行门禁闭合；残余风险仅为尚未完成的物理真机 TalkBack、完整焦点遍历和更广泛 OEM/IME 人工体验。旧 v0.1-beta 与 v0.2-beta 数据不兼容，发行说明要求卸载旧版。
+
+### DIA
+已同步 CHANGELOG.md、docs/release/v0.2-beta.md、docs/release/v0.2-beta-validation.md 与 .agent/registry.md。
+
+### HLG
+本记录通过用户级 handover-lifecycle-governance Skill dry-run 后追加，延续 continuity-key v0.2-beta-release-readiness，并由脚本重建 handover-index。

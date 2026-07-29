@@ -129,7 +129,7 @@
 - 内置 Skill: 18 个
 - P0/P1 基线: 已完成；基线证据为 JVM 1232（0 失败，14 跳过）、Android 28（0 失败，2 跳过）、Lint 0 Error/Fatal、Debug APK 与备份/恢复多阶段流程。
 - P2 当前状态: 后台持续生成、结构化错误/取消、RAG/Prompt、资源树/设置与协议专项实现已完成；Material 3 第四阶段可靠性检查点已完成版本化索引、删除屏障、跨页面补偿与 KG 冷恢复，1872 JVM、AndroidTest 编译和 Lint 通过。DocEditor 长文档性能、视觉基线、API 31/35/36 设备矩阵及最终签名 APK 的 TalkBack 人工听觉/全焦点遍历仍待后续门禁。
-- P3 当前状态: R8/签名配置、APK 验证器、API 31/35/36 workflow 与冷安装/发布编排已实现；minified 业务黑盒、应用候选 `bf6f87c` 的远端 Android CI run `29408429117`、四模型真实 API 与稳定发行证书均已通过。本地稳定证书签名 R8 APK 为 17,971,235 bytes，mapping/seeds/usage/configuration、包身份/唯一签名、安全扫描、checksum、zipalign 及 API 35/36 冷安装全部 PASS。GitHub 可验证 signed tag、签名候选真机 TalkBack/人工业务验收与 GitHub Release 仍为 PENDING，当前仍是 NO-GO。
+- P3 当前状态: SSH 签名 annotated tag `v0.2-beta` 已由 GitHub 验证为 `valid` 并固定提交 `a7c94f03`；Release workflow run `30420324239` 的 API 31/35/36 deviceTest、API 35/36 minifiedTest、签名 R8 构建、双 API 无密钥冷安装和 prerelease 发布全部 PASS。GitHub Release 远端 APK/checksum 已独立下载回读，SHA-256 为 `59d641b6b8f04a15bc9f4ce064a7a116df3def4efabf8231feb408612246fe9a`。物理真机 TalkBack、完整焦点遍历和更广泛 OEM/IME 体验按用户授权作为 beta 后续验证项，不冒充 PASS；既有 `v0.1-beta` Release 保留。
 
 ## DIA 清理记录
 ### 2026-05-19 本轮文档优化
