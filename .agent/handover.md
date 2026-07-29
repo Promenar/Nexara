@@ -6503,3 +6503,35 @@ DIA: 已同步 v0.2-beta 发行说明、发行验证账本、MD3 收敛计划与
 ### HLG
 
 HLG: 已按 `continuity-key: v0.2-beta-release-readiness` 追加宿主 ANR 证据链闭合记录；将使用 HLG Skill 重建索引。未发现新的长期规则候选。
+
+## 2026-07-29T10:11:09+08:00 · v0.2-beta prerelease 放行授权与 draft-first 发布加固
+
+type: release
+scope: ["v0.2-beta release readiness", "GitHub Release workflow"]
+status: partial
+tags: ["release", "v0.2-beta", "github-actions", "draft-first", "risk-acceptance", "terra", "sol"]
+continuity: waiting
+continuity-key: v0.2-beta-release-readiness
+event-date: 2026-07-29
+record-fingerprint: a3cd3cff994fa8582f3a82cb057e8ef7c6abc2eda7d2ff616983036f0f476f28
+
+### Summary
+用户明确授权把当前候选作为 v0.2-beta GitHub prerelease 发布，并在新 Release 全资产远端回读成功后清理旧 v0.1-beta Release。物理真机 TalkBack、完整焦点遍历与更广泛 OEM/IME 体验由用户接受为 beta 后续验证项，不记为 PASS。
+
+### Changed
+发行文档状态收敛为 GO/授权/风险接受；当前 d226 本地 APK 静态验真与历史 2627 同源候选冷安装分账。Release workflow 改为 draft-first，APK 与 checksum 全量远端哈希回读后才公开 prerelease，重跑同步更新标题与发行正文。Validator 仅接受 GO，并强制四条授权与证据 marker。
+
+### Validation
+TDD RED 观察到 workflow 缺少 draft 终态和 validator 接受 GO / PASS、缺少四条 marker；GREEN 后 release workflow 可靠性与 APK verifier 共 51/51，发行 validator、Ruby YAML 解析、git diff --check 通过。独立 Sol 复审 Critical 0、Important 0，唯一旧 run 措辞 Minor 已关闭。
+
+### Next
+提交并推送本轮收口；设置受控 NEXARA_RELEASE_COMMIT_SHA；建立合规 v0.2-beta tag 并等待 Release workflow 全绿；回读远端 APK/checksum；新 Release 成功后删除并回读确认旧 v0.1-beta Release；最后追加完成记录。
+
+### Risks
+本机 SSH key 只可观测为 Git 认证 key，GitHub 公开 signing keys 为空；未签名 annotated tag 降级尚未获得用户明确授权，当前不得启用 NEXARA_ALLOW_UNSIGNED_ANNOTATED_TAG。新 Release 成功前不得删除旧 Release。
+
+### DIA
+DIA: 已同步 README、CHANGELOG、v0.2-beta 发行说明、验证账本、Release workflow、validator 与契约测试。
+
+### HLG
+HLG: 通过 Skill append 追加本记录并自动重建索引；continuity-key 延续 v0.2-beta-release-readiness。
