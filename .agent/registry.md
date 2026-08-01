@@ -7,6 +7,7 @@
 - AGENTS.md — 开发者与 AI Agent 协同开发规范
 
 ## 按需文档
+- design-qa.md — 会话任务进度面板完整 MD3 重做的源图/实现对比、视觉复核与设备验收记录
 - docs/superpowers/specs/2026-07-16-nexara-md3-redesign-design.md — Nexara 全站 Material 3 视觉体系重设计契约（方案 3、稳定 M3 基线、Nexara 专属表达、分阶段迁移与 UI 验收）
 - docs/superpowers/plans/2026-07-16-nexara-md3-phase1-foundation-chat.md — Nexara Material 3 第一阶段实施计划（稳定主题基线、会话 composer、思考轨迹、IME/无障碍与截图验收）
 - docs/superpowers/plans/2026-07-16-nexara-md3-phase2-management.md — Nexara Material 3 第二阶段管理母版实施计划（设置列表、Provider、表单、模型渐进披露与视觉/设备门禁）

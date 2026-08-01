@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-07-29T12:29:30+08:00
+> generated_at: 2026-08-01T23:04:13+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -8,13 +8,13 @@
 
 | continuity-key | continuity | last update | status | scope | title | source |
 | :--- | :---: | :---: | :---: | :--- | :--- | :--- |
-| nexara-md3-redesign | waiting | 2026-07-21T21:39:14+08:00 | done | Nexara Android Material 3 convergence Task 14 remote CI | Material 3 Task 14 当前提交远端矩阵闭合 | `.agent/handover.md` · `2026-07-21T21:39:14+08:00` · `fp:88accdc272` |
 | v0.2-beta-release-readiness | waiting | 2026-07-29T12:29:30+08:00 | done | ["nexara", "v0.2-beta-release-readiness"] | v0.2-beta SSH 签名标签与 GitHub prerelease 发布闭环 | `.agent/handover.md` · `2026-07-29T12:29:30+08:00` · `fp:274e812f49` |
 
 ## Recent 7-Day Catalog
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-08-01T23:04:13+08:00 | iso | done | none | ["nexara", "native-ui", "chat", "task-planning"] | ["material3", "task-panel", "compose", "android", "ux"] | 会话任务进度面板完整回归 Material 3 | `.agent/handover.md` · `2026-08-01T23:04:13+08:00` · `fp:b65464b245` |
 | 2026-07-29T12:29:30+08:00 | iso | done | waiting | ["nexara", "v0.2-beta-release-readiness"] | ["release", "android", "github", "signed-tag", "apk", "validation"] | v0.2-beta SSH 签名标签与 GitHub prerelease 发布闭环 | `.agent/handover.md` · `2026-07-29T12:29:30+08:00` · `fp:274e812f49` |
 | 2026-07-29T10:11:09+08:00 | iso | partial | waiting | ["v0.2-beta release readiness", "GitHub Release workflow"] | ["release", "v0.2-beta", "github-actions", "draft-first", "risk-acceptance", "terra", "sol"] | v0.2-beta prerelease 放行授权与 draft-first 发布加固 | `.agent/handover.md` · `2026-07-29T10:11:09+08:00` · `fp:a3cd3cff99` |
 

@@ -6567,3 +6567,35 @@ GitHub Release 已发布且自动化发行门禁闭合；残余风险仅为尚�
 
 ### HLG
 本记录通过用户级 handover-lifecycle-governance Skill dry-run 后追加，延续 continuity-key v0.2-beta-release-readiness，并由脚本重建 handover-index。
+
+## 2026-08-01T23:04:13+08:00 · 会话任务进度面板完整回归 Material 3
+
+type: implementation
+scope: ["nexara", "native-ui", "chat", "task-planning"]
+status: done
+tags: ["material3", "task-panel", "compose", "android", "ux"]
+continuity: none
+continuity-key: nexara-md3-redesign
+event-date: 2026-08-01
+record-fingerprint: b65464b2451eab3e9b0d653caebabc101de5185de1637e41c2113ebd05ed9916
+
+### Summary
+在 codex/md3-redesign 的正确 worktree 中完整重做会话任务进度面板：任务卡进入消息流，composer 保留第三任务胶囊，并把真实生成态与模型漏销项后的静态待确认态分离。
+
+### Changed
+ChatRoute 订阅 Room 任务树并向纯 ChatScreenContent 注入 TaskPanelUiState；TaskFloatingPanel 改为紧凑 MD3 纯 UI；增加继续处理、人工完成全部未完成叶节点、胶囊滚动定位与自动追尾关闭；已完成旧计划可在事务中清理后创建新计划。同步中英文文案、语义标签、Screenshot、设备测试、README、CHANGELOG、registry 与 design-qa。
+
+### Validation
+TDD 先得到 taskPanelUiState 未定义的 RED 编译失败，再完成 GREEN。全量 JVM 2125 项、0 failure、0 error、14 skip；Lint 0 Error/Fatal；Debug APK 通过；Screenshot validation 通过；API 35 ChatScreenContentStateTest 10/10、AccessibilitySmokeTest 9/9。待确认、生成中、2.0x 字体截图已逐张检查，GPT-5.6 Sol 视觉验收 PASS。
+
+### Next
+无已知必做后续；可选优化是改善中文 2.0x 字体下当前步骤末字孤行，不影响本轮放行。
+
+### Risks
+人工销项会把当前计划全部未完成叶节点标记为 done，属于用户明确动作；仍通过生成中禁用与 Route 侧状态守卫阻止生成过程中误触。未执行物理真机 TalkBack，本轮证据为 API 35 模拟器设备测试。
+
+### DIA
+已同步 README、CHANGELOG、.agent/registry.md 与 design-qa.md；无数据库 schema、公开 API 或部署配置变更。
+
+### HLG
+通过 handover-lifecycle-governance 标准 append dry-run 与 apply 追加本记录并重建索引；continuity-key 继续使用 nexara-md3-redesign，本记录无已知必做续项。
