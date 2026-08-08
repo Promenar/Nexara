@@ -6599,3 +6599,244 @@ TDD 先得到 taskPanelUiState 未定义的 RED 编译失败，再完成 GREEN�
 
 ### HLG
 通过 handover-lifecycle-governance 标准 append dry-run 与 apply 追加本记录并重建索引；continuity-key 继续使用 nexara-md3-redesign，本记录无已知必做续项。
+
+## 2026-08-03T23:00:55+08:00 · 设置全层级向 Solid Explorer 连续列表视觉语言收敛
+
+type: implementation
+scope: ["nexara", "native-ui", "settings"]
+status: done
+tags: ["material3", "settings", "solid-explorer", "compose", "visual-qa"]
+continuity: none
+event-date: 2026-08-03
+record-fingerprint: 4fcae2ebc4d66ff30f7f70e5a715beac34a7f477dcf97668c53960c45b0e0997
+
+### Summary
+设置首页及二、三、四级页面已统一为接近 Solid Explorer 的原生 Material 3 连续列表语言；底部三按钮导航保持零改动。
+
+### Changed
+新增共用设置页骨架并收敛设置行、分组标题、开关、顶栏、边距与连续分隔线；迁移主题、Provider、默认模型、RAG/知识图谱、检索、技能、备份、本地模型、开发者及用量页面；更新相关截图基线和视觉契约测试。
+
+### Validation
+全量 JVM 2139 项通过，14 项既有条件 skip；Screenshot 101/101；Lint 0 Error/Fatal；AndroidTest Kotlin 编译与 Debug APK 构建通过；独立视觉复审 P0/P1/P2 为 0；MainTabScaffold.kt 零 diff。
+
+### Next
+本轮实现已闭环；如需继承数据真机验证，可基于当前源码另行构建正式签名发行包。
+
+### Risks
+当前仅构建 Debug APK，未执行正式签名、升级安装或物理真机状态栏/TalkBack 验证；三个首页入口图标与视觉目标具体造型存在非阻断 P3 差异。
+
+### DIA
+已同步 CHANGELOG.md、.agent/registry.md、design-qa.md 与实施计划，并更新 Screenshot reference。
+
+### HLG
+本记录通过 HLG append 追加到 EOF 并重建 handover-index；未发现需要沉淀到长期规则的新候选。
+
+## 2026-08-03T23:27:04+08:00 · 设置全层级 SE 视觉二次密度修正与回归
+
+type: implementation
+scope: ["Nexara", "native-ui", "settings"]
+status: done
+tags: ["settings", "material3", "solid-explorer", "visual-qa", "android"]
+continuity: none
+record-fingerprint: 50bdaeae1d533615b57154219665d6a96ab6766d7c29b90800b394a45585f3e1
+
+### Summary
+在用户指出首版字号与显示密度仍显粗糙后，对此前设置全层级迁移追加二次修正；该记录补充而不改写先前完成记录。
+
+### Changed
+设置首页及二至四级页面统一接入设置专用紧凑文字层级；普通行使用 13sp/18sp 标题、12sp/16sp 副标题、18dp 线性图标、48dp 前导列与 32dp 尾随列。备份本地导入导出由大卡片改为连续列表行。底部 MainTabScaffold 三按钮导航保持零差异。
+
+### Validation
+全量 JVM 2139 项，0 failure、0 error、14 skip；Screenshot 101/101；Lint 0 Error/Fatal、423 Warning、25 Hint；AndroidTest Kotlin 编译及 Debug APK 构建通过。Debug APK SHA-256 为 c7387c900d210de610704e09bbcf6ce4f6d8a7bde9c3b780667e2ff220f55a8f。git diff --check 通过，MainTabScaffold.kt 零 diff。已实看 Theme、Default Models、Provider Form、Provider Models、RAG Advanced、Search、Backup 等代表性深层页面。
+
+### Next
+如需交付安装包，可在当前工作树基于既有签名与发行门禁另行构建正式签名包；本记录不宣称发布。
+
+### Risks
+本轮为纯 UI 视觉与布局调整，未执行物理真机 TalkBack 人工听觉及 OEM 字体差异检查；富表单和统计页面保留必要控件表面，不追求把所有功能区强行扁平化。
+
+### DIA
+已同步 CHANGELOG.md、design-qa.md、.agent/registry.md 与实施计划；无数据结构、API、持久化、网络或架构契约变更。
+
+### HLG
+以标准 append 流程追加本次二次修正记录并重建索引；未发现需要新增到长期规则文件的候选规则。
+
+## 2026-08-03T23:53:53+08:00 · 设置全层级改造正式签名 APK 构建
+
+type: release-build
+scope: ["Nexara", "native-ui", "android-release"]
+status: done
+tags: ["apk", "release", "signing", "settings", "upgrade"]
+continuity: none
+record-fingerprint: 2a9f9c10ee5d50a69f7f0b08138ad78ba9e40ee5419e1ab92ea16d6123d9b849
+
+### Summary
+从 codex/md3-redesign 当前工作树强制重跑并生成正式签名、R8 压缩的 v0.2-beta APK，用于覆盖安装继承既有数据测试。
+
+### Changed
+未修改源码；生成 native-ui/app/build/outputs/apk/release/nexara-v0.2-beta.apk 与 SHA256SUMS。签名材料仅从本机受保护 secure_env 注入构建进程，未写入仓库或日志。
+
+### Validation
+assembleRelease 59/59 tasks 强制执行并成功。验证器确认包名 com.promenar.nexara.native、versionCode 2、versionName 0.2-beta、单一 signer、历史正式证书一致、敏感内容及本地推理制品排除、16 KiB zipalign、R8 mapping/seeds/usage/configuration 非空。APK 18,368,564 bytes，SHA-256 151c656607cdccd4e52a88e97b9d6e60f590d811abe050248500e69a5ef9ed12。
+
+### Next
+用户可直接对已安装的同签名正式版执行覆盖安装并验证现有数据；本轮未替用户安装、发布 GitHub Release 或创建 tag。
+
+### Risks
+APK 构建自当前含未提交设置视觉改造的工作树，而非固定 Git 提交；同 versionCode 2 允许同签名覆盖安装，但不是版本升级发布。物理设备数据继承结果仍需用户实际安装确认。
+
+### DIA
+无源码或项目文档影响；仅生成被忽略的本地构建制品与 checksum。
+
+### HLG
+通过标准 append dry-run 与 apply 追加发行构建记录并重建索引；无新增长期规则候选。
+
+## 2026-08-04T00:24:13+08:00 · 设置一级页纯标题并暂留图标实机迭代
+
+type: implementation
+scope: ["Nexara", "native-ui", "settings-home"]
+status: done
+tags: ["settings", "material3", "visual-qa", "single-line", "android-release"]
+continuity: none
+record-fingerprint: 7de02b54f66ebf263253b5c0229235ee06744e666921dced36d6dfc72c1b6dda
+
+### Summary
+依据用户实机反馈，将一级设置页从双行摘要列表改为纯单行导航目录；用户选择暂时保留左侧图标观察效果。
+
+### Changed
+一级入口移除全部解释副标题、动态状态、右侧箭头与账户铅笔，主标题恢复为 16sp/22sp，行高至少 56dp。头像与账户行分别承接更换头像和编辑名称。停止订阅首页不再渲染的用量、主题、Provider、默认模型等状态。二至四级设置页与底部三按钮导航不变。
+
+### Validation
+全量 JVM 2140 项，0 failure、0 error、14 skip；Screenshot 101/101；Lint 0 Error/Fatal、432 Warning、25 Hint；AndroidTest Kotlin 编译与 Debug APK 通过。正式签名 R8 APK 18,367,752 bytes，SHA-256 98ac05cfdc4de043c0dc17cb77d413ed60c8f30948dd48bf819599975d718dff；包身份、历史证书、单一 signer、敏感内容、本地推理制品排除、R8 输出及 16 KiB zipalign 均通过。视觉同屏对比为 native-ui/app/build/design-qa/settings-home-single-line-comparison.png，P0/P1/P2 为 0。
+
+### Next
+用户可覆盖安装本次同签名 APK 实机判断左侧图标是否继续保留；当前不预判后续删除图标。
+
+### Risks
+一级页在 360x800dp 且带底栏时首屏呈现八个入口，其余入口需滚动；物理设备最终视觉偏好仍由用户实测决定。
+
+### DIA
+已同步 CHANGELOG.md、design-qa.md 与设置视觉实施计划；无数据结构、API、持久化、网络或底部导航变更。
+
+### HLG
+通过标准 append dry-run 与 apply 追加记录并重建索引；暂留图标是当前一次实机迭代选择，不沉淀为长期全局规则。
+
+## 2026-08-04T01:02:41+08:00 · 设置一级页无图标标准双行列表与账户层级收敛
+
+type: implementation
+scope: ["Nexara", "native-ui", "settings-home"]
+status: done
+tags: ["settings", "material3", "solid-explorer", "visual-qa", "accessibility"]
+continuity: none
+record-fingerprint: 0f79b8f902c2007e2fe38324090306df50feea1579150120264136213efa31a0
+
+### Summary
+依据用户对 Solid Explorer 的再次对照，将一级设置页从单行标题加前导图标的试验版收敛为无图标的标准 Material 3 双行列表，并把账户信息提升为独立身份头部。
+
+### Changed
+一级入口移除全部前导图标、箭头和动态状态，使用 16sp/24sp 主标题、14sp/20sp 功能副标题与标准双行 ListItem；页面文字统一从 16dp 起点排列。账户区使用至少 88dp 高度、56dp 头像和 22sp/28sp 用户名。新增中英文语言、外观、用量和关于功能说明。底部三按钮导航与二至四级设置页未改动。
+
+### Validation
+全量 JVM 2140 项，0 failure、0 error、14 skip；Screenshot 101/101；Lint 0 Error/Fatal、425 Warning、25 Hint；AndroidTest Kotlin 编译与 Debug APK 通过。SE 源图和中文深色集成截图已合并对照，2.0x 字体截图无裁切或重叠；MainTabScaffold 零 diff。Debug APK 140140555 bytes，SHA-256 f532ff7f6cfe678d71c5cbd75235bb0fac3e0cdf335a81da437243b630d04b12。
+
+### Next
+用户可在实机继续判断账户头部突出程度及双行列表首屏密度；如需发行安装包，应从本轮源码重新执行正式签名 R8 构建与验真，不能复用上一轮发行产物。
+
+### Risks
+本轮视觉判断基于 Compose 参考截图而非物理真机；双行列表会减少单屏可见入口数量，但所有入口可滚动到达。
+
+### DIA
+已同步 CHANGELOG.md、design-qa.md 与设置视觉实施计划；无数据结构、API、持久化、网络或底部导航变更。
+
+### HLG
+通过标准 HLG append 流程追加本记录并重建索引；未发现需要沉淀为长期全局规则的新候选。
+
+## 2026-08-04T01:11:56+08:00 · 无图标双行设置首页正式签名发行 APK 构建
+
+type: release-validation
+scope: ["Nexara", "native-ui", "android-release"]
+status: done
+tags: ["settings", "release-apk", "r8", "signing", "zipalign", "checksum"]
+continuity: none
+record-fingerprint: 10982c2400459f617235558925e4c2c38e9b932e83ea0777996839847c532769
+
+### Summary
+用户确认无图标双行设置首页视觉方向后，从本轮源码重新构建可覆盖安装、继承既有数据的稳定证书签名 R8 发行 APK。
+
+### Changed
+未再修改生产源码；生成 native-ui/app/build/outputs/apk/release/nexara-v0.2-beta.apk 与 SHA256SUMS。签名材料仅从仓库外受保护 secure_env 注入单个构建进程，未写入仓库、命令输出或报告。首次 clean 被 app/build/.DS_Store 竞态阻断，已将该可再生文件移动到临时隔离目录后重跑；Gradle 默认产物 app-release.apk 通过字节一致复制建立稳定交付别名。
+
+### Validation
+clean assembleRelease --rerun-tasks --no-build-cache 成功，66 tasks 中 64 executed、2 up-to-date。统一验证器确认包名 com.promenar.nexara.native、versionCode 2、versionName 0.2-beta、单一 signer、稳定正式证书、ZIP/体积、敏感内容及 GGUF/llama/ggml 排除；R8 mapping 100486874 bytes、seeds 773702 bytes、usage 11271289 bytes、configuration 67338 bytes；16 KiB zipalign 与 checksum 回读通过。APK 18369076 bytes，SHA-256 924a42d422a15e5ab8b7f7a505b627e31af1c53a5ab65d2baadd99dfe3c342f9。验证器单元测试 23/23 通过，git diff --check 通过。
+
+### Next
+用户可使用本 APK 覆盖安装并验证既有应用数据；本轮未执行设备安装、tag、推送或 GitHub Release。
+
+### Risks
+证书和包身份已满足 Android 覆盖安装的数据继承条件，但物理设备上的实际升级、OEM 行为与业务数据读取仍需用户实机确认。
+
+### DIA
+已同步 CHANGELOG.md 与 design-qa.md 的本轮发行证据；无接口、数据结构、持久化、网络或部署配置变更。
+
+### HLG
+通过标准 HLG append 流程追加本记录并重建索引；未发现新的长期规则候选。
+
+## 2026-08-04T01:29:04+08:00 · 设置二至四级页面标准 MD3 排版全量收敛
+
+type: implementation
+scope: ["Nexara", "native-ui", "settings"]
+status: done
+tags: ["settings", "material3", "solid-explorer", "provider", "models", "visual-qa"]
+continuity: none
+record-fingerprint: a658261b2f5d9769896289de5b21819b9eac2d32d42b291d938549b6c20ca15b
+
+### Summary
+将一级设置页已验证的标准 Material 3 排版体系扩展到全部二、三、四级设置页面，覆盖提供商管理、提供商表单、模型管理、模型编辑、主题、默认模型、RAG、检索、技能、备份、本地模型、开发者与用量页面；底部三按钮导航保持零改动。
+
+### Changed
+设置专用页面骨架移除 10–14sp 压缩映射，恢复 22sp 页面标题、16sp 主标题、14sp 辅助说明和分组标题；共用设置行与开关行使用 56dp/72dp 节奏，默认不显示装饰性箭头；提供商列表移除品牌图标前导列并保持功能性溢出菜单，模型列表收紧为统一文字轴。同步更新契约测试、25 张受影响截图基线、CHANGELOG、实施计划与 design-qa。
+
+### Validation
+全量 JVM 2140 项通过、14 项既有条件 skip；Screenshot 101/101；AndroidTest Kotlin 编译、Debug APK 构建与 Lint 通过，Lint 为 0 Error/Fatal、425 Warning、25 Hint；git diff --check 通过，MainTabScaffold.kt 零 diff。已实看主题、默认模型、Provider 列表/表单/模型/编辑器、RAG、检索与备份等代表状态，并生成 SE 四宫格同屏对比。
+
+### Next
+本轮源码与 Debug 验证已闭环；如需继承数据实机验证，应基于当前新源码重新构建正式签名发行 APK，先前发行包已不再代表当前界面。
+
+### Risks
+未执行物理真机 TalkBack 人工听觉与 OEM 字体差异检查；2.0x 字体下提供商长名称会显著增加行高但无重叠或不可达。
+
+### DIA
+已同步 CHANGELOG.md、design-qa.md、.agent/plans/20260803-se-settings-visual-system.md 与 Screenshot reference；无数据结构、API、持久化、网络或业务逻辑变更。
+
+### HLG
+本记录使用标准 append dry-run 与 apply 追加到 EOF并重建索引；未发现需要新增到长期规则文件的候选规则。
+
+## 2026-08-04T12:26:51+08:00 · 深层设置页标准 MD3 版本正式签名 APK 构建
+
+type: release-build
+scope: ["Nexara", "native-ui", "android-release"]
+status: done
+tags: ["settings", "release-apk", "r8", "signing", "zipalign", "checksum"]
+continuity: none
+record-fingerprint: d34465628f87c247cf9be9b1419a605ad5a28b78602c508532d39664d804e886
+
+### Summary
+从包含全部二至四级设置页标准 MD3 排版收敛的当前工作树重新 clean 构建稳定证书签名、R8 压缩的 v0.2-beta APK，供用户覆盖安装继承数据并进行真机体验。
+
+### Changed
+未再修改生产源码；生成 native-ui/app/build/outputs/apk/release/nexara-v0.2-beta.apk 与 SHA256SUMS，并同步 CHANGELOG.md、design-qa.md 的当前发行候选哈希。签名材料仅在单个构建进程内注入，未写入仓库或日志。
+
+### Validation
+clean :app:assembleRelease --rerun-tasks --no-build-cache 成功，66 tasks 中 64 executed、2 up-to-date。统一验证器确认包名 com.promenar.nexara.native、versionCode 2、versionName 0.2-beta、单一 signer、登记证书、ZIP/体积、敏感内容及 GGUF/llama/ggml 排除；R8 mapping 100424812 bytes、seeds 773702 bytes、usage 11271328 bytes、configuration 67338 bytes；16 KiB zipalign、稳定别名字节一致与 checksum 回读通过。APK 18369076 bytes，SHA-256 4b19f50fa7c383d69b4acc28eebc4965f484194fe022f8a45f67fe9587f6bbe1；验证器单元测试 23/23 通过。
+
+### Next
+用户可使用本 APK 对同签名正式版执行覆盖安装并检查数据继承及完整设置层级；本轮未替用户安装、创建 tag、推送或发布 GitHub Release。
+
+### Risks
+证书与包身份满足覆盖安装的数据继承条件，但物理设备上的实际安装结果、OEM 字体、TalkBack 和业务数据读取仍由用户真机验证。
+
+### DIA
+已同步 CHANGELOG.md 与 design-qa.md 的当前发行候选哈希；无数据结构、API、持久化、网络或生产源码变更。
+
+### HLG
+本记录使用标准 append dry-run 与 apply 追加到 EOF并重建索引；未发现新的长期规则候选。
