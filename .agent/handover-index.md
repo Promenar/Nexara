@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-08-04T12:26:52+08:00
+> generated_at: 2026-08-08T12:00:16+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -14,6 +14,7 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-08-08T12:00:16+08:00 | iso | done | none | ["Nexara", "native-ui", "git-worktrees"] | ["material3", "settings", "branch-integration", "worktree-cleanup", "android-validation"] | 原生 MD3 主线汇合与临时 worktree 清理 | `.agent/handover.md` · `2026-08-08T12:00:16+08:00` · `fp:46b6c22543` |
 | 2026-08-04T12:26:51+08:00 | iso | done | none | ["Nexara", "native-ui", "android-release"] | ["settings", "release-apk", "r8", "signing", "zipalign", "checksum"] | 深层设置页标准 MD3 版本正式签名 APK 构建 | `.agent/handover.md` · `2026-08-04T12:26:51+08:00` · `fp:d34465628f` |
 | 2026-08-04T01:29:04+08:00 | iso | done | none | ["Nexara", "native-ui", "settings"] | ["settings", "material3", "solid-explorer", "provider", "models", "visual-qa"] | 设置二至四级页面标准 MD3 排版全量收敛 | `.agent/handover.md` · `2026-08-04T01:29:04+08:00` · `fp:a658261b2f` |
 | 2026-08-04T01:11:56+08:00 | iso | done | none | ["Nexara", "native-ui", "android-release"] | ["settings", "release-apk", "r8", "signing", "zipalign", "checksum"] | 无图标双行设置首页正式签名发行 APK 构建 | `.agent/handover.md` · `2026-08-04T01:11:56+08:00` · `fp:10982c2400` |
@@ -22,9 +23,6 @@
 | 2026-08-03T23:53:53+08:00 | iso | done | none | ["Nexara", "native-ui", "android-release"] | ["apk", "release", "signing", "settings", "upgrade"] | 设置全层级改造正式签名 APK 构建 | `.agent/handover.md` · `2026-08-03T23:53:53+08:00` · `fp:2a9f9c10ee` |
 | 2026-08-03T23:27:04+08:00 | iso | done | none | ["Nexara", "native-ui", "settings"] | ["settings", "material3", "solid-explorer", "visual-qa", "android"] | 设置全层级 SE 视觉二次密度修正与回归 | `.agent/handover.md` · `2026-08-03T23:27:04+08:00` · `fp:50bdaeae1d` |
 | 2026-08-03T23:00:55+08:00 | iso | done | none | ["nexara", "native-ui", "settings"] | ["material3", "settings", "solid-explorer", "compose", "visual-qa"] | 设置全层级向 Solid Explorer 连续列表视觉语言收敛 | `.agent/handover.md` · `2026-08-03T23:00:55+08:00` · `fp:4fcae2ebc4` |
-| 2026-08-01T23:04:13+08:00 | iso | done | none | ["nexara", "native-ui", "chat", "task-planning"] | ["material3", "task-panel", "compose", "android", "ux"] | 会话任务进度面板完整回归 Material 3 | `.agent/handover.md` · `2026-08-01T23:04:13+08:00` · `fp:b65464b245` |
-| 2026-07-29T12:29:30+08:00 | iso | done | waiting | ["nexara", "v0.2-beta-release-readiness"] | ["release", "android", "github", "signed-tag", "apk", "validation"] | v0.2-beta SSH 签名标签与 GitHub prerelease 发布闭环 | `.agent/handover.md` · `2026-07-29T12:29:30+08:00` · `fp:274e812f49` |
-| 2026-07-29T10:11:09+08:00 | iso | partial | waiting | ["v0.2-beta release readiness", "GitHub Release workflow"] | ["release", "v0.2-beta", "github-actions", "draft-first", "risk-acceptance", "terra", "sol"] | v0.2-beta prerelease 放行授权与 draft-first 发布加固 | `.agent/handover.md` · `2026-07-29T10:11:09+08:00` · `fp:a3cd3cff99` |
 
 ## Undated Records
 

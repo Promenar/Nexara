@@ -6840,3 +6840,34 @@ clean :app:assembleRelease --rerun-tasks --no-build-cache 成功，66 tasks 中 
 
 ### HLG
 本记录使用标准 append dry-run 与 apply 追加到 EOF并重建索引；未发现新的长期规则候选。
+
+## 2026-08-08T12:00:16+08:00 · 原生 MD3 主线汇合与临时 worktree 清理
+
+type: maintenance
+scope: ["Nexara", "native-ui", "git-worktrees"]
+status: done
+tags: ["material3", "settings", "branch-integration", "worktree-cleanup", "android-validation"]
+continuity: none
+event-date: 2026-08-08
+record-fingerprint: 46b6c225434d650d8272221051702be3acaa43a87d49bbbf66251724e046a00b
+
+### Summary
+确认原 B-native-refactor 仅是 codex/md3-redesign 的祖先，完整原生 MD3 提交链及设置页最终稿尚未进入当前分支；现已将两边未提交成果分别归档进 Git，在 MD3 侧汇合任务面板历史，并把当前 B-native-refactor 快进到统一提交。
+
+### Changed
+新增任务面板历史提交 994c52ac、设置体系最终提交 a278510c 与汇合提交 fe83db7a。冲突解析保留 2026-08-01 已完成的更成熟 MD3 TaskPanelUiState/ChatRoute 实现，避免 2026-07-31 早期实现倒灌。已移除 .worktrees/codex-v0.2-beta、删除已合并本地分支 codex/md3-redesign，并 prune 两条失效 review worktree 记录；仓库现在只保留根 worktree。
+
+### Validation
+远端引用已 fetch --prune；B-native-refactor 对 origin/B-native-refactor 为 ahead 206、behind 0，origin/codex/md3-redesign 是当前 HEAD 祖先。统一分支执行 clean 后使用全新 no-daemon 进程完成 :app:testDebugUnitTest、:app:validateDebugScreenshotTest、:app:compileDebugAndroidTestKotlin、:app:assembleDebug、:app:lintDebug，BUILD SUCCESSFUL。
+
+### Next
+后续直接在 /Users/promenar/Codex/Nexara 的 B-native-refactor 分支接续开发。当前 206 个本地提交尚未推送；如需远端协作或备份，应由用户明确授权后推送。
+
+### Risks
+清理出的约 2.0GB 设备与 CI 测试证据、三个临时工作区及旧备份已移动到 macOS 废纸篓 Nexara-cleanup-20260808-1200，可恢复但未继续占用仓库 worktree；原 worktree 内约 918MB 构建缓存随目录移除，可由 Gradle 重建。未删除其它长期分支。
+
+### DIA
+DIA: 代码与用户可见 MD3 设置行为已由既有 CHANGELOG、设计计划、design-qa 和发行记录覆盖；本次仅补充 Git 汇合与清理交接，无需新增 README 或架构文档变更。
+
+### HLG
+HLG: 使用 handover-lifecycle-governance append 先 dry-run 后 apply 追加本记录并重建派生索引；未发现新的长期规则候选。
