@@ -1917,3 +1917,40 @@ DIA: 已同步 `CHANGELOG.md` 与 `.agent/handover.md`；本轮新增/修改代�
 ### HLG
 
 HLG: 已追加标准时间戳交接记录；本轮未发现需要写入长期规则文件的新规则候选。
+
+## 2026-07-31T10:59:57+08:00 · 会话任务进度卡与人工销项闭环
+
+type: implementation
+scope: ["native-ui/chat", "task-planning", "ui"]
+status: done
+tags: ["task-panel", "compose", "chat", "manual-completion", "android-qa"]
+continuity: none
+record-fingerprint: ccea89021d34a2a7ba21325757be0c374623c28d340f5e9e3ebf42fb6ff45425
+
+### Summary
+将常驻输入框内部的任务面板改为消息流紧凑任务卡，并在模型、Token 芯片后增加第三任务胶囊。胶囊严格绑定真实生成状态：生成中才脉冲显示“正在生成”，生成停止但计划未销项时静态显示“待确认 N”。
+
+### Changed
+- `ChatScreen.kt`：订阅当前会话任务树，把任务卡插入消息流，并增加可滚动的第三任务胶囊与点击回到任务卡。
+- `TaskFloatingPanel.kt`：任务卡仅保留标题、`已完成/总数`、当前步骤和双操作；删除冗余状态文案与进度条。
+- `ChatViewModel.kt`：增加继续处理与人工完成入口，并在生成中双重阻断竞态。
+- `TaskRepository.kt` / `TaskNodeDao.kt`：允许已全部完成的旧计划原子清理后创建新计划。
+- 新增任务面板纯逻辑测试，并扩展 ViewModel 与 Repository 回归测试及中英文资源。
+
+### Validation
+- 主工作树 `:app:compileDebugKotlin` 通过，`git diff --check` 通过。
+- 隔离干净副本运行 `TaskPanelLogicTest`、`ChatViewModelTest`、`TaskRepositoryTest`，35 项全部通过。
+- Android 15 `Nexara_API_35` 模拟器实测静态“待确认 1”、任务卡 `1/2`、三胶囊统一高度；点击“标记已完成”后任务卡与胶囊同步消失。
+- 最终实际运行截图经 Sol 多模态视觉复核，结论为可交付且无阻断级视觉问题。
+
+### Next
+无强制后续。若后续配置可用模型，可补充一次真实长生成过程的脉冲动画录屏；当前生成态映射与脉冲开关已由纯逻辑测试覆盖。
+
+### Risks
+主工作树存在用户原有未跟踪测试 `UserSettingsHomeScreenContractTest.kt`，其 Kotlin 测试名包含非法 `/`，导致主工作树 `testDebugUnitTest` 在测试编译阶段失败；本次未修改该文件，相关测试改在排除该文件的干净副本完成。模拟器未配置模型，因此未做真实联网生成，生成态动画以状态测试、编译和静态代码复核为证。
+
+### DIA
+DIA: 已同步 `CHANGELOG.md` 记录用户可见行为、任务生命周期与验证结果；未改变数据库 Schema、外部 API、部署配置或架构边界，README、registry 与架构文档无需更新。
+
+### HLG
+HLG: 已追加本标准交接记录并重建索引；未发现需要请求用户授权沉淀的长期规则候选。
