@@ -2,7 +2,7 @@
 
 ## 核心文档（始终同步，不可跳过）
 - CHANGELOG.md — 版本变更记录
-- README.md — `v0.2-beta` 发行候选概览、Android 12+ 要求、侧载/密钥/后台生成/GGUF/Metro TUI 边界
+- README.md — 当前 `v0.2.1-beta` 候选概览、同签名覆盖升级、Android 12+、侧载/密钥/后台生成/GGUF/Metro TUI 边界
 - .agent/handover.md — 跨会话交接
 - AGENTS.md — 开发者与 AI Agent 协同开发规范
 
@@ -19,14 +19,18 @@
 - docs/superpowers/plans/2026-07-17-model-catalog-and-chat-metadata.md — 分层模型元数据注册中心、离线目录供应链、Provider/引导迁移、友好名称统一与 AI 消息尾注左对齐实施计划
 - docs/superpowers/specs/2026-07-20-chat-full-context-documents-and-branching.md — 输入栏 TXT/MD 完整上下文、路由后预算硬门禁、可回传导出与消息分支冻结规格
 - docs/superpowers/plans/2026-07-20-chat-full-context-documents-and-branching.md — 会话完整文档、草稿时序、导出、分支、设备与发行验证实施计划
+- docs/superpowers/specs/2026-08-24-nexara-release-contract-repair.md — Provider/Tool/MCP、会话工作区、备份、RAG/KG 与发行升级的当前冻结合同
+- docs/superpowers/plans/2026-08-24-nexara-release-contract-repair.md — 当前发行合同修复、独立审计、全量验证和签名 APK 交付计划
 - docs/superpowers/specs/2026-07-12-v0.2-beta-release-readiness-design.md — v0.2-beta GitHub 侧载发行整改设计（安全、数据、业务、后台生成、UI/E2E 与发行门禁）
 - docs/superpowers/plans/2026-07-12-v0.2-beta-release-roadmap.md — v0.2-beta 四阶段发行整改主路线与门禁顺序
 - docs/superpowers/plans/2026-07-12-v0.2-beta-phase1-security-data.md — P0 密钥、日志、网络、Room、备份与 WebDAV 实施计划
 - docs/superpowers/plans/2026-07-12-v0.2-beta-phase2-core-business-flows.md — P1 Provider、工具幂等、工作区、索引、KG 与分享导入实施计划
 - docs/superpowers/plans/2026-07-12-v0.2-beta-phase3-background-ui.md — P2 后台生成、首次引导、双语、自适应、无障碍与视觉回归实施计划
 - docs/superpowers/plans/2026-07-12-v0.2-beta-phase4-release-engineering.md — P3 CI、签名、冷安装、文档与 GitHub Release 实施计划
-- docs/release/v0.2-beta.md — GitHub Release 发行正文草案；最终门禁关闭前保持 PENDING/NO-GO
+- docs/release/v0.2-beta.md — 2026-07-29 已发布 GitHub prerelease 的历史发行正文
 - docs/release/v0.2-beta-validation.md — 发行事实账本；记录设备/UI/真实 API/分支 CI、本地稳定证书签名 R8 与双版本冷安装证据，并区分待执行的 TalkBack 真机、核心业务人工验收与 tag release workflow
+- docs/release/v0.2.1-beta.md — 当前本地签名候选发行说明、覆盖升级方法与已知边界；不构成 GitHub 发布授权
+- docs/release/v0.2.1-beta-validation.md — 当前候选全量测试、签名、冷装、v0.1→v0.2.1 数据继承与外部门禁事实账本
 - docs/PRD.md — 产品需求文档 v2.0（进度已更新至 2026-05-15）
 - docs/ARCHITECTURE_DESIGN.md — 全局架构设计（含 §2.4.1 KG 双模式策略）
 - docs/ARCHITECTURE.md — 架构快速参考（含 ADR 索引，已至 ADR-021）
