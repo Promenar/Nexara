@@ -6903,3 +6903,35 @@ record-fingerprint: aa12ccf8137d3a9efce68e148086052af7dd4ab919c40d991be87455ad2e
 
 ### HLG
 本记录使用 handover-lifecycle-governance append 先 dry-run 后 apply 追加到 EOF并重建索引；后续以 continuity-key v0.2.1-beta-release-followup 恢复真机反馈或双库恢复工作。未发现需要新增到长期规则文件的候选规则。
+
+## 2026-08-25T17:02:13+08:00 · 头像连续替换与统一裁剪流程修复并交付签名 APK
+
+type: maintenance
+scope: ["Nexara", "native-ui", "v0.2.1-beta-release"]
+status: done
+tags: ["avatar", "image-crop", "material3", "android-release", "data-inheritance"]
+continuity: waiting
+continuity-key: v0.2.1-beta-release-followup
+event-date: 2026-08-25
+record-fingerprint: 31b55a42b40cf25e7a2f86bee83a76fce10625c08c1c33bcac324578bf490d3e
+
+### Summary
+修复 Agent 自定义头像永久停留首次上传图片、用户头像裁剪页明暗混合且无法确认、两个入口缺少可用裁剪能力的问题；保持底部三按钮导航和既有设置视觉不变，完成正式签名 APK 与数据继承门禁复核。
+
+### Changed
+AvatarStore 改为 SHA-256 内容寻址文件名、原子发布后清理旧槽位文件，使图片加载器获得新缓存身份。Agent 与用户入口统一接入系统图片选择器和 1:1 UCrop 裁剪，支持移动、缩放、旋转、512px 上限和明确中文完成动作；自有 AvatarCropActivity 使用 Material 3 色板并通过 WindowInsets 避让状态栏，Agent 图片使用 Crop 填满圆形容器。头像导入任务可取消并清理受管临时文件。覆盖升级脚本将向量迁移哨兵改为不会被启动恢复流程按设计清理的 failed 终态，消除 completed 清理时序竞争。
+
+### Validation
+全量 JVM 2544 项 0 failure/error、14 skip；Screenshot 100/100；Lint 0 Error/Fatal、516 Warning、22 Hint；AndroidTest 与 Debug 构建通过。API 35 头像真实裁剪设备测试通过，full device E2E 全通过；最终正式签名 R8 APK 冷安装、身份/签名/敏感内容/R8/16KiB zipalign/checksum、PDF/DOCX 分享导入与索引失败重试黑盒均通过。公开 v0.1-beta 到当前 APK 的 adb install -r 覆盖升级门禁 UPGRADE_SMOKE=PASS。最终 APK 18649936 bytes，SHA-256 ce28e2310de41d5e130918b97dd0a4152fee93260f895aa7a0d79ff9c026d3c0，signer SHA-256 00be4cdd8378aafbd70ebc43e971523791cc07deead631e06dcf155deeee3802。
+
+### Next
+用户在物理真机覆盖安装交付 APK，重点验证 Agent 连续上传两张不同图片、个人头像裁剪确认、OEM 系统栏和原有数据继承。GitHub tag 与 Release 仍未授权。
+
+### Risks
+物理真机人工体验仍待用户执行；API 35 自动化不能替代不同 OEM 相册、状态栏和 IME 的人工验收。v0.1 到 v0.2 再到当前版形成的 v17+v5 双库歧义仍会安全阻断，需保留安装和完整设备备份等待恢复工具。
+
+### DIA
+已同步 README.md、CHANGELOG.md、v0.2.1-beta 发行说明与验证账本，记录头像行为、裁剪合同、最终 APK 身份及自动化与人工验收边界；无架构注册表或数据库合同变化。
+
+### HLG
+本记录通过 handover-lifecycle-governance append 先 dry-run 后 apply 追加并重建索引；继续沿用 v0.2.1-beta-release-followup 接收真机反馈，未发现需要新增到长期规则文件的候选规则。
