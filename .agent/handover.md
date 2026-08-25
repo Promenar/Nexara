@@ -6871,3 +6871,35 @@ DIA: 代码与用户可见 MD3 设置行为已由既有 CHANGELOG、设计计划
 
 ### HLG
 HLG: 使用 handover-lifecycle-governance append 先 dry-run 后 apply 追加本记录并重建派生索引；未发现新的长期规则候选。
+
+## 2026-08-25T12:39:49+08:00 · v0.2.1-beta 工具链、工作区与覆盖升级修复及签名 APK 交付
+
+type: maintenance
+scope: ["Nexara", "native-ui", "v0.2.1-beta-release"]
+status: done
+tags: ["tools", "workspace", "database-migration", "android-release", "data-inheritance"]
+continuity: waiting
+continuity-key: v0.2.1-beta-release-followup
+event-date: 2026-08-25
+record-fingerprint: aa12ccf8137d3a9efce68e148086052af7dd4ab919c40d991be87455ad2e8136
+
+### Summary
+完成项目功能审计后对 Tool Call、Provider/MCP、工作区、RAG/KG、备份恢复和覆盖升级链进行完整修复，保持已确认的设置视觉与底部三按钮导航不变；从 clean 工作树构建并验真正式签名 v0.2.1-beta APK。
+
+### Changed
+工具调用补齐稳定身份、类型化参数、CAS 审批/认领/取消/重放与确定终态；Provider 和 MCP 统一端点并对未知协议零联网，Streamable HTTP 增加有界 SSE；工作区/分享/RAG/KG 收敛持久身份、journal、scope 和失败恢复；备份增加加密、revision 与头像路径边界。数据库升至 v18，新增公开 v0.1 的 v17 主库接管、WAL checkpoint、一次性 FTS4 验证副本、遗留工作区身份补建，以及 /data/data 与 /data/user/0 bind-mount 别名按同文件识别；v17+v5 双库歧义在任何写入前 fail-close。
+
+### Validation
+全量 JVM 2539 项 0 failure/error、14 skip；Screenshot 100/100；Lint 0 Error、516 Warning、22 Hint；AndroidTest 编译通过。API 35 数据库迁移 4/4、Promoter/工作区别名 3/3、full device E2E 全通过；release-equivalent 与最终 APK 的 minified 黑盒均通过冷启动、PDF/DOCX 分享导入及文本索引失败重试。最终 clean Release APK 为 18649656 bytes，SHA-256 a6b25d5929468843d42569deb5c32236b11f8beb22b7461b7d0fea952cdeb92a，包名 com.promenar.nexara.native、versionCode 3、versionName 0.2.1-beta、signer SHA-256 00be4cdd8378aafbd70ebc43e971523791cc07deead631e06dcf155deeee3802；API 35 冷安装和公开 v0.1-beta 到该最终 APK 的 adb install -r 覆盖升级均 PASS，数据库、偏好、物理文件、firstInstallTime 与 signer 哨兵全部保持。独立复审最终 GO，Critical 0、Important 0、Minor 1。
+
+### Next
+用户在物理真机上覆盖安装交付 APK，验证现有数据、核心业务、TalkBack、OEM 系统栏与 IME；如设备走过 v0.1→v0.2 并形成 v17+v5 双库，保留安装和完整设备备份，后续实现显式双库恢复工具。本轮未获授权创建 tag、PR 或 GitHub Release。
+
+### Risks
+物理真机人工体验尚未执行；未调用付费真实 Provider。v0.1→v0.2→当前版的双库合并未实现，该状态会安全阻断启动而不会静默选库或写坏源数据，不能通过卸载、清数据或删除任一数据库规避。
+
+### DIA
+已同步 README.md、CHANGELOG.md、docs/PRD.md、docs/release/v0.2.1-beta.md 与验证账本，覆盖工具、工作区、备份、数据库 v18、升级边界、最终 APK 身份及人工验收状态。
+
+### HLG
+本记录使用 handover-lifecycle-governance append 先 dry-run 后 apply 追加到 EOF并重建索引；后续以 continuity-key v0.2.1-beta-release-followup 恢复真机反馈或双库恢复工作。未发现需要新增到长期规则文件的候选规则。
