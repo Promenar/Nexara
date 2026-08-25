@@ -6935,3 +6935,35 @@ AvatarStore 改为 SHA-256 内容寻址文件名、原子发布后清理旧槽�
 
 ### HLG
 本记录通过 handover-lifecycle-governance append 先 dry-run 后 apply 追加并重建索引；继续沿用 v0.2.1-beta-release-followup 接收真机反馈，未发现需要新增到长期规则文件的候选规则。
+
+## 2026-08-25T17:32:16+08:00 · Agent 头像持久化与首页 Material 3 身份列表修复
+
+type: maintenance
+scope: ["Nexara", "native-ui", "v0.2.1-beta-release"]
+status: done
+tags: ["agent-avatar", "room-persistence", "material3", "android-release", "data-inheritance"]
+continuity: waiting
+continuity-key: v0.2.1-beta-release-followup
+event-date: 2026-08-25
+record-fingerprint: 2a77a16ca16ded4ddf7a71af0f7a6aa5a56196b2472ec981f3249ed52b0ad4de
+
+### Summary
+修复 Agent 自定义头像离开编辑页即回退、Agent 首页无法展示该头像的问题，并把首页身份列表收敛为更大方的连续 Material 3 列表；底部三按钮导航保持不变。
+
+### Changed
+AgentEditViewModel 的头像导入改为先向 Room 提交候选 Agent，成功后再发布页面状态和清理裁剪临时文件；延迟字段保存不再读取无人订阅的惰性 hasChanges StateFlow。Agent 首页读取 agent.avatarPath，自定义图片与预设图标共用 56dp 圆形头像；列表使用 88dp 最小行高、17sp/15sp 主副文字、标准 16dp 内容轴及从文字轴开始的分隔线。新增稳定 UI tag 和对应 JVM、Compose 回归测试，更新两张截图基线。
+
+### Validation
+全量 JVM 2546 项 0 failure/error、14 skip；Screenshot 100/100；Lint 0 Error/Fatal、516 Warning、22 Hint；Debug APK、AndroidTest APK 和正式签名 R8 APK 构建通过。API 35 AgentHubScreenContentTest 9/9，自定义路径命中图片分支。最终 APK 18649936 bytes，SHA-256 12d218fb4ee6ddd6f27bdd8ce30f98e601e34ca2eb1f422dbefcaab5fdeade83；发行验证器、16KiB 对齐、API 35 冷安装及公开 v0.1-beta 到当前版覆盖升级均 PASS。
+
+### Next
+用户在物理真机覆盖安装 APK，重点验证设置 Agent 头像后离开并重新进入编辑页、主页面列表即时展示、连续替换不同图片，以及首页列表在 OEM 字体下的主观密度。GitHub tag 与 Release 仍未授权。
+
+### Risks
+物理真机人工体验仍待用户执行；自动化和截图不能替代不同 OEM 图片解码、字体和系统栏的人工验收。v0.1 到 v0.2 再到当前版形成的双库歧义边界不变，仍会安全阻断并等待恢复工具。
+
+### DIA
+已同步 README.md、CHANGELOG.md、design-qa.md、文档注册表、v0.2.1-beta 发行说明与验证账本；无数据库 schema、网络端点或架构文档影响。
+
+### HLG
+本记录使用 handover-lifecycle-governance append 先 dry-run 后 apply 追加并重建索引；继续沿用 v0.2.1-beta-release-followup 接收真机反馈，未发现新的长期规则候选。
