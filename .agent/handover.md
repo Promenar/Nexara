@@ -7031,3 +7031,35 @@ TDD 两条回归先在旧实现稳定失败后转绿。最终全量 JVM 2553 项
 
 ### HLG
 本记录通过标准 HLG append 先 dry-run 后 apply 追加并重建索引；继续沿用 v0.2.1-beta-release-followup 接收真机反馈，未发现需要新增到长期规则文件的候选规则。
+
+## 2026-08-26T12:23:48+08:00 · 根页面与会话可靠性全量调整及签名 APK 交付
+
+type: maintenance
+scope: ["Nexara", "native-ui", "release"]
+status: done
+tags: ["material3", "session", "provider", "diagnostics", "media", "release-apk"]
+continuity: waiting
+continuity-key: v0.2.1-beta-release-followup
+event-date: 2026-08-26
+record-fingerprint: ddf8f9f0bf01ca482d5209d656564a2c175a93f6bbe37a29c6d74e9cfaaa6351
+
+### Summary
+完成九项用户反馈的当前实现：移除三个根页面左侧标题；重做会话和 Provider/模型/设置列表节奏；修复无工作区会话删除、Completed 后迟到错误、字号持久化与上游模型 ID 编辑；接入图片全屏查看、发行诊断导出和克制过渡动效；生成正式签名 APK。
+
+### Changed
+生成流在首个 Completed 后停止消费；无工作区会话走 Room 原子删除；字号拖动防抖落库；模型 remoteModelId 成为可编辑且可持久化字段；模型能力改为单选与开关连续列表；用户及工具图片复用全屏缩放、旋转、保存和分享；发行版新增 512 KiB 脱敏 JSONL 诊断及设置导出；根标签淡入淡出且底部水滴导航结构尺寸不变。
+
+### Validation
+./gradlew :app:lintDebug :app:testDebugUnitTest :app:validateDebugScreenshotTest :app:compileDebugAndroidTestKotlin 成功；JVM 2560 项，0 failure/error，14 skip；Lint 0 Error/Fatal；Screenshot 101/101。clean :app:assembleRelease 成功；APK 18683280 bytes，SHA-256 a0dedb874a4d3bead8097ef8d405fc11a536a2ccca842def64701ad5acdb7a73；包名、versionCode 3、versionName 0.2.1-beta、唯一 signer、登记证书、敏感内容与本地推理制品排除、R8 四类输出、16 KiB zipalign 和 checksum 均通过。
+
+### Next
+用户在物理真机上仅用覆盖安装验证当前 APK 的旧数据继承、Provider 调用、会话删除、字号恢复、图片查看与诊断导出；不要卸载或清数据。若设备属于 v0.1 到 v0.2 再到当前版的双库链，保留安装与备份并停止启动，等待双库恢复工具。
+
+### Risks
+本轮 adb devices -l 无连接设备，因此当前哈希未执行物理真机安装、覆盖升级、TalkBack、OEM 系统栏或 IME 验收；未调用付费真实 Provider；未创建 tag 或 GitHub Release。
+
+### DIA
+已同步 README.md、CHANGELOG.md 和 docs/release/v0.2.1-beta-validation.md；底部导航冻结边界、诊断隐私合同、媒体能力、测试和当前 APK 事实均已回填。
+
+### HLG
+本记录经 HLG append dry-run 后正式追加；continuity 保持 waiting，等待用户真机验收反馈。
