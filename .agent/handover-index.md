@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-08-26T12:23:48+08:00
+> generated_at: 2026-08-26T13:26:39+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -15,6 +15,7 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-08-26T13:26:39+08:00 | iso | done | none | ["native-ui", "settings", "navigation", "theme"] | ["android", "compose", "material3", "bettbox", "visual-regression"] | Bettbox 开源 Material 3 视觉基线迁移完成 | `.agent/handover.md` · `2026-08-26T13:26:39+08:00` · `fp:9b87d4d28f` |
 | 2026-08-26T12:23:48+08:00 | iso | done | waiting | ["Nexara", "native-ui", "release"] | ["material3", "session", "provider", "diagnostics", "media", "release-apk"] | 根页面与会话可靠性全量调整及签名 APK 交付 | `.agent/handover.md` · `2026-08-26T12:23:48+08:00` · `fp:ddf8f9f0bf` |
 | 2026-08-26T10:57:07+08:00 | iso | done | waiting | ["Nexara", "native-ui", "v0.2.1-beta-release"] | ["agent-avatar", "room-persistence", "generation-error", "material3", "android-release"] | Agent 内置头像持久化与会话错误提示去重 | `.agent/handover.md` · `2026-08-26T10:57:07+08:00` · `fp:579220f936` |
 | 2026-08-26T10:02:35+08:00 | iso | done | waiting | ["Nexara", "native-ui", "v0.2.1-beta-release"] | ["provider", "message-deletion", "material3", "haptics", "streaming", "android-release"] | 真机 Provider 恢复、会话交互修复与签名 APK 交付 | `.agent/handover.md` · `2026-08-26T10:02:35+08:00` · `fp:a79f02720f` |

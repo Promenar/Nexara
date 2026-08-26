@@ -65,5 +65,6 @@ native-ui/app/src/main/java/com/promenar/nexara/ui/settings/SkillsScreen.kt
 native-ui/app/src/main/java/com/promenar/nexara/ui/settings/ThemeScreen.kt
 native-ui/app/src/main/java/com/promenar/nexara/ui/settings/TokenUsageScreen.kt
 native-ui/app/src/main/java/com/promenar/nexara/ui/theme/Color.kt
+native-ui/app/src/main/java/com/promenar/nexara/ui/theme/SeededColorScheme.kt
 native-ui/app/src/main/java/com/promenar/nexara/ui/theme/Theme.kt
 native-ui/app/src/main/java/com/promenar/nexara/ui/welcome/WelcomeScreen.kt

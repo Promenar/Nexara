@@ -37,7 +37,7 @@
 - docs/ADR/ADR-019-transactional-workspace-indexing.md — 工作区文件、版本化索引目标、删除屏障、补偿重试与进程恢复的事务候选切换决策
 - docs/ADR/ADR-020-layered-model-metadata-registry.md — 分层模型元数据来源、逐字段优先级、离线快照、三态能力、精确匹配、用户覆盖与回滚决策
 - docs/ADR/ADR-021-chat-full-context-documents-and-branching.md — 完整文档消息快照、路由后预算门禁、可靠重试、可回传导出与稳定消息分支决策
-- docs/legal/THIRD_PARTY_NOTICES.md — models.dev 离线模型目录的来源、MIT 许可、冻结快照校验锚点与非单一权威边界
+- docs/legal/THIRD_PARTY_NOTICES.md — models.dev 离线模型目录与 Bettbox Material 3 界面转译的来源、固定提交、许可及使用边界
 - docs/IMPLEMENTATION_ANALYSIS.md — 当前实现分析（总体 98%）
 - docs/DOCUMENT_GOVERNANCE.md — 文档治理方案（v2.0, 2026-05-19 更新）
 - native-ui/AGENTS.md — Kotlin 迁移技术规范（归档参考用）

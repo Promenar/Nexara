@@ -7063,3 +7063,33 @@ record-fingerprint: ddf8f9f0bf01ca482d5209d656564a2c175a93f6bbe37a29c6d74e9cfaaa
 
 ### HLG
 本记录经 HLG append dry-run 后正式追加；continuity 保持 waiting，等待用户真机验收反馈。
+
+## 2026-08-26T13:26:39+08:00 · Bettbox 开源 Material 3 视觉基线迁移完成
+
+type: maintenance
+scope: ["native-ui", "settings", "navigation", "theme"]
+status: done
+tags: ["android", "compose", "material3", "bettbox", "visual-regression"]
+continuity: none
+record-fingerprint: 9b87d4d28fa2f4008af6906d5043dee62aa8ab6e44e39ec5342405076ca2cf1b
+
+### Summary
+以 Bettbox 固定提交的开源实现为视觉基线，将设置列表、Provider/模型列表、移动端底部导航和外观设置按 Jetpack Compose 语义完成转译；保留 Nexara 既有信息架构、业务入口和真实触感逻辑。
+
+### Changed
+统一设置列表为 Material3 ListItem 与 20dp surfaceContainer 分组；移动端导航改为 36dp 浮动容器、弱描边、阴影、24dp 图标、secondaryContainer 选中态与 250ms 权重动画；新增种子色、纯黑深色模式与全局文字缩放持久化；Provider 与模型列表收敛为连续分组；登记 Bettbox 固定提交、GPLv3 来源和转译边界，并更新 21 张受影响截图基线。
+
+### Validation
+全量 JVM 2564 项，0 failure、0 error、14 skip；Screenshot 101/101；AndroidTest Kotlin 编译通过；Lint 0 Error/Fatal；API 35 模拟器检查主屏、设置、外观和 Provider 空态，外观设备交互 3/3；assembleMinifiedTest --rerun-tasks 53/53 tasks 成功。
+
+### Next
+用户可在物理真机继续验收 OEM 字体渲染、实际屏幕密度、底部导航线性马达触感，以及有真实 Provider 数据时的长列表观感。
+
+### Risks
+当前进程未注入发行签名变量，且按边界未读取项目外 secure_env 或签名材料；本轮 R8 仅为非发行 minifiedTest 诊断构建，未生成正式签名 APK。模拟器视觉与触感不能替代物理真机验收。
+
+### DIA
+已同步 CHANGELOG、README、docs/legal/THIRD_PARTY_NOTICES、.agent/registry 与 design-qa。
+
+### HLG
+已通过 HLG 标准结构化 append 追加本次迁移、验证和剩余真机边界，并重建索引。
