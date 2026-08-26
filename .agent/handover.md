@@ -7153,3 +7153,34 @@ record-fingerprint: d04bf0df7b9a5c2c48e678eb7cc1e1da5fb23635def730088b38c81cec14
 
 ### HLG
 本记录通过 HLG append dry-run 与 apply 追加并重建索引。
+
+## 2026-08-26T16:10:54+08:00 · Bettbox 分组边界与 Agent 首页减法修复正式包
+
+type: maintenance
+scope: ["Nexara", "native-ui", "release"]
+status: done
+tags: ["material3", "bettbox", "settings", "agent-hub", "apk"]
+continuity: waiting
+continuity-key: nexara-physical-device-ui-acceptance
+record-fingerprint: cf09c0dcb0e30baf6cfe018a429a64b206ef154d1f552c40ac42a36fa1c3fa88
+
+### Summary
+移除无法对应触控面的装饰分割线与共享外描边，完成当前源码正式签名 APK 交付闭环。
+
+### Changed
+BettboxListGroup 改为无描边填充面；记忆设置拆为预设、检索参数、摘要模板、后续入口四个语义分组；Agent 首页移除行间横线与上下 8dp 异色色带；同步截图基线、README、CHANGELOG、design-qa 与发行验证账本。
+
+### Validation
+全量 JVM 2571 项，0 failure/error，14 skip；Screenshot 100/100；AndroidTest Kotlin 编译通过；Lint 0 Error/Fatal；clean 正式签名 R8 Release 构建成功。APK 18,909,055 bytes，SHA-256 79d6b7c71b903fe783e4bd4d1625b6a3794154cfb292731c0efbd6f9759f8c5e；包身份、版本、唯一 signer、登记证书、敏感内容、本地推理制品排除、R8 输出、16 KiB zipalign 与 checksum 通过。
+
+### Next
+用户在物理真机覆盖安装 Nexara-0.2.1-beta-20260826-clean-groups-release.apk，重点验证记忆设置按压态与 Agent 首页在 OEM 动态色下无伪阴影。
+
+### Risks
+当前 adb 无连接设备，未执行本哈希的物理真机覆盖安装；不沿用历史安装证据冒充当前 APK。
+
+### DIA
+已同步 README、CHANGELOG、design-qa 与 docs/release/v0.2.1-beta-validation.md；架构和接口无变化。
+
+### HLG
+通过标准 append dry-run 与 apply 追加本记录并重建索引。

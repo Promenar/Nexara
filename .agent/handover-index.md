@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-08-26T15:41:44+08:00
+> generated_at: 2026-08-26T16:10:54+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -8,6 +8,7 @@
 
 | continuity-key | continuity | last update | status | scope | title | source |
 | :--- | :---: | :---: | :---: | :--- | :--- | :--- |
+| nexara-physical-device-ui-acceptance | waiting | 2026-08-26T16:10:54+08:00 | done | ["Nexara", "native-ui", "release"] | Bettbox 分组边界与 Agent 首页减法修复正式包 | `.agent/handover.md` · `2026-08-26T16:10:54+08:00` · `fp:cf09c0dcb0` |
 | v0.2-beta-release-readiness | waiting | 2026-07-29T12:29:30+08:00 | done | ["nexara", "v0.2-beta-release-readiness"] | v0.2-beta SSH 签名标签与 GitHub prerelease 发布闭环 | `.agent/handover.md` · `2026-07-29T12:29:30+08:00` · `fp:274e812f49` |
 | v0.2.1-beta-release-followup | waiting | 2026-08-26T12:23:48+08:00 | done | ["Nexara", "native-ui", "release"] | 根页面与会话可靠性全量调整及签名 APK 交付 | `.agent/handover.md` · `2026-08-26T12:23:48+08:00` · `fp:ddf8f9f0bf` |
 
@@ -15,6 +16,7 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-08-26T16:10:54+08:00 | iso | done | waiting | ["Nexara", "native-ui", "release"] | ["material3", "bettbox", "settings", "agent-hub", "apk"] | Bettbox 分组边界与 Agent 首页减法修复正式包 | `.agent/handover.md` · `2026-08-26T16:10:54+08:00` · `fp:cf09c0dcb0` |
 | 2026-08-26T15:41:44+08:00 | iso | done | none | ["native-ui", "settings", "agent-hub", "sessions", "navigation", "release"] | ["bettbox", "material3", "settings", "navigation", "apk"] | Bettbox 分组面全层级迁移与底栏波纹裁切 | `.agent/handover.md` · `2026-08-26T15:41:44+08:00` · `fp:d04bf0df7b` |
 | 2026-08-26T13:34:50+08:00 | iso | done | none | ["native-ui", "android-release", "bettbox-visual-baseline"] | ["apk", "release", "signing", "r8", "checksum"] | Bettbox 视觉基线正式签名 APK 构建与验真 | `.agent/handover.md` · `2026-08-26T13:34:50+08:00` · `fp:346e63fe85` |
 | 2026-08-26T13:26:39+08:00 | iso | done | none | ["native-ui", "settings", "navigation", "theme"] | ["android", "compose", "material3", "bettbox", "visual-regression"] | Bettbox 开源 Material 3 视觉基线迁移完成 | `.agent/handover.md` · `2026-08-26T13:26:39+08:00` · `fp:9b87d4d28f` |
