@@ -9,6 +9,7 @@ native-ui/app/src/main/java/com/promenar/nexara/ui/chat/components/FilesPanel.kt
 native-ui/app/src/main/java/com/promenar/nexara/ui/chat/components/RecycleBinPanel.kt
 native-ui/app/src/main/java/com/promenar/nexara/ui/chat/components/TaskFloatingPanel.kt
 native-ui/app/src/main/java/com/promenar/nexara/ui/common/AgentAvatar.kt
+native-ui/app/src/main/java/com/promenar/nexara/ui/common/BettboxListGroup.kt
 native-ui/app/src/main/java/com/promenar/nexara/ui/common/CollapsibleSection.kt
 native-ui/app/src/main/java/com/promenar/nexara/ui/common/ColorPickerPanel.kt
 native-ui/app/src/main/java/com/promenar/nexara/ui/common/ConfirmDialog.kt
@@ -23,6 +24,7 @@ native-ui/app/src/main/java/com/promenar/nexara/ui/common/NexaraCollapsibleSecti
 native-ui/app/src/main/java/com/promenar/nexara/ui/common/NexaraConfirmDialog.kt
 native-ui/app/src/main/java/com/promenar/nexara/ui/common/NexaraGlassCard.kt
 native-ui/app/src/main/java/com/promenar/nexara/ui/common/NexaraLoadingIndicator.kt
+native-ui/app/src/main/java/com/promenar/nexara/ui/common/NexaraSettingsSection.kt
 native-ui/app/src/main/java/com/promenar/nexara/ui/common/NexaraSlider.kt
 native-ui/app/src/main/java/com/promenar/nexara/ui/common/NexaraSnackbar.kt
 native-ui/app/src/main/java/com/promenar/nexara/ui/common/ProtocolSelector.kt
@@ -59,6 +61,8 @@ native-ui/app/src/main/java/com/promenar/nexara/ui/renderer/TableWidget.kt
 native-ui/app/src/main/java/com/promenar/nexara/ui/settings/BackupSettingsScreen.kt
 native-ui/app/src/main/java/com/promenar/nexara/ui/settings/DeveloperScreen.kt
 native-ui/app/src/main/java/com/promenar/nexara/ui/settings/LocalModelsScreen.kt
+native-ui/app/src/main/java/com/promenar/nexara/ui/settings/ProviderFormScreen.kt
+native-ui/app/src/main/java/com/promenar/nexara/ui/settings/ProviderListScreen.kt
 native-ui/app/src/main/java/com/promenar/nexara/ui/settings/ProviderModelsScreen.kt
 native-ui/app/src/main/java/com/promenar/nexara/ui/settings/SearchConfigScreen.kt
 native-ui/app/src/main/java/com/promenar/nexara/ui/settings/SkillsScreen.kt

@@ -7123,3 +7123,33 @@ clean assembleRelease --rerun-tasks --no-build-cache 成功，66 tasks 中 64 ex
 
 ### HLG
 已通过标准 dry-run 与 apply 追加正式 APK 构建记录并重建索引。
+
+## 2026-08-26T15:41:44+08:00 · Bettbox 分组面全层级迁移与底栏波纹裁切
+
+type: maintenance
+scope: ["native-ui", "settings", "agent-hub", "sessions", "navigation", "release"]
+status: done
+tags: ["bettbox", "material3", "settings", "navigation", "apk"]
+continuity: none
+record-fingerprint: d04bf0df7b9a5c2c48e678eb7cc1e1da5fb23635def730088b38c81cec143eab
+
+### Summary
+完成设置身份头部、全部设置二三级页面、Agent 首页、会话列表与 Provider 模型列表的 Bettbox 分组面收敛，并修复底栏胶囊按钮波纹泄露方形命中层。
+
+### Changed
+新增 BettboxListGroup 公共 plain-card 组件；设置首页移除账户标签；深层页统一 20dp surfaceContainerLow 弱描边分组；会话和 Provider 模型改为按独立业务对象成卡；底栏在 selectable 前按 CircleShape 裁切 indication。
+
+### Validation
+全量 JVM 2569 项通过且 14 项条件跳过；100/100 Screenshot、Lint 0 Error/Fatal、API 35 本轮相关设备测试 32/32 通过；clean 正式签名 Release 66 tasks 成功，APK 18909055 bytes，SHA-256 ca275ff2979744c1e4d7c26b24a9e230622c5d15a9f36b842100c90dd3d697db，并通过 release verifier、唯一 signer、登记证书、R8 四类输出和 16 KiB zipalign。
+
+### Next
+用户在真实设备上重点体验设置深层页滚动、会话卡片密度以及底栏按压波纹；无阻断时直接在当前分支继续开发。
+
+### Risks
+设备全量 313 项尝试在 203 项时停止，已出现 14 项与本轮无关的恢复时序、分享 Sheet 和过时视觉断言失败；不得宣称全量 AndroidTest 通过。当前 APK 的物理真机安装与触感主观验收仍由用户完成。
+
+### DIA
+已同步 CHANGELOG 与 MD3 收敛 manifest，并更新受影响 Screenshot reference。
+
+### HLG
+本记录通过 HLG append dry-run 与 apply 追加并重建索引。
