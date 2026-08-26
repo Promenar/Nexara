@@ -7093,3 +7093,33 @@ record-fingerprint: 9b87d4d28fa2f4008af6906d5043dee62aa8ab6e44e39ec5342405076ca2
 
 ### HLG
 已通过 HLG 标准结构化 append 追加本次迁移、验证和剩余真机边界，并重建索引。
+
+## 2026-08-26T13:34:50+08:00 · Bettbox 视觉基线正式签名 APK 构建与验真
+
+type: release-build
+scope: ["native-ui", "android-release", "bettbox-visual-baseline"]
+status: done
+tags: ["apk", "release", "signing", "r8", "checksum"]
+continuity: none
+record-fingerprint: 346e63fe8529c4e7f13a6492121d64c33839dddd5d18242a526ce91e862e03e8
+
+### Summary
+从生产代码提交 3e33e030 clean 构建正式签名、R8 压缩的 v0.2.1-beta APK，用于用户覆盖安装并真机体验 Bettbox 视觉基线迁移。
+
+### Changed
+未修改生产代码；生成 artifacts/Nexara-0.2.1-beta-20260826-bettbox-release.apk 与同名 sha256 文件。签名材料仅从受保护 secure_env 注入单个构建子进程，未进入仓库、日志或对话；同步回填 CHANGELOG、design-qa 和 v0.2.1-beta 发行验证记录。
+
+### Validation
+clean assembleRelease --rerun-tasks --no-build-cache 成功，66 tasks 中 64 executed、2 up-to-date；验证器单测 23/23。APK 18,909,143 bytes，SHA-256 78a2e2e3824a3a5067f47a5c73752fe6313623e4dae652f57aa224d3a2163a95；包名 com.promenar.nexara.native、versionCode 3、versionName 0.2.1-beta、唯一登记 signer、ZIP、体积、敏感内容和本地推理制品排除通过；R8 mapping、seeds、usage、configuration 非空，16 KiB zipalign 与 checksum 通过。
+
+### Next
+用户可直接使用交付 APK 对同签名旧版执行覆盖安装并验收视觉、OEM 字体、底部导航触感和既有数据；本轮不代替用户安装，不创建 tag 或 GitHub Release。
+
+### Risks
+本轮未在物理真机执行覆盖安装、数据继承和 TalkBack 人工验收；三段 v0.1→v0.2→v0.2.1 双库升级仍须遵守既有 fail-close 边界。
+
+### DIA
+已同步 CHANGELOG、design-qa 与 docs/release/v0.2.1-beta-validation.md 的当前 APK 路径、大小、哈希和验证证据。
+
+### HLG
+已通过标准 dry-run 与 apply 追加正式 APK 构建记录并重建索引。
