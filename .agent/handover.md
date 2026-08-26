@@ -6967,3 +6967,35 @@ AgentEditViewModel 的头像导入改为先向 Room 提交候选 Agent，成功�
 
 ### HLG
 本记录使用 handover-lifecycle-governance append 先 dry-run 后 apply 追加并重建索引；继续沿用 v0.2.1-beta-release-followup 接收真机反馈，未发现新的长期规则候选。
+
+## 2026-08-26T10:02:35+08:00 · 真机 Provider 恢复、会话交互修复与签名 APK 交付
+
+type: maintenance
+scope: ["Nexara", "native-ui", "v0.2.1-beta-release"]
+status: done
+tags: ["provider", "message-deletion", "material3", "haptics", "streaming", "android-release"]
+continuity: waiting
+continuity-key: v0.2.1-beta-release-followup
+event-date: 2026-08-26
+record-fingerprint: a79f02720fc764418a7027896a8d9f2cf323b262854d94a7579cf7cf61b74bc9
+
+### Summary
+根据物理真机反馈修复未知主 Provider 在升级后从管理页消失、错误消息黏附上一条回复、附件删除按钮错位、思考与正文多余连接、底部导航缺少触感及流式文字机械闪现，并交付同签名正式 APK。
+
+### Changed
+未知主 Provider 现在以不支持行显式呈现并可进入安全修复页，保留名称、地址和凭证存在状态；旧凭证必须明确替换或清除，无凭证配置可直接选择受支持协议保存，未知协议继续零联网。助手消息记录用户父 ID，用户消息删除按同轮兼容旧数据并通过 Room 单条批量 SQL 原子删除，撤销恢复完整轮次；孤立错误使用独立可删除 errorContainer。图片删除按钮固定右上角，思考连接线点移除而工具链保留；水滴导航视觉不变并按系统版本请求 SEGMENT_TICK/CLOCK_TICK，流式尾部改为低对比 220ms 淡入。
+
+### Validation
+最终源码全量 JVM 2552 项 0 failure/error、14 skip，Screenshot 100/100，AndroidTest 编译、Lint 0 Error/Fatal、Debug 编译和 clean Release R8 构建通过。验证器单测 23/23；最终 APK 18649988 bytes，SHA-256 e1b14bf36c0bf0e16aaa7dfd9121ed301b3f4fde59ca73f95077ff5525123698，包名 com.promenar.nexara.native、versionCode 3、versionName 0.2.1-beta、单一登记 signer、敏感内容与本地推理制品排除、R8 四类输出和 16 KiB zipalign 均通过。
+
+### Next
+用户在物理真机覆盖安装当前 APK，重点验证历史 Provider 修复、整轮删除、附件按钮位置、思考布局、X 轴线性马达触感与流式主观平滑度；GitHub tag 与 Release 仍未授权。
+
+### Risks
+本轮 adb 无连接设备，因此当前最终哈希未在本机模拟器或物理设备安装；OEM 对 HapticFeedbackConstants 的线性马达映射与主观力度只能由目标真机确认。未知协议不会被自动猜测映射，用户需要在修复页明确选协议并按需处理旧凭证。
+
+### DIA
+已同步 README.md、CHANGELOG.md、design-qa.md、v0.2.1-beta 发行说明与验证账本；无数据库 schema 或外部端点变化。
+
+### HLG
+本记录使用 handover-lifecycle-governance append 先 dry-run 后 apply 追加并重建索引；继续沿用 v0.2.1-beta-release-followup 接收真机反馈，未发现新的长期规则候选。
