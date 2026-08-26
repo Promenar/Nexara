@@ -6999,3 +6999,35 @@ record-fingerprint: a79f02720fc764418a7027896a8d9f2cf323b262854d94a7579cf7cf61b7
 
 ### HLG
 本记录使用 handover-lifecycle-governance append 先 dry-run 后 apply 追加并重建索引；继续沿用 v0.2.1-beta-release-followup 接收真机反馈，未发现新的长期规则候选。
+
+## 2026-08-26T10:57:07+08:00 · Agent 内置头像持久化与会话错误提示去重
+
+type: maintenance
+scope: ["Nexara", "native-ui", "v0.2.1-beta-release"]
+status: done
+tags: ["agent-avatar", "room-persistence", "generation-error", "material3", "android-release"]
+continuity: waiting
+continuity-key: v0.2.1-beta-release-followup
+event-date: 2026-08-26
+record-fingerprint: 579220f9363c078a5b6722dbf1180450281e46db228be893a159d346f2aba670
+
+### Summary
+根据物理真机反馈修复 Agent 内置向量头像只在编辑页临时变化、返回首页仍显示旧自定义或默认头像，以及会话内错误气泡与输入框上方 Snackbar 重复呈现的问题，并重新构建同签名正式 APK。
+
+### Changed
+内置头像选择从通用 1 秒文本防抖中拆出，立即以新 icon 和空 avatarPath 更新 Agent Repository，并在页面销毁取消 ViewModel 时仍完成这次明确数据库提交；首页继续消费 Room 中同一 Agent 字段。生成展示状态新增 INLINE_MESSAGE/OVERLAY 呈现面，已持久化消息的 Provider、网络和流式失败只显示可删除错误气泡；文档预算前置阻断、生成未启动、持久化失败等无气泡错误继续走顶层 Snackbar。底部导航、Agent 列表视觉与数据库 schema 均未改变。
+
+### Validation
+TDD 两条回归先在旧实现稳定失败后转绿。最终全量 JVM 2553 项 0 failure/error、14 skip；Screenshot 100/100；AndroidTest Kotlin 编译与 Lint 0 Error/Fatal；clean assembleRelease R8 成功。验证器单测 23/23；APK 18666372 bytes，SHA-256 b09af07ac8864ecab078e5933f54a9fa13d31d598b699350e3e0b5b0f6a52514，包名 com.promenar.nexara.native、versionCode 3、versionName 0.2.1-beta、单一登记 signer、敏感内容/本地推理制品排除、R8 与 16 KiB zipalign 通过。
+
+### Next
+用户在物理真机覆盖安装 Nexara-0.2.1-beta-20260826-r2.apk，重点验证自定义图片切换多个内置头像后立即返回首页、重进编辑页，以及 Provider/网络失败只出现会话内错误气泡。GitHub tag 与 Release 仍未授权。
+
+### Risks
+本轮 adb 无连接设备，当前最终哈希未在模拟器或物理真机安装；自动化证明状态与呈现契约，但不同 OEM 的真实导航返回时序和用户现有 Room 数据仍由目标真机确认。无数据库 schema 或外部端点变化。
+
+### DIA
+已同步 README.md、CHANGELOG.md、v0.2.1-beta 发行说明与验证账本；纯状态持久化和错误呈现调整不影响 design-qa、架构注册表或迁移文档。
+
+### HLG
+本记录通过标准 HLG append 先 dry-run 后 apply 追加并重建索引；继续沿用 v0.2.1-beta-release-followup 接收真机反馈，未发现需要新增到长期规则文件的候选规则。

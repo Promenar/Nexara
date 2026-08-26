@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-08-26T10:02:35+08:00
+> generated_at: 2026-08-26T10:57:07+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -9,12 +9,13 @@
 | continuity-key | continuity | last update | status | scope | title | source |
 | :--- | :---: | :---: | :---: | :--- | :--- | :--- |
 | v0.2-beta-release-readiness | waiting | 2026-07-29T12:29:30+08:00 | done | ["nexara", "v0.2-beta-release-readiness"] | v0.2-beta SSH 签名标签与 GitHub prerelease 发布闭环 | `.agent/handover.md` · `2026-07-29T12:29:30+08:00` · `fp:274e812f49` |
-| v0.2.1-beta-release-followup | waiting | 2026-08-26T10:02:35+08:00 | done | ["Nexara", "native-ui", "v0.2.1-beta-release"] | 真机 Provider 恢复、会话交互修复与签名 APK 交付 | `.agent/handover.md` · `2026-08-26T10:02:35+08:00` · `fp:a79f02720f` |
+| v0.2.1-beta-release-followup | waiting | 2026-08-26T10:57:07+08:00 | done | ["Nexara", "native-ui", "v0.2.1-beta-release"] | Agent 内置头像持久化与会话错误提示去重 | `.agent/handover.md` · `2026-08-26T10:57:07+08:00` · `fp:579220f936` |
 
 ## Recent 7-Day Catalog
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-08-26T10:57:07+08:00 | iso | done | waiting | ["Nexara", "native-ui", "v0.2.1-beta-release"] | ["agent-avatar", "room-persistence", "generation-error", "material3", "android-release"] | Agent 内置头像持久化与会话错误提示去重 | `.agent/handover.md` · `2026-08-26T10:57:07+08:00` · `fp:579220f936` |
 | 2026-08-26T10:02:35+08:00 | iso | done | waiting | ["Nexara", "native-ui", "v0.2.1-beta-release"] | ["provider", "message-deletion", "material3", "haptics", "streaming", "android-release"] | 真机 Provider 恢复、会话交互修复与签名 APK 交付 | `.agent/handover.md` · `2026-08-26T10:02:35+08:00` · `fp:a79f02720f` |
 | 2026-08-25T17:32:16+08:00 | iso | done | waiting | ["Nexara", "native-ui", "v0.2.1-beta-release"] | ["agent-avatar", "room-persistence", "material3", "android-release", "data-inheritance"] | Agent 头像持久化与首页 Material 3 身份列表修复 | `.agent/handover.md` · `2026-08-25T17:32:16+08:00` · `fp:2a77a16ca1` |
 | 2026-08-25T17:02:13+08:00 | iso | done | waiting | ["Nexara", "native-ui", "v0.2.1-beta-release"] | ["avatar", "image-crop", "material3", "android-release", "data-inheritance"] | 头像连续替换与统一裁剪流程修复并交付签名 APK | `.agent/handover.md` · `2026-08-25T17:02:13+08:00` · `fp:31b55a42b4` |
