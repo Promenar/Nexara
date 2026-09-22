@@ -6,13 +6,17 @@
   },
   "status": "approved",
   "approval": {
-    "reference": ".pdec/README.md#授权与范围：2026-09-22 用户批准本机 Android 模拟器及既有本地网关测试",
-    "contract_digest": "477d2749c078f744f8d96776ca1c36df0d863466e619e8d66cf2e684e5c378a1"
+    "reference": ".pdec/README.md#授权与范围：2026-09-22 用户批准本机Android及GitHub Actions+Pages独立模型目录实施",
+    "contract_digest": "5f41a693a8e5477e4cdd3589e2b411ebd7669f84083915a843795f25ae7c3c86"
   },
   "targets": {
     "local-mac": {
       "os": "macos",
       "arch": "arm64"
+    },
+    "github-actions": {
+      "os": "linux",
+      "arch": "x86_64"
     }
   },
   "operations": {
@@ -123,15 +127,38 @@
       ],
       "cross_compile": "Android Gradle Plugin 生成 Android APK，在本机 ARM64 Android 模拟器验证",
       "verification": "记录 Android API、ABI、序列号、测试报告和 APK SHA-256"
+    },
+    "catalog-build": {
+      "executor": "github-actions",
+      "target_os": "linux",
+      "target_arch": "x86_64",
+      "argv": [
+        "python3",
+        "scripts/model-catalog/build-published-catalog.py",
+        "--output-root",
+        "public",
+        "--key-id",
+        "nexara-catalog-p256-20260922",
+        "--signing-key-env",
+        "NEXARA_MODEL_CATALOG_SIGNING_KEY"
+      ],
+      "cwd": ".",
+      "timeout_seconds": 1200,
+      "artifacts": [
+        "public/model-catalog/v1"
+      ],
+      "verification": "Python四源测试、签名、manifest哈希与公网回读；实际发布入口为model-catalog-publish.yml"
     }
   },
   "deployment": {
-    "enabled": false,
-    "transport": "",
-    "target": "",
+    "enabled": true,
+    "transport": "artifact-store",
+    "target": "github-actions",
     "approval_required": true,
-    "healthcheck": "",
-    "rollback": ""
+    "healthcheck": "下载manifest，固定公钥验签并校验catalog摘要和记录数",
+    "rollback": "以更高catalogVersion重发最后有效数据；客户端保留已验证缓存",
+    "source_operation": "catalog-build",
+    "endpoint": "https://promenar.github.io/Nexara/model-catalog/v1/"
   },
   "evidence": {
     "native-ui/gradlew": "ab5c0cad16305af2e619c159c1f58dd68d07fab9c11e36701e109c0277407f7a",

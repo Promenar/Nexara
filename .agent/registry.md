@@ -7,7 +7,10 @@
 - AGENTS.md — 开发者与 AI Agent 协同开发规范
 
 ## 按需文档
-- .pdec/README.md — 用户批准的本机 Android 构建、模拟器、候选验真及聚合网关测试边界
+- docs/model-catalog.md — 独立模型目录更新、签名、来源、故障处理与操作说明
+- docs/superpowers/specs/2026-09-22-independent-model-catalog.md — 独立目录传输与数据契约
+- docs/superpowers/plans/2026-09-22-independent-model-catalog.md — 多源发布、客户端更新、身份与字段保留实施计划
+- .pdec/README.md — 用户批准的本机 Android、聚合网关及 GitHub Pages 目录发布边界
 - .pdec/contract.yaml — 本机开发执行契约及批准摘要
 - docs/superpowers/plans/2026-09-22-audit-completion-repair.md — 审计修复十一项工作包、所有权、依赖与验收
 - docs/audit/20260922-requirements-acceptance.md — 逐需求状态及当前版本证据总账
@@ -41,7 +44,7 @@
 - docs/ADR/ADR-019-transactional-workspace-indexing.md — 工作区文件、版本化索引目标、删除屏障、补偿重试与进程恢复的事务候选切换决策
 - docs/ADR/ADR-020-layered-model-metadata-registry.md — 分层模型元数据来源、逐字段优先级、离线快照、三态能力、精确匹配、用户覆盖与回滚决策
 - docs/ADR/ADR-021-chat-full-context-documents-and-branching.md — 完整文档消息快照、路由后预算门禁、可靠重试、可回传导出与稳定消息分支决策
-- docs/legal/THIRD_PARTY_NOTICES.md — models.dev 离线模型目录与 Bettbox Material 3 界面转译的来源、固定提交、许可及使用边界
+- docs/legal/THIRD_PARTY_NOTICES.md — models.dev、LiteLLM、OpenRouter、官方模型补充及 Bettbox 界面转译的来源、许可及使用边界
 - docs/IMPLEMENTATION_ANALYSIS.md — 当前验收总账入口及历史实现规模、阶段记录
 - docs/DOCUMENT_GOVERNANCE.md — 文档治理方案（v2.0, 2026-05-19 更新）
 - native-ui/AGENTS.md — Kotlin 迁移技术规范（归档参考用）

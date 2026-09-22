@@ -7401,3 +7401,34 @@ DeepSeek/SenseNova/Luna文本及两轮工具通过；Gemini文本通过但工具
 
 ### HLG
 使用append先dry-run再apply；原生Sol/Luna/Astra分包施工及交叉审阅，主控复核关键源码、diff、失败/通过证据、签名身份与实际设备结果。专用API31/35/36 AVD已停止，测试reverse移除，性能用API36网络已恢复；未删除AVD、原始证据或用户数据。artifacts、secure_env、APK、build产物不纳管。
+
+## 2026-09-22T17:20:34+08:00 · 独立模型目录实施与本机集成验收启动
+
+type: maintenance
+scope: ["Nexara", "model-catalog"]
+status: in_progress
+tags: ["model-catalog", "github-pages", "android"]
+continuity: resume
+continuity-key: nexara-independent-model-catalog
+record-fingerprint: 0274663d708a0d0c8370be7d9672b589b91a7a5fcf7ca15d60636c4ee797e85c
+
+### Summary
+用户批准GitHub Actions+Pages独立更新并要求实施。四源云构建、客户端验签缓存、rich descriptor和模型匹配正在集成。
+
+### Changed
+规范与计划已落盘。主控负责缓存更新UI/PDEC/云设置，原生Sol负责发布器及元数据，原生Luna独立审阅信任与缓存边界。tracked工作树原先干净，artifacts保留。
+
+### Validation
+内置models.dev快照刷新成功；既有Python64项通过。发布Agent报告四源13142条4770545字节和脚本98项，主控尚待最终复核。首轮本机Gradle停在TextButton缺import，已修，下一轮等待metadata作用域修复冻结。
+
+### Next
+完成作用域优先级、官方缺失模型补充和独立审阅修复；针对性及全量JVM/Lint/截图/构建；本机模拟器；Secret/Pages部署、公网验签、客户端HTTPS验证；scoped commit/push及DIA/HLG最终收口。
+
+### Risks
+尚未发布Pages；未验证当前源码测试通过。目录签名私钥已生成在忽略secure_env，仅主机CLI可读，公钥已固定在App，不与APK签名共用。不能宣称新目录已上线或全网字段完整。
+
+### DIA
+README/CHANGELOG/ADR/registry/PDEC与运行说明草稿已同步，最终验收数据待补。
+
+### HLG
+使用append dry-run后apply，独立工作流key保留与旧audit修复区分。
