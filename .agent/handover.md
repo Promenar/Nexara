@@ -7432,3 +7432,34 @@ README/CHANGELOG/ADR/registry/PDEC与运行说明草稿已同步，最终验收�
 
 ### HLG
 使用append dry-run后apply，独立工作流key保留与旧audit修复区分。
+
+## 2026-09-22T18:33:08+08:00 · 独立模型目录上线、客户端验收与签名候选交付
+
+type: maintenance
+scope: ["Nexara", "model-catalog"]
+status: done
+tags: ["model-catalog", "github-pages", "android", "signed-apk"]
+continuity: resume
+continuity-key: nexara-independent-model-catalog
+record-fingerprint: 320878f7b2aa07f80b04b296981d1543806565eb464f1c9293acee8065772b92
+
+### Summary
+用户批准的 GitHub Actions+Pages 独立模型目录已上线，客户端更新/身份匹配/供应商字段持久化完成。本机 Android 执行例外保持有效；未调用模型推理。
+
+### Changed
+实现源码已提交推送 6f019e095697f2b93bf25edafe5d70108712ca2b。四个必需公开入口+官方补充；P-256签名信封、固定公钥、单调版本、原子缓存、离线回退；24h检查/1h失败节流/手动更新。rich descriptor流式列表、严格原始ID和作用域、三态能力、供应商与用户覆盖、输入额度备份往返。索引恢复扫描门禁修复了全量回归发现的重复入队与处理状态竞态。Sol负责发布器和元数据，Luna独立审阅，主控集成/复核/云设置/Gradle/ADB/签名。
+
+### Validation
+Python102通过；最终JVM2761项0失败/错误、24条件跳过（2737执行通过）；100截图；Lint0Error/Fatal、527Warning/22Hint；Debug/DeviceTest/正式签名R8构建通过。API31四项通过，API36无网络/过渡失败保留，VALIDATED网络后四项通过：平台签名缓存、真实Pages下载重开、五个网关原始ID匹配、2倍字号更新按钮。正式APK在API31/36同哈希冷安装通过；API31回读签名目录正文和成功投影后checkedAt证明实际R8自动更新。Pages run35715420432成功，head与源码SHA一致，公网独立OpenSSL验签/hash/bytes/count/notice通过；版本1790072429、13144条、4783480字节、SHA 3f53e615fc11db5b8a68a86fc3ec782ad98aaadb77c06ab6c788a55a419bda71。PDEC validate valid/execution_ready且无drift。
+
+### Next
+使用模型管理页更新目录与同步模型；目录纠错以更高版本签名发布。物理真机/完整旧版升级矩阵/推理端点能力与公开APK Release另行验收授权。文档收口提交推送后复核远端SHA，确认native-ui tree仍为824756e630981114db45ebb9394e5f6de4b14954。
+
+### Risks
+13144条包含供应商条目，不代表全网基础模型或字段完备；来源声明不保证实际端点推理/工具能力。API36过渡轮内部下载异常未持久记录，不猜测具体故障类型；网络稳定后未改断言通过。GitHub定时可延迟/长期无活动可停用。Android CI由push自动触发，未将运行中结果当通过。本机API36为生产镜像，无法adb root；R8自动投影磁盘回读证据限定API31。APK25ade4f6f5f2ac60b11a37501c8096f7ec4adff78b10f372bda0a95ccaaeca35、20310520字节、code3/0.2.1-beta、原发行证书；1112源码输入聚合316049d3fbaf9a2ae14a98efdec1a3c044236ec394296f6b67683733dc9d8caa。包内native库与旧审计APK相同，复用ELF静态证据，不代表16KiB设备运行。未执行新APK完整历史升级/性能矩阵。专用AVD和adb reverse已停止/移除。
+
+### DIA
+已同步README、CHANGELOG、ADR-020、许可、PDEC、运行说明、实施计划、registry与发行/审计入口。详细证据docs/release/2026-09-22-model-catalog-validation.md；制品artifacts/model-catalog-20260922/release/nexara-v0.2.1-beta-model-catalog.apk和delivery-manifest.json。私钥与artifacts不纳管。
+
+### HLG
+标准append dry-run后apply，独立连续性key nexara-independent-model-catalog；保留原审计修复与进度记录，不改写历史。

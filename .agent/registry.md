@@ -7,6 +7,7 @@
 - AGENTS.md — 开发者与 AI Agent 协同开发规范
 
 ## 按需文档
+- docs/release/2026-09-22-model-catalog-validation.md — 已上线目录、源码绑定、客户端更新与正式签名 APK 专项证据
 - docs/model-catalog.md — 独立模型目录更新、签名、来源、故障处理与操作说明
 - docs/superpowers/specs/2026-09-22-independent-model-catalog.md — 独立目录传输与数据契约
 - docs/superpowers/plans/2026-09-22-independent-model-catalog.md — 多源发布、客户端更新、身份与字段保留实施计划
