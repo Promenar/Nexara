@@ -1,0 +1,140 @@
+{
+  "schema_version": 1,
+  "project": {
+    "id": "Nexara",
+    "remote": "https://github.com/Promenar/Nexara.git"
+  },
+  "status": "approved",
+  "approval": {
+    "reference": ".pdec/README.md#授权与范围：2026-09-22 用户批准本机 Android 模拟器及既有本地网关测试",
+    "contract_digest": "477d2749c078f744f8d96776ca1c36df0d863466e619e8d66cf2e684e5c378a1"
+  },
+  "targets": {
+    "local-mac": {
+      "os": "macos",
+      "arch": "arm64"
+    }
+  },
+  "operations": {
+    "quality": {
+      "executor": "local-mac",
+      "target_os": "macos",
+      "target_arch": "arm64",
+      "argv": [
+        "./gradlew",
+        "--no-daemon",
+        "--stacktrace",
+        ":app:testDebugUnitTest",
+        ":app:validateDebugScreenshotTest",
+        ":app:lintDebug",
+        ":app:assembleDebug"
+      ],
+      "cwd": "native-ui",
+      "timeout_seconds": 7200,
+      "artifacts": [
+        "native-ui/app/build/reports",
+        "native-ui/app/build/outputs"
+      ],
+      "cross_compile": "Android Gradle Plugin 生成 Android APK，在本机 ARM64 Android 模拟器验证",
+      "verification": "记录 Android API、ABI、序列号、测试报告和 APK SHA-256"
+    },
+    "targeted-tests": {
+      "executor": "local-mac",
+      "target_os": "macos",
+      "target_arch": "arm64",
+      "argv": [
+        "./gradlew",
+        ":app:testDebugUnitTest"
+      ],
+      "cwd": "native-ui",
+      "timeout_seconds": 7200,
+      "artifacts": [
+        "native-ui/app/build/test-results"
+      ],
+      "cross_compile": "Android Gradle Plugin 生成 Android APK，在本机 ARM64 Android 模拟器验证",
+      "verification": "记录 Android API、ABI、序列号、测试报告和 APK SHA-256"
+    },
+    "device-build": {
+      "executor": "local-mac",
+      "target_os": "linux",
+      "target_arch": "arm64",
+      "argv": [
+        "./gradlew",
+        "-Pnexara.deviceE2e=true",
+        "-Pnexara.deviceE2eAbi=arm64-v8a",
+        ":app:assembleDeviceTest",
+        ":app:assembleDeviceTestAndroidTest",
+        ":mainactivity-e2e:assembleDeviceTest"
+      ],
+      "cwd": "native-ui",
+      "timeout_seconds": 7200,
+      "artifacts": [],
+      "cross_compile": "Android Gradle Plugin 生成 Android APK，在本机 ARM64 Android 模拟器验证",
+      "verification": "记录 Android API、ABI、序列号、测试报告和 APK SHA-256"
+    },
+    "device-test": {
+      "executor": "local-mac",
+      "target_os": "linux",
+      "target_arch": "arm64",
+      "argv": [
+        "env",
+        "NEXARA_DEVICE_E2E_ABI=arm64-v8a",
+        "bash",
+        "scripts/ci/android-device-core-e2e.sh"
+      ],
+      "cwd": ".",
+      "timeout_seconds": 7200,
+      "artifacts": [
+        "artifacts"
+      ],
+      "cross_compile": "Android Gradle Plugin 生成 Android APK，在本机 ARM64 Android 模拟器验证",
+      "verification": "记录 Android API、ABI、序列号、测试报告和 APK SHA-256"
+    },
+    "release-build": {
+      "executor": "local-mac",
+      "target_os": "linux",
+      "target_arch": "arm64",
+      "argv": [
+        "./gradlew",
+        ":app:assembleRelease"
+      ],
+      "cwd": "native-ui",
+      "timeout_seconds": 7200,
+      "artifacts": [
+        "native-ui/app/build/outputs/apk/release"
+      ],
+      "cross_compile": "Android Gradle Plugin 生成 Android APK，在本机 ARM64 Android 模拟器验证",
+      "verification": "记录 Android API、ABI、序列号、测试报告和 APK SHA-256"
+    },
+    "release-verification": {
+      "executor": "local-mac",
+      "target_os": "linux",
+      "target_arch": "arm64",
+      "argv": [
+        "env",
+        "NEXARA_MINIFIED_E2E_ABI=arm64-v8a",
+        "bash",
+        "scripts/ci/android-minified-blackbox-smoke.sh"
+      ],
+      "cwd": ".",
+      "timeout_seconds": 7200,
+      "artifacts": [
+        "artifacts"
+      ],
+      "cross_compile": "Android Gradle Plugin 生成 Android APK，在本机 ARM64 Android 模拟器验证",
+      "verification": "记录 Android API、ABI、序列号、测试报告和 APK SHA-256"
+    }
+  },
+  "deployment": {
+    "enabled": false,
+    "transport": "",
+    "target": "",
+    "approval_required": true,
+    "healthcheck": "",
+    "rollback": ""
+  },
+  "evidence": {
+    "native-ui/gradlew": "ab5c0cad16305af2e619c159c1f58dd68d07fab9c11e36701e109c0277407f7a",
+    "native-ui/gradle/wrapper/gradle-wrapper.properties": "c67b97cdfe41822dbc8dc4614460f4ae0d2eef937d873f4b9011e892b1875c0d"
+  }
+}

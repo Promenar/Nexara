@@ -7,6 +7,10 @@
 - AGENTS.md — 开发者与 AI Agent 协同开发规范
 
 ## 按需文档
+- .pdec/README.md — 用户批准的本机 Android 构建、模拟器、候选验真及聚合网关测试边界
+- .pdec/contract.yaml — 本机开发执行契约及批准摘要
+- docs/superpowers/plans/2026-09-22-audit-completion-repair.md — 审计修复十一项工作包、所有权、依赖与验收
+- docs/audit/20260922-requirements-acceptance.md — 逐需求状态及当前版本证据总账
 - design-qa.md — DocEditor、会话任务进度面板、设置全层级及 Agent 首页身份列表的 MD3/SE 源图、实现对比、视觉复核与自动化验收记录
 - .agent/plans/20260803-se-settings-visual-system.md — 设置首页及二、三、四级页面向 Solid Explorer 连续列表视觉语言收敛的实施与验收计划（底部三按钮导航零改动）
 - docs/superpowers/specs/2026-07-16-nexara-md3-redesign-design.md — Nexara 全站 Material 3 视觉体系重设计契约（方案 3、稳定 M3 基线、Nexara 专属表达、分阶段迁移与 UI 验收）
@@ -30,7 +34,7 @@
 - docs/release/v0.2-beta.md — 2026-07-29 已发布 GitHub prerelease 的历史发行正文
 - docs/release/v0.2-beta-validation.md — 发行事实账本；记录设备/UI/真实 API/分支 CI、本地稳定证书签名 R8 与双版本冷安装证据，并区分待执行的 TalkBack 真机、核心业务人工验收与 tag release workflow
 - docs/release/v0.2.1-beta.md — 当前本地签名候选发行说明、覆盖升级方法与已知边界；不构成 GitHub 发布授权
-- docs/release/v0.2.1-beta-validation.md — 当前候选全量测试、签名、冷装、v0.1→v0.2.1 数据继承与外部门禁事实账本
+- docs/release/v0.2.1-beta-validation.md — 当前候选全量测试、三档冷装、公开单库/双库升级、性能条件、真实网关与外部门禁事实账本
 - docs/PRD.md — 产品需求文档 v2.0（进度已更新至 2026-05-15）
 - docs/ARCHITECTURE_DESIGN.md — 全局架构设计（含 §2.4.1 KG 双模式策略）
 - docs/ARCHITECTURE.md — 架构快速参考（含 ADR 索引，已至 ADR-021）
@@ -38,7 +42,7 @@
 - docs/ADR/ADR-020-layered-model-metadata-registry.md — 分层模型元数据来源、逐字段优先级、离线快照、三态能力、精确匹配、用户覆盖与回滚决策
 - docs/ADR/ADR-021-chat-full-context-documents-and-branching.md — 完整文档消息快照、路由后预算门禁、可靠重试、可回传导出与稳定消息分支决策
 - docs/legal/THIRD_PARTY_NOTICES.md — models.dev 离线模型目录与 Bettbox Material 3 界面转译的来源、固定提交、许可及使用边界
-- docs/IMPLEMENTATION_ANALYSIS.md — 当前实现分析（总体 98%）
+- docs/IMPLEMENTATION_ANALYSIS.md — 当前验收总账入口及历史实现规模、阶段记录
 - docs/DOCUMENT_GOVERNANCE.md — 文档治理方案（v2.0, 2026-05-19 更新）
 - native-ui/AGENTS.md — Kotlin 迁移技术规范（归档参考用）
 

@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-08-26T16:10:54+08:00
+> generated_at: 2026-09-22T15:28:29+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -8,6 +8,7 @@
 
 | continuity-key | continuity | last update | status | scope | title | source |
 | :--- | :---: | :---: | :---: | :--- | :--- | :--- |
+| nexara-audit-completion-repair | waiting | 2026-09-22T15:28:29+08:00 | done | ["Nexara", "native-ui", "audit-repair"] | 审计修复、最终签名候选及本机设备验收完成 | `.agent/handover.md` · `2026-09-22T15:28:29+08:00` · `fp:c45ed0053a` |
 | nexara-physical-device-ui-acceptance | waiting | 2026-08-26T16:10:54+08:00 | done | ["Nexara", "native-ui", "release"] | Bettbox 分组边界与 Agent 首页减法修复正式包 | `.agent/handover.md` · `2026-08-26T16:10:54+08:00` · `fp:cf09c0dcb0` |
 | v0.2-beta-release-readiness | waiting | 2026-07-29T12:29:30+08:00 | done | ["nexara", "v0.2-beta-release-readiness"] | v0.2-beta SSH 签名标签与 GitHub prerelease 发布闭环 | `.agent/handover.md` · `2026-07-29T12:29:30+08:00` · `fp:274e812f49` |
 | v0.2.1-beta-release-followup | waiting | 2026-08-26T12:23:48+08:00 | done | ["Nexara", "native-ui", "release"] | 根页面与会话可靠性全量调整及签名 APK 交付 | `.agent/handover.md` · `2026-08-26T12:23:48+08:00` · `fp:ddf8f9f0bf` |
@@ -16,16 +17,13 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
-| 2026-08-26T16:10:54+08:00 | iso | done | waiting | ["Nexara", "native-ui", "release"] | ["material3", "bettbox", "settings", "agent-hub", "apk"] | Bettbox 分组边界与 Agent 首页减法修复正式包 | `.agent/handover.md` · `2026-08-26T16:10:54+08:00` · `fp:cf09c0dcb0` |
-| 2026-08-26T15:41:44+08:00 | iso | done | none | ["native-ui", "settings", "agent-hub", "sessions", "navigation", "release"] | ["bettbox", "material3", "settings", "navigation", "apk"] | Bettbox 分组面全层级迁移与底栏波纹裁切 | `.agent/handover.md` · `2026-08-26T15:41:44+08:00` · `fp:d04bf0df7b` |
-| 2026-08-26T13:34:50+08:00 | iso | done | none | ["native-ui", "android-release", "bettbox-visual-baseline"] | ["apk", "release", "signing", "r8", "checksum"] | Bettbox 视觉基线正式签名 APK 构建与验真 | `.agent/handover.md` · `2026-08-26T13:34:50+08:00` · `fp:346e63fe85` |
-| 2026-08-26T13:26:39+08:00 | iso | done | none | ["native-ui", "settings", "navigation", "theme"] | ["android", "compose", "material3", "bettbox", "visual-regression"] | Bettbox 开源 Material 3 视觉基线迁移完成 | `.agent/handover.md` · `2026-08-26T13:26:39+08:00` · `fp:9b87d4d28f` |
-| 2026-08-26T12:23:48+08:00 | iso | done | waiting | ["Nexara", "native-ui", "release"] | ["material3", "session", "provider", "diagnostics", "media", "release-apk"] | 根页面与会话可靠性全量调整及签名 APK 交付 | `.agent/handover.md` · `2026-08-26T12:23:48+08:00` · `fp:ddf8f9f0bf` |
-| 2026-08-26T10:57:07+08:00 | iso | done | waiting | ["Nexara", "native-ui", "v0.2.1-beta-release"] | ["agent-avatar", "room-persistence", "generation-error", "material3", "android-release"] | Agent 内置头像持久化与会话错误提示去重 | `.agent/handover.md` · `2026-08-26T10:57:07+08:00` · `fp:579220f936` |
-| 2026-08-26T10:02:35+08:00 | iso | done | waiting | ["Nexara", "native-ui", "v0.2.1-beta-release"] | ["provider", "message-deletion", "material3", "haptics", "streaming", "android-release"] | 真机 Provider 恢复、会话交互修复与签名 APK 交付 | `.agent/handover.md` · `2026-08-26T10:02:35+08:00` · `fp:a79f02720f` |
-| 2026-08-25T17:32:16+08:00 | iso | done | waiting | ["Nexara", "native-ui", "v0.2.1-beta-release"] | ["agent-avatar", "room-persistence", "material3", "android-release", "data-inheritance"] | Agent 头像持久化与首页 Material 3 身份列表修复 | `.agent/handover.md` · `2026-08-25T17:32:16+08:00` · `fp:2a77a16ca1` |
-| 2026-08-25T17:02:13+08:00 | iso | done | waiting | ["Nexara", "native-ui", "v0.2.1-beta-release"] | ["avatar", "image-crop", "material3", "android-release", "data-inheritance"] | 头像连续替换与统一裁剪流程修复并交付签名 APK | `.agent/handover.md` · `2026-08-25T17:02:13+08:00` · `fp:31b55a42b4` |
-| 2026-08-25T12:39:49+08:00 | iso | done | waiting | ["Nexara", "native-ui", "v0.2.1-beta-release"] | ["tools", "workspace", "database-migration", "android-release", "data-inheritance"] | v0.2.1-beta 工具链、工作区与覆盖升级修复及签名 APK 交付 | `.agent/handover.md` · `2026-08-25T12:39:49+08:00` · `fp:aa12ccf813` |
+| 2026-09-22T15:28:29+08:00 | iso | done | waiting | ["Nexara", "native-ui", "audit-repair"] | ["audit", "android", "release", "performance"] | 审计修复、最终签名候选及本机设备验收完成 | `.agent/handover.md` · `2026-09-22T15:28:29+08:00` · `fp:c45ed0053a` |
+| 2026-09-22T14:23:25+08:00 | iso | in-progress | resume | ["Nexara", "native-ui", "audit-repair"] | ["audit", "android", "performance", "release"] | 签名覆盖升级与编辑器性能未关闭项 | `.agent/handover.md` · `2026-09-22T14:23:25+08:00` · `fp:ca4b9facf2` |
+| 2026-09-22T13:45:34+08:00 | iso | in-progress | resume | ["Nexara", "native-ui", "audit-repair"] | ["audit", "android", "dual-database", "release"] | 签名候选与API31/35/36设备回归验真 | `.agent/handover.md` · `2026-09-22T13:45:34+08:00` · `fp:a739bce619` |
+| 2026-09-22T13:05:00+08:00 | iso | in-progress | resume | ["Nexara", "native-ui", "audit-repair"] | ["audit", "android", "dual-database", "gateway"] | 全量质量门禁通过及最终边界修复交接 | `.agent/handover.md` · `2026-09-22T13:05:00+08:00` · `fp:2ffbe48a92` |
+| 2026-09-22T12:04:56+08:00 | iso | in-progress | resume | ["Nexara", "native-ui", "audit-repair"] | ["audit", "android", "dual-database", "gateway"] | 审计修复设备证据及完整数据恢复剩余边界 | `.agent/handover.md` · `2026-09-22T12:04:56+08:00` · `fp:e1b9ace81a` |
+| 2026-09-22T11:10:24+08:00 | iso | in-progress | resume | ["Nexara", "native-ui", "audit-repair"] | ["audit", "android", "dual-database", "gateway"] | 审计修复中期证据与Android身份平台限制 | `.agent/handover.md` · `2026-09-22T11:10:24+08:00` · `fp:01458ccc4e` |
+| 2026-09-22T10:18:09+08:00 | iso | in-progress | resume | ["Nexara", "native-ui", "audit-repair"] | ["audit", "pdec", "android", "gateway"] | 审计修复计划批准及本机Android验证启动 | `.agent/handover.md` · `2026-09-22T10:18:09+08:00` · `fp:cfde62c9fe` |
 
 ## Undated Records
 

@@ -7184,3 +7184,220 @@ BettboxListGroup 改为无描边填充面；记忆设置拆为预设、检索参
 
 ### HLG
 通过标准 append dry-run 与 apply 追加本记录并重建索引。
+
+## 2026-09-22T10:18:09+08:00 · 审计修复计划批准及本机Android验证启动
+
+type: maintenance
+scope: ["Nexara", "native-ui", "audit-repair"]
+status: in-progress
+tags: ["audit", "pdec", "android", "gateway"]
+continuity: resume
+continuity-key: nexara-audit-completion-repair
+record-fingerprint: cfde62c9fe3da45b2b0d70f8f09b3e550e04bd9a2913e137c7889ddf4a7981ec
+
+### Summary
+用户批准十一项修复计划，明确PDEC使用本机Android模拟器，授权无密钥127.0.0.1:1337五个指定模型的有界真实API测试。
+
+### Changed
+新增本机PDEC契约、十一包执行计划、逐需求验收总账与registry入口。导入、搜索/目录、工作区恢复分配不重叠源码范围，Gradle/设备/共享文档主控独占。
+
+### Validation
+本机macOS arm64、JDK21.0.12、Gradle9.5.0；PDEC approved/execution_ready=true；网关模型目录可见5个指定ID。专用Nexara_Audit_API_35已启动，emulator-5554/API35/arm64-v8a，adb reverse1337已建立。行为RED复现中文采样、短读、查询语义、取消传播；工作区17项中新增2项真实行为失败，稳定不同key夹具通过。尚无GREEN或发行通过结论。
+
+### Next
+完成各包GREEN和独立审阅，双库恢复快照/映射/发布与启动入口，运行全量本机门禁及同哈希APK验收。
+
+### Risks
+工作区同key替换与目录新增内容恢复可达性待真实Android验证。双库现有备份restore会清理版本和旧roots，不能直接复用覆盖；旧源数据必须保留。真实用户数据不操作；公开发布未授权。
+
+### DIA
+已登记PDEC、计划及验收总账；README/CHANGELOG/发行账本随验证结果同步。
+
+### HLG
+按标准append记录批准范围与恢复线索；既有artifacts/未跟踪文件不纳管。
+
+## 2026-09-22T11:10:24+08:00 · 审计修复中期证据与Android身份平台限制
+
+type: maintenance
+scope: ["Nexara", "native-ui", "audit-repair"]
+status: in-progress
+tags: ["audit", "android", "dual-database", "gateway"]
+continuity: resume
+continuity-key: nexara-audit-completion-repair
+record-fingerprint: 01458ccc4e119c5ecce787051d52b6865b2b5ad8c406ba2f6a56d6da8ce3bf08
+
+### Summary
+十一项计划在本机实施，未形成最终发行候选。保持当前B-native-refactor分支；未提交推送。
+
+### Changed
+导入UTF8/HTML、搜索语义/取消、模型目录测试已实现；工作区创建恢复与双库恢复实施中。双库涉及公开v17+v2及内部v17+v5，使用来源档案、受认证journal、复制迁移与明确恢复按钮。共享文档和构建由主控维护。
+
+### Validation
+wave1-verify5定向JVM217项零失败零跳过，含快照23项；Python脚本93项通过。真实公开APK空库schema已提取并通过v17/v2到v18迁移。导入预算缺陷有效RED后21项通过。设备build2 ARM64成功；API35工作区9项7通过2失败，失败为Os.link EACCES。AOSP SELinux禁止普通应用hardlink；FD xattr小JNI探针已编译但待设备验证。最新网关10项6通过4失败：DeepSeek/Luna文本与工具通过，Gemini文本通过但工具失败，MiniMax空答/工具失败；SenseNova第二轮工具定义遗漏已修夹具待验。
+
+### Next
+先使当前生产代码编译稳定并运行FD xattr设备探针；通过后集成W02身份实现并独立审阅。W08补fullgraph/故障注入/公开17+2设备完整恢复；保持已有17+18无journal正常重启。完成全量JVM/截图/Lint、API31/35/36、性能、签名同哈希APK/升级及最终DIA/HLG/Git。
+
+### Risks
+工作树进行中，单项GREEN不代表集成通过。W08编译和语义仍在收敛；公开17单库升级会保留源，不能把下次17+18当未知双库阻断。快照与发布必须完整身份/字节/目录核验。网关调用使用合成数据，原生厂商和物理TalkBack未验证。
+
+### DIA
+PDEC/计划/需求总账已纳入registry；README/CHANGELOG/发行验证文档仍待最终结果。
+
+### HLG
+按append记录中期风险及恢复入口；artifacts/和secure_env/禁止纳管。
+
+## 2026-09-22T12:04:56+08:00 · 审计修复设备证据及完整数据恢复剩余边界
+
+type: maintenance
+scope: ["Nexara", "native-ui", "audit-repair"]
+status: in-progress
+tags: ["audit", "android", "dual-database", "gateway"]
+continuity: resume
+continuity-key: nexara-audit-completion-repair
+record-fingerprint: e1b9ace81a82692bec500e4bfd4fd51daf57e502c4f6bc3311d5d667b03337bc
+
+### Summary
+十一工作包继续本机实施；B-native-refactor未提交推送，当前不是可发行候选。专用API35模拟器运行，API31/36专用AVD已创建未启动。
+
+### Changed
+工作区FD xattr已取代Android不允许的hardlink，独审后补renameat2 no-replace和目录FD创建；Sol补双库全graph映射、禁止自动重放索引hold、旧附件显式打开、真实工作区发布与新身份绑定；Astra维护Snapshot/Probe/W02，Luna独审及HTML表格修复。主控补OpenAI可选null合同、DOCX sniff实际解压64MiB预算、真实网关仅结构计数诊断。
+
+### Validation
+中间定向JVM368项0失败0跳过；协议139项0失败13既有跳过；Node49、Python93及CI Python50通过。API35文件身份10、快照9、公开17+2/内部17+5恢复2、迁移中断1、PDF/DOCX3通过；SourceProbe WAL-only清理1项失败已修待验。boundaries-red-gemini有效RED45项4失败（DOCX、两协议空choices错误usage、HTML块单元格），生产修复落盘待GREEN。Gemini文本通过、工具missing_finish；MiniMax直接HTTP也返回空文本/空工具；DeepSeek/SenseNova/Luna此前两轮工具通过。
+
+### Next
+等待Sol/Astra共同compile-ready，运行边界GREEN、全graph/indexhold/LegacyAttachment/工作区测试以及新设备APK。含workspace物理文件必须恢复→adoptAll→Repository读取→backup export，不能以无workspace夹具代替。再全量JVM/截图/Lint、API31/35/36、固定API36 hostGPU性能、正式签名APK冷装/升级/混淆、DIA/HLG与scoped commit/push。
+
+### Risks
+W08原发布noBackup路径不符合现有trustroot，且复制旧rootmarker绑定旧inode；正在收敛到既有session_workspaces合法路径和新物理身份。旧附件payload曾仅保全无UI，现补有界只读入口；必须拒绝数据库/偏好/源archive路径。W02隔离后最终unlink依赖私有operation与root锁排他，不能宣称Linux按inode条件删除。所有GREEN只是不同中间工作树，尚无当前签名APK。
+
+### DIA
+更新发行验证账本头为REPAIR-IN-PROGRESS并隔离历史状态；PDEC/计划/总账/registry已落盘，README与CHANGELOG待终态。
+
+### HLG
+按append记录继续恢复入口；原始证据保存在artifacts不纳管，秘密绝不回显。
+
+## 2026-09-22T13:05:00+08:00 · 全量质量门禁通过及最终边界修复交接
+
+type: maintenance
+scope: ["Nexara", "native-ui", "audit-repair"]
+status: in-progress
+tags: ["audit", "android", "dual-database", "gateway"]
+continuity: resume
+continuity-key: nexara-audit-completion-repair
+record-fingerprint: 2ffbe48a929042c4e17c3fae77fe4c7d892796dcce69c7cb53054d90845657ff
+
+### Summary
+B-native-refactor继续实施已批准十一工作包；尚未commit/push或生成当前签名APK。用户授权本机Android模拟器与五模型合成真实调用，未授权公开发布。
+
+### Changed
+恢复工作区发布到files/workspaces唯一目录，新marker及候选根hash；精确资产发布到files/recovered-assets；current及legacy路径一次映射；归档意图在复制前持久化。RAG为v17无Session合成系统入口，双侧提供Material3来源切换；默认分享入口保持固定Session。旧附件显式读取、内容hash复用缓存16项/64MiB、32条清单上限。CI新增工作区恢复/附件/来源切换/分享/文件导航。
+
+### Validation
+audit-20260922-clean-quality.log：clean后完整JVM2712项、0失败、24跳过（既有14及显式网关10），Lint/debugAPK/blackboxfixture构建通过。截图100项0错误0失败0跳过，原报告与actual保留在artifacts/audit-20260922-preclean-evidence。API35 build11 recovery-attachment-device为44项通过，但晚于该build的selected资产/RAG/workspace/新cache还未设备验证。真实网关设备文本5项中4通过、MiniMax空文本失败；Gemini间歇HTTP200错误事件流证据保留。
+
+### Next
+Sol收敛最后一批working副本受信app根别名规范化及真实系统alias成功/子目录symlink拒绝fixture、cache独立字节预算；Luna新增真实ContentResolver中文UTF8/HTML导入和生产提取/调度设备fixture。root已取得DOCX标志在前绕过尾部预算RED（25项1失败），修复为完整预检64MiB/2048条并补精确边界，待GREEN。全文件冻结后统一JVM+device编译，再API35完整、API31 minimum、API36完整及性能，正式签名同hash冷装/覆盖升级/混淆验真，最终DIA/HLG与scoped commit/push。
+
+### Risks
+RAG alias仅保留声明path还不足：Snapshot前缀边界仍拒绝/data/data与/data/user拼法，正在仅working副本规范可信系统app锚，禁止任意子路径realpath或放宽SDS。Lint首次分析时测试仍编辑而出现FIR异常；全文件冻结+clean后成功，后续构建期间全部文件冻结。PRD性能/召回/覆盖率与专项门禁分账，不能据已有测试宣称全指标通过。
+
+### DIA
+README/CHANGELOG/发行验证账本已标集成中，新增验收总账保留PRD未验指标与W02私有operation/root-lock信任边界；最终结果待同步。
+
+### HLG
+按append记录。API35专用emulator-5554仍运行；31/36专用AVD未启动，原AVD未修改。artifacts不纳管。root新增SessionLoadPerformanceTest及本机性能证据脚本尚未执行。
+
+## 2026-09-22T13:45:34+08:00 · 签名候选与API31/35/36设备回归验真
+
+type: maintenance
+scope: ["Nexara", "native-ui", "audit-repair"]
+status: in-progress
+tags: ["audit", "android", "dual-database", "release"]
+continuity: resume
+continuity-key: nexara-audit-completion-repair
+record-fingerprint: a739bce6197e4478cdcadd43baa9c4d1fd49587bb08a475731e5d7c19f52d6cb
+
+### Summary
+已批准审计修复完成源码集成，尚未提交推送。用户授权本机模拟器和五模型合成测试，公开发布未授权。
+
+### Changed
+工作区别名仅在整根sameFile后规范化；备份读取重拼现有可信base路径且保持journal baseIndex身份合同；DOCX完整扫描尾部并限制64MiB/2048条。API31冷启动检查冒号/等号格式误报已修脚本并增加正负行为测试，APK无需重建。
+
+### Validation
+最终JVM 2715项、0失败、24跳过；Lint 0 Error/Fatal、527 Warning、22 Hint；100截图通过。API35 full与API36 full分别36正常阶段116断言，另2预期进程终止阶段；API31 minimum 14阶段76断言。工作区恢复6/附件5/来源选择2等均通过，Astra复核关闭alias与backup Important。签名APK 20255320字节，SHA256=4677d3ee3c800918105cd2ba9a2e4c8682e5b19cc67da57c596094f66cfac055；包名native、版本3/0.2.1-beta、公开signer及zipalign通过。1099个native输入冻结SHA eed5effe35793c134f97a6d8d12397365cba36ef9f6b1da4881e25082dc77308，构建后字节未变。API36同hash冷安装通过，ADB COLD 243ms只证明显示耗时。
+
+### Next
+当前仅Nexara_Audit_API_36 emulator-5554运行，启动使用-no-window -no-snapshot -gpu host；签名包blackbox session80069执行中。随后Provider性能2有效轮、DocEditor6用例、SessionLoad2用例；然后API35实际公开v01单库和v01-v02双库升级，最后API31重跑修复脚本。Sol准备三段升级合成fixture，不使用ADB或修改native源码。最终更新需求总账/计划/验证记录/README/CHANGELOG并HLG、scoped commit/push。
+
+### Risks
+真实网关DeepSeek/SenseNova/Luna文本+双轮工具通过；Gemini文本通过但工具错误事件，MiniMax空响应，不能记五模型全绿。64位ELF LOAD/zipalign通过；3项RELRO公式告警经Astra证实取整不覆盖可写数据，不升级依赖；API36实测PAGE_SIZE4096，不能声称16KiB运行通过。性能、物理TalkBack/OEM、原生厂商API/召回率/覆盖率分账。
+
+### DIA
+架构及IMPLEMENTATION_ANALYSIS已同步当前边界，README/CHANGELOG/计划/验收总账/发行验证当前段待最终回填；历史记录保留不继承。
+
+### HLG
+按append记录；artifacts/secure_env/APK/构建产物不纳管。专用API31/35已停止，原AVD未变。
+
+## 2026-09-22T14:23:25+08:00 · 签名覆盖升级与编辑器性能未关闭项
+
+type: maintenance
+scope: ["Nexara", "native-ui", "audit-repair"]
+status: in-progress
+tags: ["audit", "android", "performance", "release"]
+continuity: resume
+continuity-key: nexara-audit-completion-repair
+record-fingerprint: ca4b9facf2161481164fcf2e5df10e282c6cce00989ccd307948be5f9b8ccb66
+
+### Summary
+审计修复仍在最终验收，未commit/push。正式APK hash保持4677d3ee3c800918105cd2ba9a2e4c8682e5b19cc67da57c596094f66cfac055；最新签名复构建成功且字节完全相同。仅晚于原source-inputs快照的native差异为DocEditorPerformanceTest import v2测试规则。
+
+### Changed
+API31 release smoke解析冒号/等号已修并行为测试35项通过；API31实际重验尚待。DocEditorPerformance旧junit4 UnconfinedTestDispatcher触发Markdown异步结果→worker重组→SnapshotStateObserver首错，detach仅后果；Astra本地1.11.3 AAR与官方文档复核后根Agent仅切换junit4.v2，与既有DocEditorInteraction一致。
+
+### Validation
+API36 full116/正常36阶段+预期死亡2通过；同hashAPI35/36冷装通过，ADB COLD分别1440/243ms（不是业务完整就绪）。API36正式包blackbox冷启动/PDF/DOCX/文本索引失败重试通过。API35公开v01→当前单库覆盖升级脚本PASS，firstInstallTime2026-09-22 14:21:35未变、WAL/业务/工作区/偏好哨兵回读通过。SessionLoad2项通过：1000条最大11.91ms、2000条最大55.20ms（重开Room连接+反序列化，非OS冷缓存/UI）。Provider模型列表离线hostGPU API36取得2有效轮（目录performance-api36-3 run1与run3），最差p95=35ms/max=69ms/PSS增量3341KiB；无效样本均保留，不挑绿。DocEditorInteraction33项通过。
+
+### Next
+Astra只读分析 artifacts/audit-20260922-editor-trace-2/editor.pftrace（70秒64MiB ring，须检查早期窗口丢失），工具 artifacts/audit-20260922-trace-processor v58.2 macarm64按官方SHA与大小验真；允许仅trace目录SQL/报告，不调用ADB或改源码。根AgentAPI35三段升级辅助脚本session47109正在运行，evidence=artifacts/audit-20260922-dual-release-run-01；脚本已根复核修ADB shell引用/MCS、补附件点击cache和活动工作区字节/hash。完成三段后API31同hash冷装重跑；编辑器3RED需诊断收敛，可能回API36。最终DIA/HLG/Git未完成。
+
+### Risks
+v2消除Compose异常，但完整6项性能仍3FAIL：line-count p95=51ms、logical-line p95=51ms、content-length max155ms，禁止放宽50/150阈值或按delay分项拒样。单独logical重跑也失败；后续Perfetto采样5轮43/40/28/26/29ms但方差0.371失败，不能当PASS。Astra确认@Before force-stop服务会立即重启，但无CPU因果证据，不能把3RED归为污染。
+
+### DIA
+计划/需求总账/发行验证/README/CHANGELOG当前段待最终回填；架构与IMPLEMENTATION_ANALYSIS已同步；不得把模型服务失败、性能失败、原生API未验和真机未验写全绿。
+
+### HLG
+当前仅专用Nexara_Audit_API_35 emulator-5554运行，hostGPU；API36停止前已重新开启wifi/data。Provider测试期间专用36离线隔离，未改原AVD。artifacts/secure_env不纳管；脚本、trace工具和证据仅在artifacts。
+
+## 2026-09-22T15:28:29+08:00 · 审计修复、最终签名候选及本机设备验收完成
+
+type: maintenance
+scope: ["Nexara", "native-ui", "audit-repair"]
+status: done
+tags: ["audit", "android", "release", "performance"]
+continuity: waiting
+continuity-key: nexara-audit-completion-repair
+record-fingerprint: c45ed0053a8226ae98273446123f6d10c6b60b6b30e39cd46ab770d5befbc25f
+
+### Summary
+已完成批准的十一项工作包中审计修复及本机可执行验收，交付范围为分支源码、文档和本地签名候选。真实网关两模型服务失败、物理设备和未测PRD指标保持分账，不宣称全部功能或零BUG。版本化由纳管本记录的Git提交承担；交付manifest记录最终提交、native-ui tree与远端一致性。
+
+### Changed
+文件FD随机归属证明、原子禁止覆盖和身份复用恢复；UTF-8边界/短读/全文校验、DOCX完整资源预检、离线HTML与Unicode分块；搜索语义与取消；目录fixture/资产不变量；双库来源归档、关联映射、真实工作区新身份、合法旧附件入口、两侧知识库与禁止自动外部重放；OpenAI兼容可空字段。编辑器稳定Row面板保留非末尾选区，性能测试切换Compose v2规则。PDEC已按用户指示采用本机Android执行例外。
+
+### Validation
+最终JVM2715项0失败/错误、24条件跳过；100截图；Lint0Error/Fatal、527Warning/22Hint。API31 minimum76、API35 full116+2预期进程终止复用未变领域；API36最终full116+2通过。最终编辑器API31/35/36各34项通过，旧选区(8,23)归零RED留存。列表两有效轮最差p95 35ms/max69/PSS+3341KiB，90histogram独立复算；Room1000/2000条最大11.91/55.20ms。编辑器最终无后台分析6/6，最差p95 36/max68/PSS+992，固定verify测试包/run-from-apk应用；之前RED与疑似导出重叠批次全部保留。签名APK aa362031bc9b731f061acb4760ee8160678c517f6d465f3e71f8db8dbd135b66，20255320字节，code3/0.2.1-beta，同发行证书，敏感内容/R8/64位ELF/zipalign通过。三API同哈希冷装并回拉逐字节一致，ADB显示179/196/205ms；API36正式包黑盒通过；API35公开v01单库及v01→v02→候选三段双库实际升级通过，事务41bc5203-4037-4835-b1f2-362f9befa731，两侧业务/附件cache/工作区/归档/源库/安装时间回读。
+
+### Next
+用户可评阅本地候选和docs/audit/20260922-requirements-acceptance.md。网关维护方定位Gemini工具错误和MiniMax空响应后执行原夹具；物理TalkBack/OEM/IME、16KiB运行、原生服务及RAG/性能/覆盖率等产品指标按计划独立验收。公开tag/PR/Release未授权。
+
+### Risks
+DeepSeek/SenseNova/Luna文本及两轮工具通过；Gemini文本通过但工具错误事件，MiniMax空响应，不能算五模型全绿。性能为deviceTest固定环境证据，不是首次安装普遍稳定性，不认定speed AOT或性能因果；Room非OS冷缓存/UI首屏。API31/35核心证据早于最终编辑器修改，仅复用输入未变领域，三API编辑器及新APK分别实测。PAGE_SIZE4096，静态16KiB对齐不等于运行验证。GGUF、本地推理、自动备份调度、重启续传、多会话并行与无人值守保持延期。真实用户资料未恢复，生产发布未执行。
+
+### DIA
+已同步README、CHANGELOG、架构、实现状态入口、发行说明、发行验证、需求总账、十一包计划、PDEC及registry；历史正文保留明确范围，不继承旧PASS。最终输入1099文件聚合SHA77a6d2b32585937cdba8887c8d6962090e011286b31e3abe32c3387b4c54ca80，只有DocEditorScreen与两个编辑器设备测试晚于旧候选。
+
+### HLG
+使用append先dry-run再apply；原生Sol/Luna/Astra分包施工及交叉审阅，主控复核关键源码、diff、失败/通过证据、签名身份与实际设备结果。专用API31/35/36 AVD已停止，测试reverse移除，性能用API36网络已恢复；未删除AVD、原始证据或用户数据。artifacts、secure_env、APK、build产物不纳管。
