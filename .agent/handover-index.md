@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-09-22T18:33:08+08:00
+> generated_at: 2026-09-23T14:19:37+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -18,6 +18,8 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-09-23T14:19:37+08:00 | iso | done | none | ["nexara-native-ui"] | ["visual-audit", "screenshot", "ui-automation"] | 全页面视觉审计完成（四层审计+报告交付） | `.agent/handover.md` · `2026-09-23T14:19:37+08:00` · `fp:bc0e414755` |
+| 2026-09-23T11:42:49+08:00 | iso | in-progress | resume | ["nexara-native-ui"] | ["visual-audit", "screenshot", "ui-automation"] | 全页面视觉审计开工（定时任务 11:40 触发） | `.agent/handover.md` · `2026-09-23T11:42:49+08:00` · `fp:682d81cea2` |
 | 2026-09-22T18:33:08+08:00 | iso | done | resume | ["Nexara", "model-catalog"] | ["model-catalog", "github-pages", "android", "signed-apk"] | 独立模型目录上线、客户端验收与签名候选交付 | `.agent/handover.md` · `2026-09-22T18:33:08+08:00` · `fp:320878f7b2` |
 | 2026-09-22T17:20:34+08:00 | iso | in_progress | resume | ["Nexara", "model-catalog"] | ["model-catalog", "github-pages", "android"] | 独立模型目录实施与本机集成验收启动 | `.agent/handover.md` · `2026-09-22T17:20:34+08:00` · `fp:0274663d70` |
 | 2026-09-22T15:28:29+08:00 | iso | done | waiting | ["Nexara", "native-ui", "audit-repair"] | ["audit", "android", "release", "performance"] | 审计修复、最终签名候选及本机设备验收完成 | `.agent/handover.md` · `2026-09-22T15:28:29+08:00` · `fp:c45ed0053a` |

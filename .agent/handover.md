@@ -7463,3 +7463,65 @@ Python102通过；最终JVM2761项0失败/错误、24条件跳过（2737执行�
 
 ### HLG
 标准append dry-run后apply，独立连续性key nexara-independent-model-catalog；保留原审计修复与进度记录，不改写历史。
+
+## 2026-09-23T11:42:49+08:00 · 全页面视觉审计开工（定时任务 11:40 触发）
+
+type: task
+scope: ["nexara-native-ui"]
+status: in-progress
+tags: ["visual-audit", "screenshot", "ui-automation"]
+continuity: resume
+continuity-key: visual-audit-2026-09
+record-fingerprint: 682d81cea2885732af907c6e858846a8d28029ff4ba2a8bc188c0ed93ac7f74e
+
+### Summary
+按已批准计划执行全页面视觉审计：约110-125张截图（Pixel 7 1080x2400@420dpi，明暗双主题，空态/有数据/错误/加载真实态），四层审计（代码token扫描/UI bounds度量/像素测量/视觉子代理批阅）。网关与SearXNG已实测可用，5个免费模型ID白名单约束。计划文件 .agent/tmp-agent-reports/visual-audit-plan.md。
+
+### Changed
+Phase 0 已完成：模拟器 Nexara_Audit_API_35 启动（emulator-5554）；font_scale=1.0、状态栏Demo Mode已应用；审计目录 native-ui/build/audit/ 已建。密钥存放 ~/.nexara-audit-test-key（0600，不入库不回显）。
+
+### Validation
+adb settings get system font_scale 返回 1.0；模拟器 device 状态已确认。
+
+### Next
+构建安装 debug APK → Phase 1 Onboarding走通 → Phase 2 数据种子 → Phase 3 暗色全量截图+bounds → Phase 4 错误态 → Phase 5 空态 → Phase 6 亮色回归 → Phase 7 四层审计+docs/visual-audit-2026-09.md+DIA+提交推送+删除密钥文件。
+
+### Risks
+模拟器内 Tailscale 域名解析待首跑验证（不行则换 tailnet IP）；UI 自动化在 Onboarding 自定义流程上可能需要现场适配；密钥一天有效，需当日完成真实态截图。
+
+### DIA
+审计期间无代码变更；最终报告 docs/visual-audit-2026-09.md 与 design-qa.md 索引变更在 Phase 7 完成 DIA 声明。
+
+### HLG
+本记录为开工记录，continuity: resume（continuity_key: visual-audit-2026-09），各阶段完成后追加更新。
+
+## 2026-09-23T14:19:37+08:00 · 全页面视觉审计完成（四层审计+报告交付）
+
+type: task
+scope: ["nexara-native-ui"]
+status: done
+tags: ["visual-audit", "screenshot", "ui-automation"]
+continuity: none
+continuity-key: visual-audit-2026-09
+record-fingerprint: bc0e4147555855d98927da19642bfba23470180b358df03f2819717385bd71e1
+
+### Summary
+完成约96张截图（暗色主体+亮色回归12张+空态5种）与四层审计：L1 token 扫描 1519 处违规/78 文件；L2 触控目标 12 处小于48dp；L3 背景色基线（暗 #131315/亮 #FBF8FB）与按钮圆角测量；L4 视觉批阅 14 条。报告 docs/visual-audit-2026-09.md（4×P0：ECharts/Mermaid 中文乱码、LaTeX 未渲染、image_generation 工具未暴露；10×P1；9×P2）。
+
+### Changed
+新增 docs/visual-audit-2026-09.md；design-qa.md 顶部加索引；.agent/handover.md 追加开工与收口记录。无源码修改。
+
+### Validation
+全部真实服务调用（chat/流式/工具/embeddings/rerank/SearXNG 均实测 200/成功）；截图与测量数据在 native-ui/build/audit/（不入库）；L1/L2/L3 结果 JSON 与逐条截图证据可复核。
+
+### Next
+修复建议按报告第三节优先级：先修 WebView charset（P0-1/2）→ LaTeX 单 $ 行内（P0-3）→ image_generation 注入排查（P0-4）→ token 治理专项。修复后按报告第四节重拍回归。遗留未覆盖项见报告第二节（生图真实态、KG 有节点态、分享导入弹层等 8 项）。
+
+### Risks
+会话删除失败根因未深查（SessionDeletionUiAction 为薄封装，需查 SessionRepository 删除事务）；onboarding 底色差异需确认是否渐变采样；密钥文件 ~/.nexara-audit-test-key 已删除。
+
+### DIA
+已同步 docs/visual-audit-2026-09.md（新增）与 design-qa.md（索引）；其余无影响。
+
+### HLG
+本记录为收口记录，continuity: none；审计工作流闭环。
