@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-09-23T15:15:09+08:00
+> generated_at: 2026-09-24T02:25:43+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -18,6 +18,7 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-09-24T02:25:43+08:00 | iso | done | none | ["native-ui"] | ["ui-redesign", "model-picker", "visual-audit-followup"] | 模型选择列表重设计为紧凑商业级行密度 | `.agent/handover.md` · `2026-09-24T02:25:43+08:00` · `fp:bc4607f723` |
 | 2026-09-23T15:15:09+08:00 | iso | done | none | ["native-ui", "rendering", "ui-ux"] | ["visual-audit", "utf-8", "latex", "echarts", "mermaid", "a11y", "session-delete"] | 视觉审计缺陷修复与渲染健壮性增强 (P0-P2) | `.agent/handover.md` · `2026-09-23T15:15:09+08:00` · `fp:2e14e0e14a` |
 | 2026-09-23T14:19:37+08:00 | iso | done | none | ["nexara-native-ui"] | ["visual-audit", "screenshot", "ui-automation"] | 全页面视觉审计完成（四层审计+报告交付） | `.agent/handover.md` · `2026-09-23T14:19:37+08:00` · `fp:bc0e414755` |
 | 2026-09-23T11:42:49+08:00 | iso | in-progress | resume | ["nexara-native-ui"] | ["visual-audit", "screenshot", "ui-automation"] | 全页面视觉审计开工（定时任务 11:40 触发） | `.agent/handover.md` · `2026-09-23T11:42:49+08:00` · `fp:682d81cea2` |

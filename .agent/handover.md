@@ -7568,3 +7568,40 @@ WebView 中通过 TextDecoder 解码依赖 Android System WebView 的现代 Java
 
 ### HLG
 已追加视觉审计 P0-P2 修复与全量测试通过事实；无跨会话阻断，continuity 为 none。
+
+## 2026-09-24T02:25:43+08:00 · 模型选择列表重设计为紧凑商业级行密度
+
+type: implementation
+scope: ["native-ui"]
+status: done
+tags: ["ui-redesign", "model-picker", "visual-audit-followup"]
+continuity: none
+record-fingerprint: bc4607f723bfbd8e3a519e00fc84559cc7cd1df83e8c6b6a6978de1c1925f80f
+
+### Summary
+按用户裁决将模型选择列表整体重设计为紧凑商业级行密度：圆形品牌底座 + 14sp 名称 + 11sp 单行元信息 + 圆角选中块，同步降档 Provider 模型页，契约测试与实机三场景截图验收通过。
+
+### Changed
+1. ModelSelectionListItem: 弃用 ListItem 槽位，重写为紧凑自绘行——30dp 圆形品牌底座、名称 titleSmall(14sp) 单行、元信息 labelSmall(11sp) 单行（上下文 · 能力最多 2 项 · 提供方），选中态 14dp 圆角 tonal 高亮块，移除行间分隔线（用户裁决：上一版方块底座与大号能力标签不可接受）。
+2. SessionSettingsSheet/ModelPicker: 模型列表改用 2dp 微间距布局替代 HorizontalDivider，与圆角选中块协调。
+3. ProviderModelsScreen: 卡片行同步降档——Logo 底座 36→32dp、名称 titleMedium→titleSmall 单行、模型 ID 改等宽 labelSmall、能力行 11sp。
+4. ModelPickerMaterialContractTest: 以紧凑自绘行 + 品牌圆标 + 单行元信息契约替换旧 ListItem 槽位断言；能力摘要上限 take(3)→take(2) 对齐既有视觉契约。
+5. CHANGELOG.md: 上轮未发布的中间态条目按当前态原则改写为最终状态；前次漏入库的 P0-4 修复（ImageGenClient/ToolExecutor/ImageGenerationSkill）与胶囊 Logo 透传（ChatScreen）随本轮一并提交。
+
+### Validation
+1. 单元测试: 5 个模型选择相关测试类全部通过（ModelBrandResolverTest/ModelSelectionUiModelTest/ModelPickerMaterialContractTest/DefaultModelsScreenContractTest/SessionSettingsModelFilterTest，BUILD SUCCESSFUL）。
+2. 实机验收: Pixel 7 AVD 1080x2400 截图三场景（会话设置模型列表 / 摘要模型选择器 / Provider 模型页）均为圆形底座 + 紧凑两行 + 无分隔线，选中块圆角无穿线。
+3. 暗色验证说明: cmd uimode 对本应用无效（应用自带主题偏好），暗色正确性由全量 colorScheme 主题色引用保证，无硬编码颜色。
+
+### Next
+1. docs/visual-audit-2026-09.md 选择器相关条目可按新实现回访复核。
+2. 待用户确认新模型列表观感；若仍需调整密度或底座配色再迭代。
+
+### Risks
+元信息行在窄屏长名称场景会省略尾部提供方文本（有意设计，能力信息优先）；能力摘要上限收紧为 2，含更多能力的模型不再全部展示标签。
+
+### DIA
+已同步 CHANGELOG.md；契约测试注释同步更新；无架构/API/协议破坏性变更，无其它文档影响。
+
+### HLG
+已追加本轮记录；无跨会话阻断，continuity 为 none。
