@@ -7525,3 +7525,46 @@ record-fingerprint: bc0e4147555855d98927da19642bfba23470180b358df03f2819717385bd
 
 ### HLG
 本记录为收口记录，continuity: none；审计工作流闭环。
+
+## 2026-09-23T15:15:09+08:00 · 视觉审计缺陷修复与渲染健壮性增强 (P0-P2)
+
+type: maintenance
+scope: ["native-ui", "rendering", "ui-ux"]
+status: done
+tags: ["visual-audit", "utf-8", "latex", "echarts", "mermaid", "a11y", "session-delete"]
+continuity: none
+record-fingerprint: 2e14e0e14a4a4d34df3f52e1e471f7462ca83ad3fe40dd07005684d7354260c2
+
+### Summary
+针对 docs/visual-audit-2026-09.md 视觉审计报告中识别的 14 项问题（涵盖 P0 阻断、P1 体验与 P2 细节）完成修复，全部通过单元测试与回归验证。
+
+### Changed
+1. EChartsRenderer/MermaidRenderer/LatexRenderer: WebView Base64 解码改用 TextDecoder('utf-8') 解决中文乱码。
+2. MarkdownText: 行内 LaTeX 正则收敛为严格边界断言，增加流式结束分段缓存重计算。
+3. SessionToolResolver: 在 legacyEmptySelection 下放行 ToolRisk.EXTERNAL_WRITE (image_generation)。
+4. EChartsRenderer: 隐藏默认 Toolbox 避免遮挡坐标轴与图例。
+5. NexaraMarkdownTheme/CodeBlockHeader/MarkdownText: 代码块标点对比度提升，行号改用 Monospace，消除内边距保证基线对齐。
+6. PipelineBubble: 用户气泡多模态图片容器弹性高度约束 (120dp-240dp) 配合 Crop 裁切。
+7. MermaidRenderer/ColorPickerPanel/CodeBlockHeader: 触控区域扩展至 48dp 无障碍标准。
+8. NexaraApplication: 会话物理工作区不存在时平滑降级为纯数据库清理，确保生成协调器锁正确释放。
+9. UserSettingsHomeScreen: 底部追加留白避免悬浮 Dock 遮挡。
+10. ProviderModelsScreen/ProviderFormScreen: 未知模型能力本地化为通用，Provider 探测失败展示 HTTP 状态码与友好原因。
+11. RagSearchResults/DocEditorScreen/PipelineBubble: RAG 摘要清理 Markdown 标题 # 号，DocEditor 对称左右内边距，模型归属 Badge 允许横向铺开。
+12. 新增 DefaultSessionToolResolverTest 与 RagSearchResultsTest 单元测试，更新 CHANGELOG.md。
+
+### Validation
+1. 单元测试: ./gradlew testDebugUnitTest 顺利通过 (BUILD SUCCESSFUL in 43s, 49 actionable tasks)。
+2. 定向测试: DefaultSessionToolResolverTest 验证空选放行 external_write 工具; RagSearchResultsTest 验证 Markdown 标题前缀剥离与摘要生成。
+3. 文档检查: CHANGELOG.md 已同步本次修复内容。
+
+### Next
+向当前工作分支 B-native-refactor 提交并推送本次纳管代码与文档改动。
+
+### Risks
+WebView 中通过 TextDecoder 解码依赖 Android System WebView 的现代 JavaScript 标准支持（Android 7.0+ 系统 WebView 均已支持 TextDecoder）。
+
+### DIA
+已同步 CHANGELOG.md，无架构/API/协议破坏性变更，无其它文档需要新增或删除。
+
+### HLG
+已追加视觉审计 P0-P2 修复与全量测试通过事实；无跨会话阻断，continuity 为 none。
