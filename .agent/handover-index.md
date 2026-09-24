@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-09-24T20:23:55+08:00
+> generated_at: 2026-09-24T20:38:41+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -18,6 +18,7 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-09-24T20:38:41+08:00 | iso | completed | none | ["native-ui", "components", "chat", "settings", "rag", "ux"] | ["native-ui", "tab-row", "capsule", "homebar", "haptic", "spring"] | 全站页签统一升级 Homebar 全圆胶囊与弹簧触觉设计 | `.agent/handover.md` · `2026-09-24T20:38:41+08:00` · `fp:07547de78b` |
 | 2026-09-24T20:23:55+08:00 | iso | completed | none | ["native-ui", "chat", "session-settings", "ux"] | ["native-ui", "session-settings", "slider", "ux", "flatten"] | 会话设置高级生成参数取消折叠与平铺体验优化 | `.agent/handover.md` · `2026-09-24T20:23:55+08:00` · `fp:c1819b96d7` |
 | 2026-09-24T20:12:56+08:00 | iso | completed | none | ["native-ui", "ui-polish", "rag"] | ["ui", "compose", "visual-polish", "rag", "memory", "empty-state"] | 知识库记忆界面视觉净化与空态体验对齐 | `.agent/handover.md` · `2026-09-24T20:12:56+08:00` · `fp:9df8697700` |
 | 2026-09-24T19:53:13+08:00 | iso | completed | none | ["native-ui", "ui-polish", "rag"] | ["ui", "compose", "visual-polish", "capsule", "haptics", "rag", "homebar"] | 知识库 Tab 页签移植 Homebar 全胶囊与触觉手感 | `.agent/handover.md` · `2026-09-24T19:53:13+08:00` · `fp:304021683c` |

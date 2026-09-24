@@ -7879,3 +7879,33 @@ record-fingerprint: c1819b96d72ca8cdb3870a1724797ca8309872225c0875465b028d25fc8d
 
 ### HLG
 已追加平铺优化与真机验证记录；continuity 为 none，无新增长期规则候选。
+
+## 2026-09-24T20:38:41+08:00 · 全站页签统一升级 Homebar 全圆胶囊与弹簧触觉设计
+
+type: ui-refactor
+scope: ["native-ui", "components", "chat", "settings", "rag", "ux"]
+status: completed
+tags: ["native-ui", "tab-row", "capsule", "homebar", "haptic", "spring"]
+continuity: none
+record-fingerprint: 07547de78b4e155f5ff710286b7a7c52bcb307b34b004a07f3c912c3f0d12576
+
+### Summary
+响应用户对全站页签视觉与手感统一的需求，沉淀通用全圆胶囊 Tab 切换组件 NexaraTabSwitcher 与 NexaraCapsuleTabRow，全面替换会话设置、资源管理器、执行模式、技能管理、RAG 检索详情与 Prompt 编辑器中的传统带线 TabRow 与方块分段器，全站达成 100% Homebar 同构的几何语言与机械震动手感。
+
+### Changed
+新增 `native-ui/app/src/main/java/com/promenar/nexara/ui/common/NexaraTabSwitcher.kt`；重构 SessionSettingsSheet、ResourceExplorerSheet、ExecutionModeSelector、SkillsScreen、RagDetailsSheet、UnifiedPromptEditor 六处页签实现；同步更新 CHANGELOG.md。
+
+### Validation
+全量 JVM 单元与契约测试 2790 项全部通过（0 失败 0 错误）。在 Pixel 7 AVD 模拟器上实机测试并截屏，会话设置 4 页签、资源管理器 2 页签及执行模式选择器滑动与触感均完美符合预期。
+
+### Next
+持续响应用户其它视觉细节打磨或由用户体验新版页签交互。
+
+### Risks
+无破坏性改动。各模块原有 testTag 契约完整保留，语义与无障碍角色（Role.Tab）保持不变。
+
+### DIA
+已同步 CHANGELOG.md；新增通用 UI 组件未改变外部业务架构契约。
+
+### HLG
+已追加全站页签胶囊化重构记录并更新索引；continuity 为 none，无新增长期规则候选。
