@@ -7605,3 +7605,39 @@ record-fingerprint: bc4607f723bfbd8e3a519e00fc84559cc7cd1df83e8c6b6a6978de1c1925
 
 ### HLG
 已追加本轮记录；无跨会话阻断，continuity 为 none。
+
+## 2026-09-24T11:42:12+08:00 · 生成失败态发送按钮恢复机制 + 模拟器真实链路验证
+
+type: implementation
+scope: ["native-ui"]
+status: done
+tags: ["ui-fix", "generation-status", "emulator-network"]
+continuity: none
+record-fingerprint: 2eb26426dd05884c875e5f6869a2dabdd0908b1c1e2ca84faafb002ff74e494c
+
+### Summary
+修复生成失败后发送按钮永久卡失败态的缺陷（输入/点击即确认恢复）；在 Pixel_7 模拟器完成网关真实链路验证：临时 key 鉴权通过、DeepSeek V4 Flash 真实回复 OK；实证覆盖安装（install -r）不丢密钥。
+
+### Changed
+1. ChatViewModel: 新增 acknowledgeGenerationFailure() 与 acknowledgedFailureTaskId/lastFailedTaskId 机制，presentation collect 中失败态若已确认则置 IDLE 且不再覆盖 notice/surface。
+2. ChatScreen: ChatScreenActions 增加 onDismissGenerationError；ChatInputBar/GenerationStatusButton 传递并实现 ERROR 态可点击（点击=确认失败）；composer onTextChange 时若处于 ERROR 自动确认。
+3. ChatRoute: 装配 onDismissGenerationError = chatViewModel::acknowledgeGenerationFailure。
+4. CHANGELOG.md 同步。
+
+### Validation
+1. 单元测试: ui.chat 包全部测试通过（BUILD SUCCESSFUL）。
+2. 实机链路: 模拟器内新 key 鉴权通过（401→429→200 演进均正确透传），DeepSeek V4 Flash 真实回复 OK；Claude Sonnet 4.6 在限制 key 下返回无法处理（符合网关免费模型限制）。
+3. 密钥持久性实证: adb install -r 覆盖安装后 provider key 仍有效（secrets 文件 mtime 不变、请求直接通过鉴权）。
+
+### Next
+1. 网关 429 限流（60 秒窗口）为服务端策略，App 侧错误透传正确；如需可考虑 429 时按钮显示倒计时。
+2. 真机更新请统一覆盖安装同包名 release（versionCode 递增），卸载重装或 debug/release 交替才会丢配置。
+
+### Risks
+GenerationStatus ERROR 确认机制依赖 taskId 对比；若网关对同一请求重发相同 taskId 需再验证。
+
+### DIA
+已同步 CHANGELOG.md；无接口/协议变更。
+
+### HLG
+已追加本轮记录；continuity 为 none。
