@@ -7849,3 +7849,33 @@ record-fingerprint: 9df86977009ce0a35b0ac1b8b99143de0120940a4c9ab9e5d321b0c2d43f
 
 ### HLG
 已通过标准 HLG 脚本向 .agent/handover.md 追加本轮交付记录并自动更新索引；continuity 为 none。
+
+## 2026-09-24T20:23:55+08:00 · 会话设置高级生成参数取消折叠与平铺体验优化
+
+type: ui-refactor
+scope: ["native-ui", "chat", "session-settings", "ux"]
+status: completed
+tags: ["native-ui", "session-settings", "slider", "ux", "flatten"]
+continuity: none
+record-fingerprint: c1819b96d72ca8cdb3870a1724797ca8309872225c0875465b028d25fc8dabe0
+
+### Summary
+针对用户反馈会话设置面板（SessionSettingsSheet）中高级生成参数折叠手感与动画生硬的问题，移除 NexaraCollapsibleSection 折叠组件，将 Top K、重复惩罚、话题新鲜度、词频惩罚直接平铺展开为一级生成参数项，彻底消除高度跳动与滑动冲突。
+
+### Changed
+修改 native-ui/app/src/main/java/com/promenar/nexara/ui/chat/SessionSettingsSheet.kt：移除高级参数折叠嵌套，将其顺序平铺为 LazyColumn 独立 item；尾部补充 32dp 底部呼吸留白；同步更新 CHANGELOG.md。
+
+### Validation
+本地执行全量单元与契约测试 ./gradlew testDebugUnitTest，2790 个测试全部通过（0 失败 0 错误）。构建并安装到 Pixel 7 AVD 模拟器，实机交互切换到参数 Tab，滑动连续平稳，7 项生成滑块与底部留白视觉正常。
+
+### Next
+持续打磨用户提出的其它页面视觉细节或由用户确认当前体验。
+
+### Risks
+无破坏性改动。全量采样参数直接暴露可能略微增加列表高度，但通过 LazyColumn 虚拟滚动及平滑阻尼获得了远好于折叠展开的交互体验。
+
+### DIA
+已同步 CHANGELOG.md；无架构、契约或网络行为变更。
+
+### HLG
+已追加平铺优化与真机验证记录；continuity 为 none，无新增长期规则候选。
