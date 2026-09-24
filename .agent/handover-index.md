@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-09-24T11:42:12+08:00
+> generated_at: 2026-09-24T12:22:14+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -18,6 +18,7 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-09-24T12:22:14+08:00 | iso | done | none | ["native-ui"] | ["ui-unify", "slider", "visual-audit-followup"] | 滑块样式全站统一为 NexaraSlider 连续轨道圆形拇指 | `.agent/handover.md` · `2026-09-24T12:22:14+08:00` · `fp:4dc8f4ac70` |
 | 2026-09-24T11:42:12+08:00 | iso | done | none | ["native-ui"] | ["ui-fix", "generation-status", "emulator-network"] | 生成失败态发送按钮恢复机制 + 模拟器真实链路验证 | `.agent/handover.md` · `2026-09-24T11:42:12+08:00` · `fp:2eb26426dd` |
 | 2026-09-24T02:25:43+08:00 | iso | done | none | ["native-ui"] | ["ui-redesign", "model-picker", "visual-audit-followup"] | 模型选择列表重设计为紧凑商业级行密度 | `.agent/handover.md` · `2026-09-24T02:25:43+08:00` · `fp:bc4607f723` |
 | 2026-09-23T15:15:09+08:00 | iso | done | none | ["native-ui", "rendering", "ui-ux"] | ["visual-audit", "utf-8", "latex", "echarts", "mermaid", "a11y", "session-delete"] | 视觉审计缺陷修复与渲染健壮性增强 (P0-P2) | `.agent/handover.md` · `2026-09-23T15:15:09+08:00` · `fp:2e14e0e14a` |

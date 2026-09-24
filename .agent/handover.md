@@ -7641,3 +7641,38 @@ GenerationStatus ERROR 确认机制依赖 taskId 对比；若网关对同一请�
 
 ### HLG
 已追加本轮记录；continuity 为 none。
+
+## 2026-09-24T12:22:14+08:00 · 滑块样式全站统一为 NexaraSlider 连续轨道圆形拇指
+
+type: implementation
+scope: ["native-ui"]
+status: done
+tags: ["ui-unify", "slider", "visual-audit-followup"]
+continuity: none
+record-fingerprint: 4dc8f4ac701c656a03610f941a13e70ba9502176d93ff863f291a06f61fd13a5
+
+### Summary
+应用内滑块存在两种样式（M3 新版默认竖条 thumb + 刻度点轨道 vs 会话设置面板的连续轨道圆形 thumb）。将 7 处直接调用 Material3 Slider 的位置全部替换为共享 NexaraSlider，全站统一为连续横线 + 小圆 thumb，检索参数页实机截图验收通过。
+
+### Changed
+1. 替换清单：GlobalRagConfigScreen（分块/重叠两处）、AdvancedRetrievalScreen AdaptiveSlider、RagAdvancedScreen ConfigSlider、AgentAdvancedRetrievalScreen RetrievalParamSlider、ThemeScreen 文字缩放、SkillsScreen 搜索结果数。
+2. 各文件 import 调整：移除 M3 Slider、加 NexaraSlider；AgentAdvancedRetrievalScreen 原用 material3.* 通配仅需加 NexaraSlider。
+3. 参数完全兼容（value/onValueChange/valueRange/steps/modifier），AgentRagConfigScreen 与 ColorPickerPanel 此前已用 NexaraSlider 无需改动。
+
+### Validation
+1. 全量单测 testDebugUnitTest 通过（29 actionable tasks, 无失败）。
+2. 实机截图：记忆设置→检索参数页两滑块与图二会话设置样式完全一致（连续轨道、圆形 thumb、无刻度点）。
+3. 残留检查：全仓无 ^Slider( 直接调用（NexaraSlider.kt 内部实现除外）。
+
+### Next
+1. 如需进一步统一可考虑 steps 滑块的视觉表达（当前 steps 仅影响吸附，不渲染刻度）。
+2. 滑动交互拖拽手感如需调参走 NexaraSlider thumbSize/trackHeight。
+
+### Risks
+NexaraSlider thumb 含白色内点装饰，与 M3 纯色 thumb 有细微差异——目标样式即会话设置面板现状，无回归。
+
+### DIA
+已同步 CHANGELOG.md；无接口/协议变更。
+
+### HLG
+已追加本轮记录；continuity 为 none。
