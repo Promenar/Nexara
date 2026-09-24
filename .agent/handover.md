@@ -7939,3 +7939,39 @@ record-fingerprint: 378046b3e859cda6c8ed31a81bcba19622282d918c3ddcfae3e56becfc71
 
 ### HLG
 已追加首页 FAB 全圆形态与操作下拉菜单升级记录；continuity 为 none，无新增长期规则候选。
+
+## 2026-09-24T22:02:18+08:00 · Agent 编辑助手全屏视觉重构与 Hero 舞台精致度升级
+
+type: refactor
+scope: ["native-ui"]
+status: completed
+tags: ["ui", "agent-edit", "compose", "material-theme", "refactor"]
+continuity: none
+record-fingerprint: 31dfb115e1c8e7777cf0a8b345801551943bf563a4838c01c5bb9da51c8e5ebf
+
+### Summary
+针对用户反馈的 Agent 编辑助手界面简陋问题进行全面视觉与交互精致度升级。重构了顶部 Hero 角色舞台、卡片内流式输入表单、高质感图标选择器、自适应防截断调色盘 LazyRow、全光谱彩虹色相滑块，并将人格设定 Prompt 重构为紧凑状态卡片，全量 2,790 项测试通过并在 Pixel 7 AVD 上实机验证通过。
+
+### Changed
+- 重塑 Agent Hero 角色舞台：顶部引入居中 Radial Glow 柔和光晕氛围、88dp 圆形头像、深色浮动拍照徽标与 headlineSmall 实时双向同步昵称与简介；
+- 纯净流式输入表单：废除嵌套 OutlinedTextField 双边框套娃，重构为 InCardInputField，支持小字次级标签与极细半透明分割线；
+- 色彩与图标工坊升级：16dp 圆角大图标按钮带 15% 微光选中底座；调色盘预设色改用 LazyRow 消除小屏截断问题；自定义色相滑块引入真实彩虹全光谱渐变轨道及 44dp 大圆角实时色块预览徽章；
+- 人格与设置卡片对齐：Prompt 编辑框重构为带绿色呼吸灯/灰色点紧凑徽标的交互卡片；知识库/检索配置对齐设置页规范；危险删除按钮重构为 16dp 大圆角半透明克制暗红底座；
+- 契约治理：修复 ThemeSurfaceContractTest 静态 token 门禁，消除硬编码颜色；保持全量测试契约标签。
+
+### Validation
+- 运行 ./native-ui/gradlew -p native-ui testDebugUnitTest --tests com.promenar.nexara.ui.common.ThemeSurfaceContractTest 测试通过；
+- 运行全量单元测试 ./native-ui/gradlew -p native-ui testDebugUnitTest，2,790 项测试全部通过（0 失败 0 错误）；
+- 编译安装 debug APK 到 Pixel 7 AVD 模拟器，实机交互进入编辑助手界面，截屏核验 Hero 舞台、输入表单、彩虹滑块、Prompt 卡片与删除按钮，视觉体验精致高级。
+
+### Next
+持续观察其他二级配置界面的视觉统一性，后续可将 InCardInputField 等高质量流式表单组件沉淀至通用 common 包以供全站表单复用。
+
+### Risks
+无新增风险。所有颜色与背景均绑定 MaterialTheme 与 nexaraDomainColors 动态语义 Token，严格适配深色与浅色模式；未破坏已有数据流与 ViewModel 状态管理。
+
+### DIA
+已同步 CHANGELOG.md 中 [Unreleased] 对应更新条目。
+
+### HLG
+已通过 hlg-handover.py append 写入只追加记录，并重建 handover-index.md。
