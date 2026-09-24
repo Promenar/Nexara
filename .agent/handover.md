@@ -7714,3 +7714,38 @@ expandedAgentId 为 remember 非持久，进程重建后折叠态复位（可接
 
 ### HLG
 已追加本轮记录；continuity 为 none。
+
+## 2026-09-24T15:51:36+08:00 · 知识库与知识图谱视觉打磨与层级收敛
+
+type: feature
+scope: ["native-ui", "rag", "ui-polish"]
+status: completed
+tags: ["rag", "ui", "compose", "visual-polish", "knowledge-graph"]
+continuity: none
+record-fingerprint: acaba40c47827e24af3573638d9a55a81aca71d4eb5f79dbbe7223492e74532c
+
+### Summary
+完成知识库与知识图谱界面的视觉打磨与布局层级收敛。移除知识库顶栏多余的设置齿轮按钮，标题规范呈现“知识库”并保留知识图谱入口；将呆板带勾选的 SegmentedButton 重构为现代全宽胶囊分段滑动选择器 RagPortalTabSwitcher；统一 Tab、搜索框与上传按钮行的垂直律动间距；将知识图谱模式选择器由臃肿方形色块重构为符合规范的 FilterChip，刷新按钮升级为等高对齐的 FilledTonalButton，文档模式与无障碍入口均提升为高质感圆角组件。
+
+### Changed
+- native-ui/app/src/main/java/com/promenar/nexara/ui/rag/RagHomeScreen.kt：TopAppBar 移除设置齿轮按钮并显式呈现“知识库”标题；SegmentedButton 替换为现代化胶囊滑动切换器 RagPortalTabSwitcher；收敛统一垂直间距为 8–12dp。
+- native-ui/app/src/main/java/com/promenar/nexara/ui/rag/KnowledgeGraphScreen.kt：重构 KnowledgeGraphModeSelector 使用 FilterChip 与 34dp 等高 FilledTonalButton 刷新按钮；升级文档选择器为卡片式下拉入口，升级无障碍列表按钮为 FilledTonalButton。
+- native-ui/app/src/test/java/com/promenar/nexara/ui/rag/RagHomeScreenContractTest.kt & RagReleaseAccessibilityTest.kt：同步顶栏操作断言。
+- native-ui/app/src/test/java/com/promenar/nexara/release/ReleaseConfigurationTest.kt：同步 0.2.2-beta (versionCode 4) 版本元数据断言。
+- CHANGELOG.md：记录本轮视觉打磨与层级收敛。
+
+### Validation
+- 运行模拟器真实安装：./gradlew installDebug 成功并在 Pixel 7 真实模拟器上实时验证，截图确认知识库首页、记忆 Tab 切换、知识图谱模式切换（全局/文档/概念）、文档选择 Sheet 的视觉体验大幅提升。
+- 运行全量 JVM 单元测试：./gradlew testDebugUnitTest 2790 tests 全部通过（BUILD SUCCESSFUL in 45s）。
+
+### Next
+向用户汇报交付，根据用户在模拟器上的进一步体验反馈持续打磨其余细节。
+
+### Risks
+无。纯 UI 呈现与交互层级优化，未变更后端 RAG 逻辑或图谱物理引擎数据结构。
+
+### DIA
+已同步 CHANGELOG.md；知识库设置入口统一收敛至底部设置 Tab 的“知识与检索”分区。
+
+### HLG
+已通过标准 HLG 脚本向 .agent/handover.md 追加本轮交付记录并重建索引。
