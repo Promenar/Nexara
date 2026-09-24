@@ -7816,3 +7816,36 @@ record-fingerprint: 304021683cc8acaa32addf048c7400298d1ad0976fc93d28e97a68abe33f
 
 ### HLG
 已通过标准 HLG 脚本向 .agent/handover.md 追加本轮交付记录并自动更新索引；continuity 为 none。
+
+## 2026-09-24T20:12:56+08:00 · 知识库记忆界面视觉净化与空态体验对齐
+
+type: feature
+scope: ["native-ui", "ui-polish", "rag"]
+status: completed
+tags: ["ui", "compose", "visual-polish", "rag", "memory", "empty-state"]
+continuity: none
+record-fingerprint: 9df86977009ce0a35b0ac1b8b99143de0120940a4c9ab9e5d321b0c2d43f153f
+
+### Summary
+响应用户对记忆界面数量与 Token 统计不美观且无必要的反馈，完成记忆 Tab 视觉深度净化与体验对齐：彻底移除无业务指导意义的 Token 粗暴估算与三重冗余的“记忆”大标题；将原先笨重生硬的深色大卡片空态升级为与文档页完全同构的 72dp 全圆高亮底座居中空态；在记忆列表非空时，以极淡色小字在列表底部呈现统计 Footer，消除技术泄漏，达成全页通透一致的呼吸感。
+
+### Changed
+- native-ui/app/src/main/java/com/promenar/nexara/ui/rag/RagHomeScreen.kt：移除记忆 Tab 顶部的标题与 Token 统计行；将 memory-empty 与 memory-search-empty 重构为居中 72dp CircleShape 底座及清晰主副文案；列表底部添加居中淡色 Footer。
+- native-ui/app/src/main/res/values/strings.xml & values-zh-rCN/strings.xml：补齐记忆空态主标题与底部统计中英文字符串资源。
+- CHANGELOG.md：在 [Unreleased] 下记录记忆界面视觉净化与空态对齐。
+
+### Validation
+1. 单元与契约测试：执行 ./gradlew testDebugUnitTest，全量 2790 个测试全部通过（BUILD SUCCESSFUL in 46s），涵盖 RagReleaseAccessibilityTest 对 memory-empty 和 memory-search-empty 标签的断言。
+2. 真实模拟器实装验证：执行 ./gradlew installDebug 部署至 Pixel 7 (AVD)，通过截图验证：搜索栏下方直接承接居中高质感的 72dp 纯圆底座空态，完全消灭生硬的 Token 文字与黑框卡片，与文档页空态完美镜像对称。
+
+### Next
+向用户汇报交付，展示优化后的空态截图。
+
+### Risks
+无。纯 UI 视觉与空态组件层级优化，未变更底层 Vector DB 或 RAG 检索管线。
+
+### DIA
+已同步 CHANGELOG.md；记忆界面视觉与空态文案同步完成，无底层接口影响。
+
+### HLG
+已通过标准 HLG 脚本向 .agent/handover.md 追加本轮交付记录并自动更新索引；continuity 为 none。
