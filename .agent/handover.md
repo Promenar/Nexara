@@ -7909,3 +7909,33 @@ record-fingerprint: 07547de78b4e155f5ff710286b7a7c52bcb307b34b004a07f3c912c3f0d1
 
 ### HLG
 已追加全站页签胶囊化重构记录并更新索引；continuity 为 none，无新增长期规则候选。
+
+## 2026-09-24T21:18:22+08:00 · 首页 FAB 全圆形态与全站操作下拉菜单视觉重构
+
+type: ui-refactor
+scope: ["native-ui", "hub", "chat", "dropdown-menu", "fab", "ux"]
+status: completed
+tags: ["native-ui", "fab", "dropdown-menu", "circle-shape", "visual-polish", "leading-icon"]
+continuity: none
+record-fingerprint: 378046b3e859cda6c8ed31a81bcba19622282d918c3ddcfae3e56becfc71db64
+
+### Summary
+响应用户对首页右下角悬浮按钮（FAB）圆角矩形突兀感以及卡片/顶栏操作菜单宽度局促、文字长短不一的反馈，将首页 FAB 统一为正圆形（CircleShape）；重构 Agent 卡片与会话顶栏 DropdownMenu 为 16dp 大圆角、微描边深色容器，并为全部选项配置左侧对齐 20dp 规范图标与呼吸宽度，危险删除操作赋予 error 警示色，视觉层级与呼吸感显著提升。
+
+### Changed
+修改 `native-ui/app/src/main/java/com/promenar/nexara/ui/hub/AgentHubScreen.kt`（FAB 形状改为 CircleShape，Agent 卡片菜单引入圆角、微描边、160dp 最小宽度与置顶/编辑/删除 leadingIcon）；修改 `native-ui/app/src/main/java/com/promenar/nexara/ui/chat/ChatScreen.kt`（会话顶栏菜单引入圆角、微描边、190dp 最小宽度与设置/提示词/清除历史/重命名/删除 leadingIcon，删除项配置 error 色）；同步更新 CHANGELOG.md。
+
+### Validation
+全量 JVM 单元与契约测试 2790 项全部通过（0 失败 0 错误）。在 Pixel 7 AVD 模拟器上实机测试并截屏核验：首页纯圆 FAB、Agent 卡片三点菜单（置顶/编辑/删除带图标）与会话顶栏三点菜单（会话设置/提示词/清除历史/重命名/删除带图标）均呈现高品质视觉效果。
+
+### Next
+向用户汇报交付，展示截屏与视觉对比，持续打磨后续细节。
+
+### Risks
+无业务逻辑或破坏性影响；HUB_ADD_AGENT、HUB_AGENT_MENU_*、CHAT_SESSION_SETTINGS 等原有 testTag 与点击行为全部保持不变。
+
+### DIA
+已同步 CHANGELOG.md；无架构、数据模型或外部接口契约变化。
+
+### HLG
+已追加首页 FAB 全圆形态与操作下拉菜单升级记录；continuity 为 none，无新增长期规则候选。
