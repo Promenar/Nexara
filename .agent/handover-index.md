@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-09-24T22:02:18+08:00
+> generated_at: 2026-09-24T23:44:46+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -18,6 +18,7 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-09-24T23:44:45+08:00 | iso | done | none | ["native-ui", "chat", "hub"] | ["ui-refactor", "agent-edit", "floating-menu", "session-title", "release-build"] | 助手设置收敛、悬浮菜单统一、默认字体调整与会话智能重命名 | `.agent/handover.md` · `2026-09-24T23:44:45+08:00` · `fp:23f218914e` |
 | 2026-09-24T22:02:18+08:00 | iso | completed | none | ["native-ui"] | ["ui", "agent-edit", "compose", "material-theme", "refactor"] | Agent 编辑助手全屏视觉重构与 Hero 舞台精致度升级 | `.agent/handover.md` · `2026-09-24T22:02:18+08:00` · `fp:31dfb115e1` |
 | 2026-09-24T21:18:22+08:00 | iso | completed | none | ["native-ui", "hub", "chat", "dropdown-menu", "fab", "ux"] | ["native-ui", "fab", "dropdown-menu", "circle-shape", "visual-polish", "leading-icon"] | 首页 FAB 全圆形态与全站操作下拉菜单视觉重构 | `.agent/handover.md` · `2026-09-24T21:18:22+08:00` · `fp:378046b3e8` |
 | 2026-09-24T20:38:41+08:00 | iso | completed | none | ["native-ui", "components", "chat", "settings", "rag", "ux"] | ["native-ui", "tab-row", "capsule", "homebar", "haptic", "spring"] | 全站页签统一升级 Homebar 全圆胶囊与弹簧触觉设计 | `.agent/handover.md` · `2026-09-24T20:38:41+08:00` · `fp:07547de78b` |

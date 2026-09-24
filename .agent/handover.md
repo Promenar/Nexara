@@ -7975,3 +7975,38 @@ record-fingerprint: 31dfb115e1c8e7777cf0a8b345801551943bf563a4838c01c5bb9da51c8e
 
 ### HLG
 已通过 hlg-handover.py append 写入只追加记录，并重建 handover-index.md。
+
+## 2026-09-24T23:44:45+08:00 · 助手设置收敛、悬浮菜单统一、默认字体调整与会话智能重命名
+
+type: feature
+scope: ["native-ui", "chat", "hub"]
+status: done
+tags: ["ui-refactor", "agent-edit", "floating-menu", "session-title", "release-build"]
+continuity: none
+event-date: 2026-09-24
+record-fingerprint: 23f218914ee182e5efe70a2fdf0899a23118ca5b25e5439dd9ed4a00a76c549c
+
+### Summary
+响应用户对视觉细节与交互体验的 5 项反馈：重构助手编辑页面视觉规格与模型选择、统一全站悬浮菜单（附件与气泡长按）、调整会话默认字体为 15 像素、修复错误气泡垂直居中、实现新会话智能命名（快速模型优先降级链路）与顶栏点击重命名。
+
+### Changed
+1. AgentEditScreen：接入 NexaraSettingsPageLayout 解决字体过大问题，Hero 舞台头像收敛至 72dp，表单与图标网格尺寸紧凑对齐；新增模型配置标准分区并绑定 ModelPicker。
+2. 悬浮菜单统一：AttachmentActionMenu 与 PipelineBubble 的 MessageContextMenu 统一为 16dp 圆角、surfaceContainer、1dp 微描边与 20dp 规范图标。
+3. ChatModels：SessionOptions.fontSize 默认值调整为 15。
+4. PipelineBubble：ErrorMessageSegment 使用 Box(contentAlignment = Alignment.CenterStart) 解决单行红框文本垂直居中。
+5. 会话智能重命名：ChatTopBar 标题支持点击重命名并带编辑笔小图标；PostProcessor 实现快速模型优先的三级降级链路（快速模型 -> 当前模型 -> 首条消息前 10 字），测算顶栏与折叠列表宽度后严格限制 10 字并清洗标点与多余前缀。
+
+### Validation
+全量 2,791 项 JVM 单元测试全部通过（含标题生成与清洗截断单测）；Pixel 7 AVD 模拟器实机交互并截屏核验所有 5 个视觉与交互场景；完成 Release 发行包编译与签名校验。
+
+### Next
+向用户汇报交付，提供真机 Release APK 路径供其实测体验。
+
+### Risks
+无。所有颜色 token 与卡片分组严格遵循设计契约，标题长度与前缀清洗杜绝了界面溢出与视觉破损。
+
+### DIA
+已同步 CHANGELOG.md。
+
+### HLG
+已通过 handover-lifecycle-governance 结构化追加至 .agent/handover.md 并重建索引。
