@@ -7784,3 +7784,35 @@ record-fingerprint: 46b01e59d1b742e1cdfe3a9759aeb5d270992e2902690ab01b1e3cd11bbd
 
 ### HLG
 已通过标准 HLG 脚本向 .agent/handover.md 追加本轮交付记录并自动更新索引；continuity 为 none。
+
+## 2026-09-24T19:53:13+08:00 · 知识库 Tab 页签移植 Homebar 全胶囊与触觉手感
+
+type: feature
+scope: ["native-ui", "ui-polish", "rag"]
+status: completed
+tags: ["ui", "compose", "visual-polish", "capsule", "haptics", "rag", "homebar"]
+continuity: none
+record-fingerprint: 304021683cc8acaa32addf048c7400298d1ad0976fc93d28e97a68abe33f1df5
+
+### Summary
+响应用户对知识库顶部 TAB 页签与全页全胶囊几何语言不统一的审美反馈，将 RagPortalTabSwitcher 彻底重构：外框由圆角矩形升级为与底部 Homebar 一致的全圆胶囊形态（CircleShape、48dp 高度、surfaceContainer 底色与 outlineVariant 细描边），选中底座升级为同心 secondaryContainer 胶囊；同时引入物理弹簧滑动指示器与原生 SEGMENT_TICK 触觉震动反馈，打通视觉与手感的一体化统一。
+
+### Changed
+- native-ui/app/src/main/java/com/promenar/nexara/ui/rag/RagHomeScreen.kt：RagPortalTabSwitcher 升级为 BoxWithConstraints 全圆胶囊容器，采用 Spring 弹簧滑动指示器底座并在点击切换时触发 view.performHapticFeedback(SEGMENT_TICK)；保持 Content 层的无运行时环境确定性。
+- CHANGELOG.md：在 [Unreleased] 下记录本轮全胶囊化与触感升级。
+
+### Validation
+1. 单元与契约测试：执行 ./gradlew testDebugUnitTest，全量 2790 个测试全部通过（BUILD SUCCESSFUL in 39s），涵盖 RagHomeScreenContractTest。
+2. 真实模拟器实装验证：执行 ./gradlew installDebug 成功部署至 Pixel 7 (AVD)，通过截图验证：顶部 Tab 页签与下方的搜索框、操作按钮行以及底部 Homebar 的胶囊底座达成 100% 几何语言同构；文档与记忆之间横向弹簧滑动平滑顺畅，点击切换伴随清脆触感反馈。
+
+### Next
+向用户汇报交付，展示截图并由用户在模拟器上亲身体验滑动与触感手感。
+
+### Risks
+无。纯 Compose UI 呈现、交互与触感反馈升级，不影响底层 RAG 逻辑或数据状态。
+
+### DIA
+已同步 CHANGELOG.md；知识库 Tab 外观与交互升级完成，无接口或配置影响。
+
+### HLG
+已通过标准 HLG 脚本向 .agent/handover.md 追加本轮交付记录并自动更新索引；continuity 为 none。
