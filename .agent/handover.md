@@ -7676,3 +7676,41 @@ NexaraSlider thumb 含白色内点装饰，与 M3 纯色 thumb 有细微差异�
 
 ### HLG
 已追加本轮记录；continuity 为 none。
+
+## 2026-09-24T13:09:09+08:00 · 首页折叠式 Agent 列表 + 知识库视觉统一
+
+type: implementation
+scope: ["native-ui"]
+status: done
+tags: ["ui-redesign", "hub", "rag-home", "visual-audit-followup"]
+continuity: none
+record-fingerprint: 55d2f84bf14419161868910fd9d497ba72084d19a07e34fa3ff9da0d34163f59
+
+### Summary
+按用户裁决完成两主页面重构：首页改为单页手风琴折叠 Agent 卡片（展开内联会话列表，取消二级会话页入口）；知识库 Tab 改胶囊分段、动作按钮统一等权、空态精致化。全量单测通过，实机三场景截图验收。
+
+### Changed
+1. AgentHubScreen: Route 注入 SessionListViewModel（loadSessions("") 全量刷新 + createSession + deleteSession）；AgentCardItem 重写为 AgentExpandableCard（surfaceContainerLow 20dp 卡片、头部可点展开、AnimatedVisibility 会话列表、⋮ 菜单保留、ExpandMore 旋转指示）；头像色 lerp(onSurfaceVariant,0.35) 降饱和；置顶改标题前小图钉；移除 SwipeableItem 包裹。
+2. MainTabScaffold: hub 传 onNavigateToChat 替代 onNavigateToSessionList（签名参数保留未用）。
+3. RagHomeScreen: PrimaryTabRow→SingleChoiceSegmentedButtonRow（自然宽度）；新建文件夹 TextButton→FilledTonalButton 与上传文档等权；删 HorizontalDivider。
+4. FilesPanel: EmptyFilesState 加 72dp 圆形容器图标与文案层级。
+5. strings: 新增 hub_sessions_empty/hub_session_untitled（中英）。
+6. 契约测试更新：AgentHubScreenContractTest（折叠卡片/展开指示/置顶）、BettboxGroupedSurfacesContractTest（首页独立卡片、会话页保留分组面）。
+
+### Validation
+1. 全量 testDebugUnitTest BUILD SUCCESSFUL（含更新后契约）。
+2. 实机截图: 首页折叠卡片 + 展开会话列表（Say OK 9/24 + 删除）+ 手风琴互斥切换；知识库分段控件/等权按钮/空态圆底图标三层级。
+3. 会话数据修复过程: 首屏 sessions 空为未触发 store 刷新，Route 层 LaunchedEffect loadSessions("") 修复。
+
+### Next
+1. 待用户验收两页新布局；会话行删除直接执行无确认，如需确认弹窗可再加。
+2. SESSION_LIST 路由与 AgentSessionsScreen 已无入口，保留作回滚兜底，后续可清理。
+
+### Risks
+expandedAgentId 为 remember 非持久，进程重建后折叠态复位（可接受）；LazyColumn 内 AnimatedVisibility 高度动画在快速滚动时可能有轻微跳动。
+
+### DIA
+已同步 CHANGELOG.md；契约测试注释同步；无接口/协议变更。
+
+### HLG
+已追加本轮记录；continuity 为 none。
