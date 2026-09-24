@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-09-24T15:51:36+08:00
+> generated_at: 2026-09-24T19:28:06+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -18,6 +18,7 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-09-24T19:28:06+08:00 | iso | completed | none | ["native-ui", "ui-polish", "hub", "rag"] | ["ui", "compose", "visual-polish", "fab", "search-bar", "rag", "hub"] | 一级页面视觉统一与顶栏层级收敛 | `.agent/handover.md` · `2026-09-24T19:28:06+08:00` · `fp:46b01e59d1` |
 | 2026-09-24T15:51:36+08:00 | iso | completed | none | ["native-ui", "rag", "ui-polish"] | ["rag", "ui", "compose", "visual-polish", "knowledge-graph"] | 知识库与知识图谱视觉打磨与层级收敛 | `.agent/handover.md` · `2026-09-24T15:51:36+08:00` · `fp:acaba40c47` |
 | 2026-09-24T13:09:09+08:00 | iso | done | none | ["native-ui"] | ["ui-redesign", "hub", "rag-home", "visual-audit-followup"] | 首页折叠式 Agent 列表 + 知识库视觉统一 | `.agent/handover.md` · `2026-09-24T13:09:09+08:00` · `fp:55d2f84bf1` |
 | 2026-09-24T12:22:14+08:00 | iso | done | none | ["native-ui"] | ["ui-unify", "slider", "visual-audit-followup"] | 滑块样式全站统一为 NexaraSlider 连续轨道圆形拇指 | `.agent/handover.md` · `2026-09-24T12:22:14+08:00` · `fp:4dc8f4ac70` |

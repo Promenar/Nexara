@@ -7749,3 +7749,38 @@ record-fingerprint: acaba40c47827e24af3573638d9a55a81aca71d4eb5f79dbbe7223492e74
 
 ### HLG
 已通过标准 HLG 脚本向 .agent/handover.md 追加本轮交付记录并重建索引。
+
+## 2026-09-24T19:28:06+08:00 · 一级页面视觉统一与顶栏层级收敛
+
+type: feature
+scope: ["native-ui", "ui-polish", "hub", "rag"]
+status: completed
+tags: ["ui", "compose", "visual-polish", "fab", "search-bar", "rag", "hub"]
+continuity: none
+record-fingerprint: 46b01e59d1b742e1cdfe3a9759aeb5d270992e2902690ab01b1e3cd11bbde8f2
+
+### Summary
+响应用户对三大一级页面（对话 Hub、知识库、设置）视觉一致性与层次收敛的需求，完成两项核心视觉重构：1. 首页对话页面移除低频的顶部搜索栏与孤立加号图标，将新建 Agent 操作升级为右下角 Material 3 悬浮操作按钮（FAB），增加底部避让留白；2. 知识库主界面移除 Scaffold 冗余大标题，将平滑胶囊切换器置顶，常驻统一搜索栏并根据所选 Tab 自适应文档或记忆检索文案，同时将顶栏孤立的知识图谱按钮移至文档操作按钮行并列排布，通过精细化内边距达成单行三等高按钮并列。
+
+### Changed
+- native-ui/app/src/main/java/com/promenar/nexara/ui/hub/AgentHubScreen.kt：移除顶栏 NexaraSearchTopBar，取消搜索过滤直出 Agent 列表；新增右下角 FloatingActionButton（UiTags.HUB_ADD_AGENT），列表底部内嵌 88dp 呼吸 padding。
+- native-ui/app/src/main/java/com/promenar/nexara/ui/rag/RagHomeScreen.kt：移除 Scaffold 的 topBar；以 RagPortalTabSwitcher 作为首屏第一视觉锚点；常驻 NexaraSearchBar（自适应文档/记忆占位文案）；文档 Tab 内新增“知识图谱”FilledTonalButton，调整按钮内边距使三按钮单行排布；记忆 Tab 接入 searchQuery 即时检索与空结果提示。
+- native-ui/app/src/main/res/values/strings.xml & values-zh-rCN/strings.xml：补齐记忆检索相关中英文字符串。
+- native-ui/app/src/test/java/com/promenar/nexara/ui/hub/AgentSessionsMaterialContractTest.kt：同步更新首页无 TopBar、使用 FAB 的契约断言。
+- CHANGELOG.md：在 [Unreleased] 下记录本轮一级页面视觉统一与顶栏层级收敛变更。
+
+### Validation
+1. 自动化单元与契约测试：执行 ./gradlew testDebugUnitTest，全量 2790 个测试全部通过（BUILD SUCCESSFUL in 43s），包含更新后的 AgentSessionsMaterialContractTest。
+2. 真实模拟器部署与多页面核验：执行 ./gradlew installDebug 成功部署至 Pixel 7 (AVD)，通过截图验证：首页对话列表干净明了，右下角 FAB 浮动自然；知识库文档页置顶胶囊、常驻搜索与单行三按钮（上传文档、新建文件夹、知识图谱）排布紧凑雅致；记忆页搜索过滤响应灵敏。
+
+### Next
+向用户汇报交付；后续可根据用户在真实设备或模拟器上的持续体验反馈进行更深度的微交互与动效打磨。
+
+### Risks
+无。纯 Compose UI 结构与样式调整，未改动底层业务逻辑、Room 数据库或 RAG 检索管线。
+
+### DIA
+已同步 CHANGELOG.md；首页与知识库顶栏及操作架构更新已落实，无网络、接口或持久化层变更影响。
+
+### HLG
+已通过标准 HLG 脚本向 .agent/handover.md 追加本轮交付记录并自动更新索引；continuity 为 none。
