@@ -1,5 +1,59 @@
 # 交接文档 (2026-05-20)
 
+## 2026-09-27T02:30:00+08:00 · 向量化“无限进行中”根治、任务主动取消与主页顶部呼吸感对齐
+
+type: fix
+scope: rag, vectorization, error-handling, ui-layout, release
+status: completed
+tags: [rag, vectorization, indexing-state, cancel-task, top-padding, breathing-room, release-apk]
+continuity: completed
+continuity-key: rag-infinite-indexing-fix-top-spacing
+
+### Summary
+
+响应用户反馈的两大核心体验问题：
+1. **向量化无限进行中与无法停止**：排查并根除任务因服务端/模型报错失败后因 `_indexingDocIds` 未过滤 `failed`/`partial`/`completed`/`interrupted` 状态导致 UI 永久误判为“进行中”的缺陷；同时在 FAB 展开面板提供显式“取消”按钮，支持随时安全中断任务；`EmbeddingClient` 增加底层服务端报错信息穿透解析；
+2. **一级页面顶部呼吸感视觉对齐**：对齐“对话”（`AgentHubScreen`）与“知识库”（`RagHomeScreen`）顶部间距，从 `NexaraSpacing.Small` (8dp) 提升至 `NexaraSpacing.Large` (16dp)，完美对齐“设置”页的开阔呼吸感。
+3. **正式签名发行包构建与验证**：全量 2,800+ 单元测试 100% 通过，成功构建正式签名 Release APK（v0.2.2-beta / versionCode 4，大小 20MB），签名通过 `apksigner` v2 验证。
+
+### Changed
+
+- `native-ui/app/src/main/java/com/promenar/nexara/ui/rag/RagViewModel.kt`：`observeQueue` 中更新 `_indexingDocIds` 时严格排除非活跃状态（`failed`、`partial`、`completed`、`interrupted`），避免残留 attention 任务误报；新增 `cancelIndexing()` 方法，安全取消正在进行中的任务并清理状态。
+- `native-ui/app/src/main/java/com/promenar/nexara/ui/rag/RagHomeScreen.kt`：顶部内边距调整为 `NexaraSpacing.Large` (16dp)；在 `RagStatusFab` 中，当任务进行中（`isRunning && !isError`）时在展开卡片底部提供显式“取消”按钮（`actions.onCancelIndexing()`）。
+- `native-ui/app/src/main/java/com/promenar/nexara/ui/hub/AgentHubScreen.kt`：LazyColumn contentPadding 顶部与 EmptyAgentState 顶部边距提升至 `NexaraSpacing.Large` (16dp)，消除紧贴状态栏的局促压迫感。
+- `native-ui/app/src/main/java/com/promenar/nexara/data/rag/EmbeddingClient.kt`：增强服务端非 2xx 或缺少 data 数组时的 JSON 错误提取，优先呈现服务端的 `error.message`，消除“Missing data array”模糊报错。
+- `native-ui/app/src/main/java/com/promenar/nexara/data/rag/VectorizationQueue.kt`：新增 `clearAttention()` 方法供 ViewModel 联动清理残留的关注队列。
+- `CHANGELOG.md`：记录本轮向量化无限进行中修复、任务取消机制、顶部呼吸感对齐及 Release 构建。
+
+### Validation
+
+- 全量单元测试：执行 `./gradlew testDebugUnitTest`，全量 2,800+ 单元测试（包括 `VectorizationQueueRoomTest` 32 项、`RagViewModelTest` 等）100% 通过；
+- Android 模拟器实机端到端验收：
+  - 截屏核验“对话”页、“知识库”页与“设置”页三页顶部呼吸感，一致优雅舒适；
+  - 知识库中历史失败任务不再误报“文档向量化中”或导致文件带有“索引中”徽标，呈现精准红叉 FAB；
+  - 验证点击 FAB 展开后展示具体错误，点击“关闭”后状态指示器平滑退场；
+  - 验证任务运行中时点击展开卡片中的“取消”按钮正常终止；
+- Release 签名验证：
+  - 执行 `assembleRelease`，使用 `secure_env/promenar.keystore` 成功构建 `app-release.apk`；
+  - `apksigner verify --verbose` 输出 `Verified using v2 scheme: true`。
+
+### Next
+
+- 提供 Release APK 交付用户安装真机测试；
+- 收集用户真机交互反馈。
+
+### Risks
+
+- 无已知风险。
+
+### DIA
+
+DIA: 已同步 `CHANGELOG.md` 与本 `handover.md`；状态过滤逻辑与取消接口已完整纳管。
+
+### HLG
+
+HLG: 已追加向量化无限进行中根治、任务主动取消与主页顶部呼吸感对齐记录；无新增长期规则候选。
+
 ## 2026-09-26T23:05:00+08:00 · 知识库集中式 FAB 状态指示微件、同层下钻式目录切换与工作区沙箱深度隔离
 
 type: feature
