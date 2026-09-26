@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-09-26T14:15:05+08:00
+> generated_at: 2026-09-26T23:22:14+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -11,6 +11,7 @@
 | nexara-audit-completion-repair | waiting | 2026-09-22T15:28:29+08:00 | done | ["Nexara", "native-ui", "audit-repair"] | 审计修复、最终签名候选及本机设备验收完成 | `.agent/handover.md` · `2026-09-22T15:28:29+08:00` · `fp:c45ed0053a` |
 | nexara-independent-model-catalog | resume | 2026-09-22T18:33:08+08:00 | done | ["Nexara", "model-catalog"] | 独立模型目录上线、客户端验收与签名候选交付 | `.agent/handover.md` · `2026-09-22T18:33:08+08:00` · `fp:320878f7b2` |
 | nexara-physical-device-ui-acceptance | waiting | 2026-08-26T16:10:54+08:00 | done | ["Nexara", "native-ui", "release"] | Bettbox 分组边界与 Agent 首页减法修复正式包 | `.agent/handover.md` · `2026-08-26T16:10:54+08:00` · `fp:cf09c0dcb0` |
+| rag-fab-drilldown-isolation | completed | 2026-09-26T23:05:00+08:00 | completed | rag, ui-status, fab, explorer-breadcrumbs, sandbox-isolation | 知识库集中式 FAB 状态指示微件、同层下钻式目录切换与工作区沙箱深度隔离 | `.agent/handover.md` · `2026-09-26T23:05:00+08:00` · `fp:5c7e9d4ff9` |
 | rag-global-workspace-explorer | waiting | 2026-09-26T14:15:05+08:00 | completed | ["rag", "workspace", "vfs", "explorer", "compose-ui"] | 知识库全局资源管理器实机全链路验收与VFS崩溃恢复加固 | `.agent/handover.md` · `2026-09-26T14:15:05+08:00` · `fp:0d9d575a7e` |
 | v0.2-beta-release-readiness | waiting | 2026-07-29T12:29:30+08:00 | done | ["nexara", "v0.2-beta-release-readiness"] | v0.2-beta SSH 签名标签与 GitHub prerelease 发布闭环 | `.agent/handover.md` · `2026-07-29T12:29:30+08:00` · `fp:274e812f49` |
 | v0.2.1-beta-release-followup | waiting | 2026-08-26T12:23:48+08:00 | done | ["Nexara", "native-ui", "release"] | 根页面与会话可靠性全量调整及签名 APK 交付 | `.agent/handover.md` · `2026-08-26T12:23:48+08:00` · `fp:ddf8f9f0bf` |
@@ -19,6 +20,8 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-09-26T23:22:14+08:00 | iso | done | none | ["rag", "files-panel", "drilldown", "flat-browser"] | ["rag", "files-panel", "flat-navigation", "drilldown", "no-tree-expansion"] | 知识库全层级同层平铺浏览彻底落地与首屏树状展开消除 | `.agent/handover.md` · `2026-09-26T23:22:14+08:00` · `fp:931a7d0d4e` |
+| 2026-09-26T23:05:00+08:00 | iso | completed | completed | rag, ui-status, fab, explorer-breadcrumbs, sandbox-isolation | [rag, status-fab, breadcrumbs, drill-down, hub-icon, sandbox-isolation] | 知识库集中式 FAB 状态指示微件、同层下钻式目录切换与工作区沙箱深度隔离 | `.agent/handover.md` · `2026-09-26T23:05:00+08:00` · `fp:5c7e9d4ff9` |
 | 2026-09-26T14:15:05+08:00 | iso | completed | waiting | ["rag", "workspace", "vfs", "explorer", "compose-ui"] | ["rag", "global-explorer", "emulator-verification", "vfs-recovery", "transfer-to-kb"] | 知识库全局资源管理器实机全链路验收与VFS崩溃恢复加固 | `.agent/handover.md` · `2026-09-26T14:15:05+08:00` · `fp:0d9d575a7e` |
 | 2026-09-26T13:25:00+08:00 | iso | completed | completed | rag, workspace, vfs, explorer, compose-ui | [rag, global-explorer, composite-workspace, files-panel, transfer-to-kb] | 知识库全局资源管理器落地与会话工作区统一挂载 | `.agent/handover.md` · `2026-09-26T13:25:00+08:00` · `fp:62d695200e` |
 | 2026-09-24T23:44:45+08:00 | iso | done | none | ["native-ui", "chat", "hub"] | ["ui-refactor", "agent-edit", "floating-menu", "session-title", "release-build"] | 助手设置收敛、悬浮菜单统一、默认字体调整与会话智能重命名 | `.agent/handover.md` · `2026-09-24T23:44:45+08:00` · `fp:23f218914e` |

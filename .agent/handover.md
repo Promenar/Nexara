@@ -8146,3 +8146,39 @@ record-fingerprint: 0d9d575a7ef01b3b06c69d73a7ca94b04c072bf1fc8b74a1f9064789a06a
 
 ### HLG
 已追加知识库全局资源管理器实机端到端验收与 VFS 恢复加固记录；continuity 标记 waiting，无新增长期规则候选。
+
+## 2026-09-26T23:22:14+08:00 · 知识库全层级同层平铺浏览彻底落地与首屏树状展开消除
+
+type: feature
+scope: ["rag", "files-panel", "drilldown", "flat-browser"]
+status: done
+tags: ["rag", "files-panel", "flat-navigation", "drilldown", "no-tree-expansion"]
+continuity: none
+record-fingerprint: 931a7d0d4eba4a8cc8b67b134b53d3119f5adfb4997f81c8761f98dc26bcc11f
+
+### Summary
+彻底消除知识库与全局资源管理器第一屏及各目录层级下的树状展开结构，实现完全纯正的同层平铺下钻浏览体验。通过在 FilesPanel 及 projectVisibleFileNodes 中引入 allowTreeExpansion 参数，在下钻浏览模式中完全阻断内联递归追加与多层缩进渲染，首屏与进入各级子目录均以深度 0 纯平铺呈现直属一级子项，配合层级面包屑导航与系统返回键实现平滑切换。
+
+### Changed
+1. FilesPanelState.kt: projectVisibleFileNodes 增加 allowTreeExpansion 参数，当关闭树展开时直接投影当前根节点列表（depth 均为 0），不进行任何子节点递归追加；
+2. FilesPanel.kt: FilesPanel、FileTreeRow 与 FileRow 增加 allowTreeExpansion 契约参数，关闭树展开时 expandedDirectoryIds 置空，禁止订阅下级目录 flow，并将目录图标收敛为标准闭合文件夹图标；
+3. RagHomeScreen.kt: 挂载 FilesPanel 时显式指定 allowTreeExpansion = false，彻底阻断第一屏会话工作区或自建目录下的内联展开；
+4. FilesPanelStateTest.kt: 补充禁止树展开时仅投影根列表且深度全为 0 的单元测试，原有 12 项源码断言与行为契约 100% 保持；
+5. CHANGELOG.md: 更新平铺下钻式文件管理与首屏树状展开消除记录。
+
+### Validation
+1. 单元测试: ./gradlew :app:testDebugUnitTest --tests "*FilesPanel*" 及全量 ./gradlew testDebugUnitTest 2800+ 项测试全绿通过；
+2. 模拟器端到端验收: 在 Pixel 7 模拟器实机核验，第一屏仅呈现「会话工作区」、「001」与根文件，无任何子项展开；点击「会话工作区」平滑同层切换进入，仅呈现「Say OK」与「New Chat」单行目录，无孙文件展开；点击「Say OK」平滑同层切换进入展示 test_doc.txt；按返回键两次平滑逐层退回第一屏。
+
+### Next
+1. 用户验收平铺下钻浏览体验；
+2. 持续跟进多会话文件管理与知识库检索协同优化。
+
+### Risks
+无已知风险。allowTreeExpansion 默认值为 true，完全保持已有旧测试与非下钻组件的向后兼容性。
+
+### DIA
+已同步 CHANGELOG.md 与本 handover 记录；已补充单元测试保障契约。
+
+### HLG
+已追加全层级同层平铺浏览落地与首屏树状展开消除记录；无新增长期规则候选。
