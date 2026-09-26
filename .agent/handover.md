@@ -8056,3 +8056,39 @@ record-fingerprint: 23f218914ee182e5efe70a2fdf0899a23118ca5b25e5439dd9ed4a00a76c
 
 ### HLG
 已通过 handover-lifecycle-governance 结构化追加至 .agent/handover.md 并重建索引。
+
+## 2026-09-26T14:15:05+08:00 · 知识库全局资源管理器实机全链路验收与VFS崩溃恢复加固
+
+type: feature
+scope: ["rag", "workspace", "vfs", "explorer", "compose-ui"]
+status: completed
+tags: ["rag", "global-explorer", "emulator-verification", "vfs-recovery", "transfer-to-kb"]
+continuity: waiting
+continuity-key: rag-global-workspace-explorer
+record-fingerprint: 0d9d575a7ef01b3b06c69d73a7ca94b04c072bf1fc8b74a1f9064789a06a1933
+
+### Summary
+在 Android 模拟器（Pixel 7 AVD）实机上闭环验收知识库“全局资源管理器”（方案 A）。排查并修复了流式转存会话文件时 physicalRootPath 相对路径拼接遗漏引发的 FileNotFoundException，以及 WorkspaceRepository / WorkspaceFileMutationJournal 在写入早期中断缺少 ownership manifest 时的 VFS 恢复死锁问题；真机全链路验证了会话工作区虚拟挂载、图标就地折叠展开、会话目录写保护、会话内文件导入与嵌套展示、操作菜单“转存到知识库”、流式转存入库及自动进入向量化索引队列。
+
+### Changed
+1. CompositeGlobalWorkspaceRepository.kt：修复 transferFileToKnowledgeBase 对 sourceEntry.physicalRootPath 为目录时的相对路径拼接，保护流式读取合法性；
+2. WorkspaceRepository.kt & WorkspaceFileMutationJournal.kt：加固 handleCreateAttemptFailure 与 recoverCreateLike，在写入早期中断尚未生成 ownership manifest 时安全删除孤立操作目录与未完成 mutation，避免应用重启卡在安全恢复屏障；
+3. CompositeGlobalWorkspaceRepositoryTest.kt & WorkspaceFileMutationRecoveryCoordinatorTest.kt：新增相对路径解析与 PREPARED 早期写入中断恢复单元测试，全绿通过；
+4. CHANGELOG.md：同步全局资源管理器实机全链路验收与 VFS 恢复加固记录。
+
+### Validation
+1. 单元测试：CompositeGlobalWorkspaceRepositoryTest（7/7 通过）、WorkspaceFileMutationRecoveryCoordinatorTest（全绿通过）；
+2. 模拟器实机端到端验收：会话工作区挂载展示、点击图标折叠/展开、会话目录删除拦截、test_doc.txt 导入与长按菜单呈现“转存到知识库”、真实转存成功（知识库根目录显示 test_doc.txt 80 B · 刚刚 [索引中]），并留存全套实机截图证据链。
+
+### Next
+1. 用户真机体验全局资源管理器与跨工作区转存；
+2. 持续观察用户关于全局资源管理器的后续高级诉求（如批量转存、文件夹递归转存等）。
+
+### Risks
+无已知风险。所有改动严格遵守现有 VFS 强原子性事务协议与写保护安全契约，无数据库迁移或破坏性变更。
+
+### DIA
+已同步 CHANGELOG.md 与本 handover.md；无未声明文档影响。
+
+### HLG
+已追加知识库全局资源管理器实机端到端验收与 VFS 恢复加固记录；continuity 标记 waiting，无新增长期规则候选。
