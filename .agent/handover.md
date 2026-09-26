@@ -1,5 +1,51 @@
 # 交接文档 (2026-05-20)
 
+## 2026-09-26T13:25:00+08:00 · 知识库全局资源管理器落地与会话工作区统一挂载
+
+type: feature
+scope: rag, workspace, vfs, explorer, compose-ui
+status: completed
+tags: [rag, global-explorer, composite-workspace, files-panel, transfer-to-kb]
+continuity: completed
+continuity-key: rag-global-workspace-explorer
+
+### Summary
+
+完整落地知识库“全局资源管理器”方案 A。在保留现有底层会话工作区物理隔离与零破坏数据库的前提下，打造复合工作区仓库 `CompositeGlobalWorkspaceRepository`，将全局知识库根目录与所有活跃会话工作区统一在知识库根路径下虚拟挂载。针对“会话工作区”虚拟根节点与各会话子目录设计专属高品质视觉（系统/会话胶囊徽章、对话气泡图标、图标就地展开折叠），并实施写保护（禁止误删会话虚拟目录）；为会话内文件提供一键“转存到知识库”并自动触发入队切块与向量化；同时移除知识库文档标签页顶部冗余生硬的会话下拉切换器，呈现纯净一体的全局资源管理器体验。
+
+### Changed
+
+- `native-ui/app/src/main/java/com/promenar/nexara/data/repository/CompositeGlobalWorkspaceRepository.kt`：新增复合工作区挂载仓库与常量定义，代理会话列表与文件节点，提供写保护和跨工作区流式安全转存。
+- `native-ui/app/src/main/java/com/promenar/nexara/data/local/db/dao/FileEntryDao.kt`：补充 `findActiveByUuid(uuid)` 查询方法。
+- `native-ui/app/src/main/java/com/promenar/nexara/ui/chat/components/FilesPanel.kt`：升级 `FileRow` 与 `FileTreeRow`，支持系统/会话胶囊徽章与专属图标、图标就地点击折叠展开，智能屏蔽虚拟节点非法删除，为会话文件提供一键转存到知识库动作。
+- `native-ui/app/src/main/java/com/promenar/nexara/ui/rag/RagViewModel.kt`：接入 `CompositeGlobalWorkspaceRepository`，更新 `getWorkspaceRepo`，增加 `transferFileToKnowledgeBase` 并联动 `copyFile` 与向量化队列入队。
+- `native-ui/app/src/main/java/com/promenar/nexara/ui/rag/RagHomeScreen.kt`：移除顶部冗余的 `RagWorkspaceSourceSelector` 视图调用，让统一文件树铺满呈现。
+- `native-ui/app/src/main/res/values/strings.xml` & `native-ui/app/src/main/res/values-zh-rCN/strings.xml`：新增中英文国际化字符串。
+- `CHANGELOG.md`：记录知识库全局资源管理器功能更新。
+
+### Validation
+
+- 单元测试：新增 `CompositeGlobalWorkspaceRepositoryTest`（6 个测试用例全部通过）；
+- 契约测试：`RagNavigationChainContractTest` 等 4 个导航契约测试全部通过；
+- 全量构建：`./gradlew compileDebugKotlin` 0 错误编译通过，`./gradlew testDebugUnitTest` 全绿通过。
+
+### Next
+
+1. 用户真机体验全局资源管理器与会话工作区挂载效果；
+2. 持续观察用户关于全局资源管理器的后续高级诉求（如批量转存、文件夹递归转存等）。
+
+### Risks
+
+- 无已知风险，所有底层会话物理文件结构与数据库完全未受破坏，所有改动均为纯虚拟内存视图合成与安全流式转存。
+
+### DIA
+
+DIA: 已同步 `CHANGELOG.md` 与本 `handover.md`；新功能与架构演进已完整记录。
+
+### HLG
+
+HLG: 已追加知识库全局资源管理器与会话工作区虚拟挂载实施与验证记录；无新增长期规则候选。
+
 ## 2026-07-15T19:21:02+08:00 · v0.2-beta 最终应用候选推送与远端 Android CI 闭合
 
 type: validation
