@@ -1,5 +1,59 @@
 # 交接文档 (2026-05-20)
 
+## 2026-09-26T23:05:00+08:00 · 知识库集中式 FAB 状态指示微件、同层下钻式目录切换与工作区沙箱深度隔离
+
+type: feature
+scope: rag, ui-status, fab, explorer-breadcrumbs, sandbox-isolation
+status: completed
+tags: [rag, status-fab, breadcrumbs, drill-down, hub-icon, sandbox-isolation]
+continuity: completed
+continuity-key: rag-fab-drilldown-isolation
+
+### Summary
+
+响应用户意图完成知识库四大关键体验升级：
+1. **集中式悬浮 FAB 状态指示微件（RagStatusFab）**：彻底移除顶部粗暴挤压布局的错误横幅，右下角提供 Material 3 规范圆形状态微件。后台运行中外延环形旋转、中心呈现任务图标（并发时 1.8 秒平滑轮播），错误态红叉、成功态绿勾（3.5 秒平滑隐退），轻触向左动画平滑展开气泡卡片，包含任务标题、微型进度条、错误详情，并提供“去设置”（直达记忆设置）、“重试”与“关闭”按钮；
+2. **知识图谱网状拓扑图标纠偏**：顶栏“知识图谱”入口按钮及 FAB 图谱抽取图标统一修正为 `Icons.Rounded.Hub` 网状拓扑节点图标，消除语义歧义；
+3. **会话工作区沙箱深度隔离**：加固 `FileEntryDao` SQL 查询 `workspace_root_uuid NOT IN (SELECT workspace_root_uuid FROM sessions WHERE agent_id != '__system__')`，并移除 `ResourceExplorerViewModel` 的调度器，切断会话工作区文件被自动切块与向量化的路径，前端隐藏 RAG 状态徽章，仅保留用户显式“转存到知识库”；
+4. **同层下钻式无缩进目录切换（RagFolderBreadcrumbsBar）**：彻底废除窄屏树状缩进展开，点击子文件夹完整同层切换进入，深度始终为 0，配备全功能层级路径面包屑导航、返回箭头及系统返回键（BackHandler）逐层回退。
+
+### Changed
+
+- `native-ui/app/src/main/java/com/promenar/nexara/ui/rag/RagHomeScreen.kt`：移除顶部 `AnimatedVisibility` 错误条，在 `Scaffold` 挂载 `RagStatusFab`；将操作栏知识图谱图标替换为 `Icons.Rounded.Hub`；引入 `RagFolderBreadcrumbsBar` 与 `folderStack` 下钻状态，支持系统返回键与同层无缝切换。
+- `native-ui/app/src/main/java/com/promenar/nexara/data/local/db/dao/FileEntryDao.kt`：`getUnvectorizedSupportedFiles` 严格排除非系统会话的工作区根，杜绝会话私有文件被后台扫描自动向量化。
+- `native-ui/app/src/main/java/com/promenar/nexara/ui/chat/components/FilesPanel.kt`：会话文件隐藏 `IndexStatusBadge` 与 `KgStatusIcon`，优化点击路由优先激活 `onFolderClick` 下钻。
+- `native-ui/app/src/main/java/com/promenar/nexara/ui/chat/components/ResourceExplorerViewModel.kt`：移除文件共享/导入时的自动索引调度器。
+- `native-ui/app/src/main/res/values/strings.xml` & `native-ui/app/src/main/res/values-zh-rCN/strings.xml`：补充 FAB 状态文案、去设置及面包屑国际化文本。
+- `CHANGELOG.md`：记录集中式 FAB 状态指示微件、拓扑图标纠偏、沙箱隔离及同层下钻目录浏览更新。
+
+### Validation
+
+- 全量单元与契约测试：`./gradlew testDebugUnitTest` 2800+ 单元测试 100% 全部通过（含 `ThemeSurfaceContractTest`、`RagNavigationChainContractTest`、`RagHomeScreenContractTest`、`VectorizationQueueRoomTest`）；
+- Android 模拟器实机端到端验收：
+  - 启动应用进入知识库，验证顶部错误横幅彻底消失，顶栏空间开阔；知识图谱按钮呈现网状拓扑节点图标；
+  - 验证右下角 FAB 红叉状态微件展示，点击向左平滑展开错误气泡，显示“索引任务失败”、“索引失败，请检查嵌入模型后重试”、“去设置”、“重试”、“关闭”按钮；
+  - 验证点击“去设置”无缝跳转至“记忆设置”页面，点击返回正常返回；
+  - 验证点击“关闭”按钮卡片平滑收起；
+  - 验证点击「会话工作区」同层切换进入，面包屑展示 `← 全部文件 › 会话工作区`，点击「Say OK」进一步下钻，面包屑展示 `← 全部文件 › 会话工作区 › Say OK`，文件以全宽 0 缩进清晰排版，会话文件无 RAG 徽章；
+  - 验证点击面包屑任意层级或返回箭头或系统返回键均可逐层平滑返回根目录。
+
+### Next
+
+1. 用户验收集中式 FAB 状态微件与同层下钻目录交互体验；
+2. 持续跟踪后续多模态文件在不同会话工作区间的流转诉求。
+
+### Risks
+
+- 无已知风险，所有数据流转与沙箱隔离遵循已有架构与 SQL 安全边界。
+
+### DIA
+
+DIA: 已同步 `CHANGELOG.md` 与本 `handover.md`；新组件交互、契约与隔离逻辑已完整记录。
+
+### HLG
+
+HLG: 已追加集中式 FAB 状态微件、拓扑图标纠偏、沙箱隔离及同层下钻目录浏览实施与端到端实机验证记录；无新增长期规则候选。
+
 ## 2026-09-26T13:25:00+08:00 · 知识库全局资源管理器落地与会话工作区统一挂载
 
 type: feature
