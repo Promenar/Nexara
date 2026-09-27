@@ -8236,3 +8236,45 @@ record-fingerprint: 931a7d0d4eba4a8cc8b67b134b53d3119f5adfb4997f81c8761f98dc26bc
 
 ### HLG
 已追加全层级同层平铺浏览落地与首屏树状展开消除记录；无新增长期规则候选。
+
+## 2026-09-27T21:43:18+08:00 · 悬浮菜单位置精准锚定与全站新版视觉样式统一规范收敛
+
+type: fix
+scope: ["ui, dropdown-menu, files-panel, m3-design, release"]
+status: completed
+tags: ["dropdown-menu", "position-anchor", "files-panel", "ui-unification", "release-apk"]
+continuity: waiting
+continuity-key: dropdown-menu-anchor-and-style-unification
+record-fingerprint: 31537a3d52874cd20ac81d0fbbc19354fbf63d729787c5c839a00542f40d6d27
+
+### Summary
+响应用户真机测试与审美反馈：1. 根治知识库文件列表悬浮菜单点击后未锚定按钮、错误向屏幕最左侧 (x=0) 弹出的布局缺陷，重构 FileRow 将菜单下沉至 trailingContent 局域 Box 内精准依附右侧操作按钮；2. 封装全站统一的 NexaraDropdownMenu 组件，固化 16dp 大圆角、surfaceContainer 容器底色、1dp 半透明微描边规范；3. 全面排查并淘汰全站（FilesPanel、RagHomeScreen、RagFolderScreen、ProviderListScreen、ProviderModelsScreen、AgentHubScreen、PipelineBubble、ChatScreen）所有老旧原生直角 DropdownMenu，升级 20dp 规范 Leading Icon 与错误色；4. 新增契约测试，全量 2,800+ 单元测试 100% 通过，成功构建真机可用的 Release APK（20MB，apksigner v2 签名验证）。
+
+### Changed
+- `native-ui/app/src/main/java/com/promenar/nexara/ui/common/NexaraDropdownMenu.kt`：新增 Nexara 全站统一悬浮菜单组件，封装 16dp 圆角、surfaceContainer 表面底色与 1dp 半透明微边框。
+- `native-ui/app/src/main/java/com/promenar/nexara/ui/chat/components/FilesPanel.kt`：重构 `FileRow` 架构，新增 `menuContent` 参数并下沉至 `trailingContent` 的局域 `Box` 内；`FileNodeRow` 迁移至 `NexaraDropdownMenu`，为 8 项文件操作装配 20dp 规范图标、Typography 与错误色。
+- `native-ui/app/src/main/java/com/promenar/nexara/ui/rag/RagHomeScreen.kt`：备份恢复源下拉选择器迁移至 `NexaraDropdownMenu`。
+- `native-ui/app/src/main/java/com/promenar/nexara/ui/rag/RagFolderScreen.kt`：多选操作菜单迁移至 `NexaraDropdownMenu`。
+- `native-ui/app/src/main/java/com/promenar/nexara/ui/settings/ProviderListScreen.kt`：提供商卡片与列表行菜单统一迁移至 `NexaraDropdownMenu`。
+- `native-ui/app/src/main/java/com/promenar/nexara/ui/settings/ProviderModelsScreen.kt`：模型管理批量菜单迁移至 `NexaraDropdownMenu`。
+- `native-ui/app/src/main/java/com/promenar/nexara/ui/hub/AgentHubScreen.kt`、`PipelineBubble.kt`、`ChatScreen.kt`：行内菜单样板代码全面收敛至 `NexaraDropdownMenu`。
+- `native-ui/app/src/test/java/com/promenar/nexara/ui/common/NexaraDropdownMenuContractTest.kt`：新增契约测试，锁定组件规范与全站页面收敛。
+- `CHANGELOG.md`：记录本轮悬浮菜单锚定修复与全站统一样式收敛。
+- 构建生成最新已签名 `app-release.apk` 供真机测试。
+
+### Validation
+- 全量单元与契约测试：`NexaraDropdownMenuContractTest` 3 项测试与全量 2,800+ JVM 单元测试 100% 全部通过；
+- Android 模拟器实机端到端验收：截屏验证智能体卡片菜单、知识库文件列表菜单（精准对齐右侧按钮、无左侧漂移、8 个规范图标）、提供商操作菜单，视觉呈现 16dp 大圆角与精致描边；
+- Release 签名验证：执行 `:app:assembleRelease`，使用 `secure_env/promenar.keystore` 成功构建 `app-release.apk`（20MB），`apksigner verify --verbose` 输出 `Verified using v2 scheme: true`。
+
+### Next
+交付用户安装最新 Release APK 在真机上实测悬浮菜单对齐与全站新视觉风格。
+
+### Risks
+无已知风险。
+
+### DIA
+已同步 CHANGELOG.md 与本 handover.md；核心组件 NexaraDropdownMenu 与相关页面已纳入契约测试。
+
+### HLG
+已追加悬浮菜单位置精准锚定与全站新版视觉样式统一规范收敛记录；无新增长期规则候选。
