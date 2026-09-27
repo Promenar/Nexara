@@ -8278,3 +8278,42 @@ record-fingerprint: 31537a3d52874cd20ac81d0fbbc19354fbf63d729787c5c839a00542f40d
 
 ### HLG
 已追加悬浮菜单位置精准锚定与全站新版视觉样式统一规范收敛记录；无新增长期规则候选。
+
+## 2026-09-27T22:15:22+08:00 · 修复知识库FAB红叉居中与设置路由，排查并加固向量化鉴权异常
+
+type: fix
+scope: ["ui", "rag", "auth", "navigation"]
+status: completed
+tags: ["rag-status-fab", "icon-centering", "navigation-route", "token-sanitization", "release-apk"]
+continuity: none
+record-fingerprint: 41cb8f88b5cf1609444eb1e4d5a2bdc48bc1176d923b8c8d7581a14a19dfb265
+
+### Summary
+响应用户在模拟器验收时提出的三项具体问题：1. 根治知识库右下角悬浮 FAB 报错状态时红叉（X）偏离中心的视觉缺陷，重构 AnimatedContent 居中对齐与 Box 约束，将图标升级为 24dp M3 标准尺寸，实测四向边距均为 44px（像素级绝对居中）；2. 修复 FAB 错误气泡中点击“去设置”错误跳转到记忆配置页（rag_global_config）的路由缺陷，修正为直达“默认模型设置”（DEFAULT_MODELS）；3. 调取模拟器 logcat 日志全链路排查后台向量化一直报错的根因，证实为远端 FNOS NewAPI 网关返回 HTTP 401 Unauthorized（Invalid token），明确了并非客户端配置遗漏而是服务端 Key 失效，同时在客户端对 Base URL、API Key 与 Model 名称全面实施防御性 trim 处理以防空白符污染。
+
+### Changed
+1. native-ui/app/src/main/java/com/promenar/nexara/ui/rag/RagHomeScreen.kt：RagStatusFab 中为 AnimatedContent 显式配置 contentAlignment = Alignment.Center 与 Modifier.fillMaxSize()，内部各图标分支用居中 Box 包裹，将状态图标统一调整为 24dp；
+2. native-ui/app/src/main/java/com/promenar/nexara/ui/MainTabScaffold.kt：将 onNavigateToConfig 目标从 rag_global_config 修改为 NavDestinations.DEFAULT_MODELS；
+3. native-ui/app/src/main/java/com/promenar/nexara/data/rag/EmbeddingClient.kt：对 baseUrl 执行 trim().trimEnd('/')，对 apiKey 和 model 执行 trim() 处理；
+4. native-ui/app/src/main/java/com/promenar/nexara/data/manager/ProviderManager.kt：readSecret 与 writeSecret 均追加 trim() 处理；
+5. native-ui/app/src/main/java/com/promenar/nexara/NexaraApplication.kt：readSecret 追加 trim() 处理；
+6. CHANGELOG.md：记录本轮 FAB 视觉绝对居中、设置路由纠偏与凭证防御加固。
+
+### Validation
+1. 像素级居中度量：使用 Python 图像分析脚本度量截取的 FAB 状态按钮，红色圆底 121x121px，白色叉形包围盒 33x33px，上下左右边距精准为 44px（偏移量 dx=0.00, dy=0.00，绝对对称居中）；
+2. 路由交互验收：模拟器实操点击 FAB 展开卡片中的“去设置”，成功直接跳转至“默认模型”页展示 BGE M3 嵌入模型；点击系统返回键平滑退回知识库；
+3. 日志排查取证：logcat PID 30024 & 31186 捕获 VectorQueue 真实响应体，确认端点返回 401 Invalid token (new_api_error)，向用户如实反馈服务端事实；
+4. 单元与回归测试：全量 2,800+ 项单元测试 100% 全部通过；
+5. 构建正式签名 Release APK：成功编译 app-release.apk（20MB），apksigner v2 签名验证通过。
+
+### Next
+向用户详细汇报三项问题的技术根因与落地结果，提醒用户在设置中填入有效的 NewAPI API Key 即可恢复向量化，交付最新已签名的 app-release.apk 供真机测试。
+
+### Risks
+无已知风险。trim 处理纯属防御性强化，不影响任何合法字符。
+
+### DIA
+已同步 CHANGELOG.md 与本 handover 记录；路由更新与防御性加固符合已有架构规范。
+
+### HLG
+已通过结构化追加记录本轮 FAB 居中修整、设置路由纠偏与鉴权排查加固事实；无新增长期规则候选。

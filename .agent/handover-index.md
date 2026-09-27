@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-09-27T21:43:18+08:00
+> generated_at: 2026-09-27T22:15:23+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -22,6 +22,7 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-09-27T22:15:22+08:00 | iso | completed | none | ["ui", "rag", "auth", "navigation"] | ["rag-status-fab", "icon-centering", "navigation-route", "token-sanitization", "release-apk"] | 修复知识库FAB红叉居中与设置路由，排查并加固向量化鉴权异常 | `.agent/handover.md` · `2026-09-27T22:15:22+08:00` · `fp:41cb8f88b5` |
 | 2026-09-27T21:43:18+08:00 | iso | completed | waiting | ["ui, dropdown-menu, files-panel, m3-design, release"] | ["dropdown-menu", "position-anchor", "files-panel", "ui-unification", "release-apk"] | 悬浮菜单位置精准锚定与全站新版视觉样式统一规范收敛 | `.agent/handover.md` · `2026-09-27T21:43:18+08:00` · `fp:31537a3d52` |
 | 2026-09-27T02:30:00+08:00 | iso | completed | completed | rag, vectorization, error-handling, ui-layout, release | [rag, vectorization, indexing-state, cancel-task, top-padding, breathing-room, release-apk] | 向量化“无限进行中”根治、任务主动取消与主页顶部呼吸感对齐 | `.agent/handover.md` · `2026-09-27T02:30:00+08:00` · `fp:ffec7cc374` |
 | 2026-09-26T23:22:14+08:00 | iso | done | none | ["rag", "files-panel", "drilldown", "flat-browser"] | ["rag", "files-panel", "flat-navigation", "drilldown", "no-tree-expansion"] | 知识库全层级同层平铺浏览彻底落地与首屏树状展开消除 | `.agent/handover.md` · `2026-09-26T23:22:14+08:00` · `fp:931a7d0d4e` |
