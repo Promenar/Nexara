@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-09-27T22:15:23+08:00
+> generated_at: 2026-09-29T23:59:45+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -11,6 +11,7 @@
 | dropdown-menu-anchor-and-style-unification | waiting | 2026-09-27T21:43:18+08:00 | completed | ["ui, dropdown-menu, files-panel, m3-design, release"] | 悬浮菜单位置精准锚定与全站新版视觉样式统一规范收敛 | `.agent/handover.md` · `2026-09-27T21:43:18+08:00` · `fp:31537a3d52` |
 | nexara-audit-completion-repair | waiting | 2026-09-22T15:28:29+08:00 | done | ["Nexara", "native-ui", "audit-repair"] | 审计修复、最终签名候选及本机设备验收完成 | `.agent/handover.md` · `2026-09-22T15:28:29+08:00` · `fp:c45ed0053a` |
 | nexara-independent-model-catalog | resume | 2026-09-22T18:33:08+08:00 | done | ["Nexara", "model-catalog"] | 独立模型目录上线、客户端验收与签名候选交付 | `.agent/handover.md` · `2026-09-22T18:33:08+08:00` · `fp:320878f7b2` |
+| nexara-local-debug-ci-boundary | waiting | 2026-09-29T23:55:52+08:00 | in-progress | ["Nexara", "PDEC", "Android"] | PDEC 本机 Android 调试边界收敛与 CI 触发待确认 | `.agent/handover.md` · `2026-09-29T23:55:52+08:00` · `fp:f4e8807aba` |
 | nexara-physical-device-ui-acceptance | waiting | 2026-08-26T16:10:54+08:00 | done | ["Nexara", "native-ui", "release"] | Bettbox 分组边界与 Agent 首页减法修复正式包 | `.agent/handover.md` · `2026-08-26T16:10:54+08:00` · `fp:cf09c0dcb0` |
 | rag-fab-drilldown-isolation | completed | 2026-09-26T23:05:00+08:00 | completed | rag, ui-status, fab, explorer-breadcrumbs, sandbox-isolation | 知识库集中式 FAB 状态指示微件、同层下钻式目录切换与工作区沙箱深度隔离 | `.agent/handover.md` · `2026-09-26T23:05:00+08:00` · `fp:5c7e9d4ff9` |
 | rag-global-workspace-explorer | waiting | 2026-09-26T14:15:05+08:00 | completed | ["rag", "workspace", "vfs", "explorer", "compose-ui"] | 知识库全局资源管理器实机全链路验收与VFS崩溃恢复加固 | `.agent/handover.md` · `2026-09-26T14:15:05+08:00` · `fp:0d9d575a7e` |
@@ -22,6 +23,8 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-09-29T23:59:45+08:00 | iso | done | none | ["Nexara", "PDEC", "Android", "CI"] | ["pdec", "android", "local-avd", "ci"] | PDEC 本机调试与 GitHub 自动化测试边界确认 | `.agent/handover.md` · `2026-09-29T23:59:45+08:00` · `fp:0d814e8573` |
+| 2026-09-29T23:55:52+08:00 | iso | in-progress | waiting | ["Nexara", "PDEC", "Android"] | ["pdec", "android", "local-avd", "ci"] | PDEC 本机 Android 调试边界收敛与 CI 触发待确认 | `.agent/handover.md` · `2026-09-29T23:55:52+08:00` · `fp:f4e8807aba` |
 | 2026-09-27T22:15:22+08:00 | iso | completed | none | ["ui", "rag", "auth", "navigation"] | ["rag-status-fab", "icon-centering", "navigation-route", "token-sanitization", "release-apk"] | 修复知识库FAB红叉居中与设置路由，排查并加固向量化鉴权异常 | `.agent/handover.md` · `2026-09-27T22:15:22+08:00` · `fp:41cb8f88b5` |
 | 2026-09-27T21:43:18+08:00 | iso | completed | waiting | ["ui, dropdown-menu, files-panel, m3-design, release"] | ["dropdown-menu", "position-anchor", "files-panel", "ui-unification", "release-apk"] | 悬浮菜单位置精准锚定与全站新版视觉样式统一规范收敛 | `.agent/handover.md` · `2026-09-27T21:43:18+08:00` · `fp:31537a3d52` |
 | 2026-09-27T02:30:00+08:00 | iso | completed | completed | rag, vectorization, error-handling, ui-layout, release | [rag, vectorization, indexing-state, cancel-task, top-padding, breathing-room, release-apk] | 向量化“无限进行中”根治、任务主动取消与主页顶部呼吸感对齐 | `.agent/handover.md` · `2026-09-27T02:30:00+08:00` · `fp:ffec7cc374` |
@@ -45,15 +48,6 @@
 | 2026-09-23T15:15:09+08:00 | iso | done | none | ["native-ui", "rendering", "ui-ux"] | ["visual-audit", "utf-8", "latex", "echarts", "mermaid", "a11y", "session-delete"] | 视觉审计缺陷修复与渲染健壮性增强 (P0-P2) | `.agent/handover.md` · `2026-09-23T15:15:09+08:00` · `fp:2e14e0e14a` |
 | 2026-09-23T14:19:37+08:00 | iso | done | none | ["nexara-native-ui"] | ["visual-audit", "screenshot", "ui-automation"] | 全页面视觉审计完成（四层审计+报告交付） | `.agent/handover.md` · `2026-09-23T14:19:37+08:00` · `fp:bc0e414755` |
 | 2026-09-23T11:42:49+08:00 | iso | in-progress | resume | ["nexara-native-ui"] | ["visual-audit", "screenshot", "ui-automation"] | 全页面视觉审计开工（定时任务 11:40 触发） | `.agent/handover.md` · `2026-09-23T11:42:49+08:00` · `fp:682d81cea2` |
-| 2026-09-22T18:33:08+08:00 | iso | done | resume | ["Nexara", "model-catalog"] | ["model-catalog", "github-pages", "android", "signed-apk"] | 独立模型目录上线、客户端验收与签名候选交付 | `.agent/handover.md` · `2026-09-22T18:33:08+08:00` · `fp:320878f7b2` |
-| 2026-09-22T17:20:34+08:00 | iso | in_progress | resume | ["Nexara", "model-catalog"] | ["model-catalog", "github-pages", "android"] | 独立模型目录实施与本机集成验收启动 | `.agent/handover.md` · `2026-09-22T17:20:34+08:00` · `fp:0274663d70` |
-| 2026-09-22T15:28:29+08:00 | iso | done | waiting | ["Nexara", "native-ui", "audit-repair"] | ["audit", "android", "release", "performance"] | 审计修复、最终签名候选及本机设备验收完成 | `.agent/handover.md` · `2026-09-22T15:28:29+08:00` · `fp:c45ed0053a` |
-| 2026-09-22T14:23:25+08:00 | iso | in-progress | resume | ["Nexara", "native-ui", "audit-repair"] | ["audit", "android", "performance", "release"] | 签名覆盖升级与编辑器性能未关闭项 | `.agent/handover.md` · `2026-09-22T14:23:25+08:00` · `fp:ca4b9facf2` |
-| 2026-09-22T13:45:34+08:00 | iso | in-progress | resume | ["Nexara", "native-ui", "audit-repair"] | ["audit", "android", "dual-database", "release"] | 签名候选与API31/35/36设备回归验真 | `.agent/handover.md` · `2026-09-22T13:45:34+08:00` · `fp:a739bce619` |
-| 2026-09-22T13:05:00+08:00 | iso | in-progress | resume | ["Nexara", "native-ui", "audit-repair"] | ["audit", "android", "dual-database", "gateway"] | 全量质量门禁通过及最终边界修复交接 | `.agent/handover.md` · `2026-09-22T13:05:00+08:00` · `fp:2ffbe48a92` |
-| 2026-09-22T12:04:56+08:00 | iso | in-progress | resume | ["Nexara", "native-ui", "audit-repair"] | ["audit", "android", "dual-database", "gateway"] | 审计修复设备证据及完整数据恢复剩余边界 | `.agent/handover.md` · `2026-09-22T12:04:56+08:00` · `fp:e1b9ace81a` |
-| 2026-09-22T11:10:24+08:00 | iso | in-progress | resume | ["Nexara", "native-ui", "audit-repair"] | ["audit", "android", "dual-database", "gateway"] | 审计修复中期证据与Android身份平台限制 | `.agent/handover.md` · `2026-09-22T11:10:24+08:00` · `fp:01458ccc4e` |
-| 2026-09-22T10:18:09+08:00 | iso | in-progress | resume | ["Nexara", "native-ui", "audit-repair"] | ["audit", "pdec", "android", "gateway"] | 审计修复计划批准及本机Android验证启动 | `.agent/handover.md` · `2026-09-22T10:18:09+08:00` · `fp:cfde62c9fe` |
 
 ## Undated Records
 

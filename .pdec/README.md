@@ -2,7 +2,7 @@
 
 ## 授权与范围
 
-2026-09-22，用户在“根据仓库进度审计规划补全修复”的当前 Codex 会话中批准修复计划，并明确：“本项目 PDEC 不走远程调试，直接使用本机的 Android 模拟器”。该项目例外覆盖本机编译、JVM/截图/Lint 验证、Android 模拟器联调和候选 APK 验真。禁止把默认远端策略当作本项目的执行前提。
+Android 开发调试统一在本机 macOS 与本机启动的 Android AVD 上进行，覆盖编译、JVM/截图/Lint 验证、安装、ADB/Logcat 联调、设备测试和候选 APK 验真。不得连接远程主机、远程设备或托管模拟器执行调试，也不得将远程设备映射为本机 ADB 目标。该范围由用户在 2026-09-22 和 2026-09-29 的指令确认。
 
 用户同时授权使用无密钥本机聚合网关 `http://127.0.0.1:1337`，测试模型为 `newapi/deepseek-v4-flash`、`newapi/gemini-3.8-flash`、`newapi/sensenova-6.8-flash-lite`、`openai-chatgpt/gpt-5.6-luna`、`newapi/MiniMax-M3`。模型调用属于既有服务测试，不是远端开发执行；只发送合成测试数据，限制请求次数和输出长度。目录可见性不能替代协议与业务验证。
 
@@ -13,9 +13,9 @@
 - 执行主机：当前本机 macOS arm64；工具位置通过本机 Android SDK 配置、PATH 和 Java 安装发现，不纳管绝对路径。
 - 应用：`native-ui/` 的 Gradle 9.5.0 wrapper，Android compile/target SDK 36，min SDK 31；本机已发现 OpenJDK 21。
 - Android 产物是 APK，运行目标是 Android ARM64。PDEC v1 不含 Android OS 枚举，因此机器字段使用 Linux arm64 表示内核/ABI 家族；本说明和设备 API/ABI 验证才定义 Android 兼容性，不能据字段声称普通 Linux 可运行 APK。
-- 日常构建、单测、截图、Lint、模拟器联调均在本机执行，同一工作树一次只允许一个 Gradle 验证任务。模拟器使用专用 Nexara AVD；API 31、35 与 36 系列分别记录系统版本、ABI、序列号和产物 SHA-256。
+- 日常构建、单测、截图、Lint、模拟器联调均在本机执行，同一工作树一次只允许一个 Gradle 验证任务。设备脚本、安装、`adb reverse` 和 Logcat 必须先核对目标序列号为本机启动的专用 Nexara AVD，明确设置 `ANDROID_SERIAL` 或使用 `adb -s` 定向；存在多个设备或目标无法确认时停止设备操作。API 31、35 与 36 系列分别记录系统版本、ABI、序列号和产物 SHA-256。
 - 公开模型目录由 GitHub 标准 Linux x86_64 Runner 构建，通过 Pages artifact 分发；PDEC v1 的部署 target 引用生产该静态产物的 Runner，具体服务地址由 endpoint 定义，不代表 Pages 服务器实际架构。Android 的本机例外保持有效。
-- 既有 GitHub Actions 保留为 push 触发的独立 CI；不手动调用远端调试、源码同步或设备服务，不部署家庭自托管执行器。
+- 既有 GitHub Actions 保留 push 触发的独立 CI；`android-ci.yml` 的托管模拟器设备矩阵继续作为公开仓库自动化测试运行，不承担交互调试或本机模拟器验收。用户于 2026-09-29 明确保留该矩阵。不手动调用远端调试、源码同步或设备服务，不部署家庭自托管执行器。
 - 本机网关通过 `adb reverse tcp:1337 tcp:1337` 提供给已核验的专用模拟器；仅测试变体允许所需回环明文流量，正式版不扩大网络安全配置。
 
 ## 工具链、产物与资源

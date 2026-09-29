@@ -8317,3 +8317,64 @@ record-fingerprint: 41cb8f88b5cf1609444eb1e4d5a2bdc48bc1176d923b8c8d7581a14a19df
 
 ### HLG
 已通过结构化追加记录本轮 FAB 居中修整、设置路由纠偏与鉴权排查加固事实；无新增长期规则候选。
+
+## 2026-09-29T23:55:52+08:00 · PDEC 本机 Android 调试边界收敛与 CI 触发待确认
+
+type: maintenance
+scope: ["Nexara", "PDEC", "Android"]
+status: in-progress
+tags: ["pdec", "android", "local-avd", "ci"]
+continuity: waiting
+continuity-key: nexara-local-debug-ci-boundary
+record-fingerprint: f4e8807aba227e085e2e3c1134454b9da647344b99f4879d30dfee95b6ec8809
+
+### Summary
+按用户 2026-09-29 指令将 Android 开发调试限定为本机 macOS 和本机启动的专用 Nexara AVD。当前分支推送会自动触发 GitHub Android CI 托管模拟器，是否停用该自动矩阵待用户确认；确认前未推送。
+
+### Changed
+更新 .pdec/contract.yaml 的批准引用与设备验证说明，更新 .pdec/README.md 的设备选择和执行边界，并同步 README.md、CHANGELOG.md。未修改 CI 工作流，也未接入远程设备。
+
+### Validation
+pdec.py validate 返回 approved、valid=true、execution_ready=true、无漂移，摘要 c8f938f6a3a727f53ad599da4f6b6566f1037420598fcff061b88dc56eb2313f；git diff --check 通过。未运行模拟器或应用测试，因为本次仅修改契约与文档。
+
+### Next
+确认 push 触发的托管模拟器设备矩阵是否保留；据此完成 CI 处理与仅本任务文件的提交推送。
+
+### Risks
+当前 B-native-refactor 的 android-ci.yml 在 push 时会运行远端托管模拟器；直接推送将触发与用户措辞可能冲突的外部运行。项目内还有既存未跟踪文件，本任务不纳管。
+
+### DIA
+已同步 PDEC 说明、README.md 和 CHANGELOG.md；AGENTS.md 与 registry 入口无变更。
+
+### HLG
+本记录通过结构化 append 写入，索引由工具重建；后续 CI 决定及推送结果需另行续记。
+
+## 2026-09-29T23:59:45+08:00 · PDEC 本机调试与 GitHub 自动化测试边界确认
+
+type: maintenance
+scope: ["Nexara", "PDEC", "Android", "CI"]
+status: done
+tags: ["pdec", "android", "local-avd", "ci"]
+continuity: none
+record-fingerprint: 0d814e8573b03f196dbd47f78fc321518ec824a0177190491f506109af020b39
+
+### Summary
+用户于 2026-09-29 明确：Android 开发交互调试全部在本机；公开仓库 GitHub 自动化测试及其托管模拟器矩阵保留。
+
+### Changed
+更新 .pdec/contract.yaml 批准引用及本机设备验证说明，更新 .pdec/README.md、README.md、CHANGELOG.md；未修改 GitHub Actions 工作流。先前关于 CI 范围待确认的记录已由本条续记解除。
+
+### Validation
+pdec.py validate 返回 approved、valid=true、execution_ready=true、无漂移，契约摘要 c8f938f6a3a727f53ad599da4f6b6566f1037420598fcff061b88dc56eb2313f；git diff --check 通过。仅契约及文档调整，未运行应用测试或调试模拟器。
+
+### Next
+仅暂存本任务契约、文档和 HLG 记录，提交推送当前分支，核对远端 SHA 与 CI 触发状态。
+
+### Risks
+PDEC 验证说明是流程约束，pdec.py 不会技术性拦截 ADB 连接；实际设备运行前仍须核对本机专用 AVD 的序列号。
+
+### DIA
+已同步 .pdec/README.md、README.md、CHANGELOG.md；AGENTS.md 与 registry 无需修改。
+
+### HLG
+通过结构化 append 记录用户澄清与契约终态，索引由工具重建。

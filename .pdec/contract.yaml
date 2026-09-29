@@ -6,8 +6,8 @@
   },
   "status": "approved",
   "approval": {
-    "reference": ".pdec/README.md#授权与范围：2026-09-22 用户批准本机Android及GitHub Actions+Pages独立模型目录实施",
-    "contract_digest": "5f41a693a8e5477e4cdd3589e2b411ebd7669f84083915a843795f25ae7c3c86"
+    "reference": "2026-09-29 用户指令：Android 全部本机调试且不调用远程设备运行模拟器；同日澄清保留公开仓库 GitHub 自动化测试及托管模拟器；2026-09-22 GitHub Actions+Pages 模型目录授权见 .pdec/README.md#授权与范围",
+    "contract_digest": "c8f938f6a3a727f53ad599da4f6b6566f1037420598fcff061b88dc56eb2313f"
   },
   "targets": {
     "local-mac": {
@@ -92,7 +92,7 @@
         "artifacts"
       ],
       "cross_compile": "Android Gradle Plugin 生成 Android APK，在本机 ARM64 Android 模拟器验证",
-      "verification": "记录 Android API、ABI、序列号、测试报告和 APK SHA-256"
+      "verification": "先确认本机启动的专用 Nexara AVD 序列号并固定 ANDROID_SERIAL；记录 Android API、ABI、序列号、测试报告和 APK SHA-256；禁止远程设备或托管模拟器调试"
     },
     "release-build": {
       "executor": "local-mac",
@@ -126,7 +126,7 @@
         "artifacts"
       ],
       "cross_compile": "Android Gradle Plugin 生成 Android APK，在本机 ARM64 Android 模拟器验证",
-      "verification": "记录 Android API、ABI、序列号、测试报告和 APK SHA-256"
+      "verification": "先确认本机启动的专用 Nexara AVD 序列号并固定 ANDROID_SERIAL；记录 Android API、ABI、序列号、测试报告和 APK SHA-256；禁止远程设备或托管模拟器调试"
     },
     "catalog-build": {
       "executor": "github-actions",
