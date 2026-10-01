@@ -8471,3 +8471,33 @@ API31原单方法RED120秒退出124；断开回写对照0.463s PASS，正式延�
 
 ### HLG
 append dry-run/apply，原样RED、对照与正式结果均保留。
+
+## 2026-10-01T22:54:47+08:00 · Android CI 全矩阵恢复与0.2.2候选证据闭环
+
+type: maintenance
+scope: ["Nexara", "android-ci", "release"]
+status: done
+tags: ["ci", "release", "ui"]
+continuity: none
+record-fingerprint: 8d41e82bdeec69c226b84814c8595ce7e72dce93ce94122586ffb5ec01b22b7d
+
+### Summary
+CI恢复及版本文档同步已完成，源码7910b5f1的远端完整矩阵成功；公开发行仍PENDING，未执行tag或Release。
+
+### Changed
+同步54张视觉基线/预览、当前导航和无障碍规格；恢复置顶语义，修复资源读取Lint、API31提示词编辑器布局反馈；Android FD竞态测试迁入设备，Prompt7项纳入minimum/full。发行配置与文档统一0.2.2-beta/code4。
+
+### Validation
+GitHub run 36875529644 completed/success，headSha7910b5f1e5e11b36111de0369874e3d80e918e42；质量及API31/35/36全部成功。截图102、JVM2798/0failure/error/25skip；设备exit-code均0，报告98/138/138项含条件跳过，各API Prompt7/a11y9/FD5通过。独立视觉与发行门禁/根因审阅通过。签名候选20464008bytes，SHA256 ef68431b927e8121d2c0d71369e6300bf97334deb537760d827f0bcec3b96524，API31冷装及公开v0.1单库升级PASS。
+
+### Next
+可恢复后续功能开发。发行专项需完成minified黑盒、双库三段及人工验收；公开发布另需明确授权。纯文档记录提交不重跑同一CI，生产/测试/脚本/workflow树与7910b5f1一致，提交推送后核对远端SHA。
+
+### Risks
+Lint仍534Warning/22Hint；截图与Debug设备测试不证明物理TalkBack/OEM/IME或release minified行为；16KiB静态对齐不证明实际16KiB设备。双库三段未执行，公开GitHub发行未更新。秘密及APK/原始报告不纳管，无关未跟踪文件保留。本轮专用模拟器已退出。
+
+### DIA
+已同步README、CHANGELOG、registry、发行说明、验证账本和实施计划。
+
+### HLG
+通过标准append dry-run/apply追加done记录，保留此前候选与失败原始事实，重建索引。

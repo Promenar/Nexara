@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-10-01T22:20:08+08:00
+> generated_at: 2026-10-01T22:54:47+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -24,6 +24,7 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-10-01T22:54:47+08:00 | iso | done | none | ["Nexara", "android-ci", "release"] | ["ci", "release", "ui"] | Android CI 全矩阵恢复与0.2.2候选证据闭环 | `.agent/handover.md` · `2026-10-01T22:54:47+08:00` · `fp:8d41e82bde` |
 | 2026-10-01T22:20:08+08:00 | iso | in_progress | resume | ["Nexara", "android-ci", "release"] | ["ci", "release", "ui"] | API31 Prompt 编辑器布局反馈根因修复候选 | `.agent/handover.md` · `2026-10-01T22:20:08+08:00` · `fp:c9c99a4302` |
 | 2026-10-01T21:48:40+08:00 | iso | in_progress | resume | ["Nexara", "android-ci", "release"] | ["ci", "release", "ui"] | Linux CI Android FD 测试归属修复候选 | `.agent/handover.md` · `2026-10-01T21:48:40+08:00` · `fp:d1674ac4c8` |
 | 2026-10-01T21:30:19+08:00 | iso | in_progress | resume | ["Nexara", "android-ci", "release"] | ["ci", "release", "ui"] | Android CI 视觉基线与0.2.2候选本机验收 | `.agent/handover.md` · `2026-10-01T21:30:19+08:00` · `fp:fcfd88235e` |
