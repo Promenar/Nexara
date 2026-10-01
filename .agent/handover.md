@@ -8409,3 +8409,34 @@ API31/36远端、minified黑盒、双库升级及物理TalkBack/OEM/IME尚未通
 
 ### HLG
 使用append先dry-run再apply追加；制品/日志与秘密不纳管。
+
+## 2026-10-01T21:48:40+08:00 · Linux CI Android FD 测试归属修复候选
+
+type: maintenance
+scope: ["Nexara", "android-ci", "release"]
+status: in_progress
+tags: ["ci", "release", "ui"]
+continuity: resume
+continuity-key: ci-version-sync-20261001
+record-fingerprint: d1674ac4c8c2e9135ef06efebc5a9efef68de6a249b245a8b8a6ebf6f9b2e0b8
+
+### Summary
+候选4612afaf远端截图、Lint、编译通过，JVM五项失败定位到Android FD API测试归属；已迁移并取得真实Android5/5。
+
+### Changed
+只迁移五个创建/竞态/回滚测试至AndroidSecureWorkspaceCreationRaceTest，应用私有目录强制能力断言；JVM其余六项保留。minimum/full脚本接入，root symlink精确核验ErrnoException/ELOOP及外部零写入；After兜底清理避免遮盖首因。生产源码与签名APK未变。
+
+### Validation
+远端run36869232149失败日志与XML已保存；迁移后本机JVM2798项0失败/错误25skip，编译通过；API35新类5/5真实通过，独立审阅通过，脚本契约及diff检查通过。首次手工runner包名错误已按设备注册runner纠正，不计入PASS。
+
+### Next
+提交推送测试修复候选，核验确切SHA的远端质量及API31/35/36；记录最终CI证据。
+
+### Risks
+远端矩阵尚待通过；签名候选仍CANDIDATE-PENDING，公开发行未授权，人工及其它发行门禁仍按账本。Mac拒绝路径不证明Android FD分支。
+
+### DIA
+已同步CHANGELOG及0.2.2验证账本的平台事实、计数、失败与运行范围。
+
+### HLG
+append dry-run/apply追加，保留前候选与RED证据。

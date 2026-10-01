@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-10-01T21:30:19+08:00
+> generated_at: 2026-10-01T21:48:40+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -8,7 +8,7 @@
 
 | continuity-key | continuity | last update | status | scope | title | source |
 | :--- | :---: | :---: | :---: | :--- | :--- | :--- |
-| ci-version-sync-20261001 | resume | 2026-10-01T21:30:19+08:00 | in_progress | ["Nexara", "android-ci", "release"] | Android CI 视觉基线与0.2.2候选本机验收 | `.agent/handover.md` · `2026-10-01T21:30:19+08:00` · `fp:fcfd88235e` |
+| ci-version-sync-20261001 | resume | 2026-10-01T21:48:40+08:00 | in_progress | ["Nexara", "android-ci", "release"] | Linux CI Android FD 测试归属修复候选 | `.agent/handover.md` · `2026-10-01T21:48:40+08:00` · `fp:d1674ac4c8` |
 | dropdown-menu-anchor-and-style-unification | waiting | 2026-09-27T21:43:18+08:00 | completed | ["ui, dropdown-menu, files-panel, m3-design, release"] | 悬浮菜单位置精准锚定与全站新版视觉样式统一规范收敛 | `.agent/handover.md` · `2026-09-27T21:43:18+08:00` · `fp:31537a3d52` |
 | nexara-audit-completion-repair | waiting | 2026-09-22T15:28:29+08:00 | done | ["Nexara", "native-ui", "audit-repair"] | 审计修复、最终签名候选及本机设备验收完成 | `.agent/handover.md` · `2026-09-22T15:28:29+08:00` · `fp:c45ed0053a` |
 | nexara-independent-model-catalog | resume | 2026-09-22T18:33:08+08:00 | done | ["Nexara", "model-catalog"] | 独立模型目录上线、客户端验收与签名候选交付 | `.agent/handover.md` · `2026-09-22T18:33:08+08:00` · `fp:320878f7b2` |
@@ -24,6 +24,7 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-10-01T21:48:40+08:00 | iso | in_progress | resume | ["Nexara", "android-ci", "release"] | ["ci", "release", "ui"] | Linux CI Android FD 测试归属修复候选 | `.agent/handover.md` · `2026-10-01T21:48:40+08:00` · `fp:d1674ac4c8` |
 | 2026-10-01T21:30:19+08:00 | iso | in_progress | resume | ["Nexara", "android-ci", "release"] | ["ci", "release", "ui"] | Android CI 视觉基线与0.2.2候选本机验收 | `.agent/handover.md` · `2026-10-01T21:30:19+08:00` · `fp:fcfd88235e` |
 | 2026-09-29T23:59:45+08:00 | iso | done | none | ["Nexara", "PDEC", "Android", "CI"] | ["pdec", "android", "local-avd", "ci"] | PDEC 本机调试与 GitHub 自动化测试边界确认 | `.agent/handover.md` · `2026-09-29T23:59:45+08:00` · `fp:0d814e8573` |
 | 2026-09-29T23:55:52+08:00 | iso | in-progress | waiting | ["Nexara", "PDEC", "Android"] | ["pdec", "android", "local-avd", "ci"] | PDEC 本机 Android 调试边界收敛与 CI 触发待确认 | `.agent/handover.md` · `2026-09-29T23:55:52+08:00` · `fp:f4e8807aba` |
