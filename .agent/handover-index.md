@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-09-29T23:59:45+08:00
+> generated_at: 2026-10-01T21:30:19+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -8,6 +8,7 @@
 
 | continuity-key | continuity | last update | status | scope | title | source |
 | :--- | :---: | :---: | :---: | :--- | :--- | :--- |
+| ci-version-sync-20261001 | resume | 2026-10-01T21:30:19+08:00 | in_progress | ["Nexara", "android-ci", "release"] | Android CI 视觉基线与0.2.2候选本机验收 | `.agent/handover.md` · `2026-10-01T21:30:19+08:00` · `fp:fcfd88235e` |
 | dropdown-menu-anchor-and-style-unification | waiting | 2026-09-27T21:43:18+08:00 | completed | ["ui, dropdown-menu, files-panel, m3-design, release"] | 悬浮菜单位置精准锚定与全站新版视觉样式统一规范收敛 | `.agent/handover.md` · `2026-09-27T21:43:18+08:00` · `fp:31537a3d52` |
 | nexara-audit-completion-repair | waiting | 2026-09-22T15:28:29+08:00 | done | ["Nexara", "native-ui", "audit-repair"] | 审计修复、最终签名候选及本机设备验收完成 | `.agent/handover.md` · `2026-09-22T15:28:29+08:00` · `fp:c45ed0053a` |
 | nexara-independent-model-catalog | resume | 2026-09-22T18:33:08+08:00 | done | ["Nexara", "model-catalog"] | 独立模型目录上线、客户端验收与签名候选交付 | `.agent/handover.md` · `2026-09-22T18:33:08+08:00` · `fp:320878f7b2` |
@@ -23,6 +24,7 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-10-01T21:30:19+08:00 | iso | in_progress | resume | ["Nexara", "android-ci", "release"] | ["ci", "release", "ui"] | Android CI 视觉基线与0.2.2候选本机验收 | `.agent/handover.md` · `2026-10-01T21:30:19+08:00` · `fp:fcfd88235e` |
 | 2026-09-29T23:59:45+08:00 | iso | done | none | ["Nexara", "PDEC", "Android", "CI"] | ["pdec", "android", "local-avd", "ci"] | PDEC 本机调试与 GitHub 自动化测试边界确认 | `.agent/handover.md` · `2026-09-29T23:59:45+08:00` · `fp:0d814e8573` |
 | 2026-09-29T23:55:52+08:00 | iso | in-progress | waiting | ["Nexara", "PDEC", "Android"] | ["pdec", "android", "local-avd", "ci"] | PDEC 本机 Android 调试边界收敛与 CI 触发待确认 | `.agent/handover.md` · `2026-09-29T23:55:52+08:00` · `fp:f4e8807aba` |
 | 2026-09-27T22:15:22+08:00 | iso | completed | none | ["ui", "rag", "auth", "navigation"] | ["rag-status-fab", "icon-centering", "navigation-route", "token-sanitization", "release-apk"] | 修复知识库FAB红叉居中与设置路由，排查并加固向量化鉴权异常 | `.agent/handover.md` · `2026-09-27T22:15:22+08:00` · `fp:41cb8f88b5` |
@@ -32,22 +34,6 @@
 | 2026-09-26T23:05:00+08:00 | iso | completed | completed | rag, ui-status, fab, explorer-breadcrumbs, sandbox-isolation | [rag, status-fab, breadcrumbs, drill-down, hub-icon, sandbox-isolation] | 知识库集中式 FAB 状态指示微件、同层下钻式目录切换与工作区沙箱深度隔离 | `.agent/handover.md` · `2026-09-26T23:05:00+08:00` · `fp:5c7e9d4ff9` |
 | 2026-09-26T14:15:05+08:00 | iso | completed | waiting | ["rag", "workspace", "vfs", "explorer", "compose-ui"] | ["rag", "global-explorer", "emulator-verification", "vfs-recovery", "transfer-to-kb"] | 知识库全局资源管理器实机全链路验收与VFS崩溃恢复加固 | `.agent/handover.md` · `2026-09-26T14:15:05+08:00` · `fp:0d9d575a7e` |
 | 2026-09-26T13:25:00+08:00 | iso | completed | completed | rag, workspace, vfs, explorer, compose-ui | [rag, global-explorer, composite-workspace, files-panel, transfer-to-kb] | 知识库全局资源管理器落地与会话工作区统一挂载 | `.agent/handover.md` · `2026-09-26T13:25:00+08:00` · `fp:62d695200e` |
-| 2026-09-24T23:44:45+08:00 | iso | done | none | ["native-ui", "chat", "hub"] | ["ui-refactor", "agent-edit", "floating-menu", "session-title", "release-build"] | 助手设置收敛、悬浮菜单统一、默认字体调整与会话智能重命名 | `.agent/handover.md` · `2026-09-24T23:44:45+08:00` · `fp:23f218914e` |
-| 2026-09-24T22:02:18+08:00 | iso | completed | none | ["native-ui"] | ["ui", "agent-edit", "compose", "material-theme", "refactor"] | Agent 编辑助手全屏视觉重构与 Hero 舞台精致度升级 | `.agent/handover.md` · `2026-09-24T22:02:18+08:00` · `fp:31dfb115e1` |
-| 2026-09-24T21:18:22+08:00 | iso | completed | none | ["native-ui", "hub", "chat", "dropdown-menu", "fab", "ux"] | ["native-ui", "fab", "dropdown-menu", "circle-shape", "visual-polish", "leading-icon"] | 首页 FAB 全圆形态与全站操作下拉菜单视觉重构 | `.agent/handover.md` · `2026-09-24T21:18:22+08:00` · `fp:378046b3e8` |
-| 2026-09-24T20:38:41+08:00 | iso | completed | none | ["native-ui", "components", "chat", "settings", "rag", "ux"] | ["native-ui", "tab-row", "capsule", "homebar", "haptic", "spring"] | 全站页签统一升级 Homebar 全圆胶囊与弹簧触觉设计 | `.agent/handover.md` · `2026-09-24T20:38:41+08:00` · `fp:07547de78b` |
-| 2026-09-24T20:23:55+08:00 | iso | completed | none | ["native-ui", "chat", "session-settings", "ux"] | ["native-ui", "session-settings", "slider", "ux", "flatten"] | 会话设置高级生成参数取消折叠与平铺体验优化 | `.agent/handover.md` · `2026-09-24T20:23:55+08:00` · `fp:c1819b96d7` |
-| 2026-09-24T20:12:56+08:00 | iso | completed | none | ["native-ui", "ui-polish", "rag"] | ["ui", "compose", "visual-polish", "rag", "memory", "empty-state"] | 知识库记忆界面视觉净化与空态体验对齐 | `.agent/handover.md` · `2026-09-24T20:12:56+08:00` · `fp:9df8697700` |
-| 2026-09-24T19:53:13+08:00 | iso | completed | none | ["native-ui", "ui-polish", "rag"] | ["ui", "compose", "visual-polish", "capsule", "haptics", "rag", "homebar"] | 知识库 Tab 页签移植 Homebar 全胶囊与触觉手感 | `.agent/handover.md` · `2026-09-24T19:53:13+08:00` · `fp:304021683c` |
-| 2026-09-24T19:28:06+08:00 | iso | completed | none | ["native-ui", "ui-polish", "hub", "rag"] | ["ui", "compose", "visual-polish", "fab", "search-bar", "rag", "hub"] | 一级页面视觉统一与顶栏层级收敛 | `.agent/handover.md` · `2026-09-24T19:28:06+08:00` · `fp:46b01e59d1` |
-| 2026-09-24T15:51:36+08:00 | iso | completed | none | ["native-ui", "rag", "ui-polish"] | ["rag", "ui", "compose", "visual-polish", "knowledge-graph"] | 知识库与知识图谱视觉打磨与层级收敛 | `.agent/handover.md` · `2026-09-24T15:51:36+08:00` · `fp:acaba40c47` |
-| 2026-09-24T13:09:09+08:00 | iso | done | none | ["native-ui"] | ["ui-redesign", "hub", "rag-home", "visual-audit-followup"] | 首页折叠式 Agent 列表 + 知识库视觉统一 | `.agent/handover.md` · `2026-09-24T13:09:09+08:00` · `fp:55d2f84bf1` |
-| 2026-09-24T12:22:14+08:00 | iso | done | none | ["native-ui"] | ["ui-unify", "slider", "visual-audit-followup"] | 滑块样式全站统一为 NexaraSlider 连续轨道圆形拇指 | `.agent/handover.md` · `2026-09-24T12:22:14+08:00` · `fp:4dc8f4ac70` |
-| 2026-09-24T11:42:12+08:00 | iso | done | none | ["native-ui"] | ["ui-fix", "generation-status", "emulator-network"] | 生成失败态发送按钮恢复机制 + 模拟器真实链路验证 | `.agent/handover.md` · `2026-09-24T11:42:12+08:00` · `fp:2eb26426dd` |
-| 2026-09-24T02:25:43+08:00 | iso | done | none | ["native-ui"] | ["ui-redesign", "model-picker", "visual-audit-followup"] | 模型选择列表重设计为紧凑商业级行密度 | `.agent/handover.md` · `2026-09-24T02:25:43+08:00` · `fp:bc4607f723` |
-| 2026-09-23T15:15:09+08:00 | iso | done | none | ["native-ui", "rendering", "ui-ux"] | ["visual-audit", "utf-8", "latex", "echarts", "mermaid", "a11y", "session-delete"] | 视觉审计缺陷修复与渲染健壮性增强 (P0-P2) | `.agent/handover.md` · `2026-09-23T15:15:09+08:00` · `fp:2e14e0e14a` |
-| 2026-09-23T14:19:37+08:00 | iso | done | none | ["nexara-native-ui"] | ["visual-audit", "screenshot", "ui-automation"] | 全页面视觉审计完成（四层审计+报告交付） | `.agent/handover.md` · `2026-09-23T14:19:37+08:00` · `fp:bc0e414755` |
-| 2026-09-23T11:42:49+08:00 | iso | in-progress | resume | ["nexara-native-ui"] | ["visual-audit", "screenshot", "ui-automation"] | 全页面视觉审计开工（定时任务 11:40 触发） | `.agent/handover.md` · `2026-09-23T11:42:49+08:00` · `fp:682d81cea2` |
 
 ## Undated Records
 

@@ -2,11 +2,14 @@
 
 ## 核心文档（始终同步，不可跳过）
 - CHANGELOG.md — 版本变更记录
-- README.md — 当前 `v0.2.1-beta` 候选概览、同签名覆盖升级、Android 12+、侧载/密钥/后台生成/GGUF/Metro TUI 边界
+- README.md — 当前 `v0.2.2-beta` 候选概览、同签名覆盖升级、Android 12+、侧载/密钥/后台生成/GGUF/Metro TUI 边界
 - .agent/handover.md — 跨会话交接
 - AGENTS.md — 开发者与 AI Agent 协同开发规范
 
 ## 按需文档
+- .agent/plans/20261001-ci-version-sync.md — Android CI 截图基线、质量门禁与版本交付收口计划
+- docs/release/v0.2.2-beta.md — 当前候选发行说明、版本与公开发行授权边界
+- docs/release/v0.2.2-beta-validation.md — 当前源码、截图、质量、设备与签名候选验证账本
 - docs/release/2026-09-22-model-catalog-validation.md — 已上线目录、源码绑定、客户端更新与正式签名 APK 专项证据
 - docs/model-catalog.md — 独立模型目录更新、签名、来源、故障处理与操作说明
 - docs/superpowers/specs/2026-09-22-independent-model-catalog.md — 独立目录传输与数据契约
@@ -37,8 +40,8 @@
 - docs/superpowers/plans/2026-07-12-v0.2-beta-phase4-release-engineering.md — P3 CI、签名、冷安装、文档与 GitHub Release 实施计划
 - docs/release/v0.2-beta.md — 2026-07-29 已发布 GitHub prerelease 的历史发行正文
 - docs/release/v0.2-beta-validation.md — 发行事实账本；记录设备/UI/真实 API/分支 CI、本地稳定证书签名 R8 与双版本冷安装证据，并区分待执行的 TalkBack 真机、核心业务人工验收与 tag release workflow
-- docs/release/v0.2.1-beta.md — 当前本地签名候选发行说明、覆盖升级方法与已知边界；不构成 GitHub 发布授权
-- docs/release/v0.2.1-beta-validation.md — 当前候选全量测试、三档冷装、公开单库/双库升级、性能条件、真实网关与外部门禁事实账本
+- docs/release/v0.2.1-beta.md — 历史本地签名候选发行说明、覆盖升级方法与已知边界；不构成 GitHub 发布授权
+- docs/release/v0.2.1-beta-validation.md — 历史候选全量测试、三档冷装、公开单库/双库升级、性能条件、真实网关与外部门禁事实账本
 - docs/PRD.md — 产品需求文档 v2.0（进度已更新至 2026-05-15）
 - docs/ARCHITECTURE_DESIGN.md — 全局架构设计（含 §2.4.1 KG 双模式策略）
 - docs/ARCHITECTURE.md — 架构快速参考（含 ADR 索引，已至 ADR-021）

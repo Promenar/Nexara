@@ -8378,3 +8378,34 @@ PDEC 验证说明是流程约束，pdec.py 不会技术性拦截 ADB 连接；�
 
 ### HLG
 通过结构化 append 记录用户澄清与契约终态，索引由工具重建。
+
+## 2026-10-01T21:30:19+08:00 · Android CI 视觉基线与0.2.2候选本机验收
+
+type: maintenance
+scope: ["Nexara", "android-ci", "release"]
+status: in_progress
+tags: ["ci", "release", "ui"]
+continuity: resume
+continuity-key: ci-version-sync-20261001
+record-fingerprint: fcfd88235e17a1c391032ee2e9e5b29899fd73c91833abd5d700fa4bbf8048b2
+
+### Summary
+完成当前UI截图、设备测试入口与发行配置同步，本机签名候选通过API35冷装及公开旧版覆盖升级；远端CI待提交后核验。
+
+### Changed
+52张旧截图更新、2张FAB新增；平铺夹具、Hub与Activity入口测试同步。恢复置顶状态无障碍语义，修七项Compose资源Lint。质量命令保留失败退出并继续独立任务。发行配置、README、CHANGELOG、registry及0.2.2说明账本同步。
+
+### Validation
+质量回归退出0：截图102/102；JVM2803、0失败/错误、25跳过；Lint0 Error/Fatal、534 Warning/22 Hint。API35 full脚本退出0，两段预期杀进程成功。签名APK20464008 bytes，SHA256 3bcf2309d409aa0f67393bda385bf7b3912bcd728de31fdd1b5044e7adbcba29，登记证书验真、冷装字节回读、v0.1→code4数据升级通过。发行契约39项及验真器23项通过。独立视觉、发行门禁、Hub与胶囊规格复核通过。
+
+### Next
+提交推送B-native-refactor，核对远端SHA并等待GitHub Android CI的API31/35/36矩阵。未授权tag/PR/GitHub Release。
+
+### Risks
+API31/36远端、minified黑盒、双库升级及物理TalkBack/OEM/IME尚未通过当前候选验收。36dp展示胶囊遵循已记录用户取舍，不代表48dp推荐。原脚本运行期间编辑引起一次读取偏移，失败证据保留，稳定脚本重跑通过。未触发真实Provider付费调用。
+
+### DIA
+已同步README、CHANGELOG、registry、新版发行说明及验证账本，保留历史证据范围。
+
+### HLG
+使用append先dry-run再apply追加；制品/日志与秘密不纳管。
