@@ -28,4 +28,5 @@
 - WP1–WP7 已实施：内置工具按全局启用状态暴露并由执行模式审批；协议层 stop+完整工具调用归一、未知工具与参数错误回写可纠错结果；工具预算（轮次 1–100、200 次调用）耗尽后进入总结轮；当前轮完整保留、超限省略早期工具结果、溢出消息批量摘要后归档并在摘要前保留于上下文；新增新建/目录/移动/回收工具与路径定位、行号、内容搜索；exec_js 解码；System Prompt 分层与数据边界；审批写入预览；新增内置工具在旧启用集合下默认启用（`known_builtin_skills`）。
 - WP8 已实施首版（ADR-022）：SKILL.md 解析与校验、私有目录存储与 ZIP 门禁、`activate_skill`/`read_skill_file`、System Prompt 技能目录、设置页技能包管理。
 - 验证：JVM 全量、Lint 0 Error、Debug 构建与截图校验在本机通过，新增截图基线 2 张经人工复核；GitHub CI 以推送 SHA 为准。
-- 未覆盖：真实模型多轮长任务端到端、设备 SAF 导入实机交互、技能目录备份、`allowed-tools` 收窄与按 Agent 绑定技能。
+- 真实网关设备验证（2026-10-02，本机 Nexara_API_31/35 arm64）：四模型 × 工作区多步任务/技能激活 8 项与审批、预算收尾 2 项在 API31 全部通过，API35 分批通过；既有设备套件 API35 full 138 项、API31 minimum 98 项通过。过程中修复 Gemini 兼容请求注入 `googleSearchRetrieval` 与调试构建回环网关路由。
+- 未覆盖：MiniMax-M3（网关缺陷）、物理设备、SAF 导入实机交互、技能目录备份、`allowed-tools` 收窄与按 Agent 绑定技能。
