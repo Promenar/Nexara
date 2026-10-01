@@ -8501,3 +8501,34 @@ Lint仍534Warning/22Hint；截图与Debug设备测试不证明物理TalkBack/OEM
 
 ### HLG
 通过标准append dry-run/apply追加done记录，保留此前候选与失败原始事实，重建索引。
+
+## 2026-10-02T04:22:59+08:00 · Agent 工具链、长程任务与 Agent Skills 修复
+
+type: feature
+scope: ["Nexara", "agent", "tools", "skills"]
+status: in_progress
+tags: ["agent", "tools", "workspace", "prompt", "skills", "ui"]
+continuity: resume
+continuity-key: agent-tooling-repair-20261002
+record-fingerprint: 630df5e1ed100ca87a90d3c5470e853f043d2fd166c1e75ceb00b6a70003f8a1
+
+### Summary
+按审计结论完成计划 WP1-WP8：内置工具默认可用并由执行模式审批，工具循环可纠错且预算耗尽后总结，当前轮上下文完整保留与溢出批量摘要，工作区新建/目录/移动/回收工具，System Prompt 分层与数据边界，审批写入预览，SKILL.md 技能包首版（ADR-022）。
+
+### Changed
+提交 f8152004（工具暴露/循环/上下文/工作区工具/Prompt/审批预览）、37c50efd（known_builtin_skills 使新内置工具在旧启用集合下默认启用）、24b48dce（Agent Skills：解析、私有目录存储与 ZIP 门禁、activate_skill/read_skill_file、Prompt 技能目录、设置页技能包）。发行合同 5.3 兼容规则改为会话选择不影响内置工具。
+
+### Validation
+本机 JVM 2855 项 0 failure/error、25 skip；lintDebug 0 Error、534 Warning 与基线持平；assembleDebug 与 validateDebugScreenshotTest 通过，新增截图基线 2 张（审批写入预览、技能包列表）已人工复核。推送后远端 SHA 一致；24b48dce 的 Android CI 推送时为 pending，f8152004 运行被并发取消。
+
+### Next
+核对 24b48dce Android CI 完整矩阵结果；用本机网关模型做多轮长任务（新建/补丁/预算收尾）与 Gemini stop+tool_calls 回归；设备上验证 SAF 导入技能包；后续设计技能目录备份、allowed-tools 收窄与按 Agent 绑定技能。
+
+### Risks
+未做真实模型端到端与物理设备验证；Gemini 工具流失败归因于 stop+tool_calls 属推断待网关复测。技能目录不进入备份包。摘要批处理每约 5 条溢出消息触发一次额外摘要调用。旧版自定义工具 UI 仍保留编辑入口但从不执行。
+
+### DIA
+已同步 CHANGELOG、README、发行合同 spec 5.3、ARCHITECTURE ADR 索引、registry、ADR-022 与实施计划执行结果。
+
+### HLG
+通过标准 append dry-run/apply 追加，continuity-key agent-tooling-repair-20261002。
