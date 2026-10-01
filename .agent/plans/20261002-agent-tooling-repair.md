@@ -22,3 +22,10 @@
 - 每个工作包补充或更新 JVM 测试；本机 `./gradlew :app:testDebugUnitTest`、`lintDebug`、`assembleDebug` 串行通过，涉及截图的 UI 变更运行 `validateDebugScreenshotTest` 并审阅差异。
 - 提交前复核暂存范围，排除 `artifacts/`、APK、`secure_env/`、`.v2c/` 与 `.mimosa/`；推送后核对远端 SHA 与 CI。
 - 回滚：各工作包独立提交，可逐个 revert；不涉及数据库 schema 变更前不改迁移。
+
+## 执行结果
+
+- WP1–WP7 已实施：内置工具按全局启用状态暴露并由执行模式审批；协议层 stop+完整工具调用归一、未知工具与参数错误回写可纠错结果；工具预算（轮次 1–100、200 次调用）耗尽后进入总结轮；当前轮完整保留、超限省略早期工具结果、溢出消息批量摘要后归档并在摘要前保留于上下文；新增新建/目录/移动/回收工具与路径定位、行号、内容搜索；exec_js 解码；System Prompt 分层与数据边界；审批写入预览；新增内置工具在旧启用集合下默认启用（`known_builtin_skills`）。
+- WP8 已实施首版（ADR-022）：SKILL.md 解析与校验、私有目录存储与 ZIP 门禁、`activate_skill`/`read_skill_file`、System Prompt 技能目录、设置页技能包管理。
+- 验证：JVM 全量、Lint 0 Error、Debug 构建与截图校验在本机通过，新增截图基线 2 张经人工复核；GitHub CI 以推送 SHA 为准。
+- 未覆盖：真实模型多轮长任务端到端、设备 SAF 导入实机交互、技能目录备份、`allowed-tools` 收窄与按 Agent 绑定技能。

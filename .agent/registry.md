@@ -7,6 +7,7 @@
 - AGENTS.md — 开发者与 AI Agent 协同开发规范
 
 ## 按需文档
+- .agent/plans/20261002-agent-tooling-repair.md — Agent 工具暴露、长程循环、上下文、工作区工具、System Prompt、审批预览与 Agent Skills 修复计划及执行结果
 - .agent/plans/20261001-ci-version-sync.md — Android CI 截图基线、质量门禁与版本交付收口计划
 - docs/release/v0.2.2-beta.md — 当前候选发行说明、版本与公开发行授权边界
 - docs/release/v0.2.2-beta-validation.md — 当前源码、截图、质量、设备与签名候选验证账本
@@ -47,6 +48,7 @@
 - docs/ARCHITECTURE.md — 架构快速参考（含 ADR 索引，已至 ADR-021）
 - docs/ADR/ADR-019-transactional-workspace-indexing.md — 工作区文件、版本化索引目标、删除屏障、补偿重试与进程恢复的事务候选切换决策
 - docs/ADR/ADR-020-layered-model-metadata-registry.md — 分层模型元数据来源、逐字段优先级、离线快照、三态能力、精确匹配、用户覆盖与回滚决策
+- docs/ADR/ADR-022-agent-skills.md — SKILL.md 技能包存储、导入门禁、渐进披露运行时与首版边界
 - docs/ADR/ADR-021-chat-full-context-documents-and-branching.md — 完整文档消息快照、路由后预算门禁、可靠重试、可回传导出与稳定消息分支决策
 - docs/legal/THIRD_PARTY_NOTICES.md — models.dev、LiteLLM、OpenRouter、官方模型补充及 Bettbox 界面转译的来源、许可及使用边界
 - docs/IMPLEMENTATION_ANALYSIS.md — 当前验收总账入口及历史实现规模、阶段记录
@@ -75,6 +77,7 @@
 - ADR-019: 工作区文件、派生索引与删除恢复采用事务候选切换（2026-07-13）
 - ADR-020: 分层模型元数据注册中心（2026-07-18）
 - ADR-021: 会话完整文档上下文与消息分支（2026-07-20）
+- ADR-022: Agent Skills 指令包（2026-10-02）
 
 ## 专项审计报告（docs/audit/）
 - 20260706-final-business-flow-cross-audit.md — APP 业务流程终版交叉审计报告（整合 GLM-5.2 并行审计与 Codex 原审计，作为修复排期主入口）
