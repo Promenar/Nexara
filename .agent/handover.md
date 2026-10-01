@@ -8440,3 +8440,34 @@ record-fingerprint: d1674ac4c8c2e9135ef06efebc5a9efef68de6a249b245a8b8a6ebf6f9b2
 
 ### HLG
 append dry-run/apply追加，保留前候选与RED证据。
+
+## 2026-10-01T22:20:08+08:00 · API31 Prompt 编辑器布局反馈根因修复候选
+
+type: maintenance
+scope: ["Nexara", "android-ci", "release"]
+status: in_progress
+tags: ["ci", "release", "ui"]
+continuity: resume
+continuity-key: ci-version-sync-20261001
+record-fingerprint: c9c99a43025061f95d3c74b6c5b8bcb54575597419dca6dca975a7b0da2dc22d
+
+### Summary
+候选25507433远端质量与API35/36 full通过，API31因Prompt编辑器Compose idle未结束退出124。已原样复现及单变量对照，修复布局读取阶段。
+
+### Changed
+布局回调只保存provider，Canvas绘制阶段读取结果；保留行号映射及滚动。补长文本换行、新行emoji精确保存回归，原Prompt交互套件共7项纳入minimum/full。
+
+### Validation
+API31原单方法RED120秒退出124；断开回写对照0.463s PASS，正式延迟读取0.438s PASS。API31完整minimum退出0，Prompt7项与无障碍9项通过；最终生产质量回归退出0，截图102、JVM2798/0失败错误/25skip、Lint0错误。独立根因/生命周期/接入复核通过。
+
+### Next
+推送最终生产候选并核验远端完整矩阵；正在重建签名R8，完成后以同一新APK独立冷装/升级，不复用旧3bcf制品PASS。
+
+### Risks
+最终生产候选API35/36远端、签名新制品与其冷装/升级待登记。物理真机、minified黑盒、双库三段仍未通过当前候选验收，公开发布未授权。
+
+### DIA
+同步计划、CHANGELOG及验证账本根因、当前状态和制品证据边界。
+
+### HLG
+append dry-run/apply，原样RED、对照与正式结果均保留。
