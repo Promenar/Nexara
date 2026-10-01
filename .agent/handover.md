@@ -8532,3 +8532,34 @@ record-fingerprint: 630df5e1ed100ca87a90d3c5470e853f043d2fd166c1e75ceb00b6a70003
 
 ### HLG
 通过标准 append dry-run/apply 追加，continuity-key agent-tooling-repair-20261002。
+
+## 2026-10-02T05:16:47+08:00 · 真实网关 Agent 设备端到端与 Gemini 兼容请求修复
+
+type: maintenance
+scope: ["Nexara", "agent", "android-device", "gateway"]
+status: done
+tags: ["e2e", "gateway", "agent", "skills", "emulator"]
+continuity: resume
+continuity-key: agent-tooling-repair-20261002
+record-fingerprint: f4f11390152f2b1637510b841cf21ca4fa2562ac59b681baa1866b8289efe015
+
+### Summary
+在本机专用模拟器上以真实网关模型跑通完整应用链路 Agent 测试；定位并修复 Gemini 兼容请求 400 与调试构建无法连回环网关两项问题。
+
+### Changed
+提交 1124f8bc：GenericOpenAICompatProtocol 移除 googleSearchRetrieval 注入；ProviderRequestRouter 增加仅可调试构建开启的回环 HTTP 例外；新增 AgentGatewayHarness、AgentGatewayEndToEndDeviceTest（工作区多步任务、技能激活）、AgentGatewayControlDeviceTest（半自动审批、预算收尾），以 nexaraLocalGateway=true 门控。
+
+### Validation
+Nexara_API_31（emulator-5554，arm64）：网关端到端 10/10 通过，minimum 套件 98 项通过。Nexara_API_35：full 套件 138 项通过；网关端到端分批通过（DeepSeek/SenseNova/gpt-6-luna 6 项、修复后 Gemini 2 项、控制 2 项）。Gemini 修复前直连网关复现 400，修复后通过。JVM 2857 项 0 failure/error、25 skip，Lint 0 Error/534 Warning，截图校验通过。24b48dce 的 GitHub Android CI 成功；1124f8bc CI 推送后待出。
+
+### Next
+核对 1124f8bc CI；网关修复 MiniMax-M3 工具调用后用 nexaraGatewayModels 显式复测；如需将 gpt-6-luna 正式纳入 PDEC 授权模型清单，需用户确认。物理设备、SAF 导入实机、技能目录备份仍待做。
+
+### Risks
+MiniMax-M3 经直连网关复现 finish_reason=tool_calls 但无 tool_calls，属网关缺陷，已从默认列表移出。PDEC 授权的 gpt-5.6-luna 已从网关下线，本次以 gpt-6-luna 替代，属授权清单外的同系列替代。stop+完整工具调用归一未被真实流量触发，仅单测覆盖。API35 网关场景未在最终测试包上整轮重跑。
+
+### DIA
+已同步 CHANGELOG、验收总账 PROV-01/TOOL-01 与实施计划执行结果；PDEC 契约未改动。
+
+### HLG
+标准 append dry-run/apply 追加。
