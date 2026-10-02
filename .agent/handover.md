@@ -8563,3 +8563,34 @@ MiniMax-M3 经直连网关复现 finish_reason=tool_calls 但无 tool_calls，�
 
 ### HLG
 标准 append dry-run/apply 追加。
+
+## 2026-10-02T08:00:46+08:00 · 授权 gpt-6-luna 并交付真机测试签名 APK
+
+type: release
+scope: ["Nexara", "pdec", "release"]
+status: done
+tags: ["pdec", "release", "apk", "gateway"]
+continuity: waiting
+continuity-key: agent-tooling-repair-20261002
+record-fingerprint: 110c0ef84b9ee213d9e32846cf3ab66fc9369e66a7f494663f1fb9a00c97e856
+
+### Summary
+按用户指令将 openai-chatgpt/gpt-6-luna 加入 PDEC 授权网关测试模型，并基于 1124f8bc 构建签名发行 APK 交付用户真机测试。
+
+### Changed
+提交 f745b8e9：.pdec/README.md 授权模型清单更新（gpt-5.6-luna 已下线不再使用），网关集成/设备测试模型列表同步，验收总账与 v0.2.2 验证账本登记候选。
+
+### Validation
+PDEC validate execution_ready=true、无漂移、契约摘要不变。:app:assembleRelease 退出0，签名经既有主机注入、未输出秘密；APK 20550576 bytes，SHA-256 05a76155f498bd7755662e4b8fe2dee819f2d58a0687f862f65f6eecebe6d942，证书 00be4cdd… 与登记一致，verify-release-apk.py 通过；Nexara_API_35 覆盖安装、冷启动 729ms 无崩溃。
+
+### Next
+等待用户物理设备测试反馈；APK 位于未纳管 artifacts/release-20261002/。
+
+### Risks
+versionCode 仍为 4，与此前 ef68431b 候选同版本号；未做物理设备、minified 黑盒与升级链验证；非公开发行候选。
+
+### DIA
+已同步 PDEC README、验收总账与 v0.2.2 验证账本。
+
+### HLG
+标准 append dry-run/apply 追加。
