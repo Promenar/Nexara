@@ -4,7 +4,7 @@
 
 Android 开发调试统一在本机 macOS 与本机启动的 Android AVD 上进行，覆盖编译、JVM/截图/Lint 验证、安装、ADB/Logcat 联调、设备测试和候选 APK 验真。不得连接远程主机、远程设备或托管模拟器执行调试，也不得将远程设备映射为本机 ADB 目标。该范围由用户在 2026-09-22 和 2026-09-29 的指令确认。
 
-用户同时授权使用无密钥本机聚合网关 `http://127.0.0.1:1337`，测试模型为 `newapi/deepseek-v4-flash`、`newapi/gemini-3.8-flash`、`newapi/sensenova-6.8-flash-lite`、`openai-chatgpt/gpt-5.6-luna`、`newapi/MiniMax-M3`。模型调用属于既有服务测试，不是远端开发执行；只发送合成测试数据，限制请求次数和输出长度。目录可见性不能替代协议与业务验证。
+用户同时授权使用无密钥本机聚合网关 `http://127.0.0.1:1337`，测试模型为 `newapi/deepseek-v4-flash`、`newapi/gemini-3.8-flash`、`newapi/sensenova-6.8-flash-lite`、`openai-chatgpt/gpt-6-luna`、`newapi/MiniMax-M3`；`openai-chatgpt/gpt-6-luna` 由用户于 2026-10-02 授权加入，网关已下线的 `openai-chatgpt/gpt-5.6-luna` 不再用于测试。模型调用属于既有服务测试，不是远端开发执行；只发送合成测试数据，限制请求次数和输出长度。目录可见性不能替代协议与业务验证。
 
 2026-09-22，用户批准 GitHub Actions + Pages 的独立模型目录方案并要求开始实施。授权包括创建目录更新工作流、设置独立目录签名 Secret、启用 Pages 和发布公开元数据；不包括公开 APK、tag、PR 或 GitHub Release。私钥只经主机工具注入，不能进入模型上下文。
 
