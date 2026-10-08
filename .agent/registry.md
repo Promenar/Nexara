@@ -7,6 +7,7 @@
 - AGENTS.md — 开发者与 AI Agent 协同开发规范
 
 ## 按需文档
+- .agent/plans/20261009-text-wrapping-system.md — 全站文本换行策略、元数据分段组件、标识符折行与静态/设备门禁计划及执行结果
 - .agent/plans/20261002-agent-tooling-repair.md — Agent 工具暴露、长程循环、上下文、工作区工具、System Prompt、审批预览与 Agent Skills 修复计划及执行结果
 - .agent/plans/20261001-ci-version-sync.md — Android CI 截图基线、质量门禁与版本交付收口计划
 - docs/release/v0.2.2-beta.md — 当前候选发行说明、版本与公开发行授权边界
