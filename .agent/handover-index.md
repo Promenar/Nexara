@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-10-02T08:00:46+08:00
+> generated_at: 2026-10-09T04:56:11+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -25,22 +25,7 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
-| 2026-10-02T08:00:46+08:00 | iso | done | waiting | ["Nexara", "pdec", "release"] | ["pdec", "release", "apk", "gateway"] | 授权 gpt-6-luna 并交付真机测试签名 APK | `.agent/handover.md` · `2026-10-02T08:00:46+08:00` · `fp:110c0ef84b` |
-| 2026-10-02T05:16:47+08:00 | iso | done | resume | ["Nexara", "agent", "android-device", "gateway"] | ["e2e", "gateway", "agent", "skills", "emulator"] | 真实网关 Agent 设备端到端与 Gemini 兼容请求修复 | `.agent/handover.md` · `2026-10-02T05:16:47+08:00` · `fp:f4f1139015` |
-| 2026-10-02T04:22:59+08:00 | iso | in_progress | resume | ["Nexara", "agent", "tools", "skills"] | ["agent", "tools", "workspace", "prompt", "skills", "ui"] | Agent 工具链、长程任务与 Agent Skills 修复 | `.agent/handover.md` · `2026-10-02T04:22:59+08:00` · `fp:630df5e1ed` |
-| 2026-10-01T22:54:47+08:00 | iso | done | none | ["Nexara", "android-ci", "release"] | ["ci", "release", "ui"] | Android CI 全矩阵恢复与0.2.2候选证据闭环 | `.agent/handover.md` · `2026-10-01T22:54:47+08:00` · `fp:8d41e82bde` |
-| 2026-10-01T22:20:08+08:00 | iso | in_progress | resume | ["Nexara", "android-ci", "release"] | ["ci", "release", "ui"] | API31 Prompt 编辑器布局反馈根因修复候选 | `.agent/handover.md` · `2026-10-01T22:20:08+08:00` · `fp:c9c99a4302` |
-| 2026-10-01T21:48:40+08:00 | iso | in_progress | resume | ["Nexara", "android-ci", "release"] | ["ci", "release", "ui"] | Linux CI Android FD 测试归属修复候选 | `.agent/handover.md` · `2026-10-01T21:48:40+08:00` · `fp:d1674ac4c8` |
-| 2026-10-01T21:30:19+08:00 | iso | in_progress | resume | ["Nexara", "android-ci", "release"] | ["ci", "release", "ui"] | Android CI 视觉基线与0.2.2候选本机验收 | `.agent/handover.md` · `2026-10-01T21:30:19+08:00` · `fp:fcfd88235e` |
-| 2026-09-29T23:59:45+08:00 | iso | done | none | ["Nexara", "PDEC", "Android", "CI"] | ["pdec", "android", "local-avd", "ci"] | PDEC 本机调试与 GitHub 自动化测试边界确认 | `.agent/handover.md` · `2026-09-29T23:59:45+08:00` · `fp:0d814e8573` |
-| 2026-09-29T23:55:52+08:00 | iso | in-progress | waiting | ["Nexara", "PDEC", "Android"] | ["pdec", "android", "local-avd", "ci"] | PDEC 本机 Android 调试边界收敛与 CI 触发待确认 | `.agent/handover.md` · `2026-09-29T23:55:52+08:00` · `fp:f4e8807aba` |
-| 2026-09-27T22:15:22+08:00 | iso | completed | none | ["ui", "rag", "auth", "navigation"] | ["rag-status-fab", "icon-centering", "navigation-route", "token-sanitization", "release-apk"] | 修复知识库FAB红叉居中与设置路由，排查并加固向量化鉴权异常 | `.agent/handover.md` · `2026-09-27T22:15:22+08:00` · `fp:41cb8f88b5` |
-| 2026-09-27T21:43:18+08:00 | iso | completed | waiting | ["ui, dropdown-menu, files-panel, m3-design, release"] | ["dropdown-menu", "position-anchor", "files-panel", "ui-unification", "release-apk"] | 悬浮菜单位置精准锚定与全站新版视觉样式统一规范收敛 | `.agent/handover.md` · `2026-09-27T21:43:18+08:00` · `fp:31537a3d52` |
-| 2026-09-27T02:30:00+08:00 | iso | completed | completed | rag, vectorization, error-handling, ui-layout, release | [rag, vectorization, indexing-state, cancel-task, top-padding, breathing-room, release-apk] | 向量化“无限进行中”根治、任务主动取消与主页顶部呼吸感对齐 | `.agent/handover.md` · `2026-09-27T02:30:00+08:00` · `fp:ffec7cc374` |
-| 2026-09-26T23:22:14+08:00 | iso | done | none | ["rag", "files-panel", "drilldown", "flat-browser"] | ["rag", "files-panel", "flat-navigation", "drilldown", "no-tree-expansion"] | 知识库全层级同层平铺浏览彻底落地与首屏树状展开消除 | `.agent/handover.md` · `2026-09-26T23:22:14+08:00` · `fp:931a7d0d4e` |
-| 2026-09-26T23:05:00+08:00 | iso | completed | completed | rag, ui-status, fab, explorer-breadcrumbs, sandbox-isolation | [rag, status-fab, breadcrumbs, drill-down, hub-icon, sandbox-isolation] | 知识库集中式 FAB 状态指示微件、同层下钻式目录切换与工作区沙箱深度隔离 | `.agent/handover.md` · `2026-09-26T23:05:00+08:00` · `fp:5c7e9d4ff9` |
-| 2026-09-26T14:15:05+08:00 | iso | completed | waiting | ["rag", "workspace", "vfs", "explorer", "compose-ui"] | ["rag", "global-explorer", "emulator-verification", "vfs-recovery", "transfer-to-kb"] | 知识库全局资源管理器实机全链路验收与VFS崩溃恢复加固 | `.agent/handover.md` · `2026-09-26T14:15:05+08:00` · `fp:0d9d575a7e` |
-| 2026-09-26T13:25:00+08:00 | iso | completed | completed | rag, workspace, vfs, explorer, compose-ui | [rag, global-explorer, composite-workspace, files-panel, transfer-to-kb] | 知识库全局资源管理器落地与会话工作区统一挂载 | `.agent/handover.md` · `2026-09-26T13:25:00+08:00` · `fp:62d695200e` |
+| 2026-10-09T04:56:11+08:00 | iso | done | none | ["Nexara", "ui", "typography"] | ["ui", "typography", "line-break", "ci", "screenshot"] | 全站文本换行体系与回退门禁 | `.agent/handover.md` · `2026-10-09T04:56:11+08:00` · `fp:919444854d` |
 
 ## Undated Records
 

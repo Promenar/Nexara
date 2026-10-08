@@ -8594,3 +8594,33 @@ versionCode 仍为 4，与此前 ef68431b 候选同版本号；未做物理设�
 
 ### HLG
 标准 append dry-run/apply 追加。
+
+## 2026-10-09T04:56:11+08:00 · 全站文本换行体系与回退门禁
+
+type: feature
+scope: ["Nexara", "ui", "typography"]
+status: done
+tags: ["ui", "typography", "line-break", "ci", "screenshot"]
+continuity: none
+record-fingerprint: 919444854d42820d39de459d0662a9b95d3a7dd40ec2fae5e9a49a3d902563ac
+
+### Summary
+针对用户真机截图中提供商卡片“API Key 已配|置”孤字问题，从主题、组件、标识符与门禁四层系统性根除全站文本换行缺陷。
+
+### Changed
+提交 ddd37b2a：Type.kt 15 角色显式 NexaraUiLineBreak（Balanced+Strict+Phrase）、forReading/forInput 与 breakableIdentifier；38 处输入框 forInput，Markdown 与长内容 forReading；新增 NexaraMetaLine、NexaraIdentifierText 并迁移元数据拼串、格式字符串与标识符显示；导航标签省略号；scripts/ci/check-text-wrapping.py 及契约测试接入 android-ci；TextWrappingDeviceTest 接入设备最低矩阵；修复 model_catalog_version 中英文写反。
+
+### Validation
+根因经 AndroidX 源码核实（未设置时 BREAK_STRATEGY_SIMPLE、无短语规则）。设备：同一中文语料 140–420dp 贪心孤字 API35 154/API31 152 次，新策略 0；API35 full 141 项、API31 minimum 101 项通过（专用 AVD，未触碰用户 Pixel_7）。JVM 2860/0、Lint 0 Error/534 Warning、截图校验通过；40 张基线更新与 1 张新增逐张复核，复核中修复问号行首、标识符单词内断开、元数据基线错位与静默丢段。
+
+### Next
+推送后核对 ddd37b2a Android CI；用户真机复测提供商、知识库与设置页。
+
+### Risks
+截图渲染器不支持 CJK 短语断词，截图中短语完整性弱于真机；平衡策略使带省略号的多行标题截断位置略提前；文档编辑器性能门禁未单独复跑；物理设备与 OEM 字体未验证。
+
+### DIA
+已同步 CHANGELOG、MD3 收敛规格 4.2.1、registry 与计划执行结果。
+
+### HLG
+标准 append dry-run/apply 追加。
