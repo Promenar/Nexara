@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-10-09T04:56:11+08:00
+> generated_at: 2026-10-09T08:52:36+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -14,7 +14,7 @@
 | nexara-audit-completion-repair | waiting | 2026-09-22T15:28:29+08:00 | done | ["Nexara", "native-ui", "audit-repair"] | 审计修复、最终签名候选及本机设备验收完成 | `.agent/handover.md` · `2026-09-22T15:28:29+08:00` · `fp:c45ed0053a` |
 | nexara-independent-model-catalog | resume | 2026-09-22T18:33:08+08:00 | done | ["Nexara", "model-catalog"] | 独立模型目录上线、客户端验收与签名候选交付 | `.agent/handover.md` · `2026-09-22T18:33:08+08:00` · `fp:320878f7b2` |
 | nexara-local-debug-ci-boundary | waiting | 2026-09-29T23:55:52+08:00 | in-progress | ["Nexara", "PDEC", "Android"] | PDEC 本机 Android 调试边界收敛与 CI 触发待确认 | `.agent/handover.md` · `2026-09-29T23:55:52+08:00` · `fp:f4e8807aba` |
-| nexara-physical-device-ui-acceptance | waiting | 2026-08-26T16:10:54+08:00 | done | ["Nexara", "native-ui", "release"] | Bettbox 分组边界与 Agent 首页减法修复正式包 | `.agent/handover.md` · `2026-08-26T16:10:54+08:00` · `fp:cf09c0dcb0` |
+| nexara-physical-device-ui-acceptance | waiting | 2026-10-09T08:52:36+08:00 | done | ["Nexara", "release"] | 最新源码签名发行包交付真机测试 | `.agent/handover.md` · `2026-10-09T08:52:36+08:00` · `fp:4dcd4cfc5c` |
 | rag-fab-drilldown-isolation | completed | 2026-09-26T23:05:00+08:00 | completed | rag, ui-status, fab, explorer-breadcrumbs, sandbox-isolation | 知识库集中式 FAB 状态指示微件、同层下钻式目录切换与工作区沙箱深度隔离 | `.agent/handover.md` · `2026-09-26T23:05:00+08:00` · `fp:5c7e9d4ff9` |
 | rag-global-workspace-explorer | waiting | 2026-09-26T14:15:05+08:00 | completed | ["rag", "workspace", "vfs", "explorer", "compose-ui"] | 知识库全局资源管理器实机全链路验收与VFS崩溃恢复加固 | `.agent/handover.md` · `2026-09-26T14:15:05+08:00` · `fp:0d9d575a7e` |
 | rag-infinite-indexing-fix-top-spacing | completed | 2026-09-27T02:30:00+08:00 | completed | rag, vectorization, error-handling, ui-layout, release | 向量化“无限进行中”根治、任务主动取消与主页顶部呼吸感对齐 | `.agent/handover.md` · `2026-09-27T02:30:00+08:00` · `fp:ffec7cc374` |
@@ -25,6 +25,7 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-10-09T08:52:36+08:00 | iso | done | waiting | ["Nexara", "release"] | ["release", "apk", "physical-device"] | 最新源码签名发行包交付真机测试 | `.agent/handover.md` · `2026-10-09T08:52:36+08:00` · `fp:4dcd4cfc5c` |
 | 2026-10-09T04:56:11+08:00 | iso | done | none | ["Nexara", "ui", "typography"] | ["ui", "typography", "line-break", "ci", "screenshot"] | 全站文本换行体系与回退门禁 | `.agent/handover.md` · `2026-10-09T04:56:11+08:00` · `fp:919444854d` |
 
 ## Undated Records

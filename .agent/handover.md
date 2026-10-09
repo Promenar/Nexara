@@ -8624,3 +8624,34 @@ record-fingerprint: 919444854d42820d39de459d0662a9b95d3a7dd40ec2fae5e9a49a3d9025
 
 ### HLG
 标准 append dry-run/apply 追加。
+
+## 2026-10-09T08:52:36+08:00 · 最新源码签名发行包交付真机测试
+
+type: release
+scope: ["Nexara", "release"]
+status: done
+tags: ["release", "apk", "physical-device"]
+continuity: waiting
+continuity-key: nexara-physical-device-ui-acceptance
+record-fingerprint: 4dcd4cfc5cf43471f422b2392a61040fa3793269a927a4ff4f7f2397d4bfff39
+
+### Summary
+恢复项目上下文，基于 b86ebeaf 构建正式签名 R8 APK，交付用户真机测试；最新代码包含 Agent 工具链、技能包与全站文本换行体系。
+
+### Changed
+仅同步 v0.2.2-beta 验证账本与 HLG 记录；未改生产代码、版本号、签名或既有用户产物。新 APK 位于 artifacts/release-20261009-b86ebeaf/Nexara-0.2.2-beta-b86ebeaf-release.apk。
+
+### Validation
+PDEC execution_ready=true 无漂移。assembleRelease 与 verify-release-apk.py 均退出0；20566964 bytes，SHA256 c9a89670460ccc0fb05f55dbf485403f0c4a684b8ae0fc053428628347e5c194，证书与登记一致。源码 b86ebeaf2758b2977d121d52be2d94a87bccb11d，native-ui 树 f46104bb6754b53c5975307dcbffcd952ee6fd3c。最新代码 ddd37b2a 的 GitHub run 37843090287 质量及 API31/35/36 全 success；到构建源码仅 HLG 文档差异。
+
+### Next
+用户覆盖安装并测试提供商、知识库、设置页的中文换行、放大字号，以及 Agent 工具和技能包；收到反馈后定位问题。
+
+### Risks
+versionCode 仍为4。新 APK 尚未执行冷安装、覆盖升级、minified 黑盒或物理设备验证；源码 CI 不能替代压缩包运行验收。保留已有 Pixel_7 模拟器状态，公开发布未授权。
+
+### DIA
+已同步 docs/release/v0.2.2-beta-validation.md；README、CHANGELOG、registry 入口与产品行为未变，无需改动。
+
+### HLG
+通过标准 append dry-run/apply 追加并重建索引。
