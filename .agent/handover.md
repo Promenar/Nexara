@@ -8932,3 +8932,34 @@ PDEC approved、execution_ready=true、drift=[]；本机 macOS arm64/OpenJDK 21�
 
 ### HLG
 通过标准 append dry-run/apply 追加记录，脚本重建 handover-index；既有历史不修改。
+
+## 2026-10-17T01:18:55+08:00 · 规划移动端 Agent 能力增强并完成知识图谱只读审计
+
+type: plan
+scope: ["Nexara", "native-ui", "agent-tools", "knowledge-graph"]
+status: planned
+tags: ["ssh", "saf", "termux", "script-runtime", "tool-budget", "knowledge-graph", "product-flavor"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 02b4c6fee883d32a53ea0b3e0f3c20f2f93a5e2e0fcf2f9ffd18351a251f21cc
+
+### Summary
+评估移动端 Agent 能力并形成开发计划 .agent/plans/20261017-mobile-agentic-capabilities.md：P0 执行底座（PROCESS 风险级、无限制轮次与单轮上下文压缩、HTML 预览 WebView 收紧、play/sideload 产品风味）、P1 SAF 工作区、P2 原生 SSH、P3 隔离进程脚本运行时（QuickJS 优先，Python 待技术验证）、P4 Termux 接入（SSH 路线优先）、KG-A..D 修复与图检索。用户已确定：KG 进入聊天检索；以产品风味区分 Play 与侧载，所有文件访问只在侧载；Python 先验证增量价值；无限制模式允许搭配全自动审批。
+
+### Changed
+新增计划文件并登记 registry。未修改代码。
+
+### Validation
+只读核对源码：SafImportHandler 无调用方；工具轮次 coerceIn(1,100) 与 200 次调用上限；会话 summary 未发现写入方；ToolRisk.PROCESS 未使用；MCP 强制 HTTPS 且全局禁止明文。KG 审计由 Codex CLI 只读完成（设计 3/5、实现 2/5，无阻断级，高优先级 7 条），主控抽查高-01/05/06/07 与源码一致。外部事实对照 Android 官方 SAF 文档、Termux RUN_COMMAND 说明与清单、Maven Central 版本元数据。
+
+### Next
+按计划起草 P0 Codex 任务书并在独立 worktree 实施；随后 P1、P2、KG-A 并行。
+
+### Risks
+单轮上下文压缩是无限制模式的前置条件；产品风味会改变 CI 与发行脚本任务名；SSH 库与 Chaquopy 隔离进程兼容性需技术验证；Termux 后台进程可能受 Android 12+ 子进程限制结束。
+
+### DIA
+已同步 registry；PRD“SSH 运维”、KG“摘要优先”等与实现不符的描述留待对应工作包更正。
+
+### HLG
+标准 append dry-run/apply 追加。
