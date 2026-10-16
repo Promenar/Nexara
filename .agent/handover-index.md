@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-10-09T08:52:36+08:00
+> generated_at: 2026-10-16T10:00:45+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -12,6 +12,7 @@
 | ci-version-sync-20261001 | resume | 2026-10-01T22:20:08+08:00 | in_progress | ["Nexara", "android-ci", "release"] | API31 Prompt 编辑器布局反馈根因修复候选 | `.agent/handover.md` · `2026-10-01T22:20:08+08:00` · `fp:c9c99a4302` |
 | dropdown-menu-anchor-and-style-unification | waiting | 2026-09-27T21:43:18+08:00 | completed | ["ui, dropdown-menu, files-panel, m3-design, release"] | 悬浮菜单位置精准锚定与全站新版视觉样式统一规范收敛 | `.agent/handover.md` · `2026-09-27T21:43:18+08:00` · `fp:31537a3d52` |
 | nexara-audit-completion-repair | waiting | 2026-09-22T15:28:29+08:00 | done | ["Nexara", "native-ui", "audit-repair"] | 审计修复、最终签名候选及本机设备验收完成 | `.agent/handover.md` · `2026-09-22T15:28:29+08:00` · `fp:c45ed0053a` |
+| nexara-chat-flow-repair | waiting | 2026-10-16T10:00:45+08:00 | done | ["Nexara", "native-ui", "chat"] | 会话主流程审计 P0/P1 修复交付 | `.agent/handover.md` · `2026-10-16T10:00:45+08:00` · `fp:b968f99f1f` |
 | nexara-independent-model-catalog | resume | 2026-09-22T18:33:08+08:00 | done | ["Nexara", "model-catalog"] | 独立模型目录上线、客户端验收与签名候选交付 | `.agent/handover.md` · `2026-09-22T18:33:08+08:00` · `fp:320878f7b2` |
 | nexara-local-debug-ci-boundary | waiting | 2026-09-29T23:55:52+08:00 | in-progress | ["Nexara", "PDEC", "Android"] | PDEC 本机 Android 调试边界收敛与 CI 触发待确认 | `.agent/handover.md` · `2026-09-29T23:55:52+08:00` · `fp:f4e8807aba` |
 | nexara-physical-device-ui-acceptance | waiting | 2026-10-09T08:52:36+08:00 | done | ["Nexara", "release"] | 最新源码签名发行包交付真机测试 | `.agent/handover.md` · `2026-10-09T08:52:36+08:00` · `fp:4dcd4cfc5c` |
@@ -25,8 +26,7 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
-| 2026-10-09T08:52:36+08:00 | iso | done | waiting | ["Nexara", "release"] | ["release", "apk", "physical-device"] | 最新源码签名发行包交付真机测试 | `.agent/handover.md` · `2026-10-09T08:52:36+08:00` · `fp:4dcd4cfc5c` |
-| 2026-10-09T04:56:11+08:00 | iso | done | none | ["Nexara", "ui", "typography"] | ["ui", "typography", "line-break", "ci", "screenshot"] | 全站文本换行体系与回退门禁 | `.agent/handover.md` · `2026-10-09T04:56:11+08:00` · `fp:919444854d` |
+| 2026-10-16T10:00:45+08:00 | iso | done | waiting | ["Nexara", "native-ui", "chat"] | ["approval", "tool-loop", "todo", "regenerate", "inference-params"] | 会话主流程审计 P0/P1 修复交付 | `.agent/handover.md` · `2026-10-16T10:00:45+08:00` · `fp:b968f99f1f` |
 
 ## Undated Records
 

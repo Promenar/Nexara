@@ -8655,3 +8655,34 @@ versionCode 仍为4。新 APK 尚未执行冷安装、覆盖升级、minified �
 
 ### HLG
 通过标准 append dry-run/apply 追加并重建索引。
+
+## 2026-10-16T10:00:45+08:00 · 会话主流程审计 P0/P1 修复交付
+
+type: fix
+scope: ["Nexara", "native-ui", "chat"]
+status: done
+tags: ["approval", "tool-loop", "todo", "regenerate", "inference-params"]
+continuity: waiting
+continuity-key: nexara-chat-flow-repair
+record-fingerprint: b968f99f1f7e50b460d3c12e1d0cf505589e35718d45eed44a21cc12243a77b9
+
+### Summary
+完成会话界面主流程审计确认的 P0 4 项与 P1 7 项修复，提交 ae272e32 并推送，远端 SHA 一致。
+
+### Changed
+审批恢复新建助手消息承接回答；新增 EXECUTING_TOOLS 阶段，仅真正等待审批时进入 WAITING_APPROVAL；待办步骤 ID 加会话命名空间、状态归一化、目标元数据节点、结构化 JSON 结果，计划工具改为 SESSION_STATE 风险；协议历史修复（空白助手消息、孤立/重复结果、缺失结果补齐），新回合前关闭待审批；重新生成统一为成功后替换（支持多条、生成期间隐藏旧回复），删除按整轮并可撤销，移除未接入界面的旧编辑/重发入口；审批批次决定后统一继续生成并新增全部批准；工具轮次复用首轮检索；推理参数逐字段回退智能体预设、采样档位文案改名、活动窗口默认统一为 15。计划见 .agent/plans/20261016-chat-flow-p0-p1-repair.md。
+
+### Validation
+JVM 2883 项 0 失败；Lint 0 错误；文本换行门禁通过；截图仅审批卡平板预览变化并人工复核更新。设备：API35 full 141/141，API31 minimum 101/101，真实网关 Agent 10/10（审批用例新增结果配对与下一轮被接受断言）。审批恢复、协议历史、检索复用的回归测试在修复前失败。
+
+### Next
+等待用户真机复测审批、待办、重新生成与删除撤销；GitHub CI 结果待确认。
+
+### Risks
+API31 首次矩阵运行在 MainActivity 审批回传步骤失败一次，补齐夹具用户消息并重建安装后单测与完整重跑均通过，首次失败的具体原因未完全确认（疑为安装包与源码不一致）。Anthropic 线路未做真实请求；物理设备未验证；旧会话中已损坏的历史依赖协议历史修复兜底。
+
+### DIA
+已同步 CHANGELOG、registry 与计划执行结果。
+
+### HLG
+标准 append dry-run/apply 追加。
