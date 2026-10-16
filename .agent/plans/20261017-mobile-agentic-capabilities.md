@@ -135,3 +135,12 @@ python3 scripts/ci/check-text-wrapping.py
 验收边界：遵守任务书，未执行签名 Release 构建、GitHub Actions、设备/模拟器运行或 git commit/push。WebView 在真实 Android WebView 中的功能、安全和 PNG 导出尚待主控设备验收，不能由 JVM/编译或 Compose 截图替代。计划中的其它 P0 能力不因此标记完成。
 
 DIA 已同步 README、AGENTS、CHANGELOG、registry、发行说明、构建说明、图标任务说明和 PDEC。完整文件清单、逐项需求位置、命令/结果、任务路径对照和主控签名/设备步骤见 `.agent/tmp-agent-reports/report-p0-flavors.md`；HLG 通过标准 append 追加交接记录。
+
+## KG-A 执行结果
+
+- 完成九类正确性修复：全量、手动与 JIT 共用稳定模型路由和 KG 设置；成功空图合法；结果区分解析失败、超时、取消与提供商错误；统一校验名称身份、端点、字段、权重与图规模。
+- 手动建图进入持久文件引用队列，复用 PDF、DOCX、大文本解析和 16 MiB 文本预算；候选提交检查 hash、epoch、活动任务标识与删除屏障，事务切换图谱及 `kgExtractedAt`，保留已有向量。失败回滚且向 UI 传播；能力升级与终态重试更换活动任务标识。
+- 断点校验源文件 hash、提取文本 hash、模型、提示词摘要和切块参数，删除时清理。JIT 使用明确超时并透传取消；容量 8 的后台队列承担缓存与归并，配置重建取消旧作用域，长期聊天消费者动态取得有效抽取器。
+- 验证：当前工作树 `:app:testDebugUnitTest` 与 `:app:lintDebug` 联合运行成功，3039 项单元测试中 3014 项通过、25 项跳过，0 失败、0 错误；lint 0 错误、544 条警告、22 条提示。文本换行检查及 `git diff --check` 通过。原始实现上的 16 个业务红测、审阅补充的 5 个业务红测与超长名称身份回归均已观察到失败，最终回归通过；真实 PDF/DOCX、Room 事务、删除迟到回片与队列并发均有集成覆盖。
+- 由未参与施工的原生只读 Agent 独立审阅，主控修正其有效发现并复核最终 diff、测试与 lint 证据。DIA 已同步 `CHANGELOG.md` 与 `docs/ARCHITECTURE_DESIGN.md`；README 无需调整。详细文件、位置、用例和执行参数见 `.agent/tmp-agent-reports/report-kg-a.md`。
+- 无新增第三方依赖、数据库结构或迁移；未修改 Agent 循环、审批、前台服务、产品风味、CI 或渲染器。遵照 KG-A 任务书保留未提交工作树，未提交、推送或操作设备。后续集成时复核共享文件；真实提供商请求、设备进程重启与菜单交互列为设备验收建议，不将本地测试视为这些场景已验收。
