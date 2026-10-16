@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-10-16T19:24:27+08:00
+> generated_at: 2026-10-16T20:56:39+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -15,7 +15,7 @@
 | nexara-chat-flow-repair | waiting | 2026-10-16T10:00:45+08:00 | done | ["Nexara", "native-ui", "chat"] | 会话主流程审计 P0/P1 修复交付 | `.agent/handover.md` · `2026-10-16T10:00:45+08:00` · `fp:b968f99f1f` |
 | nexara-independent-model-catalog | resume | 2026-09-22T18:33:08+08:00 | done | ["Nexara", "model-catalog"] | 独立模型目录上线、客户端验收与签名候选交付 | `.agent/handover.md` · `2026-09-22T18:33:08+08:00` · `fp:320878f7b2` |
 | nexara-local-debug-ci-boundary | waiting | 2026-09-29T23:55:52+08:00 | in-progress | ["Nexara", "PDEC", "Android"] | PDEC 本机 Android 调试边界收敛与 CI 触发待确认 | `.agent/handover.md` · `2026-09-29T23:55:52+08:00` · `fp:f4e8807aba` |
-| nexara-physical-device-ui-acceptance | waiting | 2026-10-16T19:24:26+08:00 | done | ["Nexara", "native-ui", "provider", "release"] | 提供商协议稳定标识修复与折叠 N 图标签名候选 | `.agent/handover.md` · `2026-10-16T19:24:26+08:00` · `fp:1be613d35e` |
+| nexara-physical-device-ui-acceptance | waiting | 2026-10-16T20:56:39+08:00 | done | ["Nexara", "native-ui", "chat", "rag", "release"] | 会话步骤紧凑化、正文排版修复与检索指示器缺失修复 | `.agent/handover.md` · `2026-10-16T20:56:39+08:00` · `fp:2828a399eb` |
 | rag-fab-drilldown-isolation | completed | 2026-09-26T23:05:00+08:00 | completed | rag, ui-status, fab, explorer-breadcrumbs, sandbox-isolation | 知识库集中式 FAB 状态指示微件、同层下钻式目录切换与工作区沙箱深度隔离 | `.agent/handover.md` · `2026-09-26T23:05:00+08:00` · `fp:5c7e9d4ff9` |
 | rag-global-workspace-explorer | waiting | 2026-09-26T14:15:05+08:00 | completed | ["rag", "workspace", "vfs", "explorer", "compose-ui"] | 知识库全局资源管理器实机全链路验收与VFS崩溃恢复加固 | `.agent/handover.md` · `2026-09-26T14:15:05+08:00` · `fp:0d9d575a7e` |
 | rag-infinite-indexing-fix-top-spacing | completed | 2026-09-27T02:30:00+08:00 | completed | rag, vectorization, error-handling, ui-layout, release | 向量化“无限进行中”根治、任务主动取消与主页顶部呼吸感对齐 | `.agent/handover.md` · `2026-09-27T02:30:00+08:00` · `fp:ffec7cc374` |
@@ -26,6 +26,7 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-10-16T20:56:39+08:00 | iso | done | waiting | ["Nexara", "native-ui", "chat", "rag", "release"] | ["chat-ui", "markdown", "rag-trace", "codex-cli", "release"] | 会话步骤紧凑化、正文排版修复与检索指示器缺失修复 | `.agent/handover.md` · `2026-10-16T20:56:39+08:00` · `fp:2828a399eb` |
 | 2026-10-16T19:24:26+08:00 | iso | done | waiting | ["Nexara", "native-ui", "provider", "release"] | ["r8", "persistence", "migration", "release", "launcher-icon", "codex-cli"] | 提供商协议稳定标识修复与折叠 N 图标签名候选 | `.agent/handover.md` · `2026-10-16T19:24:26+08:00` · `fp:1be613d35e` |
 | 2026-10-16T16:04:34+08:00 | iso | done | waiting | ["Nexara", "native-ui", "settings", "model-picker"] | ["model-catalog", "settings-ui", "layout", "provider"] | 模型选择器按运行时目录解析与设置页排版整理 | `.agent/handover.md` · `2026-10-16T16:04:34+08:00` · `fp:6b1e974b1c` |
 | 2026-10-16T15:07:25+08:00 | iso | done | waiting | ["Nexara", "release"] | ["release", "apk", "physical-device"] | P2 与 RAG 指示器修复后签名发行包交付真机测试 | `.agent/handover.md` · `2026-10-16T15:07:25+08:00` · `fp:af39029d8f` |

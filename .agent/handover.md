@@ -8841,3 +8841,34 @@ Codex：修复前 12 项回归 10 项失败；JVM 2937/0 失败、Lint 0 错误�
 
 ### HLG
 标准 append dry-run/apply 追加。
+
+## 2026-10-16T20:56:39+08:00 · 会话步骤紧凑化、正文排版修复与检索指示器缺失修复
+
+type: feature
+scope: ["Nexara", "native-ui", "chat", "rag", "release"]
+status: done
+tags: ["chat-ui", "markdown", "rag-trace", "codex-cli", "release"]
+continuity: waiting
+continuity-key: nexara-physical-device-ui-acceptance
+record-fingerprint: 2828a399eb52ac34e9aa536e51b84c2837e2dd6e3fce98d6ca8b7fd467c24827
+
+### Summary
+按用户真机反馈，思考/工具/检索改为紧凑单行（思考默认折叠、生成中单行滚动），统一步骤间距，修复 Markdown 预处理误拆小数与中英自动插空，修复检索开启但无引用时检索轨迹未保存导致指示器缺失。功能提交 ce9e36d8，签名候选 Nexara-0.2.2-beta-ce9e36d8-fold-release.apk，登记提交 31454d46。
+
+### Changed
+Codex CLI（gpt-6.1-sol·max，worktree ../Nexara-wt-chatui 分支 feat/chat-compact-steps）实施 UI、Markdown、ContextBuilder 与截图；其范围外的根因在 DefaultChatGenerationRuntime（hasPersistableRagContext 忽略 ragTrace、无引用时返回 null、RagMetadata 未写 trace），由主控按其建议修复；主控另加工具耗时≥1 秒显示为秒。新增 CompactStepRow、ToolInvocationPresentation，删除旧 ThinkingBlock。
+
+### Validation
+JVM 2987/0 失败（含 6 条修复前失败的检索轨迹链路回归）；Lint 0 错误；文本换行门禁、截图校验通过（22 张基线变化由 Codex 逐张检查，主控抽检紧凑步骤深色预览）；API35 full 设备矩阵 143/143（Codex 沙箱无法启动模拟器，主控执行）；签名构建、verify-release-apk 退出 0；Nexara_API_35 覆盖安装冷启动正常、已有会话可打开。
+
+### Next
+用户真机验证思考折叠滚动、工具行、知识库单行指示（未配置嵌入模型应显示未能检索）与正文排版；如需真实命中需配置默认嵌入模型。折叠 N 图标任务仍待其自身提交。
+
+### Risks
+未接真实模型在设备上验证流式思考滚动与检索指示；思考时长不持久化，历史消息显示“已完成思考”；ExecutionStep 缺 timestamp 的历史 JSON 默认当前时间，耗时来源不可确认；签名包纳入未提交的图标改动。worktree ../Nexara-wt-chatui、../Nexara-wt-protocol 及对应分支已合并可清理。
+
+### DIA
+已同步 CHANGELOG（仅暂存本任务条目）与 docs/release/v0.2.2-beta-validation.md；README、registry 由图标任务持有未提交改动未修改。
+
+### HLG
+标准 append dry-run/apply 追加。
