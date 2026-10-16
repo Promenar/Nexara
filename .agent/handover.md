@@ -8810,3 +8810,34 @@ record-fingerprint: 6b1e974b1cf178d89960ec56394f94d7903a7bbf62ec97a16200ef6596b6
 
 ### HLG
 标准 append dry-run/apply 追加。
+
+## 2026-10-16T19:24:26+08:00 · 提供商协议稳定标识修复与折叠 N 图标签名候选
+
+type: fix
+scope: ["Nexara", "native-ui", "provider", "release"]
+status: done
+tags: ["r8", "persistence", "migration", "release", "launcher-icon", "codex-cli"]
+continuity: waiting
+continuity-key: nexara-physical-device-ui-acceptance
+record-fingerprint: 1be613d35e0bf6fb78bccd176496ba888d91b0b455359524fe2ccc9ccd61931e
+
+### Summary
+用户反馈每次覆盖安装发行包后提供商需重新粘贴保存、最近会话丢失。根因：ProtocolType 以 ::class.simpleName 持久化，R8 混淆名逐包变化且跨包冲突（Generic 在 b86ebeaf/fcf9750c/83622a1a 分别为 yr4/is4/ks4；is4 在 83622a1a 为 DeepSeek）。修复提交 c6674fda，签名候选 Nexara-0.2.2-beta-c6674fda-fold-release.apk（含折叠 N 图标），登记提交 c34183c7。
+
+### Changed
+经用户授权由 Codex CLI（gpt-6.1-sol，reasoning max，workspace-write 沙箱，隔离 worktree ../Nexara-wt-protocol 分支 fix/stable-provider-protocol-id）施工，主控复核并调整一条消歧规则（非预设主机且候选含通用兼容时取通用兼容）。ProtocolType 增加 persistedId（原始类名）并统一写入；fromPersistedName 依次按稳定标识、旧别名、显示名、三张已发布包混淆名表与 Base URL 判定并写回；SessionRepository.getAll 逐行隔离损坏会话并脱敏记录，SessionListViewModel 不再无声吞异常。新增协议迁移、持久化契约、会话韧性测试。
+
+### Validation
+Codex：修复前 12 项回归 10 项失败；JVM 2937/0 失败、Lint 0 错误、assembleMinifiedTest 通过并以 dexdump 确认稳定标识常量。主控：合并后工作树 JVM 2937/0 失败、Lint 0 错误；PDEC 无漂移；签名构建与 verify-release-apk 退出 0；aapt2 回读含单色图标层。Nexara_API_35 真实包升级链 fcf9750c→83622a1a（复现识别为 DeepSeek）→新包（识别为 OpenAI 兼容（通用），protocol_id 写回 Generic_OpenAI_Compat，会话保留），启动器显示折叠 N 图标。
+
+### Next
+用户真机覆盖安装新包，确认提供商无需重存、最近会话完整、图标正确；若会话仍丢失，提供丢失范围与是否随重启恢复以继续定位（模拟器上空会话未复现丢失）。折叠 N 图标任务仍需其自身完成提交、文档与 HLG。
+
+### Risks
+构建纳入了图标任务未提交的工作树改动，候选源码不完全对应已提交 SHA（receipt 记录内容摘要）；无显示名且混淆名冲突时按主机与最新发布表推断，不保证等于用户原选择；会话丢失原因未在模拟器复现；未做物理设备测试。worktree ../Nexara-wt-protocol 与分支 fix/stable-provider-protocol-id 已合并，可清理。
+
+### DIA
+已同步 CHANGELOG（仅暂存本任务条目）与发行验证账本 docs/release/v0.2.2-beta-validation.md；README、registry 由图标任务持有未提交改动，本任务未修改。
+
+### HLG
+标准 append dry-run/apply 追加。
