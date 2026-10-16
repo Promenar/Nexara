@@ -60,7 +60,7 @@
 - docs/ADR/ADR-020-layered-model-metadata-registry.md — 分层模型元数据来源、逐字段优先级、离线快照、三态能力、精确匹配、用户覆盖与回滚决策
 - docs/ADR/ADR-022-agent-skills.md — SKILL.md 技能包存储、导入门禁、渐进披露运行时与首版边界
 - docs/ADR/ADR-021-chat-full-context-documents-and-branching.md — 完整文档消息快照、路由后预算门禁、可靠重试、可回传导出与稳定消息分支决策
-- docs/legal/THIRD_PARTY_NOTICES.md — models.dev、LiteLLM、OpenRouter、官方模型补充及 Bettbox 界面转译的来源、许可及使用边界
+- docs/legal/THIRD_PARTY_NOTICES.md — QuickJS 及内嵌依赖、models.dev、LiteLLM、OpenRouter、官方模型补充及 Bettbox 界面转译的来源、许可及使用边界
 - docs/IMPLEMENTATION_ANALYSIS.md — 当前验收总账入口及历史实现规模、阶段记录
 - docs/DOCUMENT_GOVERNANCE.md — 文档治理方案（v2.0, 2026-05-19 更新）
 - native-ui/AGENTS.md — Kotlin 迁移技术规范（归档参考用）

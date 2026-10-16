@@ -8994,3 +8994,34 @@ CHANGELOG、README、AGENTS.md、docs/distribution-builds.md、发行文档、re
 
 ### HLG
 标准 append dry-run/apply 追加；工作包内的交接草稿未合入，以本记录为准。
+
+## 2026-10-17T04:51:37+08:00 · 集成 KG-B 实体证据模型、P1 外部文件夹挂载、KG-C/D 图检索与 P2 原生 SSH
+
+type: feature
+scope: ["Nexara", "native-ui", "knowledge-graph", "storage", "ssh", "database"]
+status: in-progress
+tags: ["kg", "saf", "external-mount", "ssh", "room-migration", "graph-retrieval"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: e3792034df1fb27fd15a636e542081239a83427509d840ae7e3fb494add9a0d4
+
+### Summary
+继续按 .agent/plans/20261017-mobile-agentic-capabilities.md 推进，四个工作包已合入 B-native-refactor 并推送（f9540245）：KG-B（7a6ba1b4，实体/关系/证据分离，Room v19）；P1 外部文件夹挂载（a776ff02，SAF 双风味、侧载真实路径、/mnt/<别名> 路由、回收区，Room v20）；KG-C/D（268cc574，持久图进入聊天检索、会话可见来源隔离、KG 独立 token 预算并入全来源预算、文档级抽取预算与部分完成、KG 用量分类、有界子图与 Barnes-Hut 后台布局，无 schema 变更）；P2 原生 SSH（f9540245，JSch 执行/SFTP/PTY/端口转发，ssh_hosts 表经 MIGRATION_20_21 进入 Room v21，identity b59d4265cdf25db536fb91226cd85ab3）。
+
+### Changed
+各包由 Codex CLI 在独立 worktree 实施；schema 冲突由 Codex 集成任务书按顺序重编号（v19 KG、v20 挂载、v21 SSH），并同步旧库提升、双库恢复、恢复日志与备份身份门禁；恢复候选冻结为独立 v18 恢复库。备份载荷保持 v4，SSH 配置/信任/凭据与挂载授权不进入备份。
+
+### Validation
+最终主线 :app:testSideloadDebugUnitTest 3472 项、:app:testPlayDebugUnitTest 3448 项，均 0 失败 25 条件跳过；lintSideloadDebug 通过；截图 111/111；sideload 与 play MinifiedTest 构建成功；check-text-wrapping 与 check-distribution-manifests（debug、minifiedTest）通过。
+
+### Next
+P3 隔离进程脚本运行时（worktree Nexara-wt-p3-script，基于 a776ff02，需合入新主线）与 P4 Termux（Nexara-wt-p4-termux）由 Codex 实施中；只读独立审阅（Nexara-wt-review）进行中。随后修复 KG-C/D 报告的摘要用量回滚缺口、编写并在 Nexara_API_31/35 运行设备验收，最后构建双风味签名发行包。
+
+### Risks
+Codex 沙箱启动的 Gradle/Kotlin 守护进程无法写其它 worktree，主控构建需 --no-daemon 并加大堆；P1 真实路径覆盖有短暂可见窗口且无崩溃自动恢复；SFTP 双哈希非原子 CAS；KG-C/D 范围外缺口：总预算拦截后首轮准备回滚可能删除承载辅助摘要用量的 assistant 消息（DefaultChatGenerationRuntime.handleDocumentBudgetFailure）；JSch/R8/ART、PTY 与全部设备行为尚未在设备验证。
+
+### DIA
+README、CHANGELOG、计划执行结果、PRD、ARCHITECTURE_DESIGN、ADR-018 等随各分支同步。
+
+### HLG
+标准 append dry-run/apply；各 worktree 内交接未合入，以本记录为准。
