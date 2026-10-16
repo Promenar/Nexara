@@ -119,3 +119,19 @@ python3 scripts/ci/check-text-wrapping.py
 - 超过 16,000 字符的结果完整保存到应用私有、按会话隔离的存储，不进入用户工作区。`read_tool_output` 为 SAFE_READ，按 UTF-16 字符偏移读取，默认 4,000、最多 8,000 字符；总容量 64 MiB，按首次写入顺序淘汰；超容量或 IO 失败明确降级，不提供虚假输出 ID。
 - 聊天页与前台通知显示轮次、调用数、token 及估算标记；通知停止复用现有 coordinator 取消。重复调用暂停可继续或停止；取消保留已有结果的调用配对。私有授权与输出分别清理，一类失败不会跳过另一类。
 - 验证命令、实际结果、截图基线与设备待验证场景见 `.agent/tmp-agent-reports/report-p0-runtime.md`。不执行提交、推送、设备或模拟器操作。未知模型上下文需在模型配置中补齐窗口；无法压缩的系统提示、用户消息、调用参数及保留轮次可能仍超出窗口。收尾请求也消耗 token，预算为进入收尾的门槛。
+
+## P0 发行风味与 WebView 执行结果
+
+执行日期：2026-10-17。范围为 `brief-p0-flavors.md` 的发行风味和富内容 WebView 工作包；工具执行底座、审批、上下文、前台服务及其它 P1/P2/KG 工作包未在此执行。成果位于 `feat/p0-distribution-flavors` 的未提交工作树，基准为 `57084b8c8d2051feaa07cf717eecd0de1c35eaa6`。
+
+- 已建立共享 applicationId 的 `play`、`sideload`；仅侧载专属清单声明 `MANAGE_EXTERNAL_STORAGE`，集中能力入口为 `DistributionCapabilities`，设置页导出诊断首行显示渠道、能力和版本。未实现所有文件访问业务。
+- 已适配日常 CI、目录刷新、两份发行 APK、独立校验和、按渠道归档的 mapping、双渠道 API35/36 冷安装矩阵和侧载 v0.1 升级入口；签名注入方式和发布授权门禁保持。`mainactivity-e2e` 固定匹配侧载，独立黑盒夹具不引入发行风味。当前任务和产物路径以 `docs/distribution-builds.md` 为准。
+- 富内容使用受控 HTTPS 打包资源、内存文档和公网 HTTPS 子资源代理。关闭文件/内容访问、默认 WebView 联网及原生桥接；检查实际 DNS 结果和每次重定向，拒绝非公网与非预期协议。链接直接阻止。复用现有 OkHttp，无新增 AndroidX WebKit 依赖；内嵌图片/字体上限 4 MiB，公网单资源 16 MiB，最多六次请求。保留本地图表、公式、知识图谱模板资产、Kroki PlantUML 和原生 PNG 导出路径。
+- 双风味 Debug JVM 各 3011 项：2986 通过、25 条件跳过、0 失败/错误；侧载 Lint 为 0 Error/Fatal、545 Warning、22 Hint。双 Debug、双 MinifiedTest、侧载 DeviceTest/AndroidTest 和 mainactivity-e2e APK 编译通过；Debug/MinifiedTest 的合并清单及四 APK 的权限差异和包身份均已核验，两个 MinifiedTest mapping 非空。
+- 双风味截图各 111 项全部通过；共用原 `src/screenshotTestDebug/reference`，112 张参考 PNG 的 SHA-256 全部未变。一个既有未被当前预览引用的参考图保留。截图插件在变体注册时覆盖早期目录配置，现于项目配置完成后绑定共用基线。
+- 发行工作流契约 40 项、合并清单脚本测试 3 项、模型目录测试 64 项、换行检查测试 5 项，以及设备/黑盒 Bash 契约、文本换行门禁、Shell 语法、三份 YAML 和 PDEC 校验全部通过。沙箱禁止 Robolectric 写用户目录下载锁，使用已有 SDK 缓存的离线测试配置解决；未跳过受影响用例。
+- 独立只读审阅的初始文档、内嵌资源、并发快照、ECharts 安装时序、严格百分号解码与截图路径问题均已关闭；主 Agent 复核实际命令、XML、APK、mapping、截图哈希和 diff。
+
+验收边界：遵守任务书，未执行签名 Release 构建、GitHub Actions、设备/模拟器运行或 git commit/push。WebView 在真实 Android WebView 中的功能、安全和 PNG 导出尚待主控设备验收，不能由 JVM/编译或 Compose 截图替代。计划中的其它 P0 能力不因此标记完成。
+
+DIA 已同步 README、AGENTS、CHANGELOG、registry、发行说明、构建说明、图标任务说明和 PDEC。完整文件清单、逐项需求位置、命令/结果、任务路径对照和主控签名/设备步骤见 `.agent/tmp-agent-reports/report-p0-flavors.md`；HLG 通过标准 append 追加交接记录。
