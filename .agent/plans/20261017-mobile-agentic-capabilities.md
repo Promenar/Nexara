@@ -25,7 +25,7 @@
 - 工具注册见 `NexaraApplication.kt` 的 `presetSkillRegistry`；工作区工具只作用于应用私有目录；`exec_js` 为一次性 WebView，网络与文件全关、5 秒超时。
 - `infra/fs/SafImportHandler.kt` 存在但无任何调用方。
 - 工具预算：轮次 `coerceIn(1, 100)`（`DefaultChatGenerationRuntime.kt` 的 `toolBudget`），单次生成调用上限 `MAX_TOOL_CALLS_PER_GENERATION = 200`。
-- 会话 `summary` 只有读取方，未发现自动写入；上下文按消息条数窗口截取，单轮内工具结果持续累积。
+- 跨轮次已有自动摘要：消息超出活动窗口时，`DefaultChatGenerationRuntime` 的 `summarize` 经 `SummaryManager` 更新会话 `summary`；单轮之内没有压缩，工具结果持续累积。
 - `ToolRisk.PROCESS` 已定义但无工具使用；MCP 工具默认风险 `UNKNOWN`。
 - MCP 仅支持 Streamable HTTP 且强制 HTTPS；全局 `cleartextTrafficPermitted="false"`。
 - HTML 预览的 `RichContentWebViewPool` 开启 JS 且未限制网络。
