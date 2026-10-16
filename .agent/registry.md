@@ -7,6 +7,9 @@
 - AGENTS.md — 开发者与 AI Agent 协同开发规范
 
 ## 按需文档
+
+- assets/branding/design-spec.md — 折叠 N 图标母版、生成谱系、日夜和单色变体、Gradle 跨 IDE 生成契约与验证入口
+- .agent/plans/20261016-fold-launcher-icon.md — 折叠 N 图标矢量制作、构建接线、覆盖防护与发行制品验证计划
 - .agent/plans/20261016-chat-flow-p0-p1-repair.md — 会话主流程审计 P0/P1 修复（审批恢复、执行阶段、待办隔离、协议历史、重新生成与删除、审批交互、检索复用、推理参数）计划及执行结果
 - .agent/plans/20261016-chat-flow-p2-attachment-rag-indicator.md — 会话 P2 修复（工具预算收尾、待办面板、废弃代码、web_fetch 审批）、图片附件发送修复与 RAG 检索指示器计划及执行结果
 - .agent/plans/20261016-model-picker-catalog-settings-layout.md — 模型选择器按运行时模型目录解析（修复会话可选模型缺失）与设置页排版整理（模型管理、提供商列表、工具设置、备份、检索设置、用量）计划及执行结果
