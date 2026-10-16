@@ -8717,3 +8717,34 @@ versionCode 仍为 4；新 APK 未做冷安装、覆盖升级、minified 黑盒�
 
 ### HLG
 标准 append dry-run/apply 追加。
+
+## 2026-10-16T14:56:10+08:00 · 会话 P2 修复、图片附件发送修复与 RAG 检索指示器交付
+
+type: feature
+scope: ["Nexara", "native-ui", "chat", "rag"]
+status: done
+tags: ["chat", "approval", "todo", "rag", "attachment", "tool-budget"]
+continuity: waiting
+continuity-key: nexara-physical-device-ui-acceptance
+record-fingerprint: 41a5d9cf36d5779942c9bdda82205c6cb20007dd3d0b4ff7147b103be9d90958
+
+### Summary
+修复图片附件必然发送失败；完成会话审计 P2（工具预算收尾、待办面板、废弃代码、web_fetch 审批）；新增 RAG 检索指示器；设备回归中发现并修复审批卡被输入栏与键盘遮挡。提交 5a21743a 已推送。
+
+### Changed
+图片：ChatImageEncoder 以解析宽高判定可读（原因：只读尺寸的 decodeStream 返回空值被当作失败）。预算：ProtocolToolChoice NONE 用于收尾轮，新失败码 TOOL_BUDGET_EXHAUSTED，审批恢复按 consumedToolUsageInTurn 续算。待办：TaskPanelStep 清单、完成态与清除、TaskPlanActions 标记完成与撤销。清理：删除续跑审批分支、continuationBudget/autoLoopLimit、timeoutPendingApproval；遗留非精确审批关闭并持久化清空；工具步骤关联计划焦点。web_fetch：ToolArgumentApprovalRules 半自动模式启发式审批。RAG：RagRetrievalTrace 写入 RagMetadata 既有 JSON 列，RagReference 增加 recallRank/kind，RerankClient.rerankWithOutcome 返回实际方式，检索卡与详情页分段展示。审批卡出现时滚到输入栏上方。MainActivity 聊天流程 E2E 改为验证遗留审批关闭语义；设备矩阵新增 ChatImageEncoderDeviceTest。
+
+### Validation
+JVM 2911 项通过；Lint 0 错误；文本换行门禁通过；截图校验通过（4 张预期变化与 2 张新增预览已人工复核；DocEditor 平板预览为既有容差内抖动，干净 HEAD 同样出现）。API 35 完整矩阵 143/143；API 31 最低矩阵 103/103。
+
+### Next
+真机验证：相册选图发送、待办清单展开/完成/撤销、知识库命中与未命中摘要、重排详情、审批卡可见性。需要时重新打包签名候选。
+
+### Risks
+部分 OpenAI 兼容服务可能不接受 tool_choice none（仅收尾轮发送）；web_fetch 规则为启发式；从相册选图发给真实模型的完整界面流程、真实重排服务与物理设备未验证。摘要类记忆被检索后在合并阶段被筛掉，属既有行为，本次只如实统计未修改。
+
+### DIA
+已同步 CHANGELOG、.agent/registry.md 与计划 .agent/plans/20261016-chat-flow-p2-attachment-rag-indicator.md；数据库版本与备份格式不变。
+
+### HLG
+标准 append dry-run/apply 追加。
