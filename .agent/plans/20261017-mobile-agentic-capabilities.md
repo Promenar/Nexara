@@ -180,6 +180,16 @@ DIA 已同步 README、AGENTS、CHANGELOG、registry、发行说明、构建说�
 - 未参与施工的原生只读 Agent 完成独立审阅，主控用失败回归封闭备份兼容/严格校验、完整大小写折叠、联合 JIT 活性/预算来源及来源权重问题，并核验最终 diff、schema identity 和检查结果。DIA 已同步 `docs/ARCHITECTURE.md`、`CHANGELOG.md`；README 无需调整。
 - 按 KG-B 任务书保留未提交工作树，未执行 commit/push、未追加 handover、未操作设备、未新增第三方依赖。交接、完整文件清单、逐需求位置、命令、复现边界及真实旧库设备验证步骤见 `.agent/tmp-agent-reports/report-kg-b.md`。
 
+## P3 执行结果与 Python 技术验证结论
+
+- JavaScript 采用 QuickJS 1.0.15，两个发行渠道共用非导出的隔离 UID 服务与 Messenger 能力代理。`exec_js` 移除 WebView 路径，支持 `result`、最后表达式和异步能力；`run_script` 支持 `.js/.mjs`、参数数组与同根相对模块，保留统一 `ScriptEngine` 接口。
+- 文件代理复用现有路径规则、挂载身份、只读和版本校验及原工作区技能；默认写入二次审批，删除始终独立审批或对应会话目标授权。网络默认关闭，设置页维护精确局域网白名单；DNS 固定、逐跳检查、无应用凭据继承。超时默认 30 秒/最大 300 秒，QuickJS 堆 64 MiB、结果 64 KiB，日志/文件/网络/IPC 有界。取消和资源超限终止隔离进程；阻塞入口与能力调用使用全局 4 槽调度器。
+- Kotlin 编译器、Compose 和序列化插件对齐 2.4.10 以读取依赖元数据，应用语言级别保持 2.2；协程运行/测试库为 1.11.0。未改 AGP、SDK、数据库、知识图谱、SSH、外部存储后端或 PDEC。第三方来源与许可已登记。
+- 最终本机验收：侧载 3333 项（3308 通过/25 跳过）、Play 3309 项（3284 通过/25 跳过）单测均零失败/错误；111 项截图通过；lint 0 Error/Fatal、554 Warning、24 Hint。Play Debug、ARM64 侧载 DeviceTest/AndroidTest、双渠道 ARM64 MinifiedTest R8 构建均成功；QuickJS JNI/绑定类消费端保留规则在两个最终 R8 配置和 mapping 中确认。文本换行、Debug/MinifiedTest 渠道清单、diff 门禁通过，8 个设备用例均实际编入测试 APK，但未运行。
+- Python 同构 ARM64 最小 Debug APK 实测：空运行时相对底座增加 18.237 MiB；requests 配置为 18.697 MiB、numpy 为 27.909 MiB、pandas 为 39.734 MiB。三个包的目标 Android wheel 经过构建期安装与打包；未验证 Android import/运算。原版 AndroidPlatform 使用私有 files/cache/偏好及标准库解包，推断与隔离 UID 不适配；隔离初始化与冷启动因禁止设备操作而未测，不能视为失败或成功。建议当前产品不引入 Chaquopy，临时工程、验证代码与下载解释器均已删除。
+- 原生独立只读 Agent 审阅 Binder、能力、挂载、网络、限额和生命周期；主控复核并修复阻塞 I/O 拖住 watchdog、入口超时、审批来源及超限分类问题。已进入公开文件后端的操作不保证原子取消，沿用原后端提交/回滚语义；没有越界修改后端。
+- 完整改动清单、逐项实现位置/测试、原始数据、偏差与主控设备命令见 `.agent/tmp-agent-reports/report-p3-script.md`。DIA 已同步 README、CHANGELOG、架构、发行构建、许可和 registry；依任务书不提交推送、不追加 handover、不操作设备。真实隔离权限、Android JNI、进程死亡、设置交互与 minified 功能仍由主控按报告设备验收。
+
 ## KG-C / KG-D 执行结果
 
 - 持久图聊天检索从当前会话可见且存活的来源中选择查询/RAG 种子，使用来源和端点索引扩展 1–2 跳，默认 12 个种子、64 个节点、24 条关系；其它会话私有证据与联合 JIT 的不可见依赖不进入结果。KG 可以独立于文档检索启用，并服从 Agent 覆盖。
@@ -206,3 +216,16 @@ DIA 已同步 README、AGENTS、CHANGELOG、registry、发行说明、构建说�
 - 摘要费用先持久保存，再回滚准备消息；统计按消息是否存在去重，错误终态补偿也遵守相同顺序。账本写入失败保留承载费用的显式错误消息，无摘要费用时沿用原调度，账本排除应用备份。
 - 最终同一轮五项 Gradle 验收成功，耗时 9 分 36 秒：侧载单测 3526 项、Play 单测 3502 项均为零失败/错误，各 25 项条件跳过；截图 111 项全部通过；Lint 为零 Error/Fatal、573 Warning、21 Hint；侧载混淆测试 APK 构建成功。文本换行及 diff 检查通过。
 - 三个原生施工工作包完成后，由未参与施工的原生 Agent 独立只读审阅；有效发现已用失败回归封闭，最终无范围内阻断。主控复核 diff、真实 XML、构建日志、产物和 32 项源码指纹。DIA 已同步 CHANGELOG 与本计划，报告包含逐项红绿证据；HLG 按任务书不追加。设备、模拟器与真实提供商未操作，不将 JVM、截图或 R8 构建视为设备验收。
+
+## P4 执行结果
+
+执行日期：2026-10-17。范围为 `brief-p4-termux.md` 的 Termux 后台命令、接入诊断页和本机 MCP 高级选项。成果保留在 `feat/p4-termux` 未提交工作树，基准为 `f9540245fc28f83653cebc5bc7d3083807034847`。
+
+- `termux_exec` 默认关闭，显式启用后才向模型暴露；通过 RUN_COMMAND 后台执行 bash，支持工作目录、stdin、默认60秒和最多600秒超时。PROCESS 审批目标固定绑定 `termux` 和完整命令；执行前重查授权、安装、版本和权限。
+- 单次显式 PendingIntent 以不可变 URI 请求身份关联异步回调，处理乱序、重复、超时和取消；stdout/stderr 返回官方原始 UTF-16 长度与分别截断标记。官方没有错误文本原始长度或按请求结束后台命令的公开接口，因此不伪造长度，也不声称超时已结束 Termux 进程。
+- 工具设置中的独立接入页提供安装、外部调用开关复制、权限与返回刷新、固定诊断、既有 SSH 公钥和 authorized_keys 命令复制、主目录 SAF 授权挂载及后台限制说明。SSH 与挂载仅复用公开接口；SAF 自动定位受系统和提供商实现影响，保留手动选择回退。
+- MCP 本机 HTTP 为默认关闭的高级选项，仅接受精确 `127.0.0.1` 和显式有效端口；Bearer 必填并存入 SecretStore，发现与执行逐次认证，工具默认 PROCESS 风险。HTTP 不跟随重定向；配置、令牌或授权撤销使旧客户端和分页发现失效。主配置及 Debug 网络配置仅对 `127.0.0.1` 放开明文。
+- 两个启用开关登记为设备本地授权，不跨备份迁移；本机 MCP 令牌不进入现有备份白名单。无新增第三方依赖、数据库结构或迁移。
+- 六项指定 Gradle 任务联合运行成功：侧载3522项单测中3497通过、25既有条件跳过；Play3498项中3473通过、25既有条件跳过；均为0失败/错误。截图111/111，Lint为0 Error/Fatal、579 Warning、21 Hint；双渠道 MinifiedTest 构建通过。Debug与MinifiedTest发行清单检查、四份合并清单的 Termux 权限/包查询/非导出接收器、文本换行及 diff 检查通过。
+- 两个混淆测试 APK 及非空 mapping 已回读并记录 SHA-256，默认 ABI 为 x86_64，包名均为 `com.promenar.nexara.native.minifiedTest`；ARM64 真机须另行生成兼容产物。未操作设备或模拟器，真实 RUN_COMMAND、权限、SAF、SSH、后台限制和环回服务认证由主控按报告验收，构建和 JVM 证据不代替设备通过。
+- 两个原生施工工作包由主控集成，未参与施工的只读 Agent 串行独立审阅，已关闭有效发现；主控复核最终代码、diff、测试 XML、Lint、合并清单与 APK。DIA 已同步 README、CHANGELOG 未发布区和本计划；按任务书不提交推送、不修改 PDEC、不追加 handover。完整41个改动路径、逐需求位置/测试、命令、复现、限制及设备步骤见 `.agent/tmp-agent-reports/report-p4-termux.md`，HLG 交接事实仅保存在报告。
