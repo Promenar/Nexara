@@ -167,3 +167,13 @@ DIA 已同步 README、AGENTS、CHANGELOG、registry、发行说明、构建说�
 - 验证：`:app:testDebugUnitTest :app:lintDebug` 联合运行通过，3065 项单元测试中 3040 项通过、25 项跳过，0 失败、0 错误；Lint 0 Error/Fatal、544 Warning、22 Hint。文本换行门禁及 `git diff --check` 通过。来源删除、并发、恢复意图、非工作区双库恢复、JIT 来源/缓存及字符串 SQL 缺陷有失败复现；迁移与持久队列恢复有真实 Room 集成覆盖。
 - 未参与施工的原生只读 Agent 完成独立审阅，主控用失败回归封闭备份兼容/严格校验、完整大小写折叠、联合 JIT 活性/预算来源及来源权重问题，并核验最终 diff、schema identity 和检查结果。DIA 已同步 `docs/ARCHITECTURE.md`、`CHANGELOG.md`；README 无需调整。
 - 按 KG-B 任务书保留未提交工作树，未执行 commit/push、未追加 handover、未操作设备、未新增第三方依赖。交接、完整文件清单、逐需求位置、命令、复现边界及真实旧库设备验证步骤见 `.agent/tmp-agent-reports/report-kg-b.md`。
+
+## P3 执行结果与 Python 技术验证结论
+
+- JavaScript 采用 QuickJS 1.0.15，两个发行渠道共用非导出的隔离 UID 服务与 Messenger 能力代理。`exec_js` 移除 WebView 路径，支持 `result`、最后表达式和异步能力；`run_script` 支持 `.js/.mjs`、参数数组与同根相对模块，保留统一 `ScriptEngine` 接口。
+- 文件代理复用现有路径规则、挂载身份、只读和版本校验及原工作区技能；默认写入二次审批，删除始终独立审批或对应会话目标授权。网络默认关闭，设置页维护精确局域网白名单；DNS 固定、逐跳检查、无应用凭据继承。超时默认 30 秒/最大 300 秒，QuickJS 堆 64 MiB、结果 64 KiB，日志/文件/网络/IPC 有界。取消和资源超限终止隔离进程；阻塞入口与能力调用使用全局 4 槽调度器。
+- Kotlin 编译器、Compose 和序列化插件对齐 2.4.10 以读取依赖元数据，应用语言级别保持 2.2；协程运行/测试库为 1.11.0。未改 AGP、SDK、数据库、知识图谱、SSH、外部存储后端或 PDEC。第三方来源与许可已登记。
+- 最终本机验收：侧载 3333 项（3308 通过/25 跳过）、Play 3309 项（3284 通过/25 跳过）单测均零失败/错误；111 项截图通过；lint 0 Error/Fatal、554 Warning、24 Hint。Play Debug、ARM64 侧载 DeviceTest/AndroidTest、双渠道 ARM64 MinifiedTest R8 构建均成功；QuickJS JNI/绑定类消费端保留规则在两个最终 R8 配置和 mapping 中确认。文本换行、Debug/MinifiedTest 渠道清单、diff 门禁通过，8 个设备用例均实际编入测试 APK，但未运行。
+- Python 同构 ARM64 最小 Debug APK 实测：空运行时相对底座增加 18.237 MiB；requests 配置为 18.697 MiB、numpy 为 27.909 MiB、pandas 为 39.734 MiB。三个包的目标 Android wheel 经过构建期安装与打包；未验证 Android import/运算。原版 AndroidPlatform 使用私有 files/cache/偏好及标准库解包，推断与隔离 UID 不适配；隔离初始化与冷启动因禁止设备操作而未测，不能视为失败或成功。建议当前产品不引入 Chaquopy，临时工程、验证代码与下载解释器均已删除。
+- 原生独立只读 Agent 审阅 Binder、能力、挂载、网络、限额和生命周期；主控复核并修复阻塞 I/O 拖住 watchdog、入口超时、审批来源及超限分类问题。已进入公开文件后端的操作不保证原子取消，沿用原后端提交/回滚语义；没有越界修改后端。
+- 完整改动清单、逐项实现位置/测试、原始数据、偏差与主控设备命令见 `.agent/tmp-agent-reports/report-p3-script.md`。DIA 已同步 README、CHANGELOG、架构、发行构建、许可和 registry；依任务书不提交推送、不追加 handover、不操作设备。真实隔离权限、Android JNI、进程死亡、设置交互与 minified 功能仍由主控按报告设备验收。
