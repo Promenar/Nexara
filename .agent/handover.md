@@ -8686,3 +8686,34 @@ API31 首次矩阵运行在 MainActivity 审批回传步骤失败一次，补齐
 
 ### HLG
 标准 append dry-run/apply 追加。
+
+## 2026-10-16T10:05:40+08:00 · 会话流程修复后签名发行包交付真机测试
+
+type: release
+scope: ["Nexara", "release"]
+status: done
+tags: ["release", "apk", "physical-device"]
+continuity: waiting
+continuity-key: nexara-physical-device-ui-acceptance
+record-fingerprint: bd23905cbe4fdb75e518c87e989d88c52ba275af54a21e1b9c86bb9d81f983bd
+
+### Summary
+基于 fcf9750c 构建正式签名 R8 APK，交付用户真机测试；包含会话主流程 P0/P1 修复。
+
+### Changed
+仅登记 v0.2.2-beta 验证账本与 HLG 记录；未改生产代码、版本号或签名。APK 位于 artifacts/release-20261016-fcf9750c/Nexara-0.2.2-beta-fcf9750c-release.apk。
+
+### Validation
+PDEC execution_ready=true 无漂移；assembleRelease 与 verify-release-apk.py 均退出 0；20567564 bytes，SHA256 070d1ceb20fc76d30ff6771f05bd0f1ca7be115a9fcd4237fccc83a3914a4fb5，证书与登记一致。源码 fcf9750c，native-ui 树 346310bd。
+
+### Next
+用户覆盖安装并测试审批继续、拒绝与全部批准、待办面板、重新生成与删除撤销、参数档位；确认 run 38838153470 结果。
+
+### Risks
+versionCode 仍为 4；新 APK 未做冷安装、覆盖升级、minified 黑盒或物理设备验证；源码 CI 登记时仍在运行。公开发布未授权。
+
+### DIA
+已同步 docs/release/v0.2.2-beta-validation.md；README、CHANGELOG 与产品行为无新增变化。
+
+### HLG
+标准 append dry-run/apply 追加。
