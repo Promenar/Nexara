@@ -120,6 +120,18 @@ python3 scripts/ci/check-text-wrapping.py
 - 聊天页与前台通知显示轮次、调用数、token 及估算标记；通知停止复用现有 coordinator 取消。重复调用暂停可继续或停止；取消保留已有结果的调用配对。私有授权与输出分别清理，一类失败不会跳过另一类。
 - 验证命令、实际结果、截图基线与设备待验证场景见 `.agent/tmp-agent-reports/report-p0-runtime.md`。不执行提交、推送、设备或模拟器操作。未知模型上下文需在模型配置中补齐窗口；无法压缩的系统提示、用户消息、调用参数及保留轮次可能仍超出窗口。收尾请求也消耗 token，预算为进入收尾的门槛。
 
+## P2 执行结果
+
+数据库版本为 v21。
+
+- 实施范围以 `.agent/tmp-agent-reports/brief-p2-ssh.md` 为准。选用 mwiede/jsch 2.28.8，BC 既有 jdk15to18 家族统一为 1.86；Termux terminal-emulator / terminal-view 0.118.0 用于远端 PTY 仿真和渲染，不启动本地进程，APK 排除 libtermux.so。选型六项比较、官方来源和密码学实测见 `.agent/tmp-agent-reports/p2-ssh-selection.md`。
+- 主机配置新增唯一别名、认证、指纹、终端保持和回环转发设置，跳板仅预留。Room 20→21 仅新增非秘密 ssh_hosts 表，保留 v19 知识图谱与 v20 外部挂载结构；恢复候选维持精确 v18 合同。SSH 配置、信任和全部 SSH 凭据均不进入应用备份；凭据仅由现有 SecretStore 加密保存。
+- 首次信任须由用户在 UI 核对类型与 SHA256，变化立即拒绝；替换采用绑定探测身份及旧指纹的 CAS。8 个 Agent 工具仅接受别名；PROCESS 目标绑定主机与完整命令/输入，SFTP 绑定主机与远端路径，PTY session 按聊天 owner 隔离。所有工具沿用大输出卸载，执行、文件、连接及缓冲均设上限，取消关闭通道，终态释放 owner。
+- 用户终端支持 ANSI、光标、历史、IME、常用控制键和 resize；退出默认关闭，可按主机保持。端口转发固定监听 127.0.0.1，真实资源状态与前台服务代际协调，进程重启不恢复连接。待审批 owner 使用10分钟绝对租约；实际执行获批工具前解除旧租约，部分批准后仍 WAIT 时重登记。
+- 最终同一轮 Gradle 的 testDebugUnitTest、lintDebug、validateDebugScreenshotTest、compileDebugAndroidTestKotlin、assembleMinifiedTest 全部成功（5分8秒）。单元测试 3202 项：3177 通过、25 项既有外部服务测试跳过、零失败/错误；SSH/终端/迁移及 PDF 密码学兼容专用测试64项全通过，截图111项全通过，Lint 零 Error/Fatal、555 Warning、22 Hint。R8 APK 中29个精确保留反射类均存在，未打包 libtermux.so；文本换行和 diff 检查通过。
+- 未参与生产施工的 ssh_tech_review 完成独立审阅，主控复核代码、diff、XML、依赖与 APK 证据。R8 成功只证明构建；未操作设备/模拟器，API31 ART、Termux 127.0.0.1:8022、输入/旋转、Android 前台服务、SourceProbe 和升级/备份全路径须由主控按报告验收。
+- 完整实现位置、文件清单、命令、限制和设备步骤见 `.agent/tmp-agent-reports/report-p2-ssh.md`；最终测试收据见 `p2-validation-receipt.json`。按任务书保留工作树成果，不提交推送、不追加 handover；合并其它工作包时须统一 Room 版本号与迁移链。
+
 ## P0 发行风味与 WebView 执行结果
 
 执行日期：2026-10-17。范围为 `brief-p0-flavors.md` 的发行风味和富内容 WebView 工作包；工具执行底座、审批、上下文、前台服务及其它 P1/P2/KG 工作包未在此执行。成果位于 `feat/p0-distribution-flavors` 的未提交工作树，基准为 `57084b8c8d2051feaa07cf717eecd0de1c35eaa6`。
@@ -177,3 +189,15 @@ DIA 已同步 README、AGENTS、CHANGELOG、registry、发行说明、构建说�
 - Python 同构 ARM64 最小 Debug APK 实测：空运行时相对底座增加 18.237 MiB；requests 配置为 18.697 MiB、numpy 为 27.909 MiB、pandas 为 39.734 MiB。三个包的目标 Android wheel 经过构建期安装与打包；未验证 Android import/运算。原版 AndroidPlatform 使用私有 files/cache/偏好及标准库解包，推断与隔离 UID 不适配；隔离初始化与冷启动因禁止设备操作而未测，不能视为失败或成功。建议当前产品不引入 Chaquopy，临时工程、验证代码与下载解释器均已删除。
 - 原生独立只读 Agent 审阅 Binder、能力、挂载、网络、限额和生命周期；主控复核并修复阻塞 I/O 拖住 watchdog、入口超时、审批来源及超限分类问题。已进入公开文件后端的操作不保证原子取消，沿用原后端提交/回滚语义；没有越界修改后端。
 - 完整改动清单、逐项实现位置/测试、原始数据、偏差与主控设备命令见 `.agent/tmp-agent-reports/report-p3-script.md`。DIA 已同步 README、CHANGELOG、架构、发行构建、许可和 registry；依任务书不提交推送、不追加 handover、不操作设备。真实隔离权限、Android JNI、进程死亡、设置交互与 minified 功能仍由主控按报告设备验收。
+
+## KG-C / KG-D 执行结果
+
+- 持久图聊天检索从当前会话可见且存活的来源中选择查询/RAG 种子，使用来源和端点索引扩展 1–2 跳，默认 12 个种子、64 个节点、24 条关系；其它会话私有证据与联合 JIT 的不可见依赖不进入结果。KG 可以独立于文档检索启用，并服从 Agent 覆盖。
+- 默认持久图优先，种子少于 2 个或无关系时才对可核验片段做 JIT，可在检索高级设置关闭回退。融合按规范实体名称、类型与有向关系去重，默认 2048 个保守估算 token，优先保留高分完整关系；注入和消息快照使用同一结果，详情/指示器展示实体、路径、持久图/即时来源与裁剪。
+- 文档版本预算默认为 32 次调用、32768 输出 token、180 秒活跃抽取时长，每请求最多 2048 输出 token。超限提交部分候选并显示 x/y，不冒充完整完成。分块缓存与费用账本分离，取消、配置变化、清理缓存和事务回滚不返还费用；候选在事务成功后精确清理。预计超过 16 次调用的大文档基于真实解析文本展示估算并确认，自动索引保留旧图和向量结果，等待用户确认。
+- KG 实报/估算用量进入统计分类、总量、模型与日趋势；高级设置可按正确数字/布尔类型备份恢复，本机用量账本不迁移。没有 Room schema、索引迁移或新增依赖。
+- 可视化默认最近更新的 300 个节点，支持搜索与 100 邻居展开，硬上限 2000 节点/8000 边。后台 Barnes-Hut 使用固定种子，节点索引消除逐边查找，线段裁剪保留穿屏边，首次/重置适配居中；页面不可见或布局休眠时同时停下计算和脉冲，无障碍列表共享子图。
+- 原生抽取预算与性能工作包分开施工，独立只读 Agent 串行审阅，主控集成并统一调度双风味单测、侧载 Lint、截图、换行和 diff 检查。具体结果、JVM 300/2000/10000 节点单轮基准、截图变更、源码哈希与逐需求测试位置见 `.agent/tmp-agent-reports/report-kg-cd.md`。JVM 测量不能证明 Android FPS、内存或功耗。
+- 最终门禁：双渠道各 3256 项 JVM 测试，0 失败/错误、25 条件跳过；侧载截图 111/111，112 张参考 PNG 仅 KG 横屏详情一张更新，其余哈希不变。Lint 为 0 Error/Fatal、559 Warning、19 Hint，文本换行与 diff 检查通过；75 项冻结源码/资源/测试无漂移。独立增量审阅无范围内阻断。
+- 验收边界：未知模型窗口且无全文附件时不虚构总容量，KG 独立预算仍执行；图像及缺失 Usage 均为估算。摘要已收费后被总预算阻断，首轮准备回滚可能删除摘要用量，这是已确认的运行时边界；遵照任务书禁止修改 Agent 工具循环，未改该生产路径，报告明确披露。真实提供商、设备进程恢复、TalkBack 与性能需按报告步骤验证。
+- DIA 已同步 README、CHANGELOG 未发布区、PRD、ARCHITECTURE_DESIGN、ADR-018 和本计划；HLG 交接要点仅写报告。遵照 KG-C / KG-D 任务书，未提交/推送、未追加 handover、未修改 PDEC、未操作模拟器或设备。
