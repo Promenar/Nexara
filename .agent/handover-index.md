@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-10-16T21:06:43+08:00
+> generated_at: 2026-10-16T23:11:22+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -26,6 +26,7 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-10-16T23:11:21+08:00 | iso | done | none | ["Nexara", "native-ui", "search"] | ["keenable", "search", "settings", "security", "tests"] | Keenable 搜索提供商接入与验证交付 | `.agent/handover.md` · `2026-10-16T23:11:21+08:00` · `fp:efea69d809` |
 | 2026-10-16T21:06:43+08:00 | iso | done | none | ["Nexara", "native-ui", "branding"] | ["launcher-icon", "branding", "worktree"] | 提交折叠 N 应用图标并清理已合并工作树 | `.agent/handover.md` · `2026-10-16T21:06:43+08:00` · `fp:64d22aac55` |
 | 2026-10-16T20:56:39+08:00 | iso | done | waiting | ["Nexara", "native-ui", "chat", "rag", "release"] | ["chat-ui", "markdown", "rag-trace", "codex-cli", "release"] | 会话步骤紧凑化、正文排版修复与检索指示器缺失修复 | `.agent/handover.md` · `2026-10-16T20:56:39+08:00` · `fp:2828a399eb` |
 | 2026-10-16T19:24:26+08:00 | iso | done | waiting | ["Nexara", "native-ui", "provider", "release"] | ["r8", "persistence", "migration", "release", "launcher-icon", "codex-cli"] | 提供商协议稳定标识修复与折叠 N 图标签名候选 | `.agent/handover.md` · `2026-10-16T19:24:26+08:00` · `fp:1be613d35e` |

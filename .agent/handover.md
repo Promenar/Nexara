@@ -8902,3 +8902,33 @@ README、CHANGELOG、registry 的图标条目随图标提交入库；发行验�
 
 ### HLG
 标准 append dry-run/apply 追加。
+
+## 2026-10-16T23:11:21+08:00 · Keenable 搜索提供商接入与验证交付
+
+type: feature
+scope: ["Nexara", "native-ui", "search"]
+status: done
+tags: ["keenable", "search", "settings", "security", "tests"]
+continuity: none
+record-fingerprint: efea69d809b3a70e902379384f0ae56b301ff5e22e52fc6ab2e3c19fc5e32273
+
+### Summary
+工具中的联网搜索可选择 Keenable，工具调用与会话联网检索共用提供商配置；支持免密钥与安全存储的可选 API Key，默认 DuckDuckGo 保持兼容。
+
+### Changed
+新增 KeenableProvider：官方匿名/认证端点、应用标识头、有界结果、主机/子域过滤、标题链接摘要引用、错误脱敏与取消传播；WebSearchSkill 复用 WebSearchContextProvider，网络与凭据读取在 IO 调度。SearchConfigViewModel 与密钥编辑器共享安全操作并隔离 Tavily/Keenable 状态，SecretCatalog 纳入可选加密备份。设置加入双语选择项、免密钥说明与可选密钥；搜索面板完全展开并支持滚动。更新 HTTP、设置持久化、凭据与 Compose 测试；既有检索重置测试补上点击前滚动和可见性检查。
+
+### Validation
+PDEC approved、execution_ready=true、drift=[]；本机 macOS arm64/OpenJDK 21。新增 7 项 HTTP/路由测试在接入前有 5 项预期失败，实现后定向 52 项通过。最终 Gradle :app:testDebugUnitTest :app:lintDebug :app:assembleDebug :app:validateDebugScreenshotTest :app:assembleDebugAndroidTest 退出码 0；JVM 2998 项、0 失败/错误、25 跳过；截图 111/111；Lint 0 错误、545 条警告，变更新增行无 Lint 问题；文本换行与 diff 检查通过。API35 Nexara_API_35/emulator-5554/arm64-v8a 设置回归 9/9，默认系统动画下两个原失败用例 2/2。初次设备失败分别由面板半展开和测试点击屏幕外按钮导致，已保留失败日志/截图与通过证据。公开合成查询真实匿名端点 HTTP 200。原生 review_keenable 完成独立只读审阅和展开状态复核，无阻断发现，主控核对源码/diff/报告及设备截图。证据位于 artifacts/keenable-search-*.log 与计划 .agent/plans/20261016-keenable-search-provider.md。
+
+### Next
+用户可在设置 → 工具 → 联网搜索选择 Keenable；可选密钥由用户直接在应用中输入。功能源码、文档与交接记录随当前工作分支功能提交交付，提交推送后核对远端 SHA。
+
+### Risks
+真实带密钥认证请求仅以 MockEngine 合成数据验证，未调用付费认证接口；Keenable 密钥加密备份目录有测试覆盖，未执行真实账户密钥的备份往返。未覆盖真机、API31 或签名发行包验收。未跟踪的既有 app-release.apk、artifacts、.v2c、native-ui/.v2c 不纳管。无新增依赖、数据库迁移、权限或部署。
+
+### DIA
+已同步 README.md、CHANGELOG.md、.agent/registry.md 与 Keenable 接入计划；无需调整架构 ADR、数据库或发行账本。
+
+### HLG
+通过标准 append dry-run/apply 追加记录，脚本重建 handover-index；既有历史不修改。

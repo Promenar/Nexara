@@ -8,6 +8,7 @@
 
 ## 按需文档
 
+- .agent/plans/20261016-keenable-search-provider.md — Keenable 搜索提供商、免密钥与安全凭据、工具/会话路由及验证计划与执行结果
 - assets/branding/design-spec.md — 折叠 N 图标母版、生成谱系、日夜和单色变体、Gradle 跨 IDE 生成契约与验证入口
 - .agent/plans/20261016-fold-launcher-icon.md — 折叠 N 图标矢量制作、构建接线、覆盖防护与发行制品验证计划
 - .agent/plans/20261016-chat-flow-p0-p1-repair.md — 会话主流程审计 P0/P1 修复（审批恢复、执行阶段、待办隔离、协议历史、重新生成与删除、审批交互、检索复用、推理参数）计划及执行结果
