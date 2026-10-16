@@ -9025,3 +9025,34 @@ README、CHANGELOG、计划执行结果、PRD、ARCHITECTURE_DESIGN、ADR-018 �
 
 ### HLG
 标准 append dry-run/apply；各 worktree 内交接未合入，以本记录为准。
+
+## 2026-10-17T07:16:02+08:00 · 移动端 Agent 能力全部工作包完成设备验收并产出双渠道签名候选 6690fb1c
+
+type: release
+scope: ["Nexara", "native-ui", "release", "device-e2e", "ssh", "script", "termux"]
+status: completed
+tags: ["device-acceptance", "release-candidate", "room-v21", "tool-schema", "upgrade-gate"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 6359e5acb1417c44df43554ef64522b84916ca4877665e31c0a72a83b5658d02
+
+### Summary
+按 .agent/plans/20261017-mobile-agentic-capabilities.md 的 P0–P4 与 KG-A..D 已全部合入 B-native-refactor 并推送（6690fb1c）。最终设备验收：Nexara_API_35 full 52 阶段 181 项全通过（含 SSH 9 项），Nexara_API_31 minimum 23 阶段 120 项通过（Mermaid 因 WebView 91 与引导阶段守卫按设计跳过 2 项）。签名候选位于 artifacts/release-20261017-6690fb1c/：侧载 20678255 bytes SHA-256 a123a8a635d93aeb2b46e8164581e7b09bc5c2e88751d9cd0910f9ec92cd23f0；Play 20645459 bytes SHA-256 95539ea256f707634b02fe3f990c005a23785fc62d826bf5476f994a4434e633；证书 00be4cdd…3802。
+
+### Changed
+设备验收收尾修复：SSH 与 exec_js/run_script 工具 schema 移除公共校验器不支持的 minimum/maximum（真实聊天中会以 INVALID_DEFINITION 失败），新增 BuiltInToolSchemaDefinitionTest 扫描全部内置 schema；SshDeviceTest 对齐 trust() CAS 与生产身份绑定接线（Codex，4734168d）；发行升级门禁 android-release-upgrade-smoke.sh 目标改为 v21；GenerationNotificationFactoryTest 对齐 P0 进度正文；发行说明与验证账本新增 6690fb1c 候选，账本升级标记行名与 validate-release-readiness 对齐。
+
+### Validation
+侧载 JVM 3618 / Play 3594 项 0 失败 25 跳过；lintSideloadDebug 0 错误；发行配置测试 40/40；check-text-wrapping 通过；check-distribution-manifests release 通过；两包 verify-release-apk 通过；API35 两包冷装 PASS；API31 code4 v18 旧包直接覆盖为侧载包：v21、integrity/外键检查通过、哨兵数据逐项一致、首次安装时间保留；公开 v0.1→侧载/Play 升级门禁均通过。validate-release-readiness 因 CANDIDATE-PENDING 按预期拒绝发布。
+
+### Next
+用户真机验收（TalkBack/OEM/IME、Termux 实装联调、真实 SSH 主机、真实模型 Agent 长任务）；公开发布需用户授权 tag/Release 并把账本改为 GO；可选：minified 黑盒、KG 大图设备性能实测、Lint 告警清理。
+
+### Risks
+未做物理设备测试；Termux 未在设备联调（下载需授权）；Mermaid 需 WebView ≥94；SFTP 条件写入非原子；侧载真实路径覆盖写入有短暂替换窗口；Kotlin 编译器 2.4.10 / 协程 1.11 升级随本候选首次进入签名包；25 项 JVM 条件跳过涉及在线目录、网关与真实模型集成。
+
+### DIA
+已同步 CHANGELOG、docs/release/v0.2.2-beta.md、docs/release/v0.2.2-beta-validation.md；README 已由各工作包同步。
+
+### HLG
+标准 append dry-run/apply；Codex 报告归档于 .agent/tmp-agent-reports/{ssh-device,device-acceptance}/；worktree Nexara-wt-device、Nexara-wt-sshfix 已移除，宿主 SSH 测试服务已停止。

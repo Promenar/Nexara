@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-10-17T04:51:37+08:00
+> generated_at: 2026-10-17T07:16:02+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -11,7 +11,7 @@
 | agent-tooling-repair-20261002 | waiting | 2026-10-02T08:00:46+08:00 | done | ["Nexara", "pdec", "release"] | 授权 gpt-6-luna 并交付真机测试签名 APK | `.agent/handover.md` · `2026-10-02T08:00:46+08:00` · `fp:110c0ef84b` |
 | ci-version-sync-20261001 | resume | 2026-10-01T22:20:08+08:00 | in_progress | ["Nexara", "android-ci", "release"] | API31 Prompt 编辑器布局反馈根因修复候选 | `.agent/handover.md` · `2026-10-01T22:20:08+08:00` · `fp:c9c99a4302` |
 | dropdown-menu-anchor-and-style-unification | waiting | 2026-09-27T21:43:18+08:00 | completed | ["ui, dropdown-menu, files-panel, m3-design, release"] | 悬浮菜单位置精准锚定与全站新版视觉样式统一规范收敛 | `.agent/handover.md` · `2026-09-27T21:43:18+08:00` · `fp:31537a3d52` |
-| mobile-agentic-capabilities | resume | 2026-10-17T04:51:37+08:00 | in-progress | ["Nexara", "native-ui", "knowledge-graph", "storage", "ssh", "database"] | 集成 KG-B 实体证据模型、P1 外部文件夹挂载、KG-C/D 图检索与 P2 原生 SSH | `.agent/handover.md` · `2026-10-17T04:51:37+08:00` · `fp:e3792034df` |
+| mobile-agentic-capabilities | resume | 2026-10-17T07:16:02+08:00 | completed | ["Nexara", "native-ui", "release", "device-e2e", "ssh", "script", "termux"] | 移动端 Agent 能力全部工作包完成设备验收并产出双渠道签名候选 6690fb1c | `.agent/handover.md` · `2026-10-17T07:16:02+08:00` · `fp:6359e5acb1` |
 | nexara-audit-completion-repair | waiting | 2026-09-22T15:28:29+08:00 | done | ["Nexara", "native-ui", "audit-repair"] | 审计修复、最终签名候选及本机设备验收完成 | `.agent/handover.md` · `2026-09-22T15:28:29+08:00` · `fp:c45ed0053a` |
 | nexara-chat-flow-repair | waiting | 2026-10-16T10:00:45+08:00 | done | ["Nexara", "native-ui", "chat"] | 会话主流程审计 P0/P1 修复交付 | `.agent/handover.md` · `2026-10-16T10:00:45+08:00` · `fp:b968f99f1f` |
 | nexara-independent-model-catalog | resume | 2026-09-22T18:33:08+08:00 | done | ["Nexara", "model-catalog"] | 独立模型目录上线、客户端验收与签名候选交付 | `.agent/handover.md` · `2026-09-22T18:33:08+08:00` · `fp:320878f7b2` |
@@ -27,6 +27,7 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-10-17T07:16:02+08:00 | iso | completed | resume | ["Nexara", "native-ui", "release", "device-e2e", "ssh", "script", "termux"] | ["device-acceptance", "release-candidate", "room-v21", "tool-schema", "upgrade-gate"] | 移动端 Agent 能力全部工作包完成设备验收并产出双渠道签名候选 6690fb1c | `.agent/handover.md` · `2026-10-17T07:16:02+08:00` · `fp:6359e5acb1` |
 | 2026-10-17T04:51:37+08:00 | iso | in-progress | resume | ["Nexara", "native-ui", "knowledge-graph", "storage", "ssh", "database"] | ["kg", "saf", "external-mount", "ssh", "room-migration", "graph-retrieval"] | 集成 KG-B 实体证据模型、P1 外部文件夹挂载、KG-C/D 图检索与 P2 原生 SSH | `.agent/handover.md` · `2026-10-17T04:51:37+08:00` · `fp:e3792034df` |
 | 2026-10-17T02:40:42+08:00 | iso | done | resume | ["Nexara", "native-ui", "agent-runtime", "build", "knowledge-graph"] | ["tool-grants", "unlimited-loop", "context-compression", "product-flavor", "webview", "kg"] | 集成 P0 执行底座、发行风味与 WebView 加固及 KG-A 正确性修复 | `.agent/handover.md` · `2026-10-17T02:40:42+08:00` · `fp:92e4d01f85` |
 | 2026-10-17T01:18:55+08:00 | iso | planned | resume | ["Nexara", "native-ui", "agent-tools", "knowledge-graph"] | ["ssh", "saf", "termux", "script-runtime", "tool-budget", "knowledge-graph", "product-flavor"] | 规划移动端 Agent 能力增强并完成知识图谱只读审计 | `.agent/handover.md` · `2026-10-17T01:18:55+08:00` · `fp:02b4c6fee8` |
