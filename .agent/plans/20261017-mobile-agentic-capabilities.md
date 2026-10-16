@@ -119,3 +119,13 @@ python3 scripts/ci/check-text-wrapping.py
 - 超过 16,000 字符的结果完整保存到应用私有、按会话隔离的存储，不进入用户工作区。`read_tool_output` 为 SAFE_READ，按 UTF-16 字符偏移读取，默认 4,000、最多 8,000 字符；总容量 64 MiB，按首次写入顺序淘汰；超容量或 IO 失败明确降级，不提供虚假输出 ID。
 - 聊天页与前台通知显示轮次、调用数、token 及估算标记；通知停止复用现有 coordinator 取消。重复调用暂停可继续或停止；取消保留已有结果的调用配对。私有授权与输出分别清理，一类失败不会跳过另一类。
 - 验证命令、实际结果、截图基线与设备待验证场景见 `.agent/tmp-agent-reports/report-p0-runtime.md`。不执行提交、推送、设备或模拟器操作。未知模型上下文需在模型配置中补齐窗口；无法压缩的系统提示、用户消息、调用参数及保留轮次可能仍超出窗口。收尾请求也消耗 token，预算为进入收尾的门槛。
+
+## P2 执行结果
+
+- 实施范围以 `.agent/tmp-agent-reports/brief-p2-ssh.md` 为准。选用 mwiede/jsch 2.28.8，BC 既有 jdk15to18 家族统一为 1.86；Termux terminal-emulator / terminal-view 0.118.0 用于远端 PTY 仿真和渲染，不启动本地进程，APK 排除 libtermux.so。选型六项比较、官方来源和密码学实测见 `.agent/tmp-agent-reports/p2-ssh-selection.md`。
+- 主机配置新增唯一别名、认证、指纹、终端保持和回环转发设置，跳板仅预留。Room 18→19 仅新增非秘密 ssh_hosts 表，24 张既有表不变；恢复候选维持精确 v18 合同。SSH 配置、信任和全部 SSH 凭据均不进入应用备份；凭据仅由现有 SecretStore 加密保存。
+- 首次信任须由用户在 UI 核对类型与 SHA256，变化立即拒绝；替换采用绑定探测身份及旧指纹的 CAS。8 个 Agent 工具仅接受别名；PROCESS 目标绑定主机与完整命令/输入，SFTP 绑定主机与远端路径，PTY session 按聊天 owner 隔离。所有工具沿用大输出卸载，执行、文件、连接及缓冲均设上限，取消关闭通道，终态释放 owner。
+- 用户终端支持 ANSI、光标、历史、IME、常用控制键和 resize；退出默认关闭，可按主机保持。端口转发固定监听 127.0.0.1，真实资源状态与前台服务代际协调，进程重启不恢复连接。待审批 owner 使用10分钟绝对租约；实际执行获批工具前解除旧租约，部分批准后仍 WAIT 时重登记。
+- 最终同一轮 Gradle 的 testDebugUnitTest、lintDebug、validateDebugScreenshotTest、compileDebugAndroidTestKotlin、assembleMinifiedTest 全部成功（5分8秒）。单元测试 3202 项：3177 通过、25 项既有外部服务测试跳过、零失败/错误；SSH/终端/迁移及 PDF 密码学兼容专用测试64项全通过，截图111项全通过，Lint 零 Error/Fatal、555 Warning、22 Hint。R8 APK 中29个精确保留反射类均存在，未打包 libtermux.so；文本换行和 diff 检查通过。
+- 未参与生产施工的 ssh_tech_review 完成独立审阅，主控复核代码、diff、XML、依赖与 APK 证据。R8 成功只证明构建；未操作设备/模拟器，API31 ART、Termux 127.0.0.1:8022、输入/旋转、Android 前台服务、SourceProbe 和升级/备份全路径须由主控按报告验收。
+- 完整实现位置、文件清单、命令、限制和设备步骤见 `.agent/tmp-agent-reports/report-p2-ssh.md`；最终测试收据见 `p2-validation-receipt.json`。按任务书保留工作树成果，不提交推送、不追加 handover；合并其它工作包时须统一 Room 版本号与迁移链。
