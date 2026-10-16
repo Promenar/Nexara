@@ -8779,3 +8779,34 @@ PDEC execution_ready=true 无漂移；assembleRelease 与 verify-release-apk.py 
 
 ### HLG
 标准 append dry-run/apply 追加。
+
+## 2026-10-16T16:04:34+08:00 · 模型选择器按运行时目录解析与设置页排版整理
+
+type: fix
+scope: ["Nexara", "native-ui", "settings", "model-picker"]
+status: done
+tags: ["model-catalog", "settings-ui", "layout", "provider"]
+continuity: waiting
+continuity-key: nexara-physical-device-ui-acceptance
+record-fingerprint: 6b1e974b1cf178d89960ec56394f94d7903a7bbf62ec97a16200ef6596b6a236
+
+### Summary
+修复会话设置中可选模型远少于提供商已启用模型的问题；整理模型管理、提供商列表、工具设置（预设/技能包/MCP）页面排版，并在设备排查中修复备份、检索设置、用量页的同类问题。提交 b054cd89 已推送。
+
+### Changed
+根因：OpenAI 兼容同步为每个模型保存一份通常为空的供应商元数据，选择器投影由调用方传入只含内置覆盖表的 ModelMetadataResolver()，目录内的对话模型被判为工作负载未知而被会话过滤隐藏。toModelSelectionUiModel 默认改用 ModelCatalogRuntime.resolver，会话设置、默认模型、检索高级设置、智能体编辑、智能体中心统一使用；新增 sessionSelectableModels。排版：模型管理页只固定搜索栏、其余随列表滚动并加顶部渐隐（新增 Modifier.verticalFadingEdges），底部内边距改为列表 contentPadding；提供商行加品牌/首字头像，停用与凭据缺失才提示；工具行只保留开关、配置入口与工具 ID 同行、分隔线内缩且末行不画；技能包说明移出卡片、空态带图标；MCP 与技能包行开关在右、操作在下；备份页按钮不贴边、开关不再双重缩进、去掉卡片底部多余分隔线；检索设置两个开关改为与卡片对齐的整行 toggleable；用量页总用量块居中；本地模型插槽空态本地化。RagSettingsMaterialContractTest 契约放宽为 ListItem 或 toggleable 行。
+
+### Validation
+回归测试（网关同步模型按运行时目录进入会话可选列表并显示目录名称）修复前失败、修复后通过。JVM 2913 项通过；Lint 0 错误；文本换行门禁通过；截图基线 8 张按预期变化并人工复核（含 2 倍字号窄屏）。API 35 完整设备矩阵 143/143。API 35 模拟器安装 debug 包目测工具设置三个标签页、备份、检索设置、用量页。
+
+### Next
+真机确认会话模型列表与提供商模型管理中已启用模型一致、模型名称显示目录名称；确认各设置页排版。需要时重新打包签名候选。
+
+### Risks
+真实网关下的会话模型列表只以单测与目录替身验证；截图预览渲染器无法加载品牌 SVG，品牌标志只在设备上可见；API 31 最低矩阵本轮未跑。工作区存在不属于本任务的启动图标改动与 .agent/plans/20261016-fold-launcher-icon.md、scripts/tests/test_launcher_icons.py，未纳入提交。
+
+### DIA
+已同步 CHANGELOG、.agent/registry.md 与计划 .agent/plans/20261016-model-picker-catalog-settings-layout.md；无数据结构、权限或部署变化。
+
+### HLG
+标准 append dry-run/apply 追加。
