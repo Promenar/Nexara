@@ -191,3 +191,16 @@ DIA 已同步 README、AGENTS、CHANGELOG、registry、发行说明、构建说�
 - 最终门禁：双渠道各 3256 项 JVM 测试，0 失败/错误、25 条件跳过；侧载截图 111/111，112 张参考 PNG 仅 KG 横屏详情一张更新，其余哈希不变。Lint 为 0 Error/Fatal、559 Warning、19 Hint，文本换行与 diff 检查通过；75 项冻结源码/资源/测试无漂移。独立增量审阅无范围内阻断。
 - 验收边界：未知模型窗口且无全文附件时不虚构总容量，KG 独立预算仍执行；图像及缺失 Usage 均为估算。摘要已收费后被总预算阻断，首轮准备回滚可能删除摘要用量，这是已确认的运行时边界；遵照任务书禁止修改 Agent 工具循环，未改该生产路径，报告明确披露。真实提供商、设备进程恢复、TalkBack 与性能需按报告步骤验证。
 - DIA 已同步 README、CHANGELOG 未发布区、PRD、ARCHITECTURE_DESIGN、ADR-018 和本计划；HLG 交接要点仅写报告。遵照 KG-C / KG-D 任务书，未提交/推送、未追加 handover、未修改 PDEC、未操作模拟器或设备。
+
+## P4 执行结果
+
+执行日期：2026-10-17。范围为 `brief-p4-termux.md` 的 Termux 后台命令、接入诊断页和本机 MCP 高级选项。成果保留在 `feat/p4-termux` 未提交工作树，基准为 `f9540245fc28f83653cebc5bc7d3083807034847`。
+
+- `termux_exec` 默认关闭，显式启用后才向模型暴露；通过 RUN_COMMAND 后台执行 bash，支持工作目录、stdin、默认60秒和最多600秒超时。PROCESS 审批目标固定绑定 `termux` 和完整命令；执行前重查授权、安装、版本和权限。
+- 单次显式 PendingIntent 以不可变 URI 请求身份关联异步回调，处理乱序、重复、超时和取消；stdout/stderr 返回官方原始 UTF-16 长度与分别截断标记。官方没有错误文本原始长度或按请求结束后台命令的公开接口，因此不伪造长度，也不声称超时已结束 Termux 进程。
+- 工具设置中的独立接入页提供安装、外部调用开关复制、权限与返回刷新、固定诊断、既有 SSH 公钥和 authorized_keys 命令复制、主目录 SAF 授权挂载及后台限制说明。SSH 与挂载仅复用公开接口；SAF 自动定位受系统和提供商实现影响，保留手动选择回退。
+- MCP 本机 HTTP 为默认关闭的高级选项，仅接受精确 `127.0.0.1` 和显式有效端口；Bearer 必填并存入 SecretStore，发现与执行逐次认证，工具默认 PROCESS 风险。HTTP 不跟随重定向；配置、令牌或授权撤销使旧客户端和分页发现失效。主配置及 Debug 网络配置仅对 `127.0.0.1` 放开明文。
+- 两个启用开关登记为设备本地授权，不跨备份迁移；本机 MCP 令牌不进入现有备份白名单。无新增第三方依赖、数据库结构或迁移。
+- 六项指定 Gradle 任务联合运行成功：侧载3522项单测中3497通过、25既有条件跳过；Play3498项中3473通过、25既有条件跳过；均为0失败/错误。截图111/111，Lint为0 Error/Fatal、579 Warning、21 Hint；双渠道 MinifiedTest 构建通过。Debug与MinifiedTest发行清单检查、四份合并清单的 Termux 权限/包查询/非导出接收器、文本换行及 diff 检查通过。
+- 两个混淆测试 APK 及非空 mapping 已回读并记录 SHA-256，默认 ABI 为 x86_64，包名均为 `com.promenar.nexara.native.minifiedTest`；ARM64 真机须另行生成兼容产物。未操作设备或模拟器，真实 RUN_COMMAND、权限、SAF、SSH、后台限制和环回服务认证由主控按报告验收，构建和 JVM 证据不代替设备通过。
+- 两个原生施工工作包由主控集成，未参与施工的只读 Agent 串行独立审阅，已关闭有效发现；主控复核最终代码、diff、测试 XML、Lint、合并清单与 APK。DIA 已同步 README、CHANGELOG 未发布区和本计划；按任务书不提交推送、不修改 PDEC、不追加 handover。完整41个改动路径、逐需求位置/测试、命令、复现、限制及设备步骤见 `.agent/tmp-agent-reports/report-p4-termux.md`，HLG 交接事实仅保存在报告。
