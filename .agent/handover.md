@@ -8963,3 +8963,34 @@ record-fingerprint: 02b4c6fee883d32a53ea0b3e0f3c20f2f93a5e2e0fcf2f9ffd18351a251f
 
 ### HLG
 标准 append dry-run/apply 追加。
+
+## 2026-10-17T02:40:42+08:00 · 集成 P0 执行底座、发行风味与 WebView 加固及 KG-A 正确性修复
+
+type: feature
+scope: ["Nexara", "native-ui", "agent-runtime", "build", "knowledge-graph"]
+status: done
+tags: ["tool-grants", "unlimited-loop", "context-compression", "product-flavor", "webview", "kg"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 92e4d01f85261ec236e85436e7750c22c69275ebda414556daf5ee069cbbf80c
+
+### Summary
+按计划 .agent/plans/20261017-mobile-agentic-capabilities.md 完成并合并三个工作包：P0 运行时（1194a1a0：目标级审批授权、不限轮次、单轮上下文压缩、大输出私有卸载与 read_tool_output、重复调用暂停、token 预算、不限+全自动一次性确认、通知进度与停止）；P0 风味与 WebView（d2d60792：play/sideload 共用应用 ID，仅侧载声明所有文件访问，DistributionCapabilities，CI/发行/脚本/契约/PDEC 任务名适配，合并清单检查；富内容 WebView 关闭文件与默认联网、资源白名单、公网 HTTPS 经 DNS/重定向门禁、阻止导航）；KG-A（ab7ad241：KG 请求按稳定 ID 路由、空图合法、手动抽取入队事务、断点身份、JIT 超时与取消、统一校验图、PDF/DOCX、设置重建、完成状态持久化）。合并提交 8718429f。
+
+### Changed
+三个分支均由 Codex CLI（GPT-6.1-Sol Max）在独立 worktree 实施，主控复核后提交与合并；CHANGELOG 与计划文件冲突按两侧并集解决。.pdec/contract.yaml 仅做任务名与产物路径的机械替换并更新摘要，执行主机与权限边界不变。
+
+### Validation
+集成主线 :app:testSideloadDebugUnitTest 与 :app:testPlayDebugUnitTest 各 3161 项 0 失败 25 条件跳过；:app:lintSideloadDebug 通过；:app:validateSideloadDebugScreenshotTest 111/111。各工作包自报：运行时 3107 项、风味双风味各 3011 项与四 APK aapt2 回读、KG-A 3039 项及独立审阅。
+
+### Next
+P1 外部文件夹挂载、P2 原生 SSH、KG-B 实体/证据模型正在各自 worktree 实施；随后 P4 Termux、P3 隔离脚本运行时与 Python 技术验证、KG-C/D，最后设备验收与双风味签名发行包。
+
+### Risks
+签名 Release、设备上的 WebView 实际渲染与拒绝行为、通知停止与后台长任务尚未在设备验证；并行 Codex 执行 gradlew --stop 会中断其它构建，后续任务书已禁止。
+
+### DIA
+CHANGELOG、README、AGENTS.md、docs/distribution-builds.md、发行文档、registry、计划执行结果小节随各分支同步。
+
+### HLG
+标准 append dry-run/apply 追加；工作包内的交接草稿未合入，以本记录为准。

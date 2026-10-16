@@ -10,6 +10,8 @@ Android 开发调试统一在本机 macOS 与本机启动的 Android AVD 上进�
 
 ## 平台与入口
 
+Android `distribution` 风味为 `sideload` / `play`；契约中的质量、定点测试及设备构建默认选择侧载，质量与发行构建包含两个渠道。具体任务与产物路径见 [发行渠道构建说明](../docs/distribution-builds.md)。2026-10-17 的任务名/路径适配依据用户要求完整执行 `brief-p0-flavors.md`，执行位置和原有发布授权边界保持一致。
+
 - 执行主机：当前本机 macOS arm64；工具位置通过本机 Android SDK 配置、PATH 和 Java 安装发现，不纳管绝对路径。
 - 应用：`native-ui/` 的 Gradle 9.5.0 wrapper，Android compile/target SDK 36，min SDK 31；本机已发现 OpenJDK 21。
 - Android 产物是 APK，运行目标是 Android ARM64。PDEC v1 不含 Android OS 枚举，因此机器字段使用 Linux arm64 表示内核/ABI 家族；本说明和设备 API/ABI 验证才定义 Android 兼容性，不能据字段声称普通 Linux 可运行 APK。

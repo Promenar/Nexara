@@ -122,10 +122,60 @@ python3 scripts/ci/check-text-wrapping.py
 
 ## P2 执行结果
 
+数据库版本为 v21。
+
 - 实施范围以 `.agent/tmp-agent-reports/brief-p2-ssh.md` 为准。选用 mwiede/jsch 2.28.8，BC 既有 jdk15to18 家族统一为 1.86；Termux terminal-emulator / terminal-view 0.118.0 用于远端 PTY 仿真和渲染，不启动本地进程，APK 排除 libtermux.so。选型六项比较、官方来源和密码学实测见 `.agent/tmp-agent-reports/p2-ssh-selection.md`。
-- 主机配置新增唯一别名、认证、指纹、终端保持和回环转发设置，跳板仅预留。Room 18→19 仅新增非秘密 ssh_hosts 表，24 张既有表不变；恢复候选维持精确 v18 合同。SSH 配置、信任和全部 SSH 凭据均不进入应用备份；凭据仅由现有 SecretStore 加密保存。
+- 主机配置新增唯一别名、认证、指纹、终端保持和回环转发设置，跳板仅预留。Room 20→21 仅新增非秘密 ssh_hosts 表，保留 v19 知识图谱与 v20 外部挂载结构；恢复候选维持精确 v18 合同。SSH 配置、信任和全部 SSH 凭据均不进入应用备份；凭据仅由现有 SecretStore 加密保存。
 - 首次信任须由用户在 UI 核对类型与 SHA256，变化立即拒绝；替换采用绑定探测身份及旧指纹的 CAS。8 个 Agent 工具仅接受别名；PROCESS 目标绑定主机与完整命令/输入，SFTP 绑定主机与远端路径，PTY session 按聊天 owner 隔离。所有工具沿用大输出卸载，执行、文件、连接及缓冲均设上限，取消关闭通道，终态释放 owner。
 - 用户终端支持 ANSI、光标、历史、IME、常用控制键和 resize；退出默认关闭，可按主机保持。端口转发固定监听 127.0.0.1，真实资源状态与前台服务代际协调，进程重启不恢复连接。待审批 owner 使用10分钟绝对租约；实际执行获批工具前解除旧租约，部分批准后仍 WAIT 时重登记。
 - 最终同一轮 Gradle 的 testDebugUnitTest、lintDebug、validateDebugScreenshotTest、compileDebugAndroidTestKotlin、assembleMinifiedTest 全部成功（5分8秒）。单元测试 3202 项：3177 通过、25 项既有外部服务测试跳过、零失败/错误；SSH/终端/迁移及 PDF 密码学兼容专用测试64项全通过，截图111项全通过，Lint 零 Error/Fatal、555 Warning、22 Hint。R8 APK 中29个精确保留反射类均存在，未打包 libtermux.so；文本换行和 diff 检查通过。
 - 未参与生产施工的 ssh_tech_review 完成独立审阅，主控复核代码、diff、XML、依赖与 APK 证据。R8 成功只证明构建；未操作设备/模拟器，API31 ART、Termux 127.0.0.1:8022、输入/旋转、Android 前台服务、SourceProbe 和升级/备份全路径须由主控按报告验收。
 - 完整实现位置、文件清单、命令、限制和设备步骤见 `.agent/tmp-agent-reports/report-p2-ssh.md`；最终测试收据见 `p2-validation-receipt.json`。按任务书保留工作树成果，不提交推送、不追加 handover；合并其它工作包时须统一 Room 版本号与迁移链。
+
+## P0 发行风味与 WebView 执行结果
+
+执行日期：2026-10-17。范围为 `brief-p0-flavors.md` 的发行风味和富内容 WebView 工作包；工具执行底座、审批、上下文、前台服务及其它 P1/P2/KG 工作包未在此执行。成果位于 `feat/p0-distribution-flavors` 的未提交工作树，基准为 `57084b8c8d2051feaa07cf717eecd0de1c35eaa6`。
+
+- 已建立共享 applicationId 的 `play`、`sideload`；仅侧载专属清单声明 `MANAGE_EXTERNAL_STORAGE`，集中能力入口为 `DistributionCapabilities`，设置页导出诊断首行显示渠道、能力和版本。未实现所有文件访问业务。
+- 已适配日常 CI、目录刷新、两份发行 APK、独立校验和、按渠道归档的 mapping、双渠道 API35/36 冷安装矩阵和侧载 v0.1 升级入口；签名注入方式和发布授权门禁保持。`mainactivity-e2e` 固定匹配侧载，独立黑盒夹具不引入发行风味。当前任务和产物路径以 `docs/distribution-builds.md` 为准。
+- 富内容使用受控 HTTPS 打包资源、内存文档和公网 HTTPS 子资源代理。关闭文件/内容访问、默认 WebView 联网及原生桥接；检查实际 DNS 结果和每次重定向，拒绝非公网与非预期协议。链接直接阻止。复用现有 OkHttp，无新增 AndroidX WebKit 依赖；内嵌图片/字体上限 4 MiB，公网单资源 16 MiB，最多六次请求。保留本地图表、公式、知识图谱模板资产、Kroki PlantUML 和原生 PNG 导出路径。
+- 双风味 Debug JVM 各 3011 项：2986 通过、25 条件跳过、0 失败/错误；侧载 Lint 为 0 Error/Fatal、545 Warning、22 Hint。双 Debug、双 MinifiedTest、侧载 DeviceTest/AndroidTest 和 mainactivity-e2e APK 编译通过；Debug/MinifiedTest 的合并清单及四 APK 的权限差异和包身份均已核验，两个 MinifiedTest mapping 非空。
+- 双风味截图各 111 项全部通过；共用原 `src/screenshotTestDebug/reference`，112 张参考 PNG 的 SHA-256 全部未变。一个既有未被当前预览引用的参考图保留。截图插件在变体注册时覆盖早期目录配置，现于项目配置完成后绑定共用基线。
+- 发行工作流契约 40 项、合并清单脚本测试 3 项、模型目录测试 64 项、换行检查测试 5 项，以及设备/黑盒 Bash 契约、文本换行门禁、Shell 语法、三份 YAML 和 PDEC 校验全部通过。沙箱禁止 Robolectric 写用户目录下载锁，使用已有 SDK 缓存的离线测试配置解决；未跳过受影响用例。
+- 独立只读审阅的初始文档、内嵌资源、并发快照、ECharts 安装时序、严格百分号解码与截图路径问题均已关闭；主 Agent 复核实际命令、XML、APK、mapping、截图哈希和 diff。
+
+验收边界：遵守任务书，未执行签名 Release 构建、GitHub Actions、设备/模拟器运行或 git commit/push。WebView 在真实 Android WebView 中的功能、安全和 PNG 导出尚待主控设备验收，不能由 JVM/编译或 Compose 截图替代。计划中的其它 P0 能力不因此标记完成。
+
+DIA 已同步 README、AGENTS、CHANGELOG、registry、发行说明、构建说明、图标任务说明和 PDEC。完整文件清单、逐项需求位置、命令/结果、任务路径对照和主控签名/设备步骤见 `.agent/tmp-agent-reports/report-p0-flavors.md`；HLG 通过标准 append 追加交接记录。
+
+## KG-A 执行结果
+
+- 完成九类正确性修复：全量、手动与 JIT 共用稳定模型路由和 KG 设置；成功空图合法；结果区分解析失败、超时、取消与提供商错误；统一校验名称身份、端点、字段、权重与图规模。
+- 手动建图进入持久文件引用队列，复用 PDF、DOCX、大文本解析和 16 MiB 文本预算；候选提交检查 hash、epoch、活动任务标识与删除屏障，事务切换图谱及 `kgExtractedAt`，保留已有向量。失败回滚且向 UI 传播；能力升级与终态重试更换活动任务标识。
+- 断点校验源文件 hash、提取文本 hash、模型、提示词摘要和切块参数，删除时清理。JIT 使用明确超时并透传取消；容量 8 的后台队列承担缓存与归并，配置重建取消旧作用域，长期聊天消费者动态取得有效抽取器。
+- 验证：当前工作树 `:app:testDebugUnitTest` 与 `:app:lintDebug` 联合运行成功，3039 项单元测试中 3014 项通过、25 项跳过，0 失败、0 错误；lint 0 错误、544 条警告、22 条提示。文本换行检查及 `git diff --check` 通过。原始实现上的 16 个业务红测、审阅补充的 5 个业务红测与超长名称身份回归均已观察到失败，最终回归通过；真实 PDF/DOCX、Room 事务、删除迟到回片与队列并发均有集成覆盖。
+- 由未参与施工的原生只读 Agent 独立审阅，主控修正其有效发现并复核最终 diff、测试与 lint 证据。DIA 已同步 `CHANGELOG.md` 与 `docs/ARCHITECTURE_DESIGN.md`；README 无需调整。详细文件、位置、用例和执行参数见 `.agent/tmp-agent-reports/report-kg-a.md`。
+- 无新增第三方依赖、数据库结构或迁移；未修改 Agent 循环、审批、前台服务、产品风味、CI 或渲染器。遵照 KG-A 任务书保留未提交工作树，未提交、推送或操作设备。后续集成时复核共享文件；真实提供商请求、设备进程重启与菜单交互列为设备验收建议，不将本地测试视为这些场景已验收。
+
+## P1 执行结果
+
+数据库版本改为 v20，版本链为 v18→v19（知识图谱实体与证据）→v20（外部挂载与快照），v19 schema 保持主线内容。
+
+- 外部文件夹使用独立后端契约和 `/mnt/<别名>/...` 命名空间；Room 19→20 持久化全局/会话挂载及知识库快照来源。十个工作区工具共用路由，写入按 `expected_sha256` 校验，审批与执行持续绑定挂载身份。现有私有工作区的事务、日志和恢复实现未改写。
+- SAF 使用批量列投影、持久授权和临时文档写入；失效授权标记不可用并允许同来源重新授权。侧载源集提供所有文件访问设置和共享存储真实路径后端；Play 源集仅保留拒绝能力的桩实现。真实路径逐级绑定目录句柄并拒绝符号链接，文件冲突保留可核查副本。
+- 跨后端移动采用有界快照、复制校验、删除源及失败补偿；挂载回收区的内容上限为 32 MiB、100 项、7 天。空间不足默认拒绝删除，显式不可恢复删除必须逐次审批。文件面板提供浏览、文本预览、只读副本外开、恢复及知识库快照导入/来源修改提示。
+- `/mnt` 成为虚拟保留名。历史私有 `mnt` 目录与 UUID 保留，用户可在文件面板重命名解除路径歧义；其后代通过原 UUID 访问时保持私有工作区路由。不同来源必须使用新的挂载身份，既有审批不能沿用。
+- 验证命令、实际结果、逐项实现位置、完整文件清单和独立审阅闭环见 `.agent/tmp-agent-reports/report-p1-saf.md`。仪器化测试仅编译，真实 Termux、系统授权、提供商行为及文件描述符生命周期由主控按报告执行设备验收。
+- 按 P1 任务书不提交、不推送、不修改 PDEC、不追加 handover、不操作模拟器或设备；交接事实保存在执行报告。DIA 已同步 README、CHANGELOG 和本计划。
+- 最终验收：侧载 3,267 项、Play 3,243 项单元测试均为 0 失败/错误，各 25 项既有联网条件用例跳过；111 项截图全部通过，lint 为 0 错误、556 警告、24 提示。双 Debug APK 与侧载 DeviceTest/AndroidTest APK 编译成功，SAF 和真实路径设备测试类均实际纳入测试产物；清单、文本换行及 diff 门禁通过。DeviceTest 主 APK 为项目默认 x86_64，两个 Debug APK 为 arm64-v8a。一次既有 P0 审批恢复集成用例间歇失败已保留 XML，相同源码单类隔离 5 项通过、限制 Gradle 并行度后的完整六任务通过；未宣称定位或修复该间歇触发根因。
+
+## KG-B 执行结果
+
+- Room v19 采用全局 `(规范化名称, 规范化类型)` 实体、唯一有向关系与独立来源证据。名称、类型和关系执行 NFKC、空白归一与大小写折叠；来源删除仅清证据并事务回收无证据对象，关系置信度按当前范围的存活证据聚合。
+- 文档候选沿用 hash、epoch、活动任务与删除准入。JIT 传递文档 ID/内容版本，缓存绑定完整片段内容、模型稳定 ID、提示词及预算；跨会话命中幂等登记证据。联合推断只登记实际消费的来源，任一输入失效时撤销整次推断，不影响独立来源。
+- v18→19 以 500 行主键游标批次及 SQLite 映射表合并重复实体、重指向关系，保留各来源权重与 legacy。多批迁移测试处理 2501 个节点、2500 条边，本机 Robolectric 实测 663 ms；真实手机和十万行规模尚待实测。v18 原始抽取版本不可追溯，迁移 hash 只作数据库快照锚点，可能保留升级前已陈旧的图，重建后才取得可校验版本。
+- 文件持久化已确认的 `kgStrategy`，回收恢复经持久队列真正重建 KG，普通文件不扩大抽取；双库合并丢弃非工作区历史派生 KG 并记录诊断，源数据可恢复。常规备份排除并清理新增 KG 表；数据载荷 v4 兼容 v1–v3 文件行且保持严格必需表校验。
+- 无消费者的字符串 SQL 条件与 `getGraphData` 助手参数已删除；结构化种子实体查询、端点和证据索引支持后续 1–2 跳读取。已适配图谱页面、路径来源展示、文档/会话删除、备份与双库恢复；未实现 KG-C 聊天图检索。
+- 验证：`:app:testDebugUnitTest :app:lintDebug` 联合运行通过，3065 项单元测试中 3040 项通过、25 项跳过，0 失败、0 错误；Lint 0 Error/Fatal、544 Warning、22 Hint。文本换行门禁及 `git diff --check` 通过。来源删除、并发、恢复意图、非工作区双库恢复、JIT 来源/缓存及字符串 SQL 缺陷有失败复现；迁移与持久队列恢复有真实 Room 集成覆盖。
+- 未参与施工的原生只读 Agent 完成独立审阅，主控用失败回归封闭备份兼容/严格校验、完整大小写折叠、联合 JIT 活性/预算来源及来源权重问题，并核验最终 diff、schema identity 和检查结果。DIA 已同步 `docs/ARCHITECTURE.md`、`CHANGELOG.md`；README 无需调整。
+- 按 KG-B 任务书保留未提交工作树，未执行 commit/push、未追加 handover、未操作设备、未新增第三方依赖。交接、完整文件清单、逐需求位置、命令、复现边界及真实旧库设备验证步骤见 `.agent/tmp-agent-reports/report-kg-b.md`。
