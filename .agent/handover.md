@@ -8872,3 +8872,33 @@ JVM 2987/0 失败（含 6 条修复前失败的检索轨迹链路回归）；Lin
 
 ### HLG
 标准 append dry-run/apply 追加。
+
+## 2026-10-16T21:06:43+08:00 · 提交折叠 N 应用图标并清理已合并工作树
+
+type: chore
+scope: ["Nexara", "native-ui", "branding"]
+status: done
+tags: ["launcher-icon", "branding", "worktree"]
+continuity: none
+record-fingerprint: 64d22aac5518f8aafbaa00ce688a19b85eafcb2e9b8f9ceb1d34b8936148b7c1
+
+### Summary
+经用户授权，把此前未提交的折叠 N 应用图标任务成果（assets/branding 母版与谱系、buildSrc 生成器、旧图标资源删除、测试、README/CHANGELOG/registry 条目与计划）原样提交为 0ab4d8e1；删除已合并的 worktree ../Nexara-wt-protocol、../Nexara-wt-chatui 及分支 fix/stable-provider-protocol-id、feat/chat-compact-steps。
+
+### Changed
+图标提交 29 个文件；两份 Codex 任务书与报告保留在 .agent/tmp-agent-reports/（已忽略目录）。发行验证账本最新候选的构建源码更正为等同 0ab4d8e1。
+
+### Validation
+python3 scripts/tests/test_launcher_icons.py 8 项通过；图标改动所在工作树当日已通过 JVM 2987/0、Lint 0、API35 full 143/143 与两次签名构建，aapt2 回读含单色层，模拟器启动器显示折叠 N。暂存清单不含 secure_env、artifacts、APK 与构建目录。
+
+### Next
+用户真机验证 ce9e36d8 候选包（含新图标）。
+
+### Risks
+图标任务原计划中的独立审阅由该任务自行执行情况未在本会话复核；本会话只复核了生成器测试、构建与制品。
+
+### DIA
+README、CHANGELOG、registry 的图标条目随图标提交入库；发行验证账本已更正源码说明。
+
+### HLG
+标准 append dry-run/apply 追加。
