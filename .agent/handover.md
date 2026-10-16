@@ -8748,3 +8748,34 @@ JVM 2911 项通过；Lint 0 错误；文本换行门禁通过；截图校验通�
 
 ### HLG
 标准 append dry-run/apply 追加。
+
+## 2026-10-16T15:07:25+08:00 · P2 与 RAG 指示器修复后签名发行包交付真机测试
+
+type: release
+scope: ["Nexara", "release"]
+status: done
+tags: ["release", "apk", "physical-device"]
+continuity: waiting
+continuity-key: nexara-physical-device-ui-acceptance
+record-fingerprint: af39029d8f5b7ffe946ee0eed081b0f815b75f58118889c1db168737189bf21a
+
+### Summary
+基于 83622a1a 构建正式签名 R8 APK 交付用户真机测试；包含图片附件修复、会话 P2 修复、审批卡可见性修复与 RAG 检索指示器。
+
+### Changed
+仅登记 v0.2.2-beta 验证账本（新候选节、上一候选 CI 结果更正为失败及原因）与 HLG；未改生产代码、版本号或签名。APK 位于 artifacts/release-20261016-83622a1a/Nexara-0.2.2-beta-83622a1a-release.apk。
+
+### Validation
+PDEC execution_ready=true 无漂移；assembleRelease 与 verify-release-apk.py 均退出 0；20606212 bytes，SHA256 ae81b696354c093399048612f3800e8586f2d3f4e19e755fdc2b6256b3738ea8，证书与登记一致；构建日志不含签名口令（别名命中仅为路径中的项目词）。Nexara_API_35 覆盖安装与冷启动无崩溃。源码 5a21743a 的本机 JVM、Lint、截图与 API35/31 矩阵见上一条记录。
+
+### Next
+用户真机覆盖安装并测试相册选图发送、待办面板清单/撤销/清除、知识库检索卡与检索过程详情、审批卡可见性、web_fetch 审批；确认 CI run 38864018539 结果。
+
+### Risks
+上一候选 ae272e32 的 CI run 38838153470 失败于 API31 审批卡点击（遮挡），已在 5a21743a 修复但其 CI 登记时仍在运行；versionCode 仍为 4；未做冷安装、升级数据校验、minified 黑盒或物理设备验证；公开发布未授权。
+
+### DIA
+已同步 docs/release/v0.2.2-beta-validation.md；其它文档无新增影响。
+
+### HLG
+标准 append dry-run/apply 追加。
