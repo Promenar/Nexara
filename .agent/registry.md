@@ -8,6 +8,8 @@
 
 ## 按需文档
 
+- docs/context-management.md — 阈值预算、完整轮次摘要、工具折叠缓存、立即压缩与旧设置兼容规则
+
 - docs/distribution-builds.md — play/sideload 风味、构建与 CI 入口、APK/mapping 路径、合并清单检查及富内容 WebView 安全与设备验收
 - .agent/plans/20261017-mobile-agentic-capabilities.md — 移动端 Agent 能力增强（执行底座与无限制轮次、SAF 工作区与 play/sideload 风味、原生 SSH、隔离脚本运行时、Termux 接入）与知识图谱修复及图检索计划
 - .agent/plans/20261016-keenable-search-provider.md — Keenable 搜索提供商、免密钥与安全凭据、工具/会话路由及验证计划与执行结果
