@@ -9180,3 +9180,34 @@ TermuxRuntime（TermuxIntents.dispatch 回退逻辑、失败 guidance）；Termu
 
 ### HLG
 标准 append dry-run/apply。
+
+## 2026-10-18T00:04:18+08:00 · 设置页与会话界面重设计规格定稿，第一批（令牌、设置组件与全部设置页）已派发 Codex
+
+type: feature
+scope: ["Nexara", "native-ui", "settings-ui", "chat-ui", "design"]
+status: in-progress
+tags: ["visual-redesign", "settings", "design-spec", "codex"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 1bfc5b863c25c5622401c86b4964b56979b20c9db3ae02fb51f936e8bf5057b8
+
+### Summary
+用户确认重设计规格 docs/superpowers/specs/2026-10-17-nexara-settings-chat-redesign.md（19060788），包括补充决定：用户消息不显示时间、助手消息下加操作行（复制/重新生成/更多 + 模型名·时间）、顶栏去铅笔与智能体名副标题、审批卡去红色填充块、最大轮次“不限”开关并入预设、全局字体收紧、步骤行 44dp 与模型胶囊 32dp 为无障碍例外。第一批派发 Codex：worktree ../Nexara-wt-redesign1，分支 redesign-batch1，基于 19060788；任务书为 .agent/tmp-agent-reports/brief-redesign-batch1.md。
+
+### Changed
+仅新增规格与 registry 登记；第一批代码由 Codex 在 worktree 中实施，尚未合并。
+
+### Validation
+规格中引用的现状已经源码核对：字体行高偏大、NexaraSettingsItem 基于 ListItem（两行 72dp）、步进器数值叠在按钮上方、StreamSpeed.BALANCED 为 6000 字符/秒、MessageManager UI 节流 100ms、Markdown 块间距 12dp 加外层 8dp、第二个标签名为“参数”。
+
+### Next
+Codex 完成后，主控审阅 diff、报告与截图基线，并在 Nexara_API_35 上按规格第 9.2 节逐屏实拍验收；通过后合并、发布候选，再派发第二批（会话界面）。
+
+### Risks
+字体令牌全局变化波及非重设计页面；大量源码字符串契约测试需要改写；Robolectric 下的 Compose 布局测试可能不可用（允许退回 androidTest）。
+
+### DIA
+已同步 .agent/registry.md；CHANGELOG 由第一批实施时补充。
+
+### HLG
+标准 append，先 dry-run 再 apply。
