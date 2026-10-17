@@ -31,6 +31,7 @@
 - .pdec/contract.yaml — 本机开发执行契约及批准摘要
 - docs/superpowers/plans/2026-09-22-audit-completion-repair.md — 审计修复十一项工作包、所有权、依赖与验收
 - docs/audit/20260922-requirements-acceptance.md — 逐需求状态及当前版本证据总账
+- docs/superpowers/specs/2026-10-17-nexara-settings-chat-redesign.md — 设置页与会话界面重设计规格（字体与间距令牌、设置行/值行/选择弹层/行内步进器契约、控件选择与文案规则、会话正文排版、无边框步骤行与工具自然语言摘要、流式匀速放出与渐显算法、一体化输入区、两批实施所有权与逐屏截图验收清单）
 - design-qa.md — DocEditor、会话任务进度面板、设置全层级及 Agent 首页身份列表的 MD3/SE 源图、实现对比、视觉复核与自动化验收记录
 - .agent/plans/20260803-se-settings-visual-system.md — 设置首页及二、三、四级页面向 Solid Explorer 连续列表视觉语言收敛的实施与验收计划（底部三按钮导航零改动）
 - docs/superpowers/specs/2026-07-16-nexara-md3-redesign-design.md — Nexara 全站 Material 3 视觉体系重设计契约（方案 3、稳定 M3 基线、Nexara 专属表达、分阶段迁移与 UI 验收）
