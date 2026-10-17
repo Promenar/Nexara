@@ -9087,3 +9087,34 @@ TermuxExecSkill 将空串、~、$HOME 工作目录视为省略，参数错误 gu
 
 ### HLG
 标准 append dry-run/apply。
+
+## 2026-10-17T17:52:09+08:00 · 设置界面视觉统一与阈值驱动的统一上下文压缩合入，产出 b7d09363 双渠道签名候选
+
+type: feature
+scope: ["Nexara", "native-ui", "settings-ui", "context-management", "release"]
+status: completed
+tags: ["visual-unify", "context-compaction", "manual-compaction", "quick-model", "release-candidate"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 2ce5a328cd5e424858ca6f408fb2073b728846ed1caf1888e6a7fef712715f7f
+
+### Summary
+按用户确认的两项决策完成并合入 B-native-refactor：(1) 工具设置、Termux、SSH、挂载、审批、会话工具授权、KG 设置改用项目自有设置组件（ccbf75c3，合并 38e454ed）；(2) 上下文管理对齐 Claude Code/Codex：阈值驱动，先折叠最近 3 个工具调用轮之外的工具结果，再按完整轮次总结最近 N 轮之前的历史，新增立即压缩，压缩固定用会话活跃模型，摘要模型更名快速模型（fe74ab35，合并 b7d09363）。签名候选 artifacts/release-20261017-b7d09363/：侧载 20809303 bytes SHA-256 e54c24ac…2a69，Play 20776503 bytes SHA-256 d8390e9f…a010。
+
+### Changed
+新增 NexaraStepperSetting、NexaraCommandBlock；Termux 页集成与状态加五个编号步骤，已完成步骤不显示主按钮。新增 ContextCompactionPipeline、ContextCompactionService、ContextFoldStore（noBackupFilesDir/context-folds）、ApproximateTokenEstimator 独立文件；删除活动窗口截断、overflowBatchSize、tool_context_ratio_percent/tool_context_keep_rounds 设置、ToolResultCompactor、InFlightToolContextCompressor；InferenceParams 新增 keepRecentTurns（旧窗口 ceil(条数/3)）；编辑或删除摘要覆盖原文时清摘要并恢复历史；会话设置新增上下文管理分组，用量面板分项与立即压缩。
+
+### Validation
+UI 工作区主控重跑：侧载 3635/Play 3611 项 0 失败，截图 147 张 0 差异。上下文工作区主控重跑：侧载 3777/Play 3753 项 0 失败 25 跳过，lint 0 错误，截图各 159 张 0 差异，双渠道 debug 构建、换行与清单门禁通过。发行：两包 verify-release-apk 通过；Nexara_API_31（emulator-5562）冷安装两包通过，公开 v0.1→侧载/Play 升级门禁 UPGRADE_SMOKE=PASS，升级后冷启动无崩溃。validate-release-readiness 按设计因账本状态非 GO 返回 1。
+
+### Next
+用户在真机复测 Termux（自 08526cdd 起含修复）与新压缩体验；如需公开发布须另行授权 tag/Release。可选：在 API35 重跑 full 设备 E2E 覆盖新界面。
+
+### Risks
+本候选未重跑 API35 full / API31 minimum 设备 E2E；真实模型下的压缩质量、推理模型压缩耗时与成本、TalkBack 与弹层手势未验收；token 为近似估算。
+
+### DIA
+已同步 CHANGELOG、README、docs/context-management.md、.agent/registry.md、两份审计文档指向、发行说明与验证账本新候选段。
+
+### HLG
+标准 append dry-run/apply。
