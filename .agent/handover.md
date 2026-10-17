@@ -9211,3 +9211,34 @@ Codex 完成后，主控审阅 diff、报告与截图基线，并在 Nexara_API_
 
 ### HLG
 标准 append，先 dry-run 再 apply。
+
+## 2026-10-18T03:17:28+08:00 · 设置页视觉重设计第一批合并（762146c3）：共享设置行、值行与数值选择弹层、行内步进器、全部设置页整理
+
+type: feature
+scope: ["Nexara", "native-ui", "settings-ui", "release"]
+status: done
+tags: ["visual-redesign", "settings", "codex", "device-tests", "release-candidate"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: c9471ca06508c8b04d004a1ea2c1c5dcc09b7af9cd99c9190ca47cc5ef5680e2
+
+### Summary
+Codex 按规格完成第一批：字体与间距令牌、NexaraSettingsItem 去 ListItem 改为共享行（48/56dp、行尾控件居中）、NexaraValueRow + NexaraValuePickerSheet（离散/自定义/连续）+ NumericSettingSpec、36dp NexaraInlineStepper，迁移 50 个数值控件，设置页正文无滑块；会话设置第四标签改为“上下文”。主控复核退回一轮：5 个设备回归（模型开关 32dp 触控区、提供商表单标题重名与横屏可达性、长标题截断）、脚注平衡换行窄栏与文字墙、无图标缩进、弹层标题不一致、分组标题重复。修正后合并为 12552f77 / 762146c3。
+
+### Changed
+ui/theme Type/Spacing；ui/common 新增 NexaraValueRow、NexaraValuePickerSheet、NumericSettingSpec、NexaraInlineStepper、SessionRetrievalSettings，重写 NexaraSettingsItem/SettingsToggle/NexaraSettingsSection（footer）/NexaraStepperSetting；ui/settings、ui/hub、ui/rag 配置页与 SessionSettingsSheet；settings_batch1_* 中英文资源；228 张截图基线；CHANGELOG/README/design-qa/docs/context-management/规格状态。报告归档于 .agent/tmp-agent-reports/redesign-batch1/。
+
+### Validation
+侧载 JVM 3791 / Play 3767 项 0 失败；lint 0 错误；双渠道截图校验、文本换行与发行清单门禁通过。API 31 设备测试：SettingsLayoutTest 15 项及改写的设置交互测试通过；完整套件 448 项与基线 19060788 对照，修正后无新增失败（基线另有 36 项既有失败，GenerationForegroundServiceColdStartDeviceTest 2 项为套件内偶发、单独运行通过）。签名候选 artifacts/release-20261018-762146c3/（侧载 3aa2bab2…fe12，Play 7284756d…9e49）验签通过，API 31 冷装与 v0.1→侧载升级 PASS。
+
+### Next
+用户真机查看第一批效果后，派发第二批（会话界面：顶栏、消息流排版、无边框步骤行与工具自然语言摘要、StreamRevealer 匀速放出与渐显、一体化输入区、审批卡）。
+
+### Risks
+完整设备套件在 API 31 上有 36 项既有失败（与本批无关），尚未治理；200% 字号下部分行自然增高或副标题省略；API 35 实拍只覆盖到引导内提供商表单（引导需真实提供商）。
+
+### DIA
+已同步 CHANGELOG、README、design-qa.md、docs/context-management.md 与规格状态。
+
+### HLG
+标准 append，先 dry-run 再 apply。
