@@ -9118,3 +9118,34 @@ UI 工作区主控重跑：侧载 3635/Play 3611 项 0 失败，截图 147 张 0
 
 ### HLG
 标准 append dry-run/apply。
+
+## 2026-10-17T23:05:17+08:00 · Termux 改用前台服务启动并前置错误码；用户否决设置页视觉，确定全站设置与会话界面重设计方向
+
+type: bugfix
+scope: ["Nexara", "native-ui", "termux", "settings-ui", "chat-ui"]
+status: in-progress
+tags: ["termux", "startForegroundService", "visual-redesign", "streaming", "chat-steps"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 2711e3424006c114005283f66b3cb65143b9ff0ed5cd9a7ec338873f71f8eab6
+
+### Summary
+用户真机复测 b7d09363：termux_exec 仍空返回，失败卡片只显示结果前 200 字导致 error_code 不可见。按 Termux 官方 RunCommandService 源码（onStartCommand 内 startForeground），9eeda2cc 改用 startForegroundService 并前置 error_code/guidance/timed_out；签名包 artifacts/release-20261017-9eeda2cc/（侧载 SHA-256 785c0b95…87d2，Play 04d0a270…39e6）。用户同时认定设置页视觉简陋（步进器值与按钮错位换行、长说明撑大分组），会话正文流式无动画、空行过大、工具/思考卡片侵入感强，要求对标 Gemini/Claude。
+
+### Changed
+TermuxRuntime 使用 startForegroundService，启动异常回传类名；TermuxProtocol 结果键序调整；新增 TermuxRuntimeDispatchTest（修复前 2 项失败）；CHANGELOG 同步。
+
+### Validation
+侧载 3779 / Play 3755 项 0 失败；lint 通过；两包 verify-release-apk 通过；Nexara_API_31 冷装两包与 v0.1→侧载升级门禁 PASS。真机未验证。
+
+### Next
+用户已认可方向：数值项改值+箭头加底部选择弹层、小整数用行内紧凑步进器、说明移至分组脚注；会话步骤行改无边框小字自然语言摘要，工具内部名仅展开显示；流式改缓冲匀速逐字放出加渐显；正文排版对标 Claude/Gemini；范围含全站设置页与会话外框（输入框内嵌模型选择、上下文圆环、发送）。待写设计规范与截图验收清单后派发 Codex。
+
+### Risks
+Termux 根因未经真机证据确认；视觉返工需以硬性版式规则验收，避免再次凭观感放行。
+
+### DIA
+已同步 CHANGELOG Termux 条目；重设计未实施。
+
+### HLG
+标准 append dry-run/apply。
