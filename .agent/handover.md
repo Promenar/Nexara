@@ -9149,3 +9149,34 @@ Termux 根因未经真机证据确认；视觉返工需以硬性版式规则验�
 
 ### HLG
 标准 append dry-run/apply。
+
+## 2026-10-17T23:44:42+08:00 · Termux 真机根因确认为 ColorOS 后台行为管控；恢复普通启动优先并补引导，f857c5e2 签名候选真机诊断与会话调用通过
+
+type: bugfix
+scope: ["Nexara", "native-ui", "termux", "release"]
+status: done
+tags: ["termux", "coloros", "background-control", "device-debug", "release-candidate"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 5603c875ec753286b3c5d555b1c90ffbe24813b8477206a310fb8090d71b22fc
+
+### Summary
+真机 OPPO PKH110（ColorOS，Android 16）调试：默认耗电管理“智能优化后台运行”下，ColorOS 静默拦截 Nexara→Termux RunCommandService 跨应用启动，startService 与 startForegroundService 均返回 null（AMS 日志仍显示 Allowed）；且 startForegroundService 在该机上必然空返回，9eeda2cc 反而使诊断回退。用户把两应用设为“完全允许后台行为”后诊断通过。f857c5e2 改回普通启动优先、IllegalStateException 时退回前台服务启动，空组件报告 TERMUX_START_FAILED 并附关联启动拦截说明，引导文案提示 ColorOS/MIUI 放行，设置页诊断失败显示异常详情。
+
+### Changed
+TermuxRuntime（TermuxIntents.dispatch 回退逻辑、失败 guidance）；TermuxSettingsScreen 诊断详情；中英 strings_settings_termux（termux_error_detail、启动失败引导、后台提示）；TermuxRuntimeDispatchTest 重写为 3 项；CHANGELOG 修正 Termux 条目；docs/release/v0.2.2-beta-validation.md 登记 f857c5e2 候选。
+
+### Validation
+侧载 JVM 3780 项 0 失败；lintSideloadDebug 0 错误；两包 verify-release-apk 通过（侧载 28784e29…faae，Play 4f4aef40…896c，artifacts/release-20261017-f857c5e2/）；Nexara_API_31 冷装侧载与 v0.1→侧载升级 PASS；真机覆盖安装后诊断退出码 0 输出 NEXARA_TERMUX_OK，会话内 termux_exec（echo）审批后退出码 0。Play 包未单独冷装、Play JVM 未重跑。
+
+### Next
+按已认可方向编写全站设置页与会话界面重设计规范（尺寸、字体、间距、流式匀速放出与渐显、步骤行、输入区、逐屏截图验收清单），分两批派发 Codex：1 设置页与通用组件，2 会话界面；逐项对照清单复核后合并发布。
+
+### Risks
+厂商后台管理需用户手动放行，重新安装可能被重置；MIUI 等其它系统未验证；ToolExecutor 通用 take(200) 截断仍在。真机 IME（微信输入法）拦截 adb input text，自动化输入只能得到去空格文本。
+
+### DIA
+已同步 CHANGELOG 与发行验证账本；README 无影响。
+
+### HLG
+标准 append dry-run/apply。
