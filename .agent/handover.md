@@ -9056,3 +9056,34 @@ record-fingerprint: 6359e5acb1417c44df43554ef64522b84916ca4877665e31c0a72a83b565
 
 ### HLG
 标准 append dry-run/apply；Codex 报告归档于 .agent/tmp-agent-reports/{ssh-device,device-acceptance}/；worktree Nexara-wt-device、Nexara-wt-sshfix 已移除，宿主 SSH 测试服务已停止。
+
+## 2026-10-17T15:10:30+08:00 · 真机反馈：修复 termux_exec 参数误拒，评估工具设置页布局与两级上下文压缩协调
+
+type: bugfix
+scope: ["Nexara", "native-ui", "termux", "settings-ui", "context-management"]
+status: in-progress
+tags: ["termux", "tool-arguments", "settings-layout", "context-compression"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: c8ea87d05ae2f4eada97f14117c1b55912c01cbc75bf857ebaef97e82e543d34
+
+### Summary
+用户真机反馈：Termux 诊断通过但会话中 termux_exec 全部空返回。JVM 复现确认 workdir 为空串、~ 时 TermuxCommandRequest 校验失败，调用未派发即返回 TERMUX_INVALID_ARGUMENTS（exit_code null）；workdir:null 或字符串超时在账本预检以 SCHEMA_MISMATCH 拒绝。已在 08526cdd 修复并产出签名候选 artifacts/release-20261017-08526cdd/（侧载 SHA-256 1c825de5…0546，Play 1c0a58c8…89f3）。
+
+### Changed
+TermuxExecSkill 将空串、~、$HOME 工作目录视为省略，参数错误 guidance 写明字段与原因；回归测试 2 项；BuiltInToolSchemaDefinitionTest 纳入 termux_exec 实例。
+
+### Validation
+侧载 JVM 3620 / Play 3596 项 0 失败 25 跳过；lintSideloadDebug 通过；两包 verify-release-apk 与 release 清单检查通过。模拟器已离线，新包未做设备冒烟；真机待用户复测。
+
+### Next
+待用户决定：(1) 工具设置页与 Termux/SSH 页改用既有 NexaraSettingsSection/Item/SettingsToggle/BettboxListGroup 重排，命令改等宽代码块加复制，入口改带箭头的列表项，去除硬编码中文；(2) 两级上下文压缩协调方案：会话级活动窗口+自动摘要（postProcess，持久、默认 0.8）与单轮工具结果折叠（每次请求前、仅请求副本、默认 70%、保留最近 3 轮）的命名、阈值约束与设置归属。
+
+### Risks
+若真机复测仍失败，需展开失败工具卡取 error_code 再定位；null 与字符串数字参数仍由预检拒绝，依赖模型按错误信息自我纠正。
+
+### DIA
+已同步 CHANGELOG 真机反馈修复条目。
+
+### HLG
+标准 append dry-run/apply。
