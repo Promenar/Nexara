@@ -9798,3 +9798,34 @@ ColorOS 默认电池策略下熄屏后前台服务仍可能被冻结（探针结
 
 ### HLG
 标准 append，先 dry-run 再 apply。
+
+## 2026-10-19T04:21:32+08:00 · 审批卡去重（fd9aa356）与内置 git（dulwich）、侧载 pip（执行后端第 6 步，f9dcff60）
+
+type: delivery
+scope: ["Nexara", "native-ui", "exec-backend", "build-logic", "tool-runtime"]
+status: completed
+tags: ["exec", "git", "dulwich", "pip", "python", "approval"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: dbe86dc17794431a583b8b4f07f9f93162056559ac22f80648fe13d8d6300633
+
+### Summary
+审批卡去重：命令审批卡（SCRIPT 预览且有正文）标题行只显示执行位置（ToolExecutionTargets.processScope，如 builtin、termux），命令正文只在代码块展示一次；新增内置命令审批截图基线。第 6 步：dulwich 1.2.17 与 urllib3 2.8.0 的 PyPI wheel 按 SHA-256 校验后与 app/python/site 的 nexara_git.py、nexara_pip.py 合成不压缩 zip libpysite.so，排在标准库之后进入 PYTHONPATH；shell 前导新增 git、pip、pip3 函数。nexara_git 开放 41 个常用子命令与 -C，补齐 add -A、commit -F、remote 列表/-v/get-url/set-url/remove，本地克隆源记为绝对路径；不支持的子命令、全局选项与 SSH 远端返回 GIT_UNSUPPORTED（退出码 2），无身份时提交类命令返回 GIT_IDENTITY_MISSING，commit 缺 -m/-F 直接报错，其它失败单行 fatal（128）。nexara_pip 只在 NEXARA_PIP=1（侧载）时运行标准库 ensurepip 自带 pip 26.2.1（wheel 复制到 noBackupFilesDir/python-pip），装到 filesDir/python-user；Play 返回 PIP_UNSUPPORTED。复现并修复：命令对账会把 .git/config（远端 URL 可能带令牌）等发布为向量化事件，现 .git 内部条目照常入索引但不发布事件，命令结果只给 git_internal_changes 计数。
+
+### Changed
+buildSrc 新增 StoredZip（PreparePackagedPython 改用它，libpystdlib.so 字节不变已核对 SHA-256）、PackagedPythonWheels、PreparePackagedSite；app/python/python-site.properties、app/python/site/；build.gradle.kts 注册 fetchPackagedPythonWheel*、preparePackagedSite<ABI> 并跳过 libpysite.so 剥离；PackagedPython.SITE；BuiltinExecEnvironment 的 PythonUserPackages、pipAvailable 与新前导；BuiltinExecService.pipAvailable 与 git_internal_changes；WorkspaceCommandReconciliation.isGitInternalWorkspacePath 与 WorkspaceRepository 过滤；BuiltinExecSkills 描述按渠道写明 git/pip；verify-release-apk.py 对 libpysite.so 只放行 https://username:password@；测试 BuiltinExecEnvironmentTest、BuiltinExecServiceTest（git 计数、无 Python 时 git）、WorkspaceCommandHostTest（git 内部不发布事件，修复前失败）、test_verify_release_apk、设备测试 3 个新用例；CHANGELOG、README、distribution-builds、规格 §4.1/§4.4/§4.6/§7/§8。
+
+### Validation
+全量 testSideloadDebugUnitTest 3975/0（25 跳过）、lintSideloadDebug、assembleSideloadDebug、assemblePlayDebug、validateSideloadDebugScreenshotTest、check-distribution-manifests 与其单测、test_verify_release_apk 26/26 通过。BuiltinExecDeviceTest 11/11：emulator-5564、emulator-5562 与真机（SIGQUIT 解冻循环）全过，-r 输出确认 HTTPS 浅克隆 octocat/Hello-World 与 pip install six==1.17.0 用例实际运行而非跳过；本地用例覆盖 init/add -A/commit/-am/log/clone/裸仓库 push/pull/remote -v、GIT_UNSUPPORTED、SSH 拒绝、GIT_IDENTITY_MISSING。签名 Release：sideload 30.6 MB、play 30.6 MB，大小与敏感信息扫描通过；已升级安装到真机正式包 com.promenar.nexara.native（04:20）。宿主 Python 3.14 冒烟验证包装逻辑。
+
+### Next
+真机正式包上让模型端到端使用 git/pip（需用户解锁手机，本轮手机锁屏未做）；第 5 步沙箱模式（用户要求后置）；可选：裁剪随包的 CPython 测试扩展 libpyext__test*.so 与 xx*.so；真机测试会话“Use shell_”待用户手动删除；PARTIAL_WAKE_LOCK 锁屏未充电心跳仍未测。
+
+### Risks
+HTTPS push 与认证未实测，私有仓库只能把令牌写进远端 URL（存入工作区 .git/config，已不发向量化但仍在工作区可见）；shell 函数在子 sh 与 subprocess 中不可见；用户 pip 装的同名包被打包依赖遮蔽；设备测试的联网用例依赖 github.com 与 pypi.org，DNS 失败时跳过、服务慢时可能超时；Play 对解释器加载代码的政策未评审。
+
+### DIA
+已同步 CHANGELOG、README、docs/distribution-builds.md、执行后端规格 §4.1/§4.4/§4.6/§7/§8。
+
+### HLG
+标准 append，先 dry-run 再 apply。
