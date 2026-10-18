@@ -9613,3 +9613,33 @@ B-native-refactor 合入检索状态分类修复全部代码、测试与文档�
 
 ### HLG
 标准 append，先 dry-run 再 apply。
+
+## 2026-10-19T00:41:35+08:00 · SSH 集成测试全量负载下残留会话的时序修复
+
+type: bugfix
+scope: ["Nexara", "native-ui", "ssh", "test"]
+status: done
+tags: ["ssh", "flaky-test", "unit-test"]
+continuity: none
+record-fingerprint: 5f178d88041dca0052579d716b831e1dc006407f7df1a00970e7ddb2b2f37384
+
+### Summary
+定位 SshRuntimeIntegrationTest“旧格式SSH批准目标在执行入口被拒绝”偶发失败根因：测试辅助 trust() 调用 runtime.probe() 取主机密钥，JSch 客户端在主机密钥校验处断开后探测即返回，而 Apache SSHD 测试服务端由后台 IO 线程异步把会话移出 activeSessions；拒绝路径本身不建连接（SshSkills 在连接前比对审批目标），断言能否通过只取决于执行耗时是否盖过服务端关闭耗时，全量负载下偶尔输掉，残留的 ServerSessionImpl[null] 正是未认证的探测会话。
+
+### Changed
+仅改 native-ui/app/src/test/java/com/promenar/nexara/data/ssh/SshRuntimeIntegrationTest.kt：服务端注册 SessionListener 统计新建会话数；新增 awaitServerSessionsClosed()，按条件轮询至会话全部移除即返回，5 秒期限只作失败兜底；trust() 末尾等待探测会话移除；两个拒绝路径用例在原有 activeSessions 为空断言外，增加执行前后服务端新建会话数不变的断言；原两处 500ms/1s 有界等待改用同一辅助。CHANGELOG [Unreleased] 新增“测试稳定性”条目。
+
+### Validation
+复现：临时用例在 trust() 后立即检查，200 次中 33 次探测会话尚未移除；按目标用例序列（trust→拒绝执行→断言）并在同 JVM 起 40 个分配线程施压，200 次复现 2 次 ServerSessionImpl[null]；修复后同等负载 3×200 次 0 残留。变异验证：在拒绝路径后插入一次建连并关闭，新会话数断言失败而旧断言会通过。修复后该类 --rerun 5 次均 22/22 通过；全量 :app:testSideloadDebugUnitTest --rerun 3912 项 0 失败 25 跳过。临时复现用例已删除。
+
+### Next
+无。
+
+### Risks
+仅 JVM 测试改动，不影响生产代码；其它测试类若同样依赖服务端异步关闭时序未在本次排查范围内。工作树缺 local.properties，Gradle 需 ANDROID_HOME 指向本机 SDK。
+
+### DIA
+已同步 CHANGELOG（测试稳定性条目）；README、架构与规格文档无影响。
+
+### HLG
+标准 append，先 dry-run 再 apply。

@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-10-19T00:32:33+08:00
+> generated_at: 2026-10-19T00:41:35+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -28,6 +28,7 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-10-19T00:41:35+08:00 | iso | done | none | ["Nexara", "native-ui", "ssh", "test"] | ["ssh", "flaky-test", "unit-test"] | SSH 集成测试全量负载下残留会话的时序修复 | `.agent/handover.md` · `2026-10-19T00:41:35+08:00` · `fp:5f178d8804` |
 | 2026-10-19T00:32:33+08:00 | iso | done | waiting | ["Nexara", "native-ui", "rag"] | ["rag", "embedding", "merge"] | 检索未配置嵌入模型静默跳过修复并入主线（892617fa） | `.agent/handover.md` · `2026-10-19T00:32:33+08:00` · `fp:1b60c92f67` |
 | 2026-10-19T00:24:31+08:00 | iso | done | waiting | ["Nexara", "native-ui", "rag"] | ["rag", "embedding", "retrieval-trace", "chat-ui"] | 检索未配置嵌入模型时静默跳过（237a007a，分支 claude/compassionate-feynman-8d2ec8） | `.agent/handover.md` · `2026-10-19T00:24:31+08:00` · `fp:f55b75cfee` |
 | 2026-10-19T00:23:26+08:00 | iso | completed | resume | ["Nexara", "native-ui", "tool-runtime"] | ["tools", "failure-summary", "workspace-tools"] | 工具失败文案结构化与文件工具未找到指引（0df332c0） | `.agent/handover.md` · `2026-10-19T00:23:26+08:00` · `fp:71d2691895` |
