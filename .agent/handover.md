@@ -9304,3 +9304,34 @@ B 的命令以 Nexara 身份运行，默认可读应用数据库与配置，必�
 
 ### HLG
 标准 append，先 dry-run 再 apply。
+
+## 2026-10-18T21:02:15+08:00 · 会话界面视觉重设计第二批合并主线（2cdff11a）并产出签名候选；真机验收待解锁
+
+type: delivery
+scope: ["Nexara", "native-ui", "chat-ui", "markdown", "release"]
+status: in_progress
+tags: ["redesign", "chat", "batch2", "release", "device-test"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 7cccd3f3f04f67f5f8ac233fc225d6c7192ff6b2e8a5c4e13f2ee26cc9b0a296
+
+### Summary
+第二批（会话界面）经 Codex 三轮实施（初版、复核修正 r2、独立审阅修正 r3）与主控设备修正后，以 b6f040f6 提交、2cdff11a 合并入 B-native-refactor 并推送。主控修正：历史 Markdown 同步解析（修复输入法与尾部可见）、输入框 48dp 点击高度与六行不裁切（单行容器约 96dp，规格 5.8 已改）、加号 -12dp、设置脚注末两字连写 keepCjkTailTogether、分享导入设备测试改用唯一 URI 并等待启动就绪、审批触控测试按节点密度换算、步骤行部分失败只标红失败段且紧跟摘要。独立审阅确认 13 类问题（生成结束尾部跟随、审批卡内部 ID、流式重挂载重放、失败计数截断、思考 Markdown、多项审批“当前”、参数进入风险说明、复制整轮、横向安全区、流式性能等），r3 全部修正。签名候选：artifacts/release-20261018-2cdff11a/（sideload SHA-256 33dc090c…583f，play 363c9b95…0555）。
+
+### Changed
+native-ui/app/src/main/java/com/promenar/nexara/ui/chat/*、ui/common/{MarkdownText,StreamRevealer,SmoothStreamContent,MarkdownStreamingSupport,StreamAnimationSettings,MarkdownBlankLines}.kt、ui/theme/Type.kt、res 会话 batch2 字符串、测试与 283 张截图基线；规格、CHANGELOG、README、design-qa、ADR-020、context-management；归档 .agent/tmp-agent-reports/redesign-batch2/（三份任务书、实施报告、独立审阅记录）。
+
+### Validation
+API 31 全量设备套件 492 项 27 失败，全部在基线 19060788 失败清单内，无新增；会话包 111 项仅 4 项基线既有失败，新增设备用例（尾部跟随三项、横向安全区、审批范围、失败计数等）全部通过；ShareImport 在 API 31/35 各连跑两次 5/5。JVM 单测 sideload 3885、play 3861 项无失败，lint 0 错误，双风味截图校验通过，distribution 与 text-wrapping 门禁通过。签名 APK 通过 verify-release-apk，API 31 冷安装冒烟与 0.1→0.2.2-beta 升级冒烟 PASS。真机 3B1F5QEARBRJQZ66 已覆盖升级安装 sideload 版（保留 firstInstallTime 2026-07-15），因锁屏未做界面验收。
+
+### Next
+1）用户解锁后在真机做界面验收（设置行、会话页、流式、审批、输入法）并可运行会话设备测试包；2）重复分享同一文件被静默丢弃的问题由独立会话修复，合并时核对；3）实施 64dp 设置行；4）B+D 执行后端真机验证与规格。
+
+### Risks
+超过 12000 字符的历史片段仍异步解析，依赖尾部跟随观察条目增高兜底；流式性能改动未跑基准，仅有复杂度分析；公式渲染在主机截图中无法验证（Layoutlib 缺 WebView），由设备用例覆盖；全量套件存在 GenerationForegroundServiceColdStart 等偶发项。
+
+### DIA
+已同步规格（5.4–5.8、8）、CHANGELOG、README、design-qa、ADR-020、docs/context-management.md 与实施报告。
+
+### HLG
+标准 append，先 dry-run 再 apply。
