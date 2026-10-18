@@ -9829,3 +9829,34 @@ HTTPS push 与认证未实测，私有仓库只能把令牌写进远端 URL（�
 
 ### HLG
 标准 append，先 dry-run 再 apply。
+
+## 2026-10-19T05:22:34+08:00 · 内置 git/pip 真机端到端验收与三处修复（df3827fb）
+
+type: delivery
+scope: ["Nexara", "native-ui", "exec-backend", "tool-runtime"]
+status: completed
+tags: ["exec", "git", "dulwich", "pip", "device-acceptance"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 7098a8fc67ac3b35de2249ba8c1a4b684c6c5200c0ee2b0986115cce2f6164b0
+
+### Summary
+真机正式包（签名侧载 Release）在测试会话“Use shell_”中用 DeepSeek V4 Flash 端到端验收：本地 init/config/commit/log、HTTPS 克隆 Hello-World、pip install six 后 six.__version__=1.17.0 均成功，结果给出 git_internal_changes；审批卡标题显示“运行命令 · builtin”且命令只出现一次。发现并修复三处：dulwich 把 git log -5 当作路径静默输出空结果（改写为 -n 5，另把 branch -a/-r 改写为 --all/--remotes）；克隆进度以回车刷新写 stderr，一次克隆约 514 KB 把真正输出挤出尾部（stderr 非终端时只保留进度最终状态，约 300 字节）；clone/fetch 默认要全部通告引用，GitHub 的 refs/pull/* 使 --depth 1 克隆 octocat/Spoon-Knife 约 636 MiB、真机 120 秒超时（修补 GitClient.fetch 默认 ref_prefix 为 HEAD、refs/heads/、refs/tags/，降到约 60 KB、2 秒）。修复后真机复测 Spoon-Knife 克隆、log -3、branch -a 正常，.git 116K。模型在 python_exec 里先尝试 subprocess 调 git，失败后自行改用 dulwich.porcelain。
+
+### Changed
+app/python/site/nexara_git.py（_ProgressCollapser/_collapse_progress、log 与 branch 改写、DEFAULT_FETCH_REFS 与 _limit_fetched_refs）；新增 scripts/tests/test_nexara_git.py（改写与进度收敛 6 例，修复前失败）；BuiltinExecDeviceTest HTTPS 用例增加 log -1 有输出、stderr 无回车且小于 4000 字符、hw/.git 小于 1 MB；CHANGELOG 与执行后端规格 §4.1/§8。
+
+### Validation
+全量 testSideloadDebugUnitTest、lintSideloadDebug、assembleSideloadDebug、assemblePlayDebug、validateSideloadDebugScreenshotTest、check-distribution-manifests 与其单测、test_verify_release_apk 与 test_nexara_git 通过；BuiltinExecDeviceTest 11/11 于 emulator-5564、emulator-5562 与真机；签名 Release sideload 30.62 MB、play 30.59 MB 扫描通过并升级到真机正式包；真机模型端到端复测通过。输入法已恢复为 com.tencent.wetype/.plugin.hld.WxHldService。
+
+### Next
+第 5 步沙箱模式（用户要求后置）；可选：裁剪随包 CPython 测试扩展 libpyext__test*.so；真机测试会话“Use shell_”（含 gt、hw、hw2 测试仓库）待用户手动删除；HTTPS push 认证与 PARTIAL_WAKE_LOCK 锁屏未充电仍未测。
+
+### Risks
+dulwich 无单分支克隆，--depth 仍取全部分支与标签头；log 不支持 --all、--format；显式 fetch 某个 refs/pull 引用会被默认过滤；联网设备用例依赖 github.com 与 pypi.org。
+
+### DIA
+已同步 CHANGELOG 与执行后端规格。
+
+### HLG
+标准 append，先 dry-run 再 apply。
