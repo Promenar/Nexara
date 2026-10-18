@@ -9396,3 +9396,34 @@ RED：再次分享与崩溃恢复两项 JVM 测试在修复前失败（24 测试
 
 ### HLG
 本记录经 hlg-handover.py append 追加。
+
+## 2026-10-18T21:54:28+08:00 · 分享导入重复判定修复并入主线（5bbb6dba）
+
+type: delivery
+scope: ["Nexara", "native-ui", "share-import"]
+status: completed
+tags: ["share-import", "merge"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 3543be5bd8b4d06855e54d31b21be680e0a83196d50315fce0b0bfe1b0c442aa
+
+### Summary
+独立会话的修复 2bf77bb9（claude/loving-gauss-f99628）经主控审阅后以 5bbb6dba 合并入 B-native-refactor 并推送：已消费指纹只拦截系统重放（保存状态重建、最近任务重启），用户新的分享仅与待处理请求去重并提示；索引新增 consumedRequestIds，旧版索引按指纹兼容。冲突处理：设备测试启动就绪等待两侧等价，保留主线实现；CHANGELOG 与 handover 两侧记录均保留并重建索引。
+
+### Changed
+MainActivity、ShareIntentQueue、ShareIntentStagingCoordinator、DurableShareInbox、字符串资源、对应 JVM 与设备测试、docs/ARCHITECTURE.md、CHANGELOG。
+
+### Validation
+合并后 testSideloadDebugUnitTest 3892 项 0 失败；lintSideloadDebug、assemblePlayDebug、check-distribution-manifests 通过；API 31 ShareImportAndroidEndToEndTest + ChatPipelineLayoutTest 连跑两次 21/21。
+
+### Next
+1）64dp 设置副标题行；2）B+D 执行后端真机验证与规格；3）ToolExecutor 失败文案 200 字符截断改为结构化提取。
+
+### Risks
+consumedRequestIds 上限 32，与指纹上限一致；超过上限且 ack 后目录残留的极端情况仍可能被当作新请求恢复。play 风味 JVM 单测未在合并后单独运行。
+
+### DIA
+CHANGELOG 与 ARCHITECTURE 随分支同步；合并无新增文档影响。
+
+### HLG
+标准 append，先 dry-run 再 apply。
