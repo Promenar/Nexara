@@ -9335,3 +9335,34 @@ API 31 全量设备套件 492 项 27 失败，全部在基线 19060788 失败清
 
 ### HLG
 标准 append，先 dry-run 再 apply。
+
+## 2026-10-18T21:45:06+08:00 · 会话界面重设计第二批真机验收完成；修正展开区与下一段正文间距（d7b765fc）
+
+type: delivery
+scope: ["Nexara", "native-ui", "chat-ui", "release"]
+status: completed
+tags: ["redesign", "chat", "batch2", "device-acceptance"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: edfe69fea84c2c552f4a0405c81b1730dbd1abd607b6d30e90daad0801ac4f9a
+
+### Summary
+在真机 3B1F5QEARBRJQZ66（OPPO PKH110，ColorOS，Android 16）上对 2cdff11a sideload 签名版做只读界面验收，未发送消息、未修改数据。通过项：步骤行部分失败只标红失败段并紧跟摘要；助手操作行与正文对齐；输入区布局；输入法弹出时末条消息操作行可见，用户上滑后弹出输入法不抢回底部；思考展开 Markdown 与竖线；段落间距实测 16–17dp、列表到段落约 13dp；设置首页正常（副标题行仍为 56dp，按计划改 64dp）。发现并修正：工具展开详情与思考展开内容到下一段正文仅 8dp，视觉连成一段；展开内容底部加 8dp（ExpandedStepBottomPadding），合计 16dp，以 d7b765fc 提交推送。
+
+### Changed
+native-ui/app/src/main/java/com/promenar/nexara/ui/chat/PipelineBubble.kt；androidTest ChatPipelineLayoutTest 新增 expandedToolAndThinkingContentKeepEightDpBottomGap；规格 §5.5 展开内容底部留白。
+
+### Validation
+API 31（emulator-5562）ChatPipelineLayoutTest 15/15 通过（新断言未先在修复前运行失败，几何上修复前差值为 0）；validateSideloadDebugScreenshotTest 通过（相关预览固定高度且顶部对齐，基线不变）；lintSideloadDebug 通过。真机设备测试包未运行：ColorOS 拦截 adb install 弹出系统安装选择框，已取消，未安装任何包。
+
+### Next
+1）核对重复分享去重修复会话结果并合并；2）实施 64dp 设置副标题行（规格 §2.2、SettingsLayoutTest、截图基线）；3）B+D 执行后端真机验证与规格；4）ToolExecutor 失败文案截取前 200 字符，导致 JSON 错误在 stderr 处被截断，界面与模型都看不到完整结构，建议在执行后端工作中改为提取 error_code/guidance 后再截断。
+
+### Risks
+真机未跑设备测试包，真机覆盖仅限人工截图；流式输出未在真机实测（需发送消息，未获授权）。
+
+### DIA
+已同步规格 §5.5；CHANGELOG 既有会话界面重设计条目已覆盖，无需新增。
+
+### HLG
+标准 append，先 dry-run 再 apply。
