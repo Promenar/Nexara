@@ -9767,3 +9767,34 @@ am instrument -w -e class BuiltinExecDeviceTest,PackagedPythonDeviceTest：第�
 
 ### HLG
 标准 append，先 dry-run 再 apply。
+
+## 2026-10-19T03:28:33+08:00 · 内置命令唤醒锁、前台服务通知停止与冻结检测（执行后端第 7 步，c3864ade）
+
+type: delivery
+scope: ["Nexara", "native-ui", "exec-backend", "background", "tool-runtime"]
+status: completed
+tags: ["exec", "foreground-service", "wake-lock", "coloros", "approval"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: bc40c432b33bcbb7130822ec392698851295c4da29311a46f0973940f260c687
+
+### Summary
+真机验收第 4 步：用户正式包 com.promenar.nexara.native 升级为签名 Release（侧载），在新建测试会话中用 DeepSeek V4 Flash 让模型调用 shell_exec 与 python_exec，半自动模式两次审批，建文件、uname、Python 读 CSV 求和与 workspace_changes 对账均正确，工作区面板可见 /demo/r.csv。发现审批目标显示把换行直接剥离，多行 Python 被拼成一行，已改为显示 ↵/⇥。第 7 步实施：BuiltinCommandRunner 改为 250 ms 轮询等待，支持 BuiltinCommandControl 停止（返回 stoppedByUser，服务映射为 EXEC_STOPPED，指引不自动重试），用 elapsedRealtimeNanos 检测轮询间隔异常（超出步长 2 秒）把暂停时间计入 pausedMillis 而不消耗超时，≥3 秒时结果给出 paused_ms 与“完全允许后台行为”指引。ExecKeepAlive/ExecRunRegistry（data/exec）与 AndroidExecKeepAlive、ExecForegroundService（background/exec）：每条命令持有 PARTIAL_WAKE_LOCK（Nexara:builtin-exec），侧载渠道启动 specialUse 前台服务，通知显示 Shell/Python · 命令首行与计时，停止按钮只停渲染时列出的命令，登记表清空即退出；Play 渠道不声明服务与 FOREGROUND_SERVICE_SPECIAL_USE，只持唤醒锁。关键发现：生成前台服务在 WAITING_APPROVAL 时退出，批准后的命令在 ViewModel 协程执行，此前没有任何后台保活。
+
+### Changed
+新增 data/exec/ExecKeepAlive.kt（ExecRunInfo.summarize、ExecForegroundState、ExecHeld、ExecKeepAlive、NoExecKeepAlive、ExecRunRegistry、ExecNotificationModel）、background/exec/{AndroidExecKeepAlive,ExecForegroundService}.kt（ExecRunRegistryOwner 接口）；修改 BuiltinCommandRunner、BuiltinExecService（keepAlive、EXEC_STOPPED、pauseGuidance、paused_ms）、NexaraApplication（execRunRegistry、keepAlive、clockNanos）、ToolExecutionTargets.display、BuiltinExecSkills 描述、main 清单 WAKE_LOCK、sideload 清单 specialUse 服务与权限、中英字符串；check-distribution-manifests.py 与其测试覆盖 specialUse 权限与服务只在侧载；测试新增 ExecRunRegistryTest、runner 停止与暂停用例、service 停止/暂停/无暂停用例、目标显示用例、设备测试 notificationStopEndsCommandAndReleasesWakeLock；CHANGELOG、README、规格 §2/§3.1/§4.5/§4.6/§7/§8。
+
+### Validation
+全量 testSideloadDebugUnitTest 3969/0（25 跳过）、lintSideloadDebug、assembleSideloadDebug、assemblePlayDebug、validateSideloadDebugScreenshotTest、check-distribution-manifests（debug）与其单测 4/4 通过。设备测试 BuiltinExecDeviceTest 8 + PackagedPythonDeviceTest 3：emulator-5564（API35）与 emulator-5562（API31）各 11/11，真机 11/11（非前台服务用例仍被 Hans 冻结约 13 秒，SIGQUIT 解冻）；新用例验证真实前台服务、通知停止、dumpsys power 当前唤醒锁段持有与释放。真机正式包端到端：sleep 90 命令批准后回到桌面，ExecForegroundService isForeground=true types=0x40000000，通知“正在运行命令 / Shell · sleep 90; echo finished”计时持续到 00:47，Hans 无冻结记录；点通知“停止”后服务退出，模型收到 EXEC_STOPPED 与指引并不重试。Robolectric 单测不含应用资源，服务改由设备测试覆盖。
+
+### Next
+执行后端规格 §7 第 5 步沙箱模式或第 6 步 dulwich/git 与 pip；可选：审批卡标题与“执行脚本”块重复展示命令，可精简；真机测试会话“Use shell_”（10/19）待用户手动删除；PARTIAL_WAKE_LOCK 锁屏未充电心跳与耗电仍未测。
+
+### Risks
+ColorOS 默认电池策略下熄屏后前台服务仍可能被冻结（探针结论，本次只验证亮屏后台 50 秒）；系统拒绝后台启动前台服务时只剩唤醒锁；startForegroundService 后 startForeground 失败沿用生成服务的处理方式；冻结时长较长时 5 分钟兜底的唤醒锁上限可能早于命令结束释放；Play 渠道无通知停止入口；deviceTest 两个包保留在真机。
+
+### DIA
+已同步 CHANGELOG、README、执行后端规格 §3.1/§4.5/§4.6/§7/§8。
+
+### HLG
+标准 append，先 dry-run 再 apply。
