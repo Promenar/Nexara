@@ -9705,3 +9705,34 @@ Release 通用 APK 由约 20.8 MB 增至 41.3 MB，距校验上限 50 MB 约 8.7
 
 ### HLG
 标准 append，先 dry-run 再 apply。
+
+## 2026-10-19T02:33:22+08:00 · 内置命令执行 shell_exec / python_exec 与工作区对账（f8a38ff8）
+
+type: delivery
+scope: ["Nexara", "native-ui", "exec-backend", "workspace", "tool-runtime"]
+status: completed
+tags: ["tools", "exec", "python", "workspace-reconcile", "approval"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 0ec6adcd4974aefe442e7579cd34f04ff3968b6df7ac20e5d1baf2a758a81682
+
+### Summary
+实施执行后端规格 §7 第 4 步（用户选择“直接在工作区运行”）。新增 shell_exec（系统 /system/bin/sh，预置 python3/python shell 函数）与 python_exec（打包 Python 3.14，python -c），ToolRisk.PROCESS，审批目标 [process,builtin,命令] / [process,python,代码]（仅 builtin 来源），审批卡提示可访问私有数据与网络、删除覆盖不进回收站。BuiltinCommandRunner 以 toybox setsid 建立进程组、包装 sh 写出 pgid，超时/取消 SIGTERM→2 秒→SIGKILL 整组，正常结束 SIGKILL 同组残留后台进程；stdout/stderr 各保留尾部 32000 UTF-16。BuiltinExecEnvironment 白名单环境（HOME/TMPDIR/NEXARA_WORKSPACE/NEXARA_BACKEND/LANG、Python 变量、SSL_CERT_FILE；LD_LIBRARY_PATH 只给解释器），SystemCaBundle 由 conscrypt 证书拼 PEM。WorkspaceRepository.runCommandInWorkspace 持工作区写锁运行，前后经 SecureDirectoryStream 扫描物理树，WorkspaceReconcilePlanner 以 Room 为准计算新增/修改/删除/inode 移动，删除走派生数据事务与向量化屏障并清版本快照，新增与更新同事务提交，发布索引事件；根身份标记被删时写回；.nexara_command_pending 标记供进程被杀后的恢复对账。结果 workspace_changes / workspace_warnings 为 CommandToolResult 后端字段，错误码 EXEC_*、WORKSPACE_RECONCILE_FAILED。偏离规格并已写入规格：不设 :exec 进程（结果与对账都在主进程，独立进程无收益）；不设 ExecBackend 接口（三后端只共享结果格式）；输出物理路径替换为 $NEXARA_WORKSPACE 而非 /；前台服务与唤醒锁留第 7 步。 同时补记 26f34e2b：Release 通用 APK 只带 arm64-v8a Python（29.8 MB）。
+
+### Changed
+新增 data/exec/{BuiltinCommandRunner,BuiltinExecEnvironment,BuiltinExecService}.kt、data/repository/WorkspaceCommandReconciliation.kt、skills/BuiltinExecSkills.kt；修改 WorkspaceRepository（runCommandInWorkspace、恢复对账、treeScanner 与 indexEventSink 参数）、FileEntryDao（insertAllAbort、commitCommandReconcile）、WorkspaceTextContentPolicy.isTextExtension、ToolExecutionTarget、ApprovalPreview、ChatInlineComponents、ToolInvocationPresentation、SettingsViewModel、SkillsScreen、NexaraApplication 注册与字符串；测试新增 WorkspaceReconcilePlannerTest、SecureWorkspaceTreeScannerTest、WorkspaceCommandHostTest（Robolectric，PathWorkspaceTreeScanner 夹具）、BuiltinCommandRunnerTest、BuiltinExecServiceTest、SystemCaBundleTest、BuiltinExecToolTargetTest、androidTest BuiltinExecDeviceTest；设备 e2e 脚本与合同测试加入 builtin-exec；CHANGELOG、README、执行后端规格 §3/§3.1/§3.2/§4.1/§4.2/§4.4/§7/§8 同步。
+
+### Validation
+新增单元测试：WorkspaceReconcilePlannerTest 11、BuiltinCommandRunnerTest 8（宿主以 perl setpgrp 建组，覆盖超时与正常结束清理后台进程、取消、尾部截断与代理对）、BuiltinExecServiceTest 8、WorkspaceCommandHostTest 6（Robolectric：新增/修改/删除/重命名、根身份写回、异常仍对账、写锁排队、残留标记恢复、版本快照清理）、SystemCaBundleTest 2、BuiltinExecToolTargetTest 4、SecureWorkspaceTreeScannerTest 2（宿主 macOS JDK 无 SecureDirectoryStream，只验证拒绝降级）。首轮 Robolectric 测试因宿主不支持 SecureDirectoryStream 失败，改注入测试用 PathWorkspaceTreeScanner，安全扫描器由设备测试覆盖。BuiltinExecDeviceTest 7 项与 PackagedPythonDeviceTest 3 项在 emulator-5564（API35）与 emulator-5562（API31）各 10/10 通过（真实 toybox setsid、系统 sh、打包 Python、conscrypt CA bundle、SecureDirectoryStream 扫描与对账、超时与取消后 /proc 中进程消失）。全量 testSideloadDebugUnitTest 3960/0（25 跳过）、lintSideloadDebug、assembleSideloadDebug、assemblePlayDebug、validateSideloadDebugScreenshotTest、check-distribution-manifests、设备 e2e 合同测试均通过；审批卡回退提示修改后 Approval/ChatInline/BuiltinExec 相关测试重跑通过。真机未连接，未做真机验收。
+
+### Next
+执行后端规格 §7 第 5 步沙箱模式，或按优先级先做第 7 步前台服务/唤醒锁/停止按钮（命令期间文件读写最长等待 600 秒，需可提前停止）；真机 3B1F5QEARBRJQZ66 连接后做 shell_exec/python_exec 审批卡与对账目视验收；探针按用户要求保留。
+
+### Risks
+命令运行期间同一工作区的文件读写（含界面打开文档）最长等待约 600 秒；命令自行 setsid 脱离的进程不会被结束；全自动模式下不审批（与 termux_exec 相同）；write_file/patch_file 不触发恢复对账；大文件重算哈希耗时；inode 复用在 size 与 mtime 同时未变时可能误判移动；未在真机上验收。
+
+### DIA
+已同步 CHANGELOG、README 与执行后端规格。
+
+### HLG
+标准 append，先 dry-run 再 apply。
