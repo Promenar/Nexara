@@ -9304,3 +9304,33 @@ B 的命令以 Nexara 身份运行，默认可读应用数据库与配置，必�
 
 ### HLG
 标准 append，先 dry-run 再 apply。
+
+## 2026-10-18T19:59:50+08:00 · 分享导入：再次分享同一文件被永久判重复的修复
+
+type: bugfix
+scope: ["native-ui/app/share", "MainActivity"]
+status: done
+tags: ["share-import", "durable-inbox", "dedupe", "android"]
+continuity: none
+record-fingerprint: 667936a56bbcb081110a4ead1c6590aa1da1fa167a5fc148cec9a0063aeaa153
+
+### Summary
+查明 consumed 指纹集合由 ceb56661 引入、c86b98d2 起存于 onSaveInstanceState（Activity 实例作用域），本意是防止重建/进程恢复重放同一 Intent；043b375b 迁入持久 index 后变成仅按 32 条淘汰的永久集合，导致稳定 content URI 的再次分享被静默丢弃。经用户确认按“投递来源区分”方案修复：ShareDelivery{Fresh, Redelivered}，onNewIntent 及无保存状态且无 FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY 的 onCreate 为 Fresh；Fresh 只与 pending 去重，Redelivered 仍与 consumed 去重。Fresh 与 pending 重复时 Toast“该文件已在待导入队列中”，重放静默。
+
+### Changed
+DurableShareInbox.stage 增加 delivery 参数；index 新增 consumedRequestIds（上限 32），loadIndex 按 requestId 过滤 ack 残留目录，旧版 index（无该字段）按指纹兼容并在首次加载时补写字段；ShareIntentStagingCoordinator/ShareStageOutcome/ShareIntentQueue 透传 delivery；MainActivity 判定来源并补反馈；新增 share_intent_already_pending 中英文案；JVM 测试新增 5 项 inbox 与 2 项 coordinator 回归，接线测试同步；设备测试新增 reshareOfConsumedStableUriMountsSheetAgain，并让 waitForShareSheet 等待 startupState Ready（修复 ProviderManager 未初始化的测试侧竞态）。CHANGELOG、docs/ARCHITECTURE.md 已同步。
+
+### Validation
+RED：再次分享与崩溃恢复两项 JVM 测试在修复前失败（24 测试 2 失败）。GREEN：testSideloadDebugUnitTest 3798/0 失败、testPlayDebugUnitTest 3774/0 失败、lintSideloadDebug 0 error。设备：emulator-5564（Nexara_API_35 -read-only，API 35 arm64）安装 sideload debug 后连续 3 轮 am instrument ShareImportAndroidEndToEndTest 均 OK (6 tests)，含固定 URI 用例。
+
+### Next
+无必需后续。可选：在真机上手动验证“导入→数日后同源再分享→弹层出现、重复待导入时 Toast”。
+
+### Risks
+设备未在修复前版本上复现 RED（测试 APK 依赖新 API）；Redelivered 判定依赖 savedInstanceState 与 LAUNCHED_FROM_HISTORY 的平台语义，极少数 ROM 若在无保存状态时重放根 Intent，会被当作新分享并再弹一次弹层（可见、非静默丢失）。同一 key 的 Redelivered 提交在途时到达的 Fresh 提交会复用前者结果。
+
+### DIA
+已同步 CHANGELOG.md、docs/ARCHITECTURE.md。
+
+### HLG
+本记录经 hlg-handover.py append 追加。

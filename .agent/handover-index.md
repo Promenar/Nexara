@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-10-18T09:16:44+08:00
+> generated_at: 2026-10-18T19:59:50+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -27,6 +27,7 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-10-18T19:59:50+08:00 | iso | done | none | ["native-ui/app/share", "MainActivity"] | ["share-import", "durable-inbox", "dedupe", "android"] | 分享导入：再次分享同一文件被永久判重复的修复 | `.agent/handover.md` · `2026-10-18T19:59:50+08:00` · `fp:667936a56b` |
 | 2026-10-18T09:16:44+08:00 | iso | planned | resume | ["Nexara", "native-ui", "settings-ui", "tool-runtime"] | ["decision", "settings", "termux", "builtin-shell", "poc"] | 方向决策：设置行两行高度 64dp；命令执行采用内置固定工具集（B）+ 保留 Termux/SSH（D），第二批合并后先做真机验证 | `.agent/handover.md` · `2026-10-18T09:16:44+08:00` · `fp:58367e225e` |
 | 2026-10-18T08:47:51+08:00 | iso | in-progress | resume | ["Nexara", "native-ui", "chat-ui"] | ["visual-redesign", "chat", "codex", "streaming"] | 会话界面视觉重设计第二批派发 Codex（worktree Nexara-wt-redesign2，分支 redesign-batch2，基于 0b81703c） | `.agent/handover.md` · `2026-10-18T08:47:51+08:00` · `fp:10b5c88ae5` |
 | 2026-10-18T03:17:28+08:00 | iso | done | resume | ["Nexara", "native-ui", "settings-ui", "release"] | ["visual-redesign", "settings", "codex", "device-tests", "release-candidate"] | 设置页视觉重设计第一批合并（762146c3）：共享设置行、值行与数值选择弹层、行内步进器、全部设置页整理 | `.agent/handover.md` · `2026-10-18T03:17:28+08:00` · `fp:c9471ca065` |
