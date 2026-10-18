@@ -9242,3 +9242,34 @@ ui/theme Type/Spacing；ui/common 新增 NexaraValueRow、NexaraValuePickerSheet
 
 ### HLG
 标准 append，先 dry-run 再 apply。
+
+## 2026-10-18T08:47:51+08:00 · 会话界面视觉重设计第二批派发 Codex（worktree Nexara-wt-redesign2，分支 redesign-batch2，基于 0b81703c）
+
+type: feature
+scope: ["Nexara", "native-ui", "chat-ui"]
+status: in-progress
+tags: ["visual-redesign", "chat", "codex", "streaming"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 10b5c88ae58e3c4b55f8077122a20ee318509debb0e6c39bde5e96f383303311
+
+### Summary
+按规格第 5 节派发第二批：56dp 透明顶栏（单行标题、无铅笔与副标题、滚动分隔线）；消息流 20dp 边距、720dp 居中、逐项间距 20/28dp；用户气泡 82%、助手正文无气泡与 5.4 节块间距、空行折叠、完成后操作行；44dp 无底色步骤行与 toolGroupSummary 自然语言摘要；审批卡去强调竖条；StreamRevealer（EMA 速率、积压追赶、字形边界、300ms 收尾）替换固定速率并删除 36dp 底部渐变遮罩；一体化输入区（输入框在上，+/模型胶囊/上下文圆环/发送同一工具行，任务状态条移到容器上方）。
+
+### Changed
+仅新增任务书 .agent/tmp-agent-reports/brief-redesign-batch2.md（位于 worktree）；主线无代码变更。
+
+### Validation
+尚未验证；Codex 完成后由主控复核报告与 diff，在 emulator-5562 运行会话设备测试与完整套件并与基线对照，逐张检查会话截图，实拍流式放出。
+
+### Next
+复核 Codex 报告；不满足 9.3 节清单则退回；通过后合并、构建签名候选、冒烟与升级测试，发送 APK 给用户真机复核。
+
+### Risks
+markdownAnnotator 逐字渐显可能不可行，回退为只匀速放出；Robolectric 不能跑 Compose 布局测试，布局断言依赖设备测试。
+
+### DIA
+无文档影响（派发阶段）。
+
+### HLG
+标准 append，先 dry-run 再 apply。
