@@ -9643,3 +9643,34 @@ record-fingerprint: 5f178d88041dca0052579d716b831e1dc006407f7df1a00970e7ddb2b2f3
 
 ### HLG
 标准 append，先 dry-run 再 apply。
+
+## 2026-10-19T01:07:09+08:00 · 命令类工具统一结果格式，ssh_exec 对齐（c974458e）
+
+type: delivery
+scope: ["Nexara", "native-ui", "tool-runtime", "ssh", "termux"]
+status: completed
+tags: ["tools", "command-result", "ssh", "termux"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 3c552b268e3abf80b7da44a1c793b1f254fee70419c4485e67ce0c58210488f8
+
+### Summary
+实施执行后端规格 §7 第 2 步。新增 domain/tool/CommandToolResult（固定键序：error_code、guidance、exit_code、timed_out、stderr、stdout、两路原始长度、length_unit、两路截断标记、truncated、truncation，后端专有字段在后；succeeded = 无错误码且未超时且退出码 0）。TermuxCommandResult.toJson 委托给它（HEAD_REMOVED，err/errmsg 等为专有字段），TermuxExecSkill 状态取 toolStatus。ssh_exec 改用同一格式：退出码非 0 或超时记为 error，超时为 SSH_TIMEOUT 加“远端进程可能仍在运行”指引、exit_code=null；因凭据遮蔽需完整前文，SSH 仍在遮蔽后截断并保留开头（TAIL_REMOVED），字节采集触顶时原始长度为 null；stdout/stderr 预算由“stdout 先占满”改为 splitOutputBudget 均衡分配。SSH 失败由 SSH_ERROR:<码> 纯文本改为 {error_code: SSH_<码>, guidance}，sshGuidance 按错误码给出下一步。ExecBackend 接口推迟到第 4 步随内置后端引入。
+
+### Changed
+新增 domain/tool/CommandToolResult.kt 与 CommandToolResultTest；修改 data/termux/TermuxProtocol.kt、skills/TermuxExecSkill.kt、data/ssh/SshRuntime.kt（SshExecOutput 增加原始长度、splitOutputBudget）、skills/SshSkills.kt（统一格式与 sshGuidance）；SshRuntimeIntegrationTest 夹具新增 zero/noisy-fail 命令及两项测试，SshToolsTest 断言改为 error_code/guidance；SshDeviceTest 工具账本用例改为期望 FAILED 与失败摘要前缀；CHANGELOG、README、执行后端规格 §3.1/§7/§8 同步。
+
+### Validation
+定向测试 86/0（CommandToolResultTest、SshToolsTest、SshRuntimeIntegrationTest、Termux 相关、ToolFailureSummaryTest、ToolExecutorTest）；SSH 新测试先于实现编写（实现前无法编译）。全量 testSideloadDebugUnitTest 3917/0（25 跳过）：首轮 TermuxRuntimeDispatchTest 断言旧键序 [error_code, guidance, timed_out] 失败，按规格改为前四项 [error_code, guidance, exit_code, timed_out] 后通过；lintSideloadDebug、assembleSideloadDebug、assemblePlayDebug、validateSideloadDebugScreenshotTest、check-distribution-manifests 通过。SshDeviceTest 经宿主 MINA 夹具（runSshTestServer + adb reverse 2222/2223）在 emulator-5564（API35）与 emulator-5562（API31）各 9/9 通过，含工具账本退出码 7 → FAILED 与失败摘要用例；夹具已停止、reverse 规则已移除。未在真机上做 ssh_exec 目视验收。
+
+### Next
+执行后端规格 §7 第 3 步：打包 Python（Gradle 任务、版本与 SHA-256 校验、useLegacyPackaging）；探针按用户要求保留在真机。
+
+### Risks
+ssh_exec 退出码非 0（grep 无匹配、diff 有差异等）现显示为失败步骤，模型收到最多约 4000 字符的失败摘要而非完整输出；SSH 超限时仍丢失结尾，改为保留尾部需先实现流式遮蔽（已记入规格 §8）。Termux 结果 JSON 键序变化（exit_code、stderr 提前），仓库内无按键序解析的消费方。
+
+### DIA
+已同步 CHANGELOG、README 与执行后端规格。
+
+### HLG
+标准 append，先 dry-run 再 apply。
