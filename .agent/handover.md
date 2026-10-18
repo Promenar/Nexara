@@ -9551,3 +9551,34 @@ record-fingerprint: 71d269189559f9d49c33e24290dab477e53b4dfaaec74905e24a852fa87c
 
 ### HLG
 标准 append，先 dry-run 再 apply。
+
+## 2026-10-19T00:24:31+08:00 · 检索未配置嵌入模型时静默跳过（237a007a，分支 claude/compassionate-feynman-8d2ec8）
+
+type: bugfix
+scope: ["Nexara", "native-ui", "rag"]
+status: done
+tags: ["rag", "embedding", "retrieval-trace", "chat-ui"]
+continuity: waiting
+continuity-key: rag-embedding-setup
+record-fingerprint: f55b75cfeebdc28e246a18d154a4bfcb344f70fbddcfd1c0ee52912accaeca3e
+
+### Summary
+真机 OPPO PKH110（0.2.2-beta release）每轮回复首步红色“未能检索知识库”。根因：RagOptions 默认 enableMemory=true；buildEmbeddingClient 只读手动 embedding_base_url 或 preset_embedding_model，不回退主 Provider、不自动选用 Provider 中已有嵌入模型；未选默认嵌入模型时 MemoryManager 返回 unavailable，RagInlineSummary 把 unavailable/no_scope 与 failed 一并判为 FAILED。只读核对真机“默认模型”页：快速、图像、嵌入、重排均为“未设置”。修复：unavailable 收窄为未配置嵌入模型，与 no_scope 合称 isSkipped，ContextBuilder 不记录此类轨迹、回复不显示检索步骤，历史消息同类记录隐藏且不计部分失败；嵌入已配置但查询请求全部失败改记 failed 保持红色；首次未配置时会话页提示一次“未选择嵌入模型，记忆与知识库检索已跳过”，操作“去设置”导航到默认模型（EmbeddingSetupHint，偏好键 embedding_setup_hint_shown 登记为设备本地、不随备份）。知识库或记忆为空属于 empty（已检索未命中），本来不判失败，保持不变。
+
+### Changed
+ChatModels（isSkipped、结果语义注释）、MemoryManager、ContextBuilder（onEmbeddingNotConfigured）、ChatScreen.hasRagArtifacts、RagInlineSummary、ChatRoute（一次性提示）、NavGraph ChatDestination 增加 onOpenDefaultModels、MainActivity、NexaraApplication、新增 data/rag/EmbeddingSetupHint.kt、BackupPreferencePolicy、中英文字符串；测试：MemoryManagerRetrievalTraceTest、ContextBuilderTest、ChatScreenRagSelectionTest、RagDetailsInlineSummaryTest、DefaultChatGenerationRuntimeRagTraceTest、EmbeddingSetupHintTest、BackupPreferenceInventoryTest；截图与设备用例中表示失败的轨迹改用 failed（基线不变）；README、CHANGELOG、ARCHITECTURE ADR-002、2026-10-17 会话重设计规格。
+
+### Validation
+复现测试修复前 9 项按预期失败（加最小桩编译）；修复后 testSideloadDebugUnitTest 3901 项 0 失败 25 跳过；lintSideloadDebug 0 Error/Fatal；assembleSideloadDebug、assemblePlayDebug、validateSideloadDebugScreenshotTest、compileSideloadDebugAndroidTestKotlin 通过；check-distribution-manifests 与 check-text-wrapping 通过。真机仅只读截图与导航查看，未改设置、未发消息。
+
+### Next
+1）等待用户决定是否并入 B-native-refactor；2）用户在真机 设置→默认模型 选择 BGE 嵌入（及重排）模型后，红色步骤应消失；新版本装机后验证一次性提示与“去设置”导航；3）可选：是否在“默认模型”为空且 Provider 仅有一个嵌入模型时提供一键选用（产品决策，未实施）。
+
+### Risks
+一次性提示与导航未做设备验证（只有 JVM 与编译证据）；生成开始到检索结束之间仍会短暂显示“正在检索知识库…”运行态；历史中因嵌入请求失败而记为 unavailable 的旧消息也会被隐藏；工作树缺 local.properties，Gradle 需 ANDROID_HOME 指向本机 SDK。
+
+### DIA
+已同步 README、CHANGELOG、docs/ARCHITECTURE.md（ADR-002 实际行为勘正）、docs/superpowers/specs/2026-10-17-nexara-settings-chat-redesign.md。
+
+### HLG
+标准 append，先 dry-run 再 apply。

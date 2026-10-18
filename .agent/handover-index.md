@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-10-19T00:23:26+08:00
+> generated_at: 2026-10-19T00:25:28+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -17,6 +17,7 @@
 | nexara-independent-model-catalog | resume | 2026-09-22T18:33:08+08:00 | done | ["Nexara", "model-catalog"] | 独立模型目录上线、客户端验收与签名候选交付 | `.agent/handover.md` · `2026-09-22T18:33:08+08:00` · `fp:320878f7b2` |
 | nexara-local-debug-ci-boundary | waiting | 2026-09-29T23:55:52+08:00 | in-progress | ["Nexara", "PDEC", "Android"] | PDEC 本机 Android 调试边界收敛与 CI 触发待确认 | `.agent/handover.md` · `2026-09-29T23:55:52+08:00` · `fp:f4e8807aba` |
 | nexara-physical-device-ui-acceptance | waiting | 2026-10-16T20:56:39+08:00 | done | ["Nexara", "native-ui", "chat", "rag", "release"] | 会话步骤紧凑化、正文排版修复与检索指示器缺失修复 | `.agent/handover.md` · `2026-10-16T20:56:39+08:00` · `fp:2828a399eb` |
+| rag-embedding-setup | waiting | 2026-10-19T00:24:31+08:00 | done | ["Nexara", "native-ui", "rag"] | 检索未配置嵌入模型时静默跳过（237a007a，分支 claude/compassionate-feynman-8d2ec8） | `.agent/handover.md` · `2026-10-19T00:24:31+08:00` · `fp:f55b75cfee` |
 | rag-fab-drilldown-isolation | completed | 2026-09-26T23:05:00+08:00 | completed | rag, ui-status, fab, explorer-breadcrumbs, sandbox-isolation | 知识库集中式 FAB 状态指示微件、同层下钻式目录切换与工作区沙箱深度隔离 | `.agent/handover.md` · `2026-09-26T23:05:00+08:00` · `fp:5c7e9d4ff9` |
 | rag-global-workspace-explorer | waiting | 2026-09-26T14:15:05+08:00 | completed | ["rag", "workspace", "vfs", "explorer", "compose-ui"] | 知识库全局资源管理器实机全链路验收与VFS崩溃恢复加固 | `.agent/handover.md` · `2026-09-26T14:15:05+08:00` · `fp:0d9d575a7e` |
 | rag-infinite-indexing-fix-top-spacing | completed | 2026-09-27T02:30:00+08:00 | completed | rag, vectorization, error-handling, ui-layout, release | 向量化“无限进行中”根治、任务主动取消与主页顶部呼吸感对齐 | `.agent/handover.md` · `2026-09-27T02:30:00+08:00` · `fp:ffec7cc374` |
@@ -27,6 +28,7 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-10-19T00:24:31+08:00 | iso | done | waiting | ["Nexara", "native-ui", "rag"] | ["rag", "embedding", "retrieval-trace", "chat-ui"] | 检索未配置嵌入模型时静默跳过（237a007a，分支 claude/compassionate-feynman-8d2ec8） | `.agent/handover.md` · `2026-10-19T00:24:31+08:00` · `fp:f55b75cfee` |
 | 2026-10-19T00:23:26+08:00 | iso | completed | resume | ["Nexara", "native-ui", "tool-runtime"] | ["tools", "failure-summary", "workspace-tools"] | 工具失败文案结构化与文件工具未找到指引（0df332c0） | `.agent/handover.md` · `2026-10-19T00:23:26+08:00` · `fp:71d2691895` |
 | 2026-10-18T23:55:58+08:00 | iso | completed | resume | ["Nexara", "native-ui", "tool-runtime"] | ["poc", "builtin-shell", "termux", "background", "spec"] | B+D 真机验证收尾：白名单后台、Termux 双向与共享存储三方（63ce1458；探针 c80c0af9） | `.agent/handover.md` · `2026-10-18T23:55:58+08:00` · `fp:76a7c74a73` |
 | 2026-10-18T23:11:58+08:00 | iso | in_progress | resume | ["Nexara", "native-ui", "tool-runtime"] | ["poc", "builtin-shell", "termux", "python", "spec"] | B+D 执行后端真机验证与规格（e8979f73；探针 poc/bd-exec 91836500） | `.agent/handover.md` · `2026-10-18T23:11:58+08:00` · `fp:9c4bf18213` |
