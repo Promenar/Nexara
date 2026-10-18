@@ -9582,3 +9582,34 @@ ChatModels（isSkipped、结果语义注释）、MemoryManager、ContextBuilder�
 
 ### HLG
 标准 append，先 dry-run 再 apply。
+
+## 2026-10-19T00:32:33+08:00 · 检索未配置嵌入模型静默跳过修复并入主线（892617fa）
+
+type: delivery
+scope: ["Nexara", "native-ui", "rag"]
+status: done
+tags: ["rag", "embedding", "merge"]
+continuity: waiting
+continuity-key: rag-embedding-setup
+record-fingerprint: 1b60c92f6707c26870af169e26070ffe71e66feef4d48ee98719bf6441de4a0b
+
+### Summary
+按用户指示将 claude/compassionate-feynman-8d2ec8（85ba11df）以 --no-ff 合并进 B-native-refactor 并推送，合并提交 892617fa，远端 SHA 一致。主线此前新增 4 个提交（B+D 真机收尾、工具失败文案结构化 0df332c0 等）。代码无冲突；handover.md 与 handover-index.md 冲突：两侧均为 EOF 追加，git 把两条记录相同的结尾 HLG 段当作公共部分导致主线记录被拆开，改为以主线原文件加本分支新增记录精确重建（对主线为纯 EOF 追加），索引由 HLG index 重建。
+
+### Changed
+B-native-refactor 合入检索状态分类修复全部代码、测试与文档；.agent/handover.md 追加修复记录，handover-index.md 重建。
+
+### Validation
+合并后工作树：testSideloadDebugUnitTest 3912 项 1 失败 25 跳过，失败为 SshRuntimeIntegrationTest“旧格式SSH批准目标在执行入口被拒绝”（断言测试 SSH 服务器会话已关闭但仍残留一个会话），该测试类在合并工作树单独 --rerun 3 次均通过，本次与主线新提交均未改 SSH，判断为全量负载下的时序不稳定；lintSideloadDebug、assembleSideloadDebug、assemblePlayDebug、validateSideloadDebugScreenshotTest、compileSideloadDebugAndroidTestKotlin、check-distribution-manifests 通过；HLG inspect：latest_timestamp_at_tail=true、trailing_record_complete=true。
+
+### Next
+1）用户在真机 设置→默认模型 选择 BGE 嵌入（及重排）模型；2）新版本装机后验证一次性提示与“去设置”导航；3）SshRuntimeIntegrationTest 全量运行下偶发残留会话，可另行排查等待会话关闭的时序。
+
+### Risks
+一次性提示与导航未做设备验证；SSH 集成测试在全量负载下存在偶发失败。
+
+### DIA
+无新增文档影响（文档已随分支同步）。
+
+### HLG
+标准 append，先 dry-run 再 apply。
