@@ -9458,3 +9458,34 @@ B+D 执行后端真机验证（可执行性、隔离进程、后台存活、Pyth
 
 ### HLG
 标准 append，先 dry-run 再 apply。
+
+## 2026-10-18T23:11:58+08:00 · B+D 执行后端真机验证与规格（e8979f73；探针 poc/bd-exec 91836500）
+
+type: delivery
+scope: ["Nexara", "native-ui", "tool-runtime"]
+status: in_progress
+tags: ["poc", "builtin-shell", "termux", "python", "spec"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 9c4bf182130e4d4b881a2008dfd8b8698a348ee8766d8b4a1636043ec9510f70
+
+### Summary
+以独立探针应用 com.promenar.nexara.execprobe 在 API 31/35 模拟器与 OPPO PKH110（ColorOS V16.1.0，Android 16）验证 B+D：打包二进制需 useLegacyPackaging 才能从 nativeLibraryDir 执行；数据目录 execve 被拒，linker64 与数据目录 dlopen 当前放行但有 auditallow；isolatedProcess 可执行但无数据目录、无网络、无可写目录；ColorOS Hans 熄屏后冻结整个 uid，前台服务同样被冻结；官方 CPython 3.14.8 Android 包经 Py_BytesMain 启动器可用，打包库方案（STORED zip stdlib + libpyext_*.so）主进程冷启动 0.43 秒、隔离进程 0.63 秒，APK +12.5 MB、安装后库约 32.5 MB；pip 仅纯 Python 包；TLS 需拼 conscrypt CA bundle；dulwich 可 clone/add/commit/status；2 万文件 size+mtime 对账 266 ms；Termux 主目录读写 SAF 挂载为 /mnt/termux，Termux→Nexara 文件可见且内容一致。据此写出执行后端规格，含 ToolExecutor 失败文案结构化（Termux JSON 中 stdout 先于 stderr/exit_code，take(200) 会让模型看不到退出码与 stderr）。
+
+### Changed
+主仓库：docs/superpowers/specs/2026-10-18-nexara-exec-backend.md（新）、.agent/registry.md。探针分支 poc/bd-exec：poc/exec-probe/ 源码、构建脚本与 README（jniLibs 与 Python assets 为脚本产物不入库）。
+
+### Validation
+探针 logcat（NXPROBE）逐项取证；recon 测试 5k×4KB、20k×4KB、200×1MB 三档；dulwich 两次提交父指针与树正确、状态干净；Termux 中 echo 写入 nexara-poc-t2n.txt 后在 Nexara 资源管理器→外部文件夹→浏览文件夹中看到 14 B、内容 termux2nexara。官方 Python 包 SHA-256 与 sigstore 包内摘要一致，未做密码学验签。
+
+### Next
+1）Nexara→Termux 写入：Nexara 界面挂载浏览只读，需经文件工具，即在 Nexara 发一条对话让模型调用 write_file 写 /mnt/termux/nexara-poc-n2t.txt，需用户同意或亲自操作；2）共享存储三方可见：Termux 当前无存储权限，需用户在 Termux 运行 termux-setup-storage 并允许；3）后台：用户将“Nexara 执行探针”设为完全允许后台行为后做不充电熄屏心跳测试；4）收尾：删除 /mnt/termux 挂载与 Termux 主目录的 nexara-poc-*.txt，询问是否卸载探针；5）按规格 §7 先实施失败文案结构化。
+
+### Risks
+真机仍保留 /mnt/termux 读写挂载（所有会话可用）与 ~/nexara-poc-t2n.txt，待往返完成后清理；探针应用仍安装在真机，含 pip 安装的 six/dulwich 与前台服务通知渠道。后台存活结论只在充电状态下测得。
+
+### DIA
+已同步 registry；规格为新增文档，无代码与用户可见行为变更，README/CHANGELOG 无影响。
+
+### HLG
+标准 append，先 dry-run 再 apply。
