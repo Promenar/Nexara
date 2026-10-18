@@ -9520,3 +9520,34 @@ B+D 执行后端真机验证全部完成。探针设为“完全允许后台行�
 
 ### HLG
 标准 append，先 dry-run 再 apply。
+
+## 2026-10-19T00:23:26+08:00 · 工具失败文案结构化与文件工具未找到指引（0df332c0）
+
+type: delivery
+scope: ["Nexara", "native-ui", "tool-runtime"]
+status: completed
+tags: ["tools", "failure-summary", "workspace-tools"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 71d269189559f9d49c33e24290dab477e53b4dfaaec74905e24a852fa87cfafb
+
+### Summary
+实施执行后端规格 §7 第 1 步。ToolExecutor 失败分支由“工具执行失败：前 200 字符”改为 ToolFailureSummary.format：JSON 结果含根因或输出字段时按 error_code、guidance、exit_code、timed_out、err、errmsg、其余标量、stderr、stdout 顺序重组，超过 4000（JSON 编码长度）时依次压缩 stdout 尾部、stderr 尾部、errmsg 开头并标注原始长度（优先取 <字段>_original_length），error_code/guidance/exit_code 不压缩；其它内容保留前 1000 字符；避免截断代理对。执行步骤与工具消息共用同一摘要。WorkspaceToolSupport 的“未找到条目”按操作附带指引：write_file/patch_file 指向 create_file，父目录缺失指向 create_directory，uuid 失效改用 path，其余提示 list_files/search_files；挂载路径同样经此处。
+
+### Changed
+新增 ui/chat/manager/ToolFailureSummary.kt；修改 ToolExecutor.kt、skills/WorkspaceToolSupport.kt；新增 ToolFailureSummaryTest（8 项），ToolExecutorTest 新增 failedCommandResultKeepsExitCodeAndStderrForModelAndStep，WorkspaceToolBehaviorTest 新增 2 项；CHANGELOG Unreleased“工具失败文案”；规格 §6 标注已实施并与实现对齐。
+
+### Validation
+新增 11 项测试在占位实现（前缀 + take(200)）下全部失败，实现后通过；首版因按字符数而非 JSON 编码长度分配预算导致含换行的 stdout 被清空，测试捕获后修正。全量 testSideloadDebugUnitTest 3903/0、lintSideloadDebug、assembleSideloadDebug、assemblePlayDebug、validateSideloadDebugScreenshotTest、check-distribution-manifests 通过。未在真机上触发实际工具失败做目视验收。
+
+### Next
+执行后端规格 §7 第 2 步：ExecBackend 契约与统一结果格式，ssh_exec 结果补 error_code/guidance/原始长度；知识库“未能检索知识库”问题由独立会话处理中；探针按用户要求保留在真机。
+
+### Risks
+失败内容对模型可见的长度由 200 增至最多约 4000 字符，依赖各技能自身不在失败内容中放入敏感信息（异常路径已有脱敏，现有 ToolExecutorTest 秘密不外泄断言通过）。
+
+### DIA
+已同步 CHANGELOG 与执行后端规格；README 无影响。
+
+### HLG
+标准 append，先 dry-run 再 apply。
