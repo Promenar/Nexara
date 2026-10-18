@@ -9736,3 +9736,34 @@ record-fingerprint: 0ec6adcd4974aefe442e7579cd34f04ff3968b6df7ac20e5d1baf2a758a8
 
 ### HLG
 标准 append，先 dry-run 再 apply。
+
+## 2026-10-19T02:51:05+08:00 · 内置命令执行真机验收与 ColorOS 冻结实测
+
+type: validation
+scope: ["Nexara", "native-ui", "exec-backend", "device-test"]
+status: completed
+tags: ["exec", "python", "real-device", "coloros", "freeze"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 676cedbc085fdbe2c6a05ad6c9d6ce7b5f17862488ba32add126e9b41a65195d
+
+### Summary
+在真机 3B1F5QEARBRJQZ66（OPPO PKH110，ColorOS V16.1.0，Android 16，toybox 0.8.12）上安装 deviceTest 与其 androidTest 包，运行 BuiltinExecDeviceTest 7 项与 PackagedPythonDeviceTest 3 项，两轮均 10/10 通过。首轮看似卡死 727 秒，原因是 ColorOS OplusHansManager 冻结了无前台界面的 instrumentation 进程（F stay=721 秒），不是代码缺陷；第二轮亮屏时启动约 3 秒后再次冻结，连同刚 fork 尚未 exec 的子进程，SIGCONT 不解冻，run-as kill -3（SIGQUIT）解冻后继续。去掉冻结时长后各用例耗时正常：超时用例 2.2 秒，取消用例 0.4 秒，Python+CA 用例约 0.6 秒。
+
+### Changed
+执行后端规格第 3 节实测表新增“亮屏无前台界面”冻结行；第 4.5 节前台服务描述改为保持主进程前台优先级（与第 4.2 节不设 :exec 进程一致）；风险表第 7 步项补“离开应用”与厂商冻结。代码未改。
+
+### Validation
+am instrument -w -e class BuiltinExecDeviceTest,PackagedPythonDeviceTest：第一轮 OK (10 tests) Time 727.184（含冻结 721 秒）；第二轮 OK (10 tests) Time 37.718（含冻结 32 秒）。logcat 中 OplusHansManager freeze/unfreeze reason: Signal 与 TestRunner 时间戳对应。
+
+### Next
+第 7 步前台服务/唤醒锁/停止按钮优先级上升：真机上离开应用即可能冻结命令；待验证前台服务在亮屏后台下能否免冻结（探针曾测得默认电池策略熄屏后前台服务同样被冻结）。审批卡目视验收需升级用户正式包并让模型调用工具，须先征得用户同意。真机设备测试需亮屏并在冻结时以 run-as kill -3 解冻，或让被测应用有前台 Activity。
+
+### Risks
+超时按单调时钟，冻结时长计入超时属推断未实测；真机上 deviceTest 与 deviceTest.test 两个测试包保留以便第 7 步复测；审批卡与正式包内的实际调用未在真机目视验收。
+
+### DIA
+已同步执行后端规格。
+
+### HLG
+标准 append，先 dry-run 再 apply。
