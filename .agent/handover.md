@@ -9674,3 +9674,34 @@ ssh_exec 退出码非 0（grep 无匹配、diff 有差异等）现显示为失�
 
 ### HLG
 标准 append，先 dry-run 再 apply。
+
+## 2026-10-19T01:47:42+08:00 · 随 APK 打包官方 CPython 3.14.8（c314a3c6）
+
+type: delivery
+scope: ["Nexara", "native-ui", "build", "exec-backend", "release"]
+status: completed
+tags: ["python", "packaging", "jniLibs", "release-gate"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 715d538111cdf4f871818f5785358d4ed9cbfacbf9a612b8550ab078938c3278
+
+### Summary
+实施执行后端规格 §7 第 3 步。buildSrc 新增 FetchVerifiedFile（下载到 Gradle 用户目录 caches/nexara-python-android，SHA-256 不符失败且不落盘，可用 -Pnexara.pythonDistDir 离线）与 PreparePackagedPython（tarTree 解包，libpython3.14.so 与 lib*_python.so 原样保留，标准库裁剪 test/idlelib/tkinter/turtledemo/pydoc_data 后存为 STORED zip libpystdlib.so 并附 sitecustomize.py，lib-dynload 改名 libpyext_<模块>.so，NDK clang 以 --target=<arch>-linux-android31、rpath $ORIGIN、16KB 页对齐编译 libnxpython.so；同输入字节一致）。版本与两个 ABI 的 SHA-256 在 native-ui/app/python/python-android.properties，已与 python.org 发布页、sigstore 包内摘要、本地下载三处核对。按变体 abiFilters 接入生成的 jniLibs（debug 仅 arm64，release 带 arm64-v8a 与 x86_64）；packaging 启用 useLegacyPackaging，libpystdlib.so 跳过 strip；BuildConfig.PACKAGED_PYTHON_VERSION。运行时定位 data/exec/PackagedPython（isAvailable、解释器环境变量）。发行校验 verify-release-apk.py 的敏感扫描对官方 Python 条目窄豁免 runner 构建路径，标准库 zip 另豁免保留地址常量与 venv 示例 C:\Users\；凭据模式、其它用户路径与自编译启动器照常检查。
+
+### Changed
+新增 native-ui/app/python/{python-android.properties,pylauncher.c,sitecustomize.py}、buildSrc FetchVerifiedFile.java、PreparePackagedPython.java 与 PackagedPythonRelease.java（版本文件解析放在 buildSrc，遵守 ReleaseConfigurationTest 禁止构建脚本使用 java.util.Properties 的约束）、data/exec/PackagedPython.kt、PackagedPythonTest、androidTest PackagedPythonDeviceTest；修改 app/build.gradle.kts、scripts/verify-release-apk.py（及 test_verify_release_apk.py 新增 3 项）、android-device-core-e2e.sh 与其合同测试；CHANGELOG、README、docs/distribution-builds.md“打包 Python”节、执行后端规格 §4.1/§7/§8 同步。
+
+### Validation
+官方包 SHA-256 经 python.org 发布页、sigstore 包内摘要与本地下载三处一致；官方库 LOAD 段均为 16KB 对齐。生成产物：两 ABI 各 76 个库、stdlib zip 633 条目全部 STORED（与源目录 632 项加 sitecustomize 一致）、启动器 RUNPATH $ORIGIN 且 16KB 对齐，--rerun-tasks 后 zip 与启动器 SHA-256 不变。PackagedPythonDeviceTest 在 emulator-5564（API35）与 emulator-5562（API31，arm64-v8a）各 3/3 通过（原生库已解压、版本、ssl/sqlite3/hashlib/zlib/ctypes/decimal/socket、扩展来自 nativeLibraryDir、test 包已裁剪、退出码与 stderr）；deviceTest APK +11.3 MB，安装后 lib/arm64 33 MB。x86_64 deviceTest 与 mainactivity-e2e 构建通过（未在 x86_64 设备运行，由 CI 覆盖）。签名 Release 两渠道构建成功（41.3 MB，含 arm64-v8a 与 x86_64 Python），verify-release-apk.py 首次因上游 runner 路径与 stdlib 地址常量报敏感信息失败，加窄豁免后两渠道通过；test_verify_release_apk 26/0（新增 3 项先失败后通过），release-workflow-reliability 40/0，device e2e 合同测试通过，check-distribution-manifests debug 与 release 通过。全量 testSideloadDebugUnitTest 3919/0（25 跳过）：首轮 ReleaseConfigurationTest 因构建脚本含 java.util.Properties 失败，改为 buildSrc 解析后通过；assembleSideloadDebug、assemblePlayDebug、validateSideloadDebugScreenshotTest 通过；同轮 lintSideloadDebug 因与 Play 构建并行时 KSP 生成文件缺失失败，单独重跑通过。
+
+### Next
+执行后端规格 §7 第 4 步：:exec 进程、shell_exec、python_exec、审批卡片、工作区写锁与对账（含 CA bundle、HOME/TMPDIR 等完整环境与 armeabi-v7a/x86 不可用指引）；探针按用户要求保留在真机。
+
+### Risks
+Release 通用 APK 由约 20.8 MB 增至 41.3 MB，距校验上限 50 MB 约 8.7 MB；x86_64 Python 约 11.5 MB 只服务 x86_64 设备，是否只带 arm64 或改发分 ABI APK 待用户决定。旧式打包让全部原生库安装时解压，安装占用增加。首次构建需访问 python.org。标准库未预编译 pyc。未在真机上安装新 APK 验证（PoC 已在真机验证同方案）。
+
+### DIA
+已同步 CHANGELOG、README、发行渠道构建说明与执行后端规格。
+
+### HLG
+标准 append，先 dry-run 再 apply。
