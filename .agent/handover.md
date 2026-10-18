@@ -9427,3 +9427,34 @@ CHANGELOG 与 ARCHITECTURE 随分支同步；合并无新增文档影响。
 
 ### HLG
 标准 append，先 dry-run 再 apply。
+
+## 2026-10-18T22:12:25+08:00 · 带副标题设置行改为 64dp（1347ff6e）；截断问题并入 B+D
+
+type: delivery
+scope: ["Nexara", "native-ui", "settings-ui"]
+status: completed
+tags: ["redesign", "settings", "row-height"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 0f60e7163f74fd513bd139178dba1feb17ba5dbe2a6e1755fbc39c8ab4cc1632
+
+### Summary
+按用户确认的方向，NexaraSettingsRowLayout 带副标题时上下内边距 12dp（RowTwoLineVertical）、标题与副标题间 Spacer 2dp（RowTwoLineGap）、最小高 64dp（RowTwoLineHeight），字号不变，单行行保持 48dp。Compose 默认裁掉首末行行距留白，文字节点矮于行高，默认字号下自然高度低于 64dp，实际高度由最小高度决定、内容垂直居中（上下约 15dp）；放大字号时行高随内容增长并保留 12dp 内边距（130% 下原先行间贴边的问题随之消除）。用户同意 ToolExecutor 失败文案 200 字符截断问题并入 B+D 执行后端工作。
+
+### Changed
+ui/theme/Spacing.kt、ui/common/NexaraSettingsItem.kt、androidTest SettingsLayoutTest（两行高 64dp 断言与新增 twoLineRowKeepsTwelveDpPaddingAndTwoDpGap）、sideload 截图基线 100 张；规格 §2.2/§3.1/G5/设置首页验收表、README、CHANGELOG。
+
+### Validation
+SettingsLayoutTest 修复前 2 项失败（高 56dp、上内边距 11.05dp），修复后 16/16（API 31 emulator-5562）；ui.settings/ui.hub/ui.common 设备包 124 项 13 失败全部在基线清单内；双风味截图校验通过（基线更新后逐张比对设置首页 411/130%、设置组件 130%、快速模型弹层）；testSideloadDebugUnitTest 3892/0、lintSideloadDebug、assemblePlayDebug、check-distribution-manifests、check-text-wrapping 通过。
+
+### Next
+B+D 执行后端真机验证（可执行性、隔离进程、后台存活、Python/pip/git、包体、工作区索引对账、Termux SAF 挂载往返与共享目录三方可见），据结果写执行后端规格；规格包含 ToolExecutor 失败文案结构化提取（error_code/guidance）替代 200 字符截断。
+
+### Risks
+真机未安装 64dp 版本做目视验收；play 风味 JVM 单测本轮未单独运行。
+
+### DIA
+已同步规格、README、CHANGELOG；历史发布文档中的 56dp 保持原样。
+
+### HLG
+标准 append，先 dry-run 再 apply。
