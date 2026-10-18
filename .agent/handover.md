@@ -9489,3 +9489,34 @@ record-fingerprint: 9c4bf182130e4d4b881a2008dfd8b8698a348ee8766d8b4a1636043ec951
 
 ### HLG
 标准 append，先 dry-run 再 apply。
+
+## 2026-10-18T23:55:58+08:00 · B+D 真机验证收尾：白名单后台、Termux 双向与共享存储三方（63ce1458；探针 c80c0af9）
+
+type: delivery
+scope: ["Nexara", "native-ui", "tool-runtime"]
+status: completed
+tags: ["poc", "builtin-shell", "termux", "background", "spec"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 76a7c74a73e2c27f0a125d792783c7971096f8afbf3a88362b5e038af77595d4
+
+### Summary
+B+D 执行后端真机验证全部完成。探针设为“完全允许后台行为”后未充电锁屏 15 分钟：Hans 不再冻结（日志无探针 uid 10615 的 FROZEN_TRANS），前台服务内子进程运行到结束，但 CPU 深度休眠使 5 秒心跳只写 49/约 175 行、最长间隔 66 秒，规格据此要求命令运行期间持有 PARTIAL_WAKE_LOCK。Termux SAF 挂载双向可用：Nexara 经 create_file 写入的文件在 Termux 主目录可见（属主 Termux uid）。共享存储三方（Termux termux-setup-storage、adb、Nexara 挂载存储路径）互相读写可见。模型先误用只覆盖已有文件的 write_file，仅得到“未找到条目”，多两轮才改用 create_file，规格第 6 节补充该错误的指引并列入实施第一步。
+
+### Changed
+主仓库：docs/superpowers/specs/2026-10-18-nexara-exec-backend.md（第 2 节事实表、4.5 唤醒锁、第 6 节文件工具指引、第 7 节顺序、第 8 节待验证）。探针分支 poc/bd-exec：README 后台与挂载章节。
+
+### Validation
+心跳文件 hb-fgs.txt 50 行（含 done），时间戳间隔分析；logcat 自 23:36 起无探针 uid 冻结记录。Termux 中 ls/cat 确认 nexara-poc-n2t.txt 13 B 内容 nexara2termux；Termux 循环 cat 共享目录三文件内容 adb2shared/nexara2shared/termux2shared；adb ls 确认 Nexara 写入。清理后 Termux ls 无 nexara-poc*、共享目录不存在、Nexara 显示“尚未挂载外部文件夹”、dumpsys activity permissions 无 Nexara URI 授权；默认输入法 settings 读回 com.tencent.wetype，Gboard 软键盘与实体键盘回到拼音。测试会话已按用户同意删除，其余 4 个会话保留。
+
+### Next
+1）按规格 §7 第 1 步实施 ToolFailureSummary 与文件工具“未找到条目”指引；2）知识库“未能检索知识库”问题已另开任务（疑似未选默认嵌入模型，Provider 中有 BGE 嵌入与重排模型）；3）询问用户是否卸载真机上的探针应用（含 pip 安装的 six/dulwich、前台服务通知渠道与“完全允许后台行为”设置）。
+
+### Risks
+唤醒锁下的连续性与耗电未测；Play 渠道前台服务类型与 pip 政策未评审；dulwich push/pull 未测。
+
+### DIA
+已同步执行后端规格与探针 README；无代码与用户可见行为变更。
+
+### HLG
+标准 append，先 dry-run 再 apply。
