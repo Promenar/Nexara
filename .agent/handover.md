@@ -9273,3 +9273,34 @@ markdownAnnotator 逐字渐显可能不可行，回退为只匀速放出；Robol
 
 ### HLG
 标准 append，先 dry-run 再 apply。
+
+## 2026-10-18T09:16:44+08:00 · 方向决策：设置行两行高度 64dp；命令执行采用内置固定工具集（B）+ 保留 Termux/SSH（D），第二批合并后先做真机验证
+
+type: decision
+scope: ["Nexara", "native-ui", "settings-ui", "tool-runtime"]
+status: planned
+tags: ["decision", "settings", "termux", "builtin-shell", "poc"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 58367e225e054d9e10fed823c86294652eb5aa64b3a32e4f9273dc43bcd3fd5d
+
+### Summary
+用户确认：1）带副标题设置行改为标题与副标题间距 2dp、上下内边距 12dp、最小高 64dp，字号不变，在第二批合并后单独实施，同步规格 2.2 节 RowTwoLineHeight、SettingsLayoutTest 56dp 断言与设置截图基线。2）命令执行能力采用 B（APK 内打包固定工具集，以 jniLibs 方式随包执行）+ D（保留 Termux 与 SSH 作为完整 Linux 后端），不做仅靠系统 sh/toybox 的 A 方案。主控评估结论：现有工作区文件工具保留为文件读写主接口（版本哈希冲突拒绝、回收区、按路径审批、SAF 挂载与 Play 渠道唯一可用路径）；B 负责计算与脚本执行。B 与 D 的兼容以统一工具契约、统一虚拟路径（/ 为会话工作区、/mnt/<别名> 为挂载）、统一环境变量与结果格式实现；数据层面受 Android 应用沙箱限制，Nexara 私有工作区与 Termux 主目录互不可见，共享只能经共享存储真实路径（侧载）或 SAF 挂载 Termux 主目录（文件工具可见、命令行不可见）。
+
+### Changed
+无代码变更；仅记录决策。
+
+### Validation
+已核实：targetSdk 36；Android 10 起 target≥29 不能 execve 应用主目录文件，官方要求只执行 APK 内二进制；Play 政策禁止从 Play 外下载可执行代码；侧载清单含 MANAGE_EXTERNAL_STORAGE，Play 仅 SAF；工作区为会话私有物理目录 + Room 索引（哈希、回收区、版本快照）。未验证：jniLibs 可执行文件在 OPPO target 36 上能否运行、isolatedProcess 内能否执行、前台服务下子进程是否被系统结束、Python 包与 git 的可用性及包体增量。
+
+### Next
+第二批合并发布后：1）实施 64dp 设置行；2）B+D 真机验证（可执行性、隔离进程、后台存活、Python/pip/git、包体、命令后工作区索引对账性能、Termux SAF 挂载往返与共享目录三方可见），据结果写执行后端规格。
+
+### Risks
+B 的命令以 Nexara 身份运行，默认可读应用数据库与配置，必须验证隔离方案；命令行直接改写工作区会绕过版本哈希、回收区与 Room 索引，需执行期加工作区写锁并在命令结束后对账；共享存储为 FUSE，不支持符号链接与可执行位，不适合放 git 仓库或虚拟环境。
+
+### DIA
+无文档影响（决策记录；规格在实施时同步）。
+
+### HLG
+标准 append，先 dry-run 再 apply。
