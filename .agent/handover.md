@@ -9921,3 +9921,34 @@ ui/common/NexaraTabSwitcher.kt、ExecutionModeSelector.kt、UnifiedPromptEditor.
 
 ### HLG
 本记录。
+
+## 2026-10-19T13:24:42+08:00 · 真机验收：Release SSH 握手、免密安装校验与资源管理器搜索焦点修复（5eaef67a..7a1a9f84）
+
+type: delivery
+scope: ["Nexara", "native-ui", "ssh", "workspace", "release", "device-acceptance"]
+status: done
+tags: ["r8", "jsch", "ssh-agent", "install-key", "host-key-trust", "explorer", "ime", "device-acceptance"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 5f0c310695f7d40f47d6cba538469d448bb242cdf0784ca9eadfbe9e94729c51
+
+### Summary
+在真机 3B1F5QEARBRJQZ66（OPPO PKH110，ColorOS 16）上用签名侧载 Release 与 DeepSeek 真实会话完成验收，发现并修复三个缺陷，已推送到 origin/B-native-refactor 7a1a9f84：(1) Release 包全部 SSH 连接失败——R8 把 com.jcraft.jsch.Session 等同包类搬出原包，Session 反射创建包内私有的 DH25519/DHEC256/UserAuth* 时抛 IllegalAccessException；proguard 增加 -keep,allowshrinking class com.jcraft.jsch.* { *; }。(2) ssh_host_install_key 误报“用新密钥登录失败”并回滚——RoomSshHostStore/SshHostDao.save 在认证方式变化时按安全约定清除已信任指纹，切到 KEY 后验证连接被 PinnedSshHostKeys 拒绝（sshd DEBUG3 日志可见客户端 reject HostKey）；工具在切换与回滚后都重新固定本次刚核对的同一主机密钥（saveRepinned），存储层契约不变。(3) 资源管理器搜索框键盘弹出后立即收回——紧凑横屏判断按面板剩余高度（maxHeight<480dp），键盘压缩高度后布局在 Column/Row 间切换，搜索框被重建丢焦点；改按 LocalConfiguration.screenHeightDp 判断。
+
+### Changed
+native-ui/app/proguard-rules.pro（JSch 顶层包保留规则与说明）；新增 test/.../data/ssh/SshR8KeepRulesTest.kt（按 JSch.getConfig 收集固定算法表与辅助类并核对每个类都有 -keep 规则；规则文件不是 Gradle 任务输入，改规则后需 --rerun）；ui/chat/manager/skills/SshHostManagementSkills.kt（saveRepinned）；SshHostManagementSkillsTest 的 MemoryHosts 改为与真实存储同一契约（身份或认证方式变化清信任、trust 按旧值 CAS），成功与回滚用例断言指纹保留；ui/chat/ResourceExplorerSheet.kt（compactLandscape 改按窗口高度）；androidTest ResourceExplorerInteractionTest 新增 searchKeepsFocusWhenKeyboardShrinksAvailableHeight；CHANGELOG。
+
+### Validation
+修复前复现：SshHostManagementSkillsTest 2 例失败、ResourceExplorer 新设备用例在 emulator-5562 断言收缩后失焦失败；修复后 testSideloadDebugUnitTest 4013 例 0 失败 25 跳过，lintSideloadDebug、assembleSideloadDebug、assemblePlayDebug、validateSideloadDebugScreenshotTest、check-distribution-manifests 及其单测、test_verify_release_apk 与 test_nexara_git 全部通过；ResourceExplorerInteractionTest 在 emulator-5562 11/11 通过。R8 诊断：临时 minifiedTest 包把 JSch 日志写入外部文件，确认 kex curve25519-sha256 与混淆包内公钥登录 KEY LOGIN OK（临时诊断代码每次构建后立即还原，未提交，诊断包已卸载）。真机 Release（verify-release-apk 通过，最终 30,736,445 字节）端到端：指纹弹窗与 Termux sshd 一致→install_key 成功并切到密钥认证→ssh_exec whoami 返回 u0_a613，sshd 日志 Accepted publickey；计划条关闭为胶囊后可恢复，多步完成显示“全部步骤已完成”；create_directory/create_file 建 demo/sub/hello.txt，资源管理器面包屑下钻与搜索结果（含路径）正常，键盘保持弹出；python_sandbox 计算 2**100 正确；宽表格横滑正常。
+
+### Next
+可选：ssh_host_delete 真机用例尚未执行。其余观察项：SSH 密码输入框会触发卡巴斯基自动填充保存提示，可考虑对凭据输入关闭 autofill；Markdown 行内代码在无障碍文本中带 U+FFFD 占位（表格单元格已修，正文段落仍有）。
+
+### Risks
+JSch 保留规则只覆盖顶层包；jce/bc 子包仍逐类保留，升级 JSch 或调整算法表时须依赖 SshR8KeepRulesTest 并做一次 Release 真机握手。saveRepinned 在存储 CAS 失败（并发修改主机）时返回 HOST_CONFIGURATION_CHANGED，主机可能停留在未信任状态，需要用户重新核对指纹。Termux 端为诊断临时开启过 sshd DEBUG3，已恢复常规模式并删除日志；authorized_keys 只保留当前 Nexara 密钥。
+
+### DIA
+已同步 CHANGELOG（Release 版 SSH 与资源管理器搜索修复）；README 与架构文档行为描述不变，无需修改。
+
+### HLG
+标准 append，先 dry-run 再 apply。
