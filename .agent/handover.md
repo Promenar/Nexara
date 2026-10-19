@@ -10355,3 +10355,34 @@ Git 入口在状态返回前隐藏，慢设备上用户可能以为没有入口�
 
 ### HLG
 标准 append，先 dry-run 再 apply。
+
+## 2026-10-20T02:20:25+08:00 · 打包 Python 构建期预编译哈希 pyc：内置 git 与 Git 面板提速约十倍
+
+type: implementation
+scope: ["Nexara", "native-ui", "python", "git", "build", "ci"]
+status: verified
+tags: ["packaged-python", "pyc", "git-panel", "performance", "verify-release-apk"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: a7b61d863f6eebb1798769b9e188529acf942d30b35221eb5e0007a58ce6f8cd
+
+### Summary
+提交 033451c6。根因：libpystdlib.so 与 libpysite.so 只有 .py（官方包不带 pyc，PreparePackagedPython 还排除 __pycache__），且 PYTHONDONTWRITEBYTECODE=1，每次启动解释器重新编译导入模块。新增 native-ui/app/python/compile-bytecode.py（py_compile 生成 UNCHECKED_HASH pyc 于 .py 旁，co_filename 为 zip 内相对路径，编译失败的文件跳过），buildSrc PythonBytecode 运行宿主解释器；标准库 zip 只放 pyc（含 sitecustomize），site zip 保留 py 并附 pyc。python-android.properties 新增 pycMagic=3627，构建时与官方包 pycore_magic_number.h 核对，宿主 magic 不一致或缺少解释器时构建失败；-Pnexara.hostPython 指定解释器，-Pnexara.pythonBytecode=false 跳过。verify-release-apk.py 新增 verify_packaged_python_bytecode（每 ABI 两个 zip、关键模块哈希 pyc、magic 一致）。android-ci.yml 与 release.yml 中 6 个 Gradle 作业在 setup-java 后安装 Python 3.14。不采用首次运行写入数据目录缓存：命令工具可改写数据目录，免审批的 Git 检查会加载被篡改字节码。
+
+### Changed
+资源管理器目录工作区文件列表由用户启动的独立会话（资源管理器在目录工作区会话列出绑定目录）负责；Git 入口加载占位涉及 ResourceExplorerSheet/ViewModel，待该会话合入后再做。Release APK 34.7 MB（原 31.1 MB），安装后原生库多约 5.4 MB。
+
+### Validation
+真机 3B1F5QEARBRJQZ66（run-as deviceTest，含提交、修改与未跟踪文件的真实仓库）：--nexara-inspect status 2.06→0.21 秒，log 1.33→0.15 秒，git status 2.1→0.23 秒，导入 ssl/json/sqlite3/urllib 0.64→0.11 秒。单元测试 4224 项 0 失败；lint、assembleSideloadDebug、assemblePlayDebug、validateSideloadDebugScreenshotTest、分发清单检查及测试通过；Python 测试 91 项（新增 compile-bytecode 3 项与字节码校验 4 项）通过，python3.9 与 3.14 均通过。Gradle 失败路径实测：宿主 3.9 报 magic 3425≠3627，缺失解释器给出指引，pythonBytecode=false 产出无 pyc。emulator-5562：PackagedPython 3、GitInspector 2、BuiltinExec 11、PythonSandbox 5、ScriptRuntime 8 项通过。真机：GitInspector 2 项（2.18 秒）、PackagedPython 3 项、PythonSandbox 5 项通过（首轮因熄屏 Hans 冻结 407 秒超时，循环 SIGQUIT 解冻后重跑通过）。两个 Release APK verify-release-apk 通过并已覆盖安装到真机（sideload SHA-256 edbf33a2…36db）；旧 Release APK 被新检查正确拒绝。
+
+### Next
+真机解锁后补测应用内 Git 入口与面板的实际出现时间；背景会话合入资源管理器目录列表后，为 Git 入口加状态检查中的加载占位；GitHub Actions 首次带 setup-python 3.14 的运行需观察。
+
+### Risks
+构建依赖宿主 Python 3.14，未安装的本机或远端环境会构建失败（有明确指引与跳过开关）；标准库回溯不显示源码行；pyc 字节在宿主补丁版本不同时可能不完全一致（magic 相同即可加载）。侧载 pip 安装的用户包仍受 PYTHONDONTWRITEBYTECODE 影响每次重新编译，未处理。
+
+### DIA
+已同步 CHANGELOG（打包 Python 预编译字节码）、README（构建需要 python3.14）、docs/distribution-builds.md（预编译机制、宿主要求、发行校验、升级步骤与体积数字）。
+
+### HLG
+标准 append，先 dry-run 再 apply。
