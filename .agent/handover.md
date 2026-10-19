@@ -10169,3 +10169,34 @@ Nexara 项目文件夹不进备份且卸载即删除，未推送提交会丢失�
 
 ### HLG
 标准 append，先 dry-run 再 apply。
+
+## 2026-10-19T21:59:52+08:00 · 工作区计划补充：工具差异指示器与内置 git 性能路线（含浅克隆抓取范围问题实测）
+
+type: plan
+scope: ["Nexara", "native-ui", "git", "diff"]
+status: planned
+tags: ["workspace-binding", "diff-indicator", "git-performance", "dulwich"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 3d364758a98582638a53aab441c29739daba59516d93c6081224d94892adff64
+
+### Summary
+用户要求增加类似桌面 ADE 的工具执行差异指示器（文件 +N −M），并询问内置 git 大仓库性能的优化方向。计划新增：文件类工具执行卡显示每文件 +N −M 与汇总，执行时计算并随工具结果持久化，点击打开差异视图，纳入 P3。性能路线按投入递增：抓取范围对齐 git 语义（--depth 隐含 single-branch，支持 --single-branch/--no-single-branch/--no-tags，纳入 P2）→ 交叉编译 dulwich 可选 Rust 加速模块并实测 → 共享存储大仓库经 termux_exec 使用 Termux 原生 git → 最后评估随 APK 打包原生 git（lib*.so 满足 W^X，核算 50 MB 上限）。更正：dulwich 1.2.17 本身有 submodule/worktree/bisect/gc/lfs/sparse-checkout，是 nexara_git 白名单未开放；SSH 因缺 ssh 程序与 paramiko 原生依赖不可用。
+
+### Changed
+.agent/plans/20261019-workspace-binding-agent-rules.md（已验证事实、工具行为、差异指示器、内置 git 性能、分期、验收、风险）；.agent/registry.md 条目描述。无代码改动。
+
+### Validation
+Mac + Python 3.14 + 同一 dulwich 1.2.17 纯 Python wheel 经 nexara_git 实测：requests 完整 clone 5.2s（原生 3.1s）；Django 完整 clone 76.5s（原生 44.9s）；Django 7084 文件 status 1.3s（原生 0.2s）；2 万文件合成仓库 status 1.0s。Django --depth 1：nexara_git 43s/146MB，原生 5.5s/13MB；把 DEFAULT_FETCH_REFS 限为 HEAD+refs/heads/main 后 6.1s/13MB，git fsck 无错误。裸 dulwich.cli 会拉取 GitHub 4355 个 refs/pull/*，nexara_git 已限制。确认打包的是 py3-none-any wheel，无 _objects/_pack/_diff_tree 扩展。手机耗时未测。
+
+### Next
+从 P1（迁移 21→22 与备份 payload v5）开始实施；P2 中包含抓取范围修正；真机性能基准纳入验收。
+
+### Risks
+手机 CPU 上纯 Python 差距可能更大；原生 git 打包牵涉 APK 体积、W^X、证书与凭据代理兼容；Rust 扩展交叉编译收益未知。
+
+### DIA
+已同步计划文件与 registry；无代码与用户可见行为变化。
+
+### HLG
+标准 append，先 dry-run 再 apply。
