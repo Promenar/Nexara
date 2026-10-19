@@ -9891,3 +9891,33 @@ ssh_host_install_key 仅在 FakeRuntime 单测与代码审阅层面验证，尚�
 
 ### HLG
 标准 append，先 dry-run 再 apply。
+
+## 2026-10-19T11:28:51+08:00 · 胶囊页签统一 48dp 触控高度
+
+type: fix
+scope: ["native-ui"]
+status: done
+tags: ["accessibility", "touch-target", "compose", "screenshot"]
+continuity: none
+record-fingerprint: 68e87aef1c22c125293546aa14b71469f2e11ec53a57e3994f994b33551c918a
+
+### Summary
+NexaraTabSwitcher / NexaraCapsuleTabRow 删除 height 参数，容器固定 56dp；水平 4dp 内边距保留，上下 4dp 内缩只作用于滑动底座，页签触控区占满 56dp。会话设置弹层、RAG 详情、技能页、Prompt 编辑器、执行模式选择器原先传入 40–46dp，页签只有 32–38dp；资源管理器的 MinimumTouchTarget + 8.dp 特例删除。
+
+### Changed
+ui/common/NexaraTabSwitcher.kt、ExecutionModeSelector.kt、UnifiedPromptEditor.kt；ui/chat/ResourceExplorerSheet.kt、SessionSettingsSheet.kt、components/RagDetailsSheet.kt；ui/settings/SkillsScreen.kt；截图测试 SessionSettingsBatch1ScreenshotTest；新增设备测试 NexaraCapsuleTabRowTouchTargetTest（手机 2.0x 字号、横屏）；14 张截图基线；CHANGELOG 与会话设置重设计规格 4.5 节。
+
+### Validation
+修复前在 emulator-5564 上 NexaraCapsuleTabRowTouchTargetTest 与 ExecutionModeSelectorSemanticsTest 4 项全部失败（实测 39.6–40.9dp）。修复后 emulator-5562 与 emulator-5564 均通过 NexaraCapsuleTabRowTouchTargetTest、ExecutionModeSelectorSemanticsTest、ResourceExplorerInteractionTest、UnifiedPromptEditorE2ETest（21 项）以及 AccessibilitySmokeTest、RagDetailsAccessibilityTest（20 项）。testSideloadDebugUnitTest、lintSideloadDebug、updateSideloadDebugScreenshotTest、validateSideloadDebugScreenshotTest、assemblePlayDebug 与 check-distribution-manifests.py 均通过；14 张变化基线逐张比对，只有页签变高与下方内容下移。
+
+### Next
+无。
+
+### Risks
+4dp 内边距在 2.625x 密度下取整为 11px；若改回整体 padding，页签会再次低于 48dp（约 47.6dp）。SkillsScreen 页签没有截图基线，只靠编译与组件测试覆盖。
+
+### DIA
+已同步 CHANGELOG.md 与 docs/superpowers/specs/2026-10-17-nexara-settings-chat-redesign.md；README 与 registry 无影响。
+
+### HLG
+本记录。

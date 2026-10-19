@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-10-19T11:05:53+08:00
+> generated_at: 2026-10-19T11:28:51+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -28,6 +28,7 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-10-19T11:28:51+08:00 | iso | done | none | ["native-ui"] | ["accessibility", "touch-target", "compose", "screenshot"] | 胶囊页签统一 48dp 触控高度 | `.agent/handover.md` · `2026-10-19T11:28:51+08:00` · `fp:68e87aef1c` |
 | 2026-10-19T11:05:53+08:00 | iso | in_progress | resume | ["Nexara", "native-ui", "chat-ui", "markdown", "workspace", "ssh", "tool-runtime"] | ["python-sandbox", "web-search", "task-plan", "table", "explorer", "ssh-agent", "approval"] | Python 沙箱、搜索合并、计划条、宽表格、资源管理器下钻与 Agent 管理 SSH 主机（ce36965d..3b42e954） | `.agent/handover.md` · `2026-10-19T11:05:53+08:00` · `fp:f0691a1cc6` |
 | 2026-10-19T05:22:34+08:00 | iso | completed | resume | ["Nexara", "native-ui", "exec-backend", "tool-runtime"] | ["exec", "git", "dulwich", "pip", "device-acceptance"] | 内置 git/pip 真机端到端验收与三处修复（df3827fb） | `.agent/handover.md` · `2026-10-19T05:22:34+08:00` · `fp:7098a8fc67` |
 | 2026-10-19T04:21:32+08:00 | iso | completed | resume | ["Nexara", "native-ui", "exec-backend", "build-logic", "tool-runtime"] | ["exec", "git", "dulwich", "pip", "python", "approval"] | 审批卡去重（fd9aa356）与内置 git（dulwich）、侧载 pip（执行后端第 6 步，f9dcff60） | `.agent/handover.md` · `2026-10-19T04:21:32+08:00` · `fp:dbe86dc177` |
