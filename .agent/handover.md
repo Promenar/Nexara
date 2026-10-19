@@ -10045,3 +10045,34 @@ testSideloadDebugUnitTest、lintSideloadDebug、assembleSideloadDebug、assemble
 
 ### HLG
 标准 append，先 dry-run 再 apply。
+
+## 2026-10-19T19:53:43+08:00 · 思考回传按协议族通用化、Anthropic 思考签名回传、发送即清空输入框（d22b8e3e..f0080a83）
+
+type: delivery
+scope: ["Nexara", "native-ui", "chat", "generation", "protocol"]
+status: done
+tags: ["reasoning-replay", "anthropic-thinking", "openai-compat", "composer-draft", "claude-5"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: c425ebb0e707b5b7a5f6d7913b5c86d3b2d8c38eced30c4b00ad247554b192d1
+
+### Summary
+用户指出思考回传不应以 DeepSeek 为默认，应以 OpenAI Chat Completions 兼容族为准，并要求补齐 Anthropic 思考签名回传、修复长文本或附件发送后输入框滞留数秒。(1) 新增 data/remote/protocol/ReasoningReplay.kt：ReasoningReplay（ChatField 字段名 / AnthropicBlocks 思考块，currentTurnOnly）、ReasoningReplayEnvelope{v,source,replay} 与 ReasoningReplayCodec（encodeDefaults、kind 判别、字段白名单 reasoning_content/reasoning、旧原始签名与损坏数据解码为 null），信封存于 messages.thought_signature 列；StreamChunk.ReasoningState → GenerationChunk.ReasoningState → GenerationSnapshot.reasoningReplay 持久化，ChatGenerationContentStrategy 以 replaySource（route.modelId）门控，仅同一模型回传，AnthropicBlocks 仅当前用户回合内回传。(2) OpenAIProtocol 与 GenericOpenAICompatProtocol 用 ReasoningFieldTracker 记录流中思考字段，完成前发出状态，请求按保存字段回传；无保存字段时仅 DeepSeek/Kimi 沿用 reasoning_content。(3) AnthropicProtocol 收集 thinking（signature_delta）与 redacted_thinking 块，回传时前置于助手内容；400 且错误含 thinking+signature/block 时去掉全部思考块重发一次。Claude 5 与 4.7+ 不发送 temperature/top_p/top_k；Claude 5 固定 thinking adaptive + display summarized，4.6–4.9 开启思考时 adaptive，更早模型 enabled + budget_tokens。(4) ChatViewModel：发送时 takeDraftForSending 立即清空输入、文档、图片并保留 SubmittedDraft 副本，回滚（用户消息不在 store）时 restoreSubmittedDraft 只填回空位，ChatRoute 经 restoredDraftImages 恢复图片；接受时 consumeAcceptedDraft 对已清空路径只把新输入落为会话草稿，不清掉生成期间新输入。四大协议现状：Chat Completions、Responses、Anthropic 已有；Gemini 只有 Vertex，缺 Gemini API（API Key）协议。
+
+### Changed
+主代码：ReasoningReplay.kt（新增）、LlmProtocol.kt、OpenAIProtocol.kt、GenericOpenAICompatProtocol.kt、AnthropicProtocol.kt、RoutedToolResultSummarizer.kt、GenerationModels.kt、ChatGenerationRunner.kt、DefaultChatGenerationRuntime.kt、ChatGenerationContentStrategy.kt、ChatViewModel.kt、ChatRoute.kt。测试：新增 AnthropicThinkingReplayTest、ReasoningReplayCodecTest；重写 GenericOpenAICompatReasoningReplayTest；更新 ChatGenerationContentStrategyTest、ChatGenerationRunnerRetryTest、DefaultChatGenerationRuntimeTest（mock 签名）、ChatViewModelTest（发送即清空、回滚填回、生成期间新输入保留）。文档：CHANGELOG、README。
+
+### Validation
+testSideloadDebugUnitTest、lintSideloadDebug、assembleSideloadDebug、assemblePlayDebug、validateSideloadDebugScreenshotTest、check-distribution-manifests 及其单测、test_verify_release_apk 与 test_nexara_git 全部通过。编码单测发现并修复信封未写入版本号（encodeDefaults）。签名 Release 通过 verify-release-apk 并安装到真机：DeepSeek V4 Flash 会话发送约 3000 字长文本，点击后首帧输入框已清空、发送键变停止键、消息已入列；两个并行 shell_exec 工具调用批准后续轮正常回答；下一回合再次调用工具并回答 round3，历史信封回传无 400。输入法已切回 WeType。
+
+### Next
+可选：新增 Gemini API（API Key）协议；Vertex/Gemini thought signature 回传后开放工具调用；Responses 的 reasoning 项与摘要；Anthropic stop_reason max_tokens/refusal/pause_turn 处理（开启思考且 max_tokens 默认 4096 时可能触发）。
+
+### Risks
+Anthropic 无真实密钥，仅 MockEngine 测试覆盖。前缀校验（动态系统提示、压缩）仅靠签名被拒后去掉思考块重发兜底。图片附件发送路径未在真机选图验证（系统相册选择器），仅单测覆盖清空与恢复逻辑。
+
+### DIA
+已同步 CHANGELOG（思考内容回传通用化、Anthropic 新一代模型请求参数、发送后输入框立即清空）与 README（会话阅读与输入）。
+
+### HLG
+标准 append，先 dry-run 再 apply。
