@@ -10293,3 +10293,34 @@ release 包不可调试，真机未直接读取 user_version，以启动无异�
 
 ### HLG
 标准 append，先 dry-run 再 apply。
+
+## 2026-10-19T23:50:26+08:00 · P2 完成：自选工作区目录后端与命令执行；P3 文件差异视图组件完成
+
+type: implementation
+scope: ["Nexara", "native-ui", "workspace", "exec", "git", "ui"]
+status: verified
+tags: ["workspace-binding", "directory-workspace", "nexara-git", "file-diff-view", "p2", "p3"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 8a28a79c7507cc03ef9591e170c132c62e96185a94383cdce44b23a1c01e06c3
+
+### Summary
+P2 提交 e21abe65：RealPathExternalFolderBackend 移入 main；新增 data/workspace/SessionWorkspaceResolver（Private/Directory/Unavailable，项目根 filesDir/projects 规范化后再以 NOFOLLOW 校验，共享根经 AndroidSharedWorkspaceAccess 仅侧载可用）。自选工作区作为别名为空、id ws_<id> 的合成根挂载：ExternalFolderManager、MountedWorkspaceSkill、ScriptWorkspaceGateway、SessionToolTargetResolver 在 rooted 模式下以 / 指向该目录，私有 UUID 不可达，/mnt 挂载保留；审批目标 mountIds 记录 ""→ws_<id>，切换工作区需重新审批。BuiltinExecService 在目录模式直接运行（无锁、无对账、workspace_kind + workspace_tracking:none），Unavailable 返回 EXEC_WORKSPACE_UNAVAILABLE；环境变量 NEXARA_WORKSPACE_KIND。系统提示词新增 Current Workspace 段。新建会话复制 Agent defaultWorkspaceId，partial update 可清空。nexara_git（子 Agent 工作树产出，主控复核后合入）：depth 隐含单分支、标签跟随、--single-branch/--no-single-branch/--no-tags、单分支克隆收窄 refspec、fetch 默认远端、私有工作区 clone 提示、共享存储 core.* 配置在首次检出前写入。P3 提交 e6f7f48d：ui/common/diff 下 FileDiffModel/FileDiffSegments/FileDiffView（子 Agent 产出，主控复核代码与截图后合入）。
+
+### Changed
+排障：设备上 filesDir 位于 /data/user/0 符号链接下，目录后端逐级拒绝符号链接导致项目工作区 INVALID_PATH，改为规范化 projectsRoot 并加 JVM 回归测试；dulwich.cli 不支持 status --short、init/commit -q。设备门禁脚本新增 directory-workspace 阶段，迁移阶段名改为 database-migration-18-22。
+
+### Validation
+单元测试 4084 项 0 失败（25 跳过）；lint、assembleSideloadDebug、assemblePlayDebug、validateSideloadDebugScreenshotTest、分发清单检查与 Python 测试通过（P3 合入后重跑 lint/Play/截图/30 项差异模型测试通过）。emulator-5562：DirectoryWorkspaceDeviceTest 3 项、BuiltinExecDeviceTest 11 项、RealPathExternalFolderDeviceTest 4 项通过。nexara_git 用 Homebrew python3.14 + NEXARA_DULWICH_PATH 41 项通过；Mac 上对 GitHub（协议 v2）实测 --depth 1 单分支克隆、refspec 收窄、后续 fetch、-b <标签> 跟随与 --no-single-branch 正确。
+
+### Next
+P3 余项：执行差异指示器与文件修改审批卡/执行结果接入；P4 可视化工作区选择器与知识库工作区分组、Git 变更面板；真机 sideload Release 共享存储工作区端到端验收（需选择器 UI 后进行）。
+
+### Risks
+尚无界面设置会话工作区，P2 行为仅经测试路径覆盖；共享存储大小写不敏感的重复登记未由唯一索引去重；nexara_git 的 tag 子命令仍不支持无参数列出；Django 级大仓库耗时未复测；真机未做 P2 验收。
+
+### DIA
+已同步 CHANGELOG（两段 Unreleased 条目）、docs/distribution-builds.md、docs/superpowers/specs/2026-10-18-nexara-exec-backend.md 与计划文件（P2 完成、P3 组件完成）；README 待 P4 界面上线后更新用户入口说明。
+
+### HLG
+标准 append，先 dry-run 再 apply。
