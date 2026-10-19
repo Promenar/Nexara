@@ -9952,3 +9952,34 @@ JSch 保留规则只覆盖顶层包；jce/bc 子包仍逐类保留，升级 JSch
 
 ### HLG
 标准 append，先 dry-run 再 apply。
+
+## 2026-10-19T13:42:49+08:00 · 行内代码内边距占位不再以 U+FFFD 进入无障碍文本（0839bcc0..6e86081c）
+
+type: delivery
+scope: ["Nexara", "native-ui", "markdown", "accessibility"]
+status: done
+tags: ["markdown", "inline-code", "accessibility", "talkback", "table"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 979b4bc6b12f3f8ae116b69e1585fe553b533785f29a1cc4591fbbe537175018
+
+### Summary
+修复真机验收时发现的问题：正文行内代码在无障碍文本中显示为“�termux�”。根因是 MarkdownText 的阅读注解器在 CODE_SPAN 两侧调用 appendInlineContent(INLINE_CODE_PADDING_ID) 时使用默认替代文本 U+FFFD，该字符随 AnnotatedString 进入 Text 语义。现改为 INLINE_CODE_PADDING_ALTERNATE_TEXT（U+00A0 不换行空格，断行类 GL，与 U+FFFD 一样不在占位与代码之间产生断行机会）。表格单元格的 withoutInlineContentPlaceholders 改为按 Compose 内联内容注解标签剔除占位，不再删除全部 U+FFFD。已推送到 origin/B-native-refactor 6e86081c。
+
+### Changed
+ui/common/MarkdownText.kt（新增常量并用于两处 appendInlineContent）；ui/renderer/TableWidget.kt（注解剔除，标签 androidx.compose.foundation.text.inlineContent；注意 buildAnnotatedString 内部 length 会解析为 Builder 的长度，已显式捕获 source）；TableWidgetTest 改用真实 appendInlineContent 构造并断言原文 U+FFFD 保留；新增 androidTest ui/common/MarkdownInlineCodeSemanticsTest；CHANGELOG。
+
+### Validation
+新设备测试在 emulator-5562 修复前失败（expected not to contain U+FFFD）、修复后通过，MarkdownNestedCodeLayoutTest 2/2 通过；testSideloadDebugUnitTest、lintSideloadDebug、assembleSideloadDebug、assemblePlayDebug、validateSideloadDebugScreenshotTest（基线零差异）、check-distribution-manifests 及其单测、test_verify_release_apk 与 test_nexara_git 全部通过。真机 3B1F5QEARBRJQZ66 安装签名 Release（verify-release-apk 通过，30,736,529 字节）后 uiautomator 全树 U+FFFD 为 0，行内代码芯片与表格单元格外观与修复前一致。
+
+### Next
+剩余观察项：SSH 密码输入框触发第三方自动填充保存提示，可考虑对凭据输入关闭 autofill；ssh_host_delete 真机用例未执行。
+
+### Risks
+无障碍文本中行内代码两侧多出不换行空格，读屏视为空白；消息正文不可选中复制，复制按钮使用原始 Markdown，不受影响。若将来正文改为可选中，选中复制会带出 U+00A0。
+
+### DIA
+已同步 CHANGELOG（行内代码无障碍文本）。
+
+### HLG
+标准 append，先 dry-run 再 apply。
