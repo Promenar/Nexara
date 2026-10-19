@@ -10324,3 +10324,33 @@ P3 余项：执行差异指示器与文件修改审批卡/执行结果接入；P
 
 ### HLG
 标准 append，先 dry-run 再 apply。
+
+## 2026-10-20T01:33:18+08:00 · 修复同批次工具调用执行步骤与引用丢失
+
+type: bugfix
+scope: ["Nexara", "native-ui", "chat", "tool-executor"]
+status: verified
+tags: ["tool-executor", "message-manager", "execution-steps", "lost-update", "regression-test"]
+continuity: none
+record-fingerprint: 24b54b88bc6d10433a7cc346e5208299c6e1b8d06b8c8df0e9a448faa193e485
+
+### Summary
+排查 ToolExecutor 同批次多工具调用时成功调用的 tool_call/tool_result 步骤丢失。已验证事实：executeToolsAdmitted 对同批次调用是串行 for 循环，并非并行；根因是 MessageManager.updateMessageContent 先写入 100ms 节流缓冲，而 ToolExecutor.appendStep 从 store 读取已提交（未含缓冲）的步骤再整体写回，后续调用用旧列表覆盖前序调用的步骤。同一模式也存在于引用合并与 DefaultChatGenerationRuntime.normalize 合成步骤追加。
+
+### Changed
+MessageManager 新增 updateFromLatest(sessionId, messageId, transform)：在 stateLock 内以“store 已提交消息 + inFlight 缓冲 + 同代 pending 缓冲”构造最新视图，计算增量并沿用最新正文；updateMessageContent 改为共用 enqueueUpdate，热路径不构造最新视图。ToolExecutor.appendStep、引用合并与 normalize 合成步骤改走 updateFromLatest。ToolExecutorTest 新增同批次三调用步骤保存与引用合并回归测试，原拆成两次调用的文件改动摘要测试恢复为同一批次；MessageManagerTest 新增 pending 与 inFlight 两种最新视图测试。
+
+### Validation
+修复前新增/恢复的 3 项 ToolExecutorTest 在旧 ToolExecutor 上失败（步骤数 0、引用缺失 b.example.com/two、找不到 ok 的 tool_result），修复后通过。native-ui 下 ./gradlew :app:testSideloadDebugUnitTest :app:lintSideloadDebug 成功：4228 项单测 0 失败 25 跳过，lint 通过。未做设备端验证。
+
+### Next
+可选：ApprovalManager 直接写 store 的 intervention 决策步骤仍可能被随后刷新的 pending executionSteps 覆盖；clearMessageRagState 异步窗口内 updateFromLatest 会读到不含被移走缓冲的旧视图（与修复前行为一致），可另行评估。
+
+### Risks
+updateFromLatest 的 transform 在 stateLock 内执行，调用方只能做纯计算；真实设备上节流窗口与流式时序未做端到端验证。
+
+### DIA
+已同步 CHANGELOG（Unreleased 新增修复条目）；README、架构与部署文档无影响。
+
+### HLG
+标准 append，先 dry-run 再 apply。

@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-10-19T23:50:26+08:00
+> generated_at: 2026-10-20T01:33:18+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -28,6 +28,7 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-10-20T01:33:18+08:00 | iso | verified | none | ["Nexara", "native-ui", "chat", "tool-executor"] | ["tool-executor", "message-manager", "execution-steps", "lost-update", "regression-test"] | 修复同批次工具调用执行步骤与引用丢失 | `.agent/handover.md` · `2026-10-20T01:33:18+08:00` · `fp:24b54b88bc` |
 | 2026-10-19T23:50:26+08:00 | iso | verified | resume | ["Nexara", "native-ui", "workspace", "exec", "git", "ui"] | ["workspace-binding", "directory-workspace", "nexara-git", "file-diff-view", "p2", "p3"] | P2 完成：自选工作区目录后端与命令执行；P3 文件差异视图组件完成 | `.agent/handover.md` · `2026-10-19T23:50:26+08:00` · `fp:8a28a79c75` |
 | 2026-10-19T23:03:09+08:00 | iso | verified | resume | ["Nexara", "native-ui", "database", "backup"] | ["room-v22", "migration-21-22", "backup-v5", "workspace-binding", "agent-rules"] | P1 完成：数据库 v22（自选工作区、会话/Agent 绑定、Agent 用户规则与历史）与备份载荷 v5 | `.agent/handover.md` · `2026-10-19T23:03:09+08:00` · `fp:14ea7580c2` |
 | 2026-10-19T22:25:18+08:00 | iso | verified | resume | ["Nexara", "native-ui", "tailscale"] | ["tsnet", "tailscale", "prototype", "vpn-coexistence"] | 内置 Tailscale（tsnet）原型验证通过：模拟器与真机（其它 VPN 占用下）登录、节点发现、SOCKS5、MagicDNS | `.agent/handover.md` · `2026-10-19T22:25:18+08:00` · `fp:c6299f3b8a` |
