@@ -10107,3 +10107,34 @@ testSideloadDebugUnitTest（4055 项）、lintSideloadDebug、assembleSideloadDe
 
 ### HLG
 标准 append，先 dry-run 再 apply。
+
+## 2026-10-19T21:34:45+08:00 · 自选工作区、Agent 用户规则、项目规则与 Git 凭据：方案定稿与实施计划（f6a751e4）
+
+type: plan
+scope: ["Nexara", "native-ui", "workspace", "agent", "git"]
+status: planned
+tags: ["workspace-binding", "agent-rules", "agents-md", "git-credentials", "shared-storage"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: d91027ebc38be36ab2fa6336d8c56a1b20db2a0916090ecae89617c260ed509b
+
+### Summary
+用户决定：工作区优先放共享目录；允许多会话同时在同一工作区运行且不加锁，冲突交给 git 与用户/Agent 处理；规则修改由 Agent 提出、用户批准后 Agent 直接写入；工作区借鉴桌面 ADE，可视化为 Agent 或会话手动设置，未设置时用默认会话私有工作区，并评估与知识库“全部文件”的兼顾；Agent 用户规则、AGENTS.md 项目规则与首次信任确认全部同意。已写成 .agent/plans/20261019-workspace-binding-agent-rules.md 并登记 registry：三类工作区（会话私有 Room 跟踪；Nexara 项目文件夹 filesDir/projects 两渠道可用；共享存储目录仅 sideload），自选工作区不进 Room，经下沉到 main 的目录后端读写；新会话继承 Agent 默认工作区，之后各自可改；单次迁移 21→22（workspaces 表、sessions.workspace_id、agents.default_workspace_id、agents.user_rules、agent_rule_revisions）；agent_rules_read/agent_rules_update（expected_hash、逐次审批、差异卡、20 版历史）；AGENTS.md 优先、否则 CLAUDE.md，32 KiB，按根路径+SHA-256 记录信任；Git 凭据经 127.0.0.1 凭据注入代理（nonce、仅智能协议路径、仅已配置主机），令牌只在 Kotlin 内存。分期 P1 数据层 → P2 目录后端与执行 → P3 选择器与界面 → P4 用户规则 → P5 项目规则 → P6 Git 凭据。
+
+### Changed
+新增 .agent/plans/20261019-workspace-binding-agent-rules.md；.agent/registry.md 登记。无代码改动。
+
+### Validation
+模拟器 API 31 与 API 35 实测共享存储：大小写不敏感、符号链接失败、chmod 无效且不可执行。核对 dulwich 1.2.17 源码：index.get_symlink_fn 读取 core.symlinks，porcelain 读取 core.filemode。抽查 WorkspaceRepository.kt 独占校验与 RoomSessionDeletionTargetResolver.kt 父目录校验。Play “所有文件访问”政策依据 Google Play 帮助中心 10467955。
+
+### Next
+等待用户确认计划后从 P1 开始实施。
+
+### Risks
+共享存储 FUSE 性能与符号链接/大小写/可执行位限制；自选工作区不进 Room 导致版本历史与向量索引能力弱于私有工作区；数据库迁移需同步多处写死的版本与 identity hash。
+
+### DIA
+已同步 registry（登记新计划）；无代码与用户可见行为变化。
+
+### HLG
+标准 append，先 dry-run 再 apply。
