@@ -9860,3 +9860,34 @@ dulwich 无单分支克隆，--depth 仍取全部分支与标签头；log 不支
 
 ### HLG
 标准 append，先 dry-run 再 apply。
+
+## 2026-10-19T11:05:53+08:00 · Python 沙箱、搜索合并、计划条、宽表格、资源管理器下钻与 Agent 管理 SSH 主机（ce36965d..3b42e954）
+
+type: delivery
+scope: ["Nexara", "native-ui", "chat-ui", "markdown", "workspace", "ssh", "tool-runtime"]
+status: in_progress
+tags: ["python-sandbox", "web-search", "task-plan", "table", "explorer", "ssh-agent", "approval"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: f0691a1cc6ebbdbe8199f3d10cbe38df2dd9832a768a100d1a9d99e6ee0cc709
+
+### Summary
+完成执行后端第 5 步与五项用户反馈，已推送到 origin/B-native-refactor 3b42e954：python_sandbox 在 exec_js 同一隔离 UID 进程运行打包 Python，网络策略与 exec_js 一致（ce36965d）；联网搜索只保留 web_search 并使用设置中的默认引擎（37347852）；表格按内容测量列宽 56–280dp、超宽横向滚动、单元格保留行内格式并去掉行内代码前的 U+FFFD 占位（94887cb9）；SSH 主机编辑底部面板关闭拖拽手势消除滚动交接抖动，新增默认关闭且不随备份迁移的“允许 Agent 管理 SSH 主机”开关与 ssh_host_list/save/delete/install_key（df53b9e9）；任务计划移到输入框上方可关闭计划条，资源管理器复用知识库面包屑改为目录下钻并支持平铺搜索（5cf4703f）；文档（3b42e954）。真机验收尚未进行，按用户指示等待用户连接真机后再做。
+
+### Changed
+SSH Agent 管理：data/ssh/SshUserPrompts.kt（开关、密码/指纹提示 broker，5 分钟超时按取消）、ui/chat/manager/skills/SshHostManagementSkills.kt、ui/ssh/SshUserPromptHost.kt（挂在 MainActivity）、NexaraApplication 注册；BuiltinToolPreferences 按开关隐藏四个工具；ToolArgumentApprovalRules 让保存、删除、安装公钥在含 AUTO 的全部模式逐次审批；ToolExecutionTarget 的 ssh_host 目标先于通用 PROCESS 分支匹配，并标记 oneShot（不可始终允许）——修复前 install_key 在生产中没有审批目标；BackupPreferencePolicy 拒绝 ssh_agent_host_management。计划条：TaskFloatingPanel 重写、TaskPanelState.visibilitySignature、ChatScreen composer 内挂载；× 按钮显式 48dp。表格：TableWidget TableMeasurer/rememberTableMeasurer、MarkdownText。资源管理器：ui/common/FolderBreadcrumbs.kt（知识库共用）、ui/chat/components/WorkspaceFolderBrowser.kt；页签容器加高到 48dp+8dp，修复 2.0x 字体下页签只有 40dp 的既有缺陷。
+
+### Validation
+testSideloadDebugUnitTest 4012 例 0 失败 25 跳过（新增 SshHostManagementSkillsTest 11、SshAgentPreferencesTest 4、SshEditorSheetContractTest、WorkspaceFolderBrowserTest 4、TableWidget 与 TaskPanelState 用例）；lintSideloadDebug、assembleSideloadDebug、assemblePlayDebug、validateSideloadDebugScreenshotTest、check-distribution-manifests 与其单测、test_verify_release_apk 与 test_nexara_git 通过；截图基线重生成并逐张查看宽表格、计划条、SSH 页 Agent 区段（中英与 1.3x 字体）、文档预览和横屏资源管理器。设备测试 AccessibilitySmokeTest、ChatScreenContentStateTest、ResourceExplorerInteractionTest、RagSettingsAccessibilityTest、PythonSandboxDeviceTest 在 emulator-5562 与 emulator-5564 均 44/44 通过。签名侧载 Release 30,675,841 字节，verify-release-apk 通过（证书与登记一致），libpysite.so 含 nexara_sandbox。SSH 面板抖动修复前后用 emulator-5564 录屏逐帧量化（修复后 188 帧顶部固定）。
+
+### Next
+等待用户连接真机 3B1F5QEARBRJQZ66 后：升级安装签名侧载 Release；用 DeepSeek 真实会话验收计划条关闭/恢复、宽表格横滑、资源管理器下钻与搜索、SSH 添加面板不抖动；开启 Agent 管理开关后让模型新增/修改/删除测试主机并对可达 SSH 服务器执行 ssh_host_install_key（需用户提供可用的测试服务器及在弹窗中亲自输入密码）；python_sandbox 真机用例；测试后恢复输入法 com.tencent.wetype/.plugin.hld.WxHldService。其它胶囊页签同样只有 40dp 触控高度，可另开任务统一修复。
+
+### Risks
+ssh_host_install_key 仅在 FakeRuntime 单测与代码审阅层面验证，尚无真实 SSH 服务器端到端证据；远端 shell 非 POSIX（如 Windows OpenSSH）时安装命令会失败并返回 SSH_KEY_INSTALL_FAILED。计划条隐藏状态按会话 rememberSaveable 保存，进程被杀后重新显示。ScriptRuntimeDeviceTest 在 API 35 存在既有偶发失败，本轮未运行。
+
+### DIA
+已同步 README（表格、计划条、SSH Agent 管理、资源管理器、SSH 使用）、CHANGELOG（五个新小节）与 design-qa 计划条验收记录。
+
+### HLG
+标准 append，先 dry-run 再 apply。
