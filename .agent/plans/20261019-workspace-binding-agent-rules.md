@@ -31,7 +31,7 @@
 - 内置 git 的性能（Mac、Python 3.14、同一 dulwich 1.2.17 纯 Python wheel 实测）：requests 仓库完整 clone 5.2 秒（原生 git 3.1 秒）；Django 完整 clone 76.5 秒（原生 44.9 秒，网络占主要部分）；Django 工作树 7 084 个文件的 status 1.3 秒（原生 0.2 秒）；2 万文件合成仓库的 status 1.0 秒。Django `--depth 1` clone 用时 43 秒、`.git` 146 MB，原生 git 5.5 秒、13 MB：`nexara_git` 只把引用限制到分支与标签，浅克隆仍会拉取全部标签，每个标签带一份完整快照；只取默认分支时降为 6.1 秒、13 MB，`git fsck` 无错误。手机上的耗时尚未测量。
 - 打包的是 dulwich 纯 Python wheel，不含其可选的 Rust 加速模块（`_objects`、`_pack`、`_diff_tree`）。dulwich 本身提供 submodule、worktree、bisect、gc、maintenance、lfs、sparse-checkout 等命令，`nexara_git` 的白名单未开放；dulwich 默认的 SSH 传输要调用 ssh 程序（App 内没有），但 `dulwich.client.get_ssh_vendor` 可替换为自定义 vendor。
 - SSH 已由 JSch 实现（`data/ssh/SshRuntime.kt`）：主机配置含用户名、私钥凭据与固定的主机密钥指纹（`PinnedSshHostKeys`，`StrictHostKeyChecking=yes`），通过 `ChannelExec` 执行命令。dulwich 的 SSH 传输只需一个提供 `run_command` 的 SSH vendor，可以由 Kotlin 侧的 JSch 通道承担。
-- tsnet 原型（tailscale.com v1.104.1，Go 1.27.1，`GOOS=android CGO_ENABLED=0` 可执行文件，空导入 `tailscale.com/feature/androidbin`）：arm64 产物 21.7 MB，压缩 7.7 MB；Nexara 原生库为压缩打包（`useLegacyPackaging = true`），APK 增量约 7.7 MB，当前 sideload Release 30.8 MB 加上后约 38.5 MB，低于 50 MB 上限。emulator-5562（API 31）App 沙箱内以子进程运行：cgo 构建因 Android 11+ 禁止 App 使用 netlink 而报 `netlinkrib: permission denied`；非 cgo 构建经 androidbin 的合成网卡与 dnsproxyd 解析正常启动，经 bootstrap DNS 连上控制服务器并给出登录链接，UDP 缓冲区只有告警。登录后的节点发现、SOCKS5 访问、MagicDNS 与真机（ColorOS 16，另有 VPN 应用运行）尚待验证。
+- tsnet 原型（tailscale.com v1.104.1，Go 1.27.1，`GOOS=android CGO_ENABLED=0` 可执行文件，空导入 `tailscale.com/feature/androidbin`）：arm64 产物 21.7 MB，压缩 7.7 MB；Nexara 原生库为压缩打包（`useLegacyPackaging = true`），APK 增量约 7.7 MB，当前 sideload Release 30.8 MB 加上后约 38.5 MB，低于 50 MB 上限。emulator-5562（API 31）App 沙箱内以子进程运行：cgo 构建因 Android 11+ 禁止 App 使用 netlink 而报 `netlinkrib: permission denied`；非 cgo 构建经 androidbin 的合成网卡与 dnsproxyd 解析正常启动，经 bootstrap DNS 连上控制服务器并给出登录链接，UDP 缓冲区只有告警。登录后（浏览器授权，临时节点）：emulator-5562 发现 8 个节点，局域网直连约 7 ms、公网直连约 320 ms、其余经 DERP 95–350 ms；经 `tsnet.Loopback()` 的 SOCKS5 可连目标开放端口；MagicDNS 全名、短名与 IP 访问 fnOS 5666 端口均返回 HTTP 200；保存状态重启约 5 秒恢复在线并取得节点列表；进程 RSS 约 27 MB。真机 3B1F5QEARBRJQZ66（ColorOS 16 / Android 16，另一款 VPN 应用占用系统 VPN 通道）同样启动成功，局域网节点直连 4–15 ms，经 MagicDNS 访问 fnOS 的 HTTP 请求 8–17 ms，RSS 约 32 MB。tsnet 的 SOCKS5 只解析 tailnet 名称，公网域名在其中解析失败；Go 侧分流代理直连公网目标时须使用 Android 系统 DNS（androiddns），实现时验证。网络切换重连与耗电未测。
 - Termux 以独立 uid 运行，无法读取 Nexara 的 `filesDir`；只能经 `termux-setup-storage` 访问共享存储。
 - `ssh_host_save`/`ssh_host_delete` 的模式可复用：工具列表按设备开关过滤，执行时再检查；`ToolArgumentApprovalRules` 让这些工具在任何模式下逐次审批。审批预览只基于参数，`infra/util/MyersDiff.kt` 可计算行差异。
 
@@ -124,7 +124,7 @@
 5. **P5 Agent 用户规则**：编辑页、`agent_rules_read`/`agent_rules_update`、审批差异卡、历史与回滚、提示词注入。
 6. **P6 项目规则**：读取、截断、信任记录与确认卡、提示词注入。
 7. **P7 Git 远端认证**：HTTPS 凭据设置页与凭据注入代理、SSH vendor 与 JSch 桥、wrapper 改造、nonce 生命周期、Python 与 JVM 测试。
-8. **P8 内置 Tailscale**：先完成原型验证（登录、节点发现、SOCKS5 与 HTTP 代理访问、MagicDNS、真机与其它 VPN 共存、耗电与重连），再接入构建、子进程管理、设置页、分流、`tailnet_status` 与权限；设备与真机验收。
+8. **P8 内置 Tailscale**：原型已验证登录、节点发现、SOCKS5 访问、MagicDNS 与真机和其它 VPN 共存；实施中补验分流代理的公网解析、网络切换重连与耗电，接入构建、子进程管理、设置页、分流、`tailnet_status` 与权限；设备与真机验收。
 
 P1 先于其它各期；P2 先于 P4、P6；P3 不依赖其它各期；P4 的 Git 面板与 P5 的审批卡依赖 P3；P5 只另依赖 P1；P7 只依赖 P2 的执行环境接线；P8 不依赖其它各期，P8 完成后 P7 的 SSH 桥对 tailnet 主机经 SOCKS5 连接。每期独立提交推送。
 
