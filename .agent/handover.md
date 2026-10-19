@@ -10014,3 +10014,34 @@ testSideloadDebugUnitTest、lintSideloadDebug、assembleSideloadDebug、assemble
 
 ### HLG
 标准 append，先 dry-run 再 apply。
+
+## 2026-10-19T19:03:28+08:00 · 审批卡与计划条视觉减负、DeepSeek/Kimi 思考内容回传、流式自动重试（86fedca6..15f593fc）
+
+type: delivery
+scope: ["Nexara", "native-ui", "chat", "generation", "settings"]
+status: done
+tags: ["approval-card", "task-plan-bar", "reasoning-content", "stream-retry", "step-row", "deepseek"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 3825539e0f4bb6e40db9c69f71d7e61e729e12895c544354465ac52f45a32330
+
+### Summary
+用户提出五项会话体验问题，均已实现。(1) 审批卡重排：标题为动作名（approvalToolTitle）加风险标签，元信息行为等宽工具 ID 与目标（目标与工具 ID 相同时由 approvalHeaderTarget 省略），去掉前置图标与“当前审批”，风险按条显示（approvalRiskLines），操作区为 FlowRow：次要操作靠左、拒绝/批准靠右，多项审批以“接下来还有 N 项”分隔。(2) 计划条去边框并作为 ChatInputBar 的 topContent 融入输入框浮岛，进出与展开收起用无回弹弹簧尺寸动画；completedPlanAutoHideDelay 在本会话观察到计划变为全部完成时停留 2.5 秒自动收起，打开会话时已完成的计划不显示。(3) GenericOpenAICompatProtocol 对 DeepSeek 与 Moonshot_Kimi 在历史 assistant 消息回传 reasoning_content（官方要求：带工具调用时必须回传，否则 DeepSeek 返回 400；无工具时忽略）；Anthropic thinking 签名回传未实现。(4) ChatGenerationRunner 对 NETWORK/TIMEOUT/RATE_LIMIT 以及标记 retryable 的 SERVER/UNKNOWN 失败重发本轮，默认 10 次、设置 stream_retry_limit 可调 0–20 并纳入备份；退避 1s·2^(n-1) 上限 30s，限流按 Retry-After 上限 60s；重试前快照回到本轮起点；GenerationEvent.RetryScheduled 经 PresentationStore、ViewModel 传到输入框上方的 GenerationRetryCapsule（原因、倒计时、次数、礼貌播报）。(5) CompactStepRow 高 36dp、文字 72% 透明度，收起不显示箭头，展开后淡入；打开底部面板的行无箭头。另：上一轮遗留的 ssh_host_delete 已在真机验证。已推送到 origin/B-native-refactor 15f593fc。
+
+### Changed
+主代码：ui/chat/ChatInlineComponents.kt、ChatScreen.kt、CompactStepRow.kt、TaskPanelState.kt、components/TaskFloatingPanel.kt、ChatViewModel.kt、ChatRoute.kt、UiTags.kt；data/generation/ChatGenerationRunner.kt、DefaultChatGenerationRuntime.kt、DefaultGenerationCoordinator.kt、GenerationPresentationStore.kt；domain/generation/GenerationFailure.kt、GenerationModels.kt；data/remote/protocol/GenericOpenAICompatProtocol.kt；设置 SettingsViewModel、AgentRuntimeSettingsCard、SkillsScreen；备份 BackupPreferencePolicy、AndroidTransactionalBackupPreferenceStore；中英文字符串。测试：新增 GenericOpenAICompatReasoningReplayTest、ChatGenerationRunnerRetryTest；更新 ApprovalRiskSummaryTest、TaskPanelStateTest、ChatViewModelTest（夹具关闭重试）及多份设备测试；截图新增输入框重试状态两张预览，并更新相关基线。文档：CHANGELOG、README、design-qa。
+
+### Validation
+testSideloadDebugUnitTest、lintSideloadDebug、assembleSideloadDebug、assemblePlayDebug、validateSideloadDebugScreenshotTest、check-distribution-manifests 及其单测、test_verify_release_apk 与 test_nexara_git 全部通过。emulator-5562 设备测试 68 项通过（步骤行、失败行、思考、RAG、审批布局与范围、审批标签、会话状态、无障碍冒烟、文字换行）。签名 Release 通过 verify-release-apk 并安装到真机：DeepSeek V4 Flash 会话中出现紧凑审批卡与融入输入框的计划条，批准 python_sandbox 后三轮带工具调用请求无 400、回答 391；计划条显示“全部步骤已完成 2/2”，生成结束后自动收起；步骤行收起态无箭头。真机发现审批元信息行“python_sandbox · python_sandbox”重复，已修复并补单测。
+
+### Next
+无。可选：Anthropic thinking 签名回传；配置为 Generic 协议的 DeepSeek 端点不会回传思考内容。
+
+### Risks
+自动重试在真机上无法不改系统设置触发，仅有单测与截图证据。流式中途断开无法从思考中途续传，只能整轮重发。重试丢弃本轮已输出的部分内容。
+
+### DIA
+已同步 CHANGELOG（审批卡、计划条与步骤行视觉减负；思考内容回传；流式请求自动重试）、README（会话阅读与输入、Agent 与工具调用）与 design-qa（会话视觉合同、计划条验收）。
+
+### HLG
+标准 append，先 dry-run 再 apply。
