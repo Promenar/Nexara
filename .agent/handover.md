@@ -10200,3 +10200,34 @@ Mac + Python 3.14 + 同一 dulwich 1.2.17 纯 Python wheel 经 nexara_git 实测
 
 ### HLG
 标准 append，先 dry-run 再 apply。
+
+## 2026-10-19T22:12:20+08:00 · 计划纳入 git SSH 远端桥接与内置 Tailscale（tsnet）P8；tsnet 模拟器原型通过启动阶段
+
+type: plan
+scope: ["Nexara", "native-ui", "git", "ssh", "tailscale"]
+status: in_progress
+tags: ["workspace-binding", "git-ssh", "tsnet", "tailscale", "prototype"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 14d35379e228d1c08dff2a0b42000c2976ed29aa0f53fe6ca9713c9a556674df
+
+### Summary
+用户指出 SSH 已实现，并要求按侧边会话（local_279dbb16）调研的路线 B 内置 Tailscale、不占系统 VPN，纳入计划并先做前置验证。计划更新：目标新增 SSH git 远端与 tsnet；P7 改为 Git 远端认证（HTTPS 凭据代理 + SSH vendor 经 JSch ChannelExec 桥接，复用已固定主机密钥的 SSH 主机配置，只允许 git-upload-pack/receive-pack/upload-archive）；新增 P8 内置 Tailscale（Go 可执行 libnxtailnet.so 子进程、JSON 行控制协议、127.0.0.1 带凭据 SOCKS5 + HTTP CONNECT 代理按目标分流、浏览器授权或 auth key、Headscale、tailnet_status 只读工具、设置总开关与设备白名单、按需在线）；删去“不支持 SSH 远端”的非目标。
+
+### Changed
+.agent/plans/20261019-workspace-binding-agent-rules.md、.agent/registry.md（f7483aad）。scratchpad/tsprobe：Go 探针 go/main.go、探针 APK（com.promenar.nexara.tsprobe，debug 签名）、repack.sh、run.sh。无仓库代码改动。
+
+### Validation
+tailscale.com v1.104.1 + Go 1.27.1：GOOS=android CGO_ENABLED=0 + 空导入 tailscale.com/feature/androidbin 产物 21.7 MB、zip 7.7 MB；Nexara useLegacyPackaging=true，APK 增量约 7.7 MB（30.8→约 38.5 MB，上限 50 MB）。emulator-5562 App 沙箱：cgo 构建 netlinkrib permission denied；非 cgo 构建启动成功，bootstrap DNS 连上控制服务器，NeedsLogin 并给出授权链接。dulwich client.get_ssh_vendor 可替换已核对。真机因用户微信通话中（MODE_IN_COMMUNICATION）未操作。
+
+### Next
+用户批准模拟器节点授权链接后读取 last log：peers、ping（直连/DERP）、SOCKS5 拨号、MagicDNS HTTP；真机空闲时安装探针，在 bettbox VPN 运行下重复验证并记录耗电与重连；之后按计划从 P1 开始实施。
+
+### Risks
+本机代理端口对同设备 App 可见，仅靠随机凭据；androidbin 合成网卡下多网卡切换与打洞效果未知；其它 VPN 可能迫使走 DERP；构建链引入 Go。
+
+### DIA
+已同步计划文件与 registry；无代码与用户可见行为变化。
+
+### HLG
+标准 append，先 dry-run 再 apply。
