@@ -119,7 +119,7 @@
 
 1. **P1 数据层（单次迁移 21→22）**（已完成 2026-10-19）：新增 `workspaces` 表；`sessions.workspace_id`、`agents.default_workspace_id`、`agents.user_rules`、`agent_rule_revisions` 表；同步 identity hash、双库恢复契约、备份校验与 payload v5 升级（新列默认值）；迁移、备份恢复与 schema 测试。
 2. **P2 目录工作区后端与执行**（已完成 2026-10-19）：后端下沉到 main，共享卷根按渠道开放；`WorkspaceResolver` 统一解析当前工作区；文件工具、脚本网关、`SessionToolTargetResolver`、`shell_exec`/`python_exec` 与 git 配置接入；私有工作区 clone 提示；`nexara_git` 抓取范围对齐 git 语义；删除流程识别自选工作区只解除引用。
-3. **P3 差异视图组件**（组件已完成 2026-10-19；执行差异指示器与审批卡接入待做）：统一与并排视图、折叠与大文件降级；工具执行差异指示器（执行时计算、随结果持久化）；接入文件修改审批卡与执行结果；截图预览。
+3. **P3 差异视图组件**（已完成 2026-10-20）：统一与并排视图、折叠与大文件降级；工具执行差异指示器（执行时计算、随结果持久化）；接入文件修改审批卡与执行结果；截图预览。
 4. **P4 选择器与界面**：目录浏览器组件、Agent 编辑页与会话设置入口、知识库“工作区”分组、切换提示与不可用状态；`nexara_git` 只读 JSON 子命令与 Git 变更面板；截图预览与设备测试。
 5. **P5 Agent 用户规则**：编辑页、`agent_rules_read`/`agent_rules_update`、审批差异卡、历史与回滚、提示词注入。
 6. **P6 项目规则**：读取、截断、信任记录与确认卡、提示词注入。
