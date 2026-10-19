@@ -10138,3 +10138,34 @@ record-fingerprint: d91027ebc38be36ab2fa6336d8c56a1b20db2a0916090ecae89617c260ed
 
 ### HLG
 标准 append，先 dry-run 再 apply。
+
+## 2026-10-19T21:47:15+08:00 · 工作区计划补充：差异视图组件、只读 Git 变更面板与私有工作区备份限制（6c99f8e9）
+
+type: plan
+scope: ["Nexara", "native-ui", "workspace", "git", "backup"]
+status: planned
+tags: ["workspace-binding", "diff-viewer", "git-panel", "backup-limits"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: bb6a1430ffc9bb6afe2acf84a9e6b39c3c4d640961a65d8953e2d786301838d9
+
+### Summary
+用户确认计划其余部分，追问内置文件系统的 git 能力、数据持久性、Termux 可达性，并提出需要 diff 视觉组件。代码核对结论：内置 git（nexara_git/dulwich）可在会话私有工作区运行；android:allowBackup=false，卸载或清除数据删除 filesDir；备份只覆盖 Room 跟踪的私有工作区文件，上限 16 MiB 与 10 000 项，且 .git/ 对象进入 Room 索引，私有工作区 clone 稍大仓库会导致整份备份失败；Termux 为独立 uid，无法读 filesDir，只能经 termux-setup-storage 访问共享存储。计划新增“差异视图与 Git 变更面板”设计：基于 MyersDiff 的可复用统一/并排视图，用于文件修改审批卡、规则审批卡、规则历史与 Git 面板；Git 面板首版只读，数据来自 nexara_git 新增只读 JSON 子命令，不经 shell_exec 审批。分期调整为 P1 数据层 → P2 目录后端与执行（含私有工作区 clone 提示）→ P3 差异视图组件 → P4 选择器与界面（含 Git 面板）→ P5 用户规则 → P6 项目规则 → P7 Git 凭据。
+
+### Changed
+.agent/plans/20261019-workspace-binding-agent-rules.md（已验证事实、工作区类型表、差异视图设计、分期、验收、风险）；.agent/registry.md 条目描述。无代码改动。
+
+### Validation
+读取 BackupModels.kt（MAX_IN_MEMORY_BYTES=16 MiB、MAX_ENTRIES=10 000）、RoomBackupDataSource.snapshotFiles 的超限异常、WorkspaceCommandReconciliation.isGitInternalWorkspacePath（.git 下路径照常入索引）、AndroidManifest allowBackup=false。备份超限导致失败为代码推断，未在设备上实测。
+
+### Next
+从 P1（迁移 21→22 与备份 payload v5）开始实施；P3 差异组件可与 P2 并行安排。
+
+### Risks
+Nexara 项目文件夹不进备份且卸载即删除，未推送提交会丢失；dulwich 纯 Python 性能与缺失能力（SSH、子模块、worktree、bisect、hooks、gc、LFS）。
+
+### DIA
+已同步计划文件与 registry；无代码与用户可见行为变化。
+
+### HLG
+标准 append，先 dry-run 再 apply。
