@@ -10076,3 +10076,34 @@ Anthropic 无真实密钥，仅 MockEngine 测试覆盖。前缀校验（动态�
 
 ### HLG
 标准 append，先 dry-run 再 apply。
+
+## 2026-10-19T20:41:37+08:00 · Gemini API 协议与 thought signature 回传、Gemini 系开放工具调用（ed99e999..63e21379）
+
+type: delivery
+scope: ["Nexara", "native-ui", "protocol", "settings"]
+status: done
+tags: ["gemini-api", "vertex", "thought-signature", "tool-calls", "workspace-discussion", "agent-rules-discussion"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 6f3e53f95d14d574ed82bb466b50976773158651e053015d1069aae758bbda43
+
+### Summary
+(1) 新增 ProtocolType.Google_Gemini（persistedId Google_Gemini，默认 https://generativelanguage.googleapis.com，路径 /v1beta）与 GeminiProtocol：API Key 只经 x-goog-api-key 头；ProviderEndpointResolver 新增 GeminiInference 目标与 geminiUrl（保留 v1/v1beta/v1alpha 版本段、还原粘贴的 /models 或 :generateContent 路径、拒绝查询参数、模型段去 models/ 前缀并做安全段校验），MODELS 为 /models?pageSize=1000，连接测试 pageSize=1 并用 GenericModelsEnvelopeParser 校验 models 信封。(2) 新增 GeminiContentCodec/GeminiStreamState/consumeGeminiStream（GeminiContent.kt），Gemini API 与 Vertex 共用：camelCase generationConfig 只发显式参数（不再默认 temperature 0.7、不发 repetition_penalty），thinkingConfig.includeThoughts 按需；工具用 parametersJsonSchema；有函数工具时不加 googleSearch，否则按开关用 googleSearch（替代 googleSearchRetrieval）；解析 functionCall 为 ToolCallDelta，缺 id 时生成 gemini-local- 前缀本地 ID 且回传不发送；收集 thoughtSignature（文本类 part 与各 call）为 ReasoningReplay.GeminiSignatures（currentTurnOnly=false），STOP 成功时先发 ReasoningState；回传时把签名附回对应 part，思考摘要仅在有同模型签名时回传；当前回合缺签名的函数调用仅首个补 skip_thought_signature_validator；非 STOP 终止为失败。(3) Vertex 移除工具能力门禁，ChatProviderRouteGate 所有远端路由开放工具；预设“Gemini”改为 Gemini API，新增“Vertex AI”预设，自定义协议选项加入 Gemini。另：用户询问仓库 clone/多会话共享工作区/git 能力，以及 Agent 用户规则与 AGENTS.md 项目规则，已调研并在答复中讨论方案，未实施。调研事实：会话私有工作区 filesDir/session_workspaces/<sha256>，独占且随会话删除；external_mounts 支持全局/会话挂载，删除会话只删会话挂载记录；shell_exec 在 App 沙箱 /system/bin/sh，cwd 为会话工作区，看不到 /mnt；内置 git 为 dulwich 包装（nexara_git.py），仅 HTTPS 远端、无凭据注入；Agent 无规则字段，无工具可改 Agent 配置，ContextBuilder 不读取 AGENTS.md。
+
+### Changed
+主代码：GeminiContent.kt、GeminiProtocol.kt（新增）、LlmProtocol.kt、ProtocolFactory.kt、ProviderEndpointResolver.kt、ReasoningReplay.kt、VertexAIProtocol.kt（改用共享编解码，删除原 500 行内联实现）、ProviderConnectionProbe.kt、ChatProviderRouteGate.kt、ProviderFormScreen.kt、SettingsViewModel.kt。测试：新增 GeminiProtocolTest（13 项）；删除 VertexToolCapabilityGateTest；更新 ChatProviderRouteGateContractTest、P0RuntimeIntegrationTest、ProtocolTypePersistenceTest、ReasoningReplayCodecTest。文档：CHANGELOG、README。
+
+### Validation
+testSideloadDebugUnitTest（4055 项）、lintSideloadDebug、assembleSideloadDebug、assemblePlayDebug、validateSideloadDebugScreenshotTest、check-distribution-manifests 及单测、test_verify_release_apk 与 test_nexara_git 全部通过；设备测试 APK 可构建。签名 Release 通过 verify-release-apk 并安装到真机，添加提供商的预设列表出现 Gemini 与 Vertex AI，选择 Gemini 后 Base URL 为 generativelanguage.googleapis.com、凭证为 API Key；未保存（真机正在通话，停止操作）。
+
+### Next
+等待用户就工作区/git 与 Agent 规则方案的讨论结论。可选：用户提供 Gemini API Key 后真机实测工具调用往返。
+
+### Risks
+无 Gemini API Key 与 Vertex 凭据，签名往返仅 MockEngine 覆盖；Vertex 的 parametersJsonSchema 与 googleSearch 字段未实网验证。MAX_TOKENS 等终止原因显示为通用失败，尚无专用文案。
+
+### DIA
+已同步 CHANGELOG（Gemini API 协议与 thought signature 回传）与 README（多服务商、Agent 能力）。native-ui/AGENTS.md 的“三协议”表早已过时（未含 Responses），属项目规则文件，未改动，待用户决定。
+
+### HLG
+标准 append，先 dry-run 再 apply。

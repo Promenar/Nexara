@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-10-19T19:53:43+08:00
+> generated_at: 2026-10-19T20:41:37+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -11,7 +11,7 @@
 | agent-tooling-repair-20261002 | waiting | 2026-10-02T08:00:46+08:00 | done | ["Nexara", "pdec", "release"] | 授权 gpt-6-luna 并交付真机测试签名 APK | `.agent/handover.md` · `2026-10-02T08:00:46+08:00` · `fp:110c0ef84b` |
 | ci-version-sync-20261001 | resume | 2026-10-01T22:20:08+08:00 | in_progress | ["Nexara", "android-ci", "release"] | API31 Prompt 编辑器布局反馈根因修复候选 | `.agent/handover.md` · `2026-10-01T22:20:08+08:00` · `fp:c9c99a4302` |
 | dropdown-menu-anchor-and-style-unification | waiting | 2026-09-27T21:43:18+08:00 | completed | ["ui, dropdown-menu, files-panel, m3-design, release"] | 悬浮菜单位置精准锚定与全站新版视觉样式统一规范收敛 | `.agent/handover.md` · `2026-09-27T21:43:18+08:00` · `fp:31537a3d52` |
-| mobile-agentic-capabilities | resume | 2026-10-19T19:53:43+08:00 | done | ["Nexara", "native-ui", "chat", "generation", "protocol"] | 思考回传按协议族通用化、Anthropic 思考签名回传、发送即清空输入框（d22b8e3e..f0080a83） | `.agent/handover.md` · `2026-10-19T19:53:43+08:00` · `fp:c425ebb0e7` |
+| mobile-agentic-capabilities | resume | 2026-10-19T20:41:37+08:00 | done | ["Nexara", "native-ui", "protocol", "settings"] | Gemini API 协议与 thought signature 回传、Gemini 系开放工具调用（ed99e999..63e21379） | `.agent/handover.md` · `2026-10-19T20:41:37+08:00` · `fp:6f3e53f95d` |
 | nexara-audit-completion-repair | waiting | 2026-09-22T15:28:29+08:00 | done | ["Nexara", "native-ui", "audit-repair"] | 审计修复、最终签名候选及本机设备验收完成 | `.agent/handover.md` · `2026-09-22T15:28:29+08:00` · `fp:c45ed0053a` |
 | nexara-chat-flow-repair | waiting | 2026-10-16T10:00:45+08:00 | done | ["Nexara", "native-ui", "chat"] | 会话主流程审计 P0/P1 修复交付 | `.agent/handover.md` · `2026-10-16T10:00:45+08:00` · `fp:b968f99f1f` |
 | nexara-independent-model-catalog | resume | 2026-09-22T18:33:08+08:00 | done | ["Nexara", "model-catalog"] | 独立模型目录上线、客户端验收与签名候选交付 | `.agent/handover.md` · `2026-09-22T18:33:08+08:00` · `fp:320878f7b2` |
@@ -28,6 +28,7 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-10-19T20:41:37+08:00 | iso | done | resume | ["Nexara", "native-ui", "protocol", "settings"] | ["gemini-api", "vertex", "thought-signature", "tool-calls", "workspace-discussion", "agent-rules-discussion"] | Gemini API 协议与 thought signature 回传、Gemini 系开放工具调用（ed99e999..63e21379） | `.agent/handover.md` · `2026-10-19T20:41:37+08:00` · `fp:6f3e53f95d` |
 | 2026-10-19T19:53:43+08:00 | iso | done | resume | ["Nexara", "native-ui", "chat", "generation", "protocol"] | ["reasoning-replay", "anthropic-thinking", "openai-compat", "composer-draft", "claude-5"] | 思考回传按协议族通用化、Anthropic 思考签名回传、发送即清空输入框（d22b8e3e..f0080a83） | `.agent/handover.md` · `2026-10-19T19:53:43+08:00` · `fp:c425ebb0e7` |
 | 2026-10-19T19:03:28+08:00 | iso | done | resume | ["Nexara", "native-ui", "chat", "generation", "settings"] | ["approval-card", "task-plan-bar", "reasoning-content", "stream-retry", "step-row", "deepseek"] | 审批卡与计划条视觉减负、DeepSeek/Kimi 思考内容回传、流式自动重试（86fedca6..15f593fc） | `.agent/handover.md` · `2026-10-19T19:03:28+08:00` · `fp:3825539e0f` |
 | 2026-10-19T17:29:33+08:00 | iso | done | resume | ["Nexara", "native-ui", "settings", "security-ux"] | ["secret-field", "ime", "clipboard", "coloros", "security-keyboard"] | 密钥与口令输入框改用普通键盘并支持粘贴（8f7c7d7d..143e3697） | `.agent/handover.md` · `2026-10-19T17:29:33+08:00` · `fp:202d3a1916` |
