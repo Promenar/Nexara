@@ -9983,3 +9983,34 @@ ui/common/MarkdownText.kt（新增常量并用于两处 appendInlineContent）�
 
 ### HLG
 标准 append，先 dry-run 再 apply。
+
+## 2026-10-19T17:29:33+08:00 · 密钥与口令输入框改用普通键盘并支持粘贴（8f7c7d7d..143e3697）
+
+type: delivery
+scope: ["Nexara", "native-ui", "settings", "security-ux"]
+status: done
+tags: ["secret-field", "ime", "clipboard", "coloros", "security-keyboard"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 202d3a1916b3dce3ae200b266f5a1f1ce5fa97fd445c58168e2ea58804151dc6
+
+### Summary
+用户反馈 API 密钥等输入框被强制切换安全键盘、无法使用剪贴板，长随机密钥无法粘贴。根因是这些输入框声明了 KeyboardType.Password。真机实测：即使改为 TYPE_TEXT_VARIATION_VISIBLE_PASSWORD，ColorOS 仍切换到系统安全键盘 com.oplus.securitykeyboard（窗口带 FLAG_SECURE），因此不能带任何密码变体。现由 ui/common/SecretField.kt 的 SecretTextInput（InterceptPlatformTextInput 改写 EditorInfo）把输入类型声明为 TYPE_CLASS_TEXT|TYPE_TEXT_FLAG_NO_SUGGESTIONS，并加 IME_FLAG_NO_PERSONALIZED_LEARNING；键盘选项使用 SecretKeyboardOptions（Ascii、关闭自动更正）；屏幕仍由 PasswordVisualTransformation 掩码。已推送到 origin/B-native-refactor 143e3697。
+
+### Changed
+SecretField（覆盖 Provider、Tavily、备份口令、WebDAV 等全部调用方）；SshSettingsScreen 的 SshEditorField（口令与私钥口令）；SkillsScreen 的 MCP Bearer；SshUserPromptHost 的 Agent SSH 口令弹窗。SecureSecretUiContractTest 改为断言使用 SecretKeyboardOptions 且不含任何 TYPE_TEXT_VARIATION；新增 test ui/common/SecretKeyboardTest（常量校验，并扫描 src/main/java 禁止 KeyboardType.Password/NumberPassword）；新增 androidTest ui/common/SecretTextInputDeviceTest（聚焦后调用 view.onCreateInputConnection 读取 EditorInfo）。
+
+### Validation
+testSideloadDebugUnitTest、lintSideloadDebug、assembleSideloadDebug、assemblePlayDebug、validateSideloadDebugScreenshotTest、check-distribution-manifests 及其单测、test_verify_release_apk 与 test_nexara_git 全部通过；SecretTextInputDeviceTest 与 BackupComposeSafRoundTripTest 在 emulator-5562 通过。真机签名 Release（verify-release-apk 通过，30,740,693 字节）：Web 搜索 API Key 输入框 inputType=0x80001、imeOptions 含 NO_PERSONALIZED_LEARNING；微信输入法显示普通键盘与剪贴板栏；临时切到 Gboard 后显示普通键盘、剪贴板按钮与无痕图标，输入内容显示为圆点掩码。测试字符未保存，输入法已恢复为 com.tencent.wetype/.plugin.hld.WxHldService。
+
+### Next
+无。
+
+### Risks
+输入法能读到明文（所有输入法都一样）；由 NO_PERSONALIZED_LEARNING 请求输入法不学习，但能否做到取决于输入法是否遵守。微信输入法不接受 adb 注入文字，真机掩码验证使用 Gboard。第三方自动填充（Kaspersky Passwords）仍会对这些输入框给出建议。
+
+### DIA
+已同步 CHANGELOG（密钥输入框支持普通键盘与粘贴）；README 与文档未描述键盘类型，无需修改。
+
+### HLG
+标准 append，先 dry-run 再 apply。
