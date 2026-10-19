@@ -10231,3 +10231,34 @@ tailscale.com v1.104.1 + Go 1.27.1：GOOS=android CGO_ENABLED=0 + 空导入 tail
 
 ### HLG
 标准 append，先 dry-run 再 apply。
+
+## 2026-10-19T22:25:18+08:00 · 内置 Tailscale（tsnet）原型验证通过：模拟器与真机（其它 VPN 占用下）登录、节点发现、SOCKS5、MagicDNS
+
+type: verification
+scope: ["Nexara", "native-ui", "tailscale"]
+status: verified
+tags: ["tsnet", "tailscale", "prototype", "vpn-coexistence"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: c6299f3b8aa398478da18a5bf8be81c2accab207e464ac0cc4d8f382b42b0c12
+
+### Summary
+P8 前置验证完成。探针 com.promenar.nexara.tsprobe（scratchpad/tsprobe，Go tsnet v1.104.1 非 cgo + feature/androidbin 可执行，App 子进程运行）经用户浏览器授权登录为临时节点。模拟器：8 节点，直连与 DERP 均可，SOCKS5 拨号、MagicDNS 全名/短名/IP 访问 fnOS 5666 返回 200，状态重启 5 秒在线，RSS 约 27 MB。真机 ColorOS 16 / Android 16 在 bettbox VPN 运行下：启动与登录成功，局域网节点直连 4–15 ms，MagicDNS HTTP 8–17 ms，RSS 约 32 MB。tsnet SOCKS5 不解析公网域名，Go 侧分流代理直连公网须用 androiddns。
+
+### Changed
+.agent/plans/20261019-workspace-binding-agent-rules.md 已验证事实与 P8 描述（7c12b1a2）。真机与模拟器探针已 force-stop，探针包保留在两台设备上供后续测试。
+
+### Validation
+读取两台设备 files/ts.log：running、netmap、ping（endpoint/derp）、socks_dial、http_magicdns、mem 记录如上。用户微信通话期间经用户同意操作真机，未切换输入法、未改设置。
+
+### Next
+按计划从 P1（迁移 21→22 与备份 payload v5）开始实施；P8 实施时补验分流代理公网解析、网络切换重连与耗电。
+
+### Risks
+网络切换与耗电未测；临时节点名称 nexara-tsprobe 会在 tailnet 中短暂显示为离线直至自动移除。
+
+### DIA
+已同步计划文件；无代码与用户可见行为变化。
+
+### HLG
+标准 append，先 dry-run 再 apply。
