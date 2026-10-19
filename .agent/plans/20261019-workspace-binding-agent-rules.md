@@ -27,6 +27,8 @@
 - 数据库版本 21。版本号与 identity hash 写死在 `NexaraDatabase`、`DualDatabaseRecoveryContract`、`RoomBackupDataSource`。备份按整行导出 agents 并要求列集合与当前 schema 一致，备份 payload 版本为 4。
 - `AgentEditViewModel.buildAgent()` 从界面状态重建整个 Agent 再整行写入，新字段必须在此保留，否则编辑页保存会清空规则。
 - 备份只覆盖 Room 跟踪的私有工作区文件，总量上限 16 MiB、文件项上限 10 000（`BackupPackageLimits`），超限时整份备份失败。`.git/` 下的对象照常进入 Room 索引（只是不向量化），因此在私有工作区 clone 稍大的仓库就会让本地与 WebDAV 备份失败。`android:allowBackup="false"`，卸载或清除数据会删除 `filesDir` 下全部内容。
+- 内置 git 的性能（Mac、Python 3.14、同一 dulwich 1.2.17 纯 Python wheel 实测）：requests 仓库完整 clone 5.2 秒（原生 git 3.1 秒）；Django 完整 clone 76.5 秒（原生 44.9 秒，网络占主要部分）；Django 工作树 7 084 个文件的 status 1.3 秒（原生 0.2 秒）；2 万文件合成仓库的 status 1.0 秒。Django `--depth 1` clone 用时 43 秒、`.git` 146 MB，原生 git 5.5 秒、13 MB：`nexara_git` 只把引用限制到分支与标签，浅克隆仍会拉取全部标签，每个标签带一份完整快照；只取默认分支时降为 6.1 秒、13 MB，`git fsck` 无错误。手机上的耗时尚未测量。
+- 打包的是 dulwich 纯 Python wheel，不含其可选的 Rust 加速模块（`_objects`、`_pack`、`_diff_tree`）。dulwich 本身提供 submodule、worktree、bisect、gc、maintenance、lfs、sparse-checkout 等命令，`nexara_git` 的白名单未开放；SSH 远端需要 ssh 程序或 paramiko 及其原生依赖，App 内均不具备。
 - Termux 以独立 uid 运行，无法读取 Nexara 的 `filesDir`；只能经 `termux-setup-storage` 访问共享存储。
 - `ssh_host_save`/`ssh_host_delete` 的模式可复用：工具列表按设备开关过滤，执行时再检查；`ToolArgumentApprovalRules` 让这些工具在任何模式下逐次审批。审批预览只基于参数，`infra/util/MyersDiff.kt` 可计算行差异。
 
@@ -55,6 +57,7 @@
 
 - 当前工作区为自选目录时，文件工具的 `/` 指向该目录，经目录后端读写，保留 `expectedSha256` 乐观并发校验、删除回收与差异缓存；`/mnt/<别名>` 挂载照旧。
 - `shell_exec` 在自选目录中运行，不持工作区锁、不做 Room 对账；结果不再提供 `workspace_changes`，工具说明提示用 `git status` 查看改动。
+- `nexara_git` 的抓取范围对齐 git 语义：`--depth` 隐含 `--single-branch`，只取远端默认分支（或 `-b` 指定分支）及指向其历史的标签；支持 `--single-branch`、`--no-single-branch`、`--no-tags`。
 - 共享卷工作区内运行 git 时，wrapper 自动设置 `core.symlinks=false`、`core.filemode=false`、`core.ignorecase=true`，并在 clone 或 checkout 遇到符号链接或仅大小写不同的路径时给出说明。
 
 ### 可视化选择器
@@ -66,9 +69,19 @@
 ### 差异视图与 Git 变更面板
 
 - 新增可复用的差异视图组件，基于 `MyersDiff` 计算行差异，提供统一视图与并排视图（窄屏默认统一视图），行号、增删着色、折叠未变更区段、长行横向滚动限定在组件内部。大文件与二进制文件只显示摘要。
+- 工具执行差异指示器：文件类工具（写入、补丁、删除、移动）的执行卡显示每个文件的路径与 `+N −M`，卡片标题汇总“N 个文件 +X −Y”；新建文件只有 `+`，删除只有 `−`，二进制文件标注“二进制”。行数在工具执行时由写入前后内容计算，随工具结果持久化，历史消息无需重算；单文件超过上限时只显示“大文件”。点击指示器打开对应文件的差异视图（读取版本历史或差异缓存；缓存已失效时只保留数字）。`shell_exec` 在私有工作区按 `workspace_changes` 显示改动文件列表；自选工作区不逐次统计，由 Git 变更面板查看。
 - 使用位置：`write_file`/`patch_file` 等文件修改的审批卡与执行结果、`agent_rules_update` 审批卡、规则历史版本对比、Git 变更面板。
 - Git 变更面板：当前工作区为 git 仓库时，会话工作区入口显示分支与改动数；面板列出已暂存、未暂存、未跟踪文件，点开单个文件显示相对 HEAD 的差异，另有最近提交列表与单个提交的差异。数据经 `nexara_git` 新增的只读 JSON 子命令获取（状态、HEAD 中的文件内容、提交列表），由 Kotlin 计算差异，不经 `shell_exec` 与执行审批。
 - 首版面板只读；暂存、提交、推送、冲突处理仍由用户在对话中交给 Agent 执行，避免在界面重复实现一套写操作。
+
+### 内置 git 性能
+
+按投入从低到高推进，每一步以手机实测决定是否进入下一步：
+
+1. 抓取范围对齐 git 语义（见“工具行为”），消除浅克隆拉取全部标签快照的问题；clone 与 fetch 显示进度。
+2. 交叉编译 dulwich 的可选 Rust 加速模块（maturin + NDK，cp314 arm64），对比对象解析、pack 解增量与树差异的耗时，收益不足则不引入。
+3. 共享存储工作区的大仓库可经已有的 `termux_exec` 使用 Termux 的原生 git；`nexara_git` 在遇到超大仓库或不支持的命令时给出该指引。
+4. 前三步仍不满足时，评估随 APK 打包原生 git（NDK 交叉编译 git、libcurl、OpenSSL、zlib，以 `lib*.so` 形式放入原生库目录以满足 Android 10+ 的 W^X 限制），需核算 APK 50 MB 上限、证书包、`git-remote-https` 执行路径与凭据代理的兼容方式。
 
 ### Agent 用户规则
 
@@ -92,8 +105,8 @@
 ## 分期与关键路径
 
 1. **P1 数据层（单次迁移 21→22）**：新增 `workspaces` 表；`sessions.workspace_id`、`agents.default_workspace_id`、`agents.user_rules`、`agent_rule_revisions` 表；同步 identity hash、双库恢复契约、备份校验与 payload v5 升级（新列默认值）；迁移、备份恢复与 schema 测试。
-2. **P2 目录工作区后端与执行**：后端下沉到 main，共享卷根按渠道开放；`WorkspaceResolver` 统一解析当前工作区；文件工具、脚本网关、`SessionToolTargetResolver`、`shell_exec`/`python_exec` 与 git 配置接入；私有工作区 clone 提示；删除流程识别自选工作区只解除引用。
-3. **P3 差异视图组件**：统一与并排视图、折叠与大文件降级；接入文件修改审批卡与执行结果；截图预览。
+2. **P2 目录工作区后端与执行**：后端下沉到 main，共享卷根按渠道开放；`WorkspaceResolver` 统一解析当前工作区；文件工具、脚本网关、`SessionToolTargetResolver`、`shell_exec`/`python_exec` 与 git 配置接入；私有工作区 clone 提示；`nexara_git` 抓取范围对齐 git 语义；删除流程识别自选工作区只解除引用。
+3. **P3 差异视图组件**：统一与并排视图、折叠与大文件降级；工具执行差异指示器（执行时计算、随结果持久化）；接入文件修改审批卡与执行结果；截图预览。
 4. **P4 选择器与界面**：目录浏览器组件、Agent 编辑页与会话设置入口、知识库“工作区”分组、切换提示与不可用状态；`nexara_git` 只读 JSON 子命令与 Git 变更面板；截图预览与设备测试。
 5. **P5 Agent 用户规则**：编辑页、`agent_rules_read`/`agent_rules_update`、审批差异卡、历史与回滚、提示词注入。
 6. **P6 项目规则**：读取、截断、信任记录与确认卡、提示词注入。
@@ -112,8 +125,9 @@ P1 先于其它各期；P2 先于 P4、P6；P3 不依赖其它各期；P4 的 Gi
 
 ## 验收
 
-- 单元测试：迁移 21→22 与备份 v4→v5 升级；工作区解析优先级、不可用状态、删除只解除引用；目录后端路径逃逸、符号链接、并发写冲突；`shell_exec` 工作目录；规则读写、哈希冲突、历史回滚、编辑页保存不清空规则；项目规则选择、截断、信任与变化重确认；代理主机/路径/nonce 限制与令牌不外泄；`nexara_git` 在共享卷上的配置注入与只读 JSON 子命令；差异组件的统一/并排行对齐、折叠区段与大文件降级。
+- 单元测试：迁移 21→22 与备份 v4→v5 升级；工作区解析优先级、不可用状态、删除只解除引用；目录后端路径逃逸、符号链接、并发写冲突；`shell_exec` 工作目录；规则读写、哈希冲突、历史回滚、编辑页保存不清空规则；项目规则选择、截断、信任与变化重确认；代理主机/路径/nonce 限制与令牌不外泄；`nexara_git` 在共享卷上的配置注入与只读 JSON 子命令；差异组件的统一/并排行对齐、折叠区段与大文件降级；差异指示器的增删计数（新建、删除、二进制、超限）与持久化；浅克隆只取默认分支。
 - 设备测试（emulator-5562）：选择器在私有项目根与共享卷根选择目录；两个会话共用同一工作区读写同一文件；删除其中一个会话后目录完好；在共享卷与私有项目根中 `git clone`（公开仓库）、提交、查看日志。
+- 性能：真机在私有项目根与共享卷根分别记录 Django `--depth 1` clone、完整 clone 与 status 耗时，作为是否推进 Rust 加速模块或原生 git 的依据。
 - 真机：sideload Release 选择共享存储目录作为工作区，DeepSeek 会话通过 `shell_exec` 完成 clone、修改、commit；配置 Git 凭据后推送到用户指定的测试仓库（需用户提供仓库与令牌并在设置页自行输入）。
 
 ```bash
@@ -132,5 +146,5 @@ python3 -m unittest scripts/tests/test_nexara_git.py
 - 含符号链接、可执行位或仅大小写不同路径的仓库在共享卷上无法完全还原，只能降级处理并提示，此类仓库应使用 Nexara 项目文件夹。
 - 自选工作区不进 Room，文件面板、版本历史与向量索引能力弱于私有工作区。
 - Nexara 项目文件夹不进备份且卸载即删除，未推送的提交会随之丢失；界面需在该类型说明中明示。
-- `dulwich` 纯 Python 实现，大仓库的 clone、status 与 diff 明显慢于原生 git；缺少 SSH 远端、子模块、worktree、bisect、hooks、gc 与 LFS。
+- `dulwich` 纯 Python 实现，大仓库的 status 与本地对象处理明显慢于原生 git，手机 CPU 上差距可能更大；SSH 远端不可用，其它高级命令需逐个验证后再开放白名单。
 - Play 渠道的共享存储能力依赖“所有文件访问”政策审批，当前不纳入。
