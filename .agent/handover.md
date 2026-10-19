@@ -10386,3 +10386,34 @@ record-fingerprint: a7b61d863f6eebb1798769b9e188529acf942d30b35221eb5e0007a58ce6
 
 ### HLG
 标准 append，先 dry-run 再 apply。
+
+## 2026-10-20T06:24:35+08:00 · 真机应用内复测 Git 入口与面板加载速度（预编译字节码后）
+
+type: verification
+scope: ["Nexara", "native-ui", "git", "python"]
+status: verified
+tags: ["git-panel", "performance", "pyc", "device-acceptance"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: e1d8818ca9762193c4a9bfd3eca785325d3861aaed7af834b756a0bdfb257065
+
+### Summary
+真机 3B1F5QEARBRJQZ66 解锁后用 Release（sideload SHA-256 edbf33a2…36db，含提交 033451c6 的预编译字节码）在会话 Use tools（工作区 p4-accept）复测。手机禁止 screenrecord，改为设备端脚本同一时钟下 input tap 后连续 screencap（约 0.42 秒一帧）。
+
+### Changed
+无代码改动，仅真机复测。
+
+### Validation
+打开资源管理器：0.51 秒底部面板仍在上滑，0.93 秒面板完全展开且已显示“Git 变更 · master · 1 项改动”（此前 2.5–17 秒）。点 Git 入口：0.90 秒变更列表已加载（未暂存 · 1，notes.md）。点 notes.md：0.46 秒标题出现、内容加载中，0.88 秒 +1 −1 差异完整显示。切换最近提交：0.87 秒列出 c60d9a4。crash 缓冲无 Nexara 记录；临时截图与脚本已清理。
+
+### Next
+背景会话合入资源管理器目录列表后，再评估 Git 入口加载占位是否仍有必要（现约 0.4 秒内出现，必要性下降）；观察 GitHub Actions 首次 setup-python 3.14 运行。
+
+### Risks
+帧间隔约 0.42 秒，数值为上界；只测了小仓库，大仓库状态检查耗时未测。
+
+### DIA
+无文档影响（CHANGELOG 与 distribution-builds.md 已含 run-as 实测数字）。
+
+### HLG
+标准 append，先 dry-run 再 apply。
