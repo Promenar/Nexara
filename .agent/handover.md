@@ -10262,3 +10262,34 @@ P8 前置验证完成。探针 com.promenar.nexara.tsprobe（scratchpad/tsprobe�
 
 ### HLG
 标准 append，先 dry-run 再 apply。
+
+## 2026-10-19T23:03:09+08:00 · P1 完成：数据库 v22（自选工作区、会话/Agent 绑定、Agent 用户规则与历史）与备份载荷 v5
+
+type: implementation
+scope: ["Nexara", "native-ui", "database", "backup"]
+status: verified
+tags: ["room-v22", "migration-21-22", "backup-v5", "workspace-binding", "agent-rules"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 14ea7580c2556a2e689ac6e9841621596fa583717323fb23d880fc9dd5fc7938
+
+### Summary
+按计划 .agent/plans/20261019-workspace-binding-agent-rules.md 完成 P1（提交 97e0a386）。MIGRATION_21_22 新增 workspaces（kind project/shared，(kind, location) 唯一）、sessions.workspace_id、agents.default_workspace_id、agents.user_rules（默认空串）与 agent_rule_revisions（无外键，每 Agent 保留 20 版）；identity 44c225495bedbde35d20c36ffbddf6a4。WorkspaceDao.register 幂等且校验位置，deleteIfUnreferenced 被会话或 Agent 引用时拒绝；AgentRepository.update 走 updatePreservingUserRules（整行保存不覆盖用户规则），delete 走 deleteWithRuleRevisions。备份载荷 v5 含 workspaces（INSERT_ORDER 首位）并校验位置/唯一/引用，agent_rule_revisions 排除并在恢复时清空；v1–v4 经 upgradeV4Payload 补空值，v4 带工作区表则拒绝。
+
+### Changed
+发现并修复：NexaraV18RecoveryDatabase 复用当前 AgentEntity/SessionEntity 导致 v18 恢复合同身份漂移，改为 RecoveryV18Entities 中的冻结副本。可信版本/身份集合（Promoter、恢复探针、Journal、Contract、备份、Gradle schema 合同 18..22）纳入 v22。androidTest NexaraDatabaseMigration18To21Test 更名为 18To22Test，脚本引用同步。新增 WorkspaceBindingDaoTest（7 项）与 WorkspaceBindingMigrationTest（导出 v21 结构经 Room 迁移并按实体校验）。文档：CHANGELOG、README、ARCHITECTURE、distribution-builds、计划标记 P1 完成。
+
+### Validation
+单元测试 4066 项 0 失败（25 跳过）；lint、assembleSideloadDebug、assemblePlayDebug、validateSideloadDebugScreenshotTest、分发清单检查与 Python 测试全部通过。emulator-5562 设备测试 NexaraDatabaseMigration18To22Test、1To5、2To3、AndroidDualDatabaseWorkspaceRecoveryTest(6) 全部通过。真机 3B1F5QEARBRJQZ66 覆盖安装签名 release（验证器通过，SHA-256 319bc8f4…）：冷启动无崩溃日志，既有 Agent 与会话列表完整。
+
+### Next
+P2：目录工作区后端下沉与 WorkspaceResolver、文件工具/脚本网关/shell 与 git 接入、nexara_git 抓取范围对齐；P3 可并行。
+
+### Risks
+release 包不可调试，真机未直接读取 user_version，以启动无异常与数据可见为间接证据；新字段尚无界面与工具使用者。
+
+### DIA
+已同步 CHANGELOG、README、docs/ARCHITECTURE.md、docs/distribution-builds.md 与计划文件；发布验证账本属于 v0.2.2-beta 历史记录未改。
+
+### HLG
+标准 append，先 dry-run 再 apply。

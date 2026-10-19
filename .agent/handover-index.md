@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-10-19T22:25:18+08:00
+> generated_at: 2026-10-19T23:03:09+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -11,7 +11,7 @@
 | agent-tooling-repair-20261002 | waiting | 2026-10-02T08:00:46+08:00 | done | ["Nexara", "pdec", "release"] | 授权 gpt-6-luna 并交付真机测试签名 APK | `.agent/handover.md` · `2026-10-02T08:00:46+08:00` · `fp:110c0ef84b` |
 | ci-version-sync-20261001 | resume | 2026-10-01T22:20:08+08:00 | in_progress | ["Nexara", "android-ci", "release"] | API31 Prompt 编辑器布局反馈根因修复候选 | `.agent/handover.md` · `2026-10-01T22:20:08+08:00` · `fp:c9c99a4302` |
 | dropdown-menu-anchor-and-style-unification | waiting | 2026-09-27T21:43:18+08:00 | completed | ["ui, dropdown-menu, files-panel, m3-design, release"] | 悬浮菜单位置精准锚定与全站新版视觉样式统一规范收敛 | `.agent/handover.md` · `2026-09-27T21:43:18+08:00` · `fp:31537a3d52` |
-| mobile-agentic-capabilities | resume | 2026-10-19T22:25:18+08:00 | verified | ["Nexara", "native-ui", "tailscale"] | 内置 Tailscale（tsnet）原型验证通过：模拟器与真机（其它 VPN 占用下）登录、节点发现、SOCKS5、MagicDNS | `.agent/handover.md` · `2026-10-19T22:25:18+08:00` · `fp:c6299f3b8a` |
+| mobile-agentic-capabilities | resume | 2026-10-19T23:03:09+08:00 | verified | ["Nexara", "native-ui", "database", "backup"] | P1 完成：数据库 v22（自选工作区、会话/Agent 绑定、Agent 用户规则与历史）与备份载荷 v5 | `.agent/handover.md` · `2026-10-19T23:03:09+08:00` · `fp:14ea7580c2` |
 | nexara-audit-completion-repair | waiting | 2026-09-22T15:28:29+08:00 | done | ["Nexara", "native-ui", "audit-repair"] | 审计修复、最终签名候选及本机设备验收完成 | `.agent/handover.md` · `2026-09-22T15:28:29+08:00` · `fp:c45ed0053a` |
 | nexara-chat-flow-repair | waiting | 2026-10-16T10:00:45+08:00 | done | ["Nexara", "native-ui", "chat"] | 会话主流程审计 P0/P1 修复交付 | `.agent/handover.md` · `2026-10-16T10:00:45+08:00` · `fp:b968f99f1f` |
 | nexara-independent-model-catalog | resume | 2026-09-22T18:33:08+08:00 | done | ["Nexara", "model-catalog"] | 独立模型目录上线、客户端验收与签名候选交付 | `.agent/handover.md` · `2026-09-22T18:33:08+08:00` · `fp:320878f7b2` |
@@ -28,6 +28,7 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-10-19T23:03:09+08:00 | iso | verified | resume | ["Nexara", "native-ui", "database", "backup"] | ["room-v22", "migration-21-22", "backup-v5", "workspace-binding", "agent-rules"] | P1 完成：数据库 v22（自选工作区、会话/Agent 绑定、Agent 用户规则与历史）与备份载荷 v5 | `.agent/handover.md` · `2026-10-19T23:03:09+08:00` · `fp:14ea7580c2` |
 | 2026-10-19T22:25:18+08:00 | iso | verified | resume | ["Nexara", "native-ui", "tailscale"] | ["tsnet", "tailscale", "prototype", "vpn-coexistence"] | 内置 Tailscale（tsnet）原型验证通过：模拟器与真机（其它 VPN 占用下）登录、节点发现、SOCKS5、MagicDNS | `.agent/handover.md` · `2026-10-19T22:25:18+08:00` · `fp:c6299f3b8a` |
 | 2026-10-19T22:12:20+08:00 | iso | in_progress | resume | ["Nexara", "native-ui", "git", "ssh", "tailscale"] | ["workspace-binding", "git-ssh", "tsnet", "tailscale", "prototype"] | 计划纳入 git SSH 远端桥接与内置 Tailscale（tsnet）P8；tsnet 模拟器原型通过启动阶段 | `.agent/handover.md` · `2026-10-19T22:12:20+08:00` · `fp:14d35379e2` |
 | 2026-10-19T21:59:52+08:00 | iso | planned | resume | ["Nexara", "native-ui", "git", "diff"] | ["workspace-binding", "diff-indicator", "git-performance", "dulwich"] | 工作区计划补充：工具差异指示器与内置 git 性能路线（含浅克隆抓取范围问题实测） | `.agent/handover.md` · `2026-10-19T21:59:52+08:00` · `fp:3d364758a9` |
