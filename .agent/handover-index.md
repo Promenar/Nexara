@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-10-20T01:40:07+08:00
+> generated_at: 2026-10-20T02:08:58+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -11,7 +11,7 @@
 | agent-tooling-repair-20261002 | waiting | 2026-10-02T08:00:46+08:00 | done | ["Nexara", "pdec", "release"] | 授权 gpt-6-luna 并交付真机测试签名 APK | `.agent/handover.md` · `2026-10-02T08:00:46+08:00` · `fp:110c0ef84b` |
 | ci-version-sync-20261001 | resume | 2026-10-01T22:20:08+08:00 | in_progress | ["Nexara", "android-ci", "release"] | API31 Prompt 编辑器布局反馈根因修复候选 | `.agent/handover.md` · `2026-10-01T22:20:08+08:00` · `fp:c9c99a4302` |
 | dropdown-menu-anchor-and-style-unification | waiting | 2026-09-27T21:43:18+08:00 | completed | ["ui, dropdown-menu, files-panel, m3-design, release"] | 悬浮菜单位置精准锚定与全站新版视觉样式统一规范收敛 | `.agent/handover.md` · `2026-09-27T21:43:18+08:00` · `fp:31537a3d52` |
-| mobile-agentic-capabilities | resume | 2026-10-20T01:40:07+08:00 | verified | ["Nexara", "native-ui", "workspace", "git", "ui", "chat"] | P3 余项与 P4 完成：文件改动指示器、审批差异预览、工作区选择器、Git 变更面板与切换提示；真机验收通过 | `.agent/handover.md` · `2026-10-20T01:40:07+08:00` · `fp:e39e19d9eb` |
+| mobile-agentic-capabilities | resume | 2026-10-20T02:08:57+08:00 | verified | ["Nexara", "native-ui", "workspace", "ui", "chat"] | 资源管理器文件区跟随会话工作区（私有/目录/不可用三态） | `.agent/handover.md` · `2026-10-20T02:08:57+08:00` · `fp:81576e4a24` |
 | nexara-audit-completion-repair | waiting | 2026-09-22T15:28:29+08:00 | done | ["Nexara", "native-ui", "audit-repair"] | 审计修复、最终签名候选及本机设备验收完成 | `.agent/handover.md` · `2026-09-22T15:28:29+08:00` · `fp:c45ed0053a` |
 | nexara-chat-flow-repair | waiting | 2026-10-16T10:00:45+08:00 | done | ["Nexara", "native-ui", "chat"] | 会话主流程审计 P0/P1 修复交付 | `.agent/handover.md` · `2026-10-16T10:00:45+08:00` · `fp:b968f99f1f` |
 | nexara-independent-model-catalog | resume | 2026-09-22T18:33:08+08:00 | done | ["Nexara", "model-catalog"] | 独立模型目录上线、客户端验收与签名候选交付 | `.agent/handover.md` · `2026-09-22T18:33:08+08:00` · `fp:320878f7b2` |
@@ -28,6 +28,7 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-10-20T02:08:57+08:00 | iso | verified | resume | ["Nexara", "native-ui", "workspace", "ui", "chat"] | ["resource-explorer", "workspace", "directory-workspace", "p4"] | 资源管理器文件区跟随会话工作区（私有/目录/不可用三态） | `.agent/handover.md` · `2026-10-20T02:08:57+08:00` · `fp:81576e4a24` |
 | 2026-10-20T01:40:07+08:00 | iso | verified | resume | ["Nexara", "native-ui", "workspace", "git", "ui", "chat"] | ["file-changes", "approval-diff", "workspace-picker", "git-panel", "workspace-switch-notice", "p3", "p4"] | P3 余项与 P4 完成：文件改动指示器、审批差异预览、工作区选择器、Git 变更面板与切换提示；真机验收通过 | `.agent/handover.md` · `2026-10-20T01:40:07+08:00` · `fp:e39e19d9eb` |
 | 2026-10-19T23:50:26+08:00 | iso | verified | resume | ["Nexara", "native-ui", "workspace", "exec", "git", "ui"] | ["workspace-binding", "directory-workspace", "nexara-git", "file-diff-view", "p2", "p3"] | P2 完成：自选工作区目录后端与命令执行；P3 文件差异视图组件完成 | `.agent/handover.md` · `2026-10-19T23:50:26+08:00` · `fp:8a28a79c75` |
 | 2026-10-19T23:03:09+08:00 | iso | verified | resume | ["Nexara", "native-ui", "database", "backup"] | ["room-v22", "migration-21-22", "backup-v5", "workspace-binding", "agent-rules"] | P1 完成：数据库 v22（自选工作区、会话/Agent 绑定、Agent 用户规则与历史）与备份载荷 v5 | `.agent/handover.md` · `2026-10-19T23:03:09+08:00` · `fp:14ea7580c2` |
