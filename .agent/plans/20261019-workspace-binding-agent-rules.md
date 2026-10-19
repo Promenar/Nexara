@@ -1,18 +1,19 @@
-# 自选工作区、Agent 用户规则、项目规则与 Git 凭据实施计划
+# 自选工作区、Agent 用户规则、项目规则、Git 远端认证与内置 Tailscale 实施计划
 
 ## 目标
 
 1. 用户可通过可视化目录选择器为 Agent 或单个会话指定工作区；未指定时沿用每会话私有工作区。多个会话可同时使用同一工作区，删除会话不删除自选工作区。文件工具、`shell_exec` 与内置 git 都在当前工作区运行。
 2. 每个 Agent 有独立的“用户规则”文本。Agent 通过专用工具读取并提出修改；用户在审批卡中看到差异并批准后，由工具直接写入。
 3. 自动读取当前工作区根目录的 `AGENTS.md`（不存在时读 `CLAUDE.md`）作为项目规则；首次加载或内容变化时由用户确认是否信任。
-4. 内置 git 通过 HTTPS 推送拉取私有仓库，凭据安全存储，不进入模型上下文、命令文本、输出或日志。
+4. 内置 git 通过 HTTPS 与 SSH 推送拉取私有仓库，凭据安全存储，不进入模型上下文、命令文本、输出或日志。SSH 远端复用 Nexara 已有的 SSH 主机配置与密钥。
+5. Nexara 进程内运行一个 Tailscale 节点（tsnet），不占用系统 VPN 通道，可与其它 VPN 应用同时使用；Agent 的现有网络、SSH、shell、Python 与 git 工具对 tailnet 地址自动可达。
 
 ## 非目标
 
 - 不做全局用户规则。
 - 不给工作区加会话锁；多会话并发修改交给 git 与工具的乐观并发校验，冲突由用户与 Agent 处理。
 - 不自动把自选工作区整体纳入知识库向量索引。
-- 不支持 SSH 协议的 git 远端（内置 git 为 dulwich，Android 沙箱无 ssh 客户端）；需要时继续使用 `termux_exec` 或 `ssh_exec`。
+- Nexara 不作为 tailnet 上的服务端对外提供服务（tsnet 在移动端不能签发 TLS 证书，且节点只在进程存活时在线），不做出口节点与子网路由。
 - Play 渠道不申请“所有文件访问”。
 
 ## 已验证事实
@@ -20,7 +21,7 @@
 - 私有工作区位于 `filesDir/session_workspaces/<sha256(sessionId)>`，由 Room `workspace_files` 树跟踪。`WorkspaceRepository` 强制一个物理根只属于一个会话，绑定后不可修改。会话删除要求根目录直接位于 `session_workspaces` 下，并原子移动后整树删除。
 - 外部挂载存于 `external_mounts`（`saf_tree` / `real_path`，全局或会话范围），模型以 `/mnt/<别名>` 访问。后端支持 stat/list/read/write（`expectedSha256`、`createOnly`）/createDirectory/delete，移动为复制校验后删除，删除先进入 `external-recycle`，diff 依赖 `external-versions` 缓存。
 - `real_path` 后端仅 sideload 渠道提供，需要 `MANAGE_EXTERNAL_STORAGE`。路径校验要求位于共享卷内、不进入 `Android/`、逐级拒绝符号链接，并用 `O_NOFOLLOW` 打开。当前只能手输路径，没有可视化选择器。Play 渠道只有 SAF。SAF 是内容提供者接口而非文件系统路径，shell 与 dulwich 无法在 SAF 树内运行。
-- `shell_exec` 在 App 沙箱中以 `/system/bin/sh` 运行，工作目录为会话私有根，经 `runCommandInWorkspace` 持锁并前后扫描对账 Room；看不到 `/mnt`。内置 git 是 shell 函数 `python3 -m nexara_git`，转发到 `dulwich.cli`，只支持 HTTPS 远端，没有凭据注入。
+- `shell_exec` 在 App 沙箱中以 `/system/bin/sh` 运行，工作目录为会话私有根，经 `runCommandInWorkspace` 持锁并前后扫描对账 Room；看不到 `/mnt`。内置 git 是 shell 函数 `python3 -m nexara_git`，转发到 `dulwich.cli`，当前只支持 HTTPS 远端，没有凭据注入。
 - 共享存储（API 31 与 API 35 模拟器实测）大小写不敏感、不支持符号链接、`chmod` 无效且不可执行。dulwich 1.2.17 读取 `core.symlinks`（为 false 时把符号链接检出为普通文件）与 `core.filemode`。
 - dulwich 的 porcelain 网络函数接受 `username`/`password`，但 `dulwich.cli` 不传递；HTTP 客户端从 URL userinfo 取凭据，不执行 `credential.helper`。同一 uid 的 shell 命令能读到环境变量、继承的 fd 与私有文件，因此凭据不能交给 shell 进程。
 - Agent 无规则字段，无工具修改 Agent。`ContextBuilder.buildSystemPrompt` 每个工具轮次重建，顺序为 Agent 提示词 → Session Instructions → 工具说明 → 技能目录 → 计划 → 检索资料 → 摘要 → 时间。全仓库没有读取 `AGENTS.md`/`CLAUDE.md` 的逻辑。
@@ -28,7 +29,9 @@
 - `AgentEditViewModel.buildAgent()` 从界面状态重建整个 Agent 再整行写入，新字段必须在此保留，否则编辑页保存会清空规则。
 - 备份只覆盖 Room 跟踪的私有工作区文件，总量上限 16 MiB、文件项上限 10 000（`BackupPackageLimits`），超限时整份备份失败。`.git/` 下的对象照常进入 Room 索引（只是不向量化），因此在私有工作区 clone 稍大的仓库就会让本地与 WebDAV 备份失败。`android:allowBackup="false"`，卸载或清除数据会删除 `filesDir` 下全部内容。
 - 内置 git 的性能（Mac、Python 3.14、同一 dulwich 1.2.17 纯 Python wheel 实测）：requests 仓库完整 clone 5.2 秒（原生 git 3.1 秒）；Django 完整 clone 76.5 秒（原生 44.9 秒，网络占主要部分）；Django 工作树 7 084 个文件的 status 1.3 秒（原生 0.2 秒）；2 万文件合成仓库的 status 1.0 秒。Django `--depth 1` clone 用时 43 秒、`.git` 146 MB，原生 git 5.5 秒、13 MB：`nexara_git` 只把引用限制到分支与标签，浅克隆仍会拉取全部标签，每个标签带一份完整快照；只取默认分支时降为 6.1 秒、13 MB，`git fsck` 无错误。手机上的耗时尚未测量。
-- 打包的是 dulwich 纯 Python wheel，不含其可选的 Rust 加速模块（`_objects`、`_pack`、`_diff_tree`）。dulwich 本身提供 submodule、worktree、bisect、gc、maintenance、lfs、sparse-checkout 等命令，`nexara_git` 的白名单未开放；SSH 远端需要 ssh 程序或 paramiko 及其原生依赖，App 内均不具备。
+- 打包的是 dulwich 纯 Python wheel，不含其可选的 Rust 加速模块（`_objects`、`_pack`、`_diff_tree`）。dulwich 本身提供 submodule、worktree、bisect、gc、maintenance、lfs、sparse-checkout 等命令，`nexara_git` 的白名单未开放；dulwich 默认的 SSH 传输要调用 ssh 程序（App 内没有），但 `dulwich.client.get_ssh_vendor` 可替换为自定义 vendor。
+- SSH 已由 JSch 实现（`data/ssh/SshRuntime.kt`）：主机配置含用户名、私钥凭据与固定的主机密钥指纹（`PinnedSshHostKeys`，`StrictHostKeyChecking=yes`），通过 `ChannelExec` 执行命令。dulwich 的 SSH 传输只需一个提供 `run_command` 的 SSH vendor，可以由 Kotlin 侧的 JSch 通道承担。
+- tsnet 原型（tailscale.com v1.104.1，Go 1.27.1，`GOOS=android CGO_ENABLED=0` 可执行文件，空导入 `tailscale.com/feature/androidbin`）：arm64 产物 21.7 MB，压缩 7.7 MB；Nexara 原生库为压缩打包（`useLegacyPackaging = true`），APK 增量约 7.7 MB，当前 sideload Release 30.8 MB 加上后约 38.5 MB，低于 50 MB 上限。emulator-5562（API 31）App 沙箱内以子进程运行：cgo 构建因 Android 11+ 禁止 App 使用 netlink 而报 `netlinkrib: permission denied`；非 cgo 构建经 androidbin 的合成网卡与 dnsproxyd 解析正常启动，经 bootstrap DNS 连上控制服务器并给出登录链接，UDP 缓冲区只有告警。登录后的节点发现、SOCKS5 访问、MagicDNS 与真机（ColorOS 16，另有 VPN 应用运行）尚待验证。
 - Termux 以独立 uid 运行，无法读取 Nexara 的 `filesDir`；只能经 `termux-setup-storage` 访问共享存储。
 - `ssh_host_save`/`ssh_host_delete` 的模式可复用：工具列表按设备开关过滤，执行时再检查；`ToolArgumentApprovalRules` 让这些工具在任何模式下逐次审批。审批预览只基于参数，`infra/util/MyersDiff.kt` 可计算行差异。
 
@@ -95,12 +98,22 @@
 - 以“工作区根路径 + 文件 SHA-256”记录信任。首次出现或内容变化时，生成前展示确认卡（显示来源路径、大小与前若干行）：信任后注入；不信任则本次与后续不注入，直到内容再次变化。
 - 注入位置在 User Rules 之后，标题 `## Project Rules (<文件名>)`，并声明其优先级低于系统安全约束与审批规则。内容变化从下一轮生效。
 
-### Git 凭据
+### Git 远端认证
 
 - 设置页新增“Git 凭据”：按主机（如 `github.com`）保存用户名与令牌，存入 `SecretStore`，不进备份。
 - 凭据代理：Kotlin 在 `127.0.0.1` 随机端口启动凭据注入代理。wrapper 把 dulwich 的 HTTPS 请求改发到代理，并带上本次命令的一次性 nonce；代理只接受 git 智能协议路径（`/info/refs`、`/git-upload-pack`、`/git-receive-pack`），只对已配置主机添加 `Authorization` 后经 HTTPS 转发。令牌只存在于 Kotlin 进程内存。
 - shell 进程只能看到 nonce，nonce 随命令结束失效，且只能用于 git 智能协议路径，无法读出令牌或调用其它 API。
+- SSH 远端：`nexara_git` 向 dulwich 注册自定义 SSH vendor，连接 Kotlin 侧的本机桥并出示本次命令的 nonce；Kotlin 按远端主机、端口与用户名匹配已保存的 SSH 主机（需已固定主机密钥），用 JSch `ChannelExec` 只执行 `git-upload-pack`、`git-receive-pack`、`git-upload-archive` 加单个带引号路径，双向转发数据。未匹配到主机时返回指引，提示先在 SSH 设置中添加主机（例如 `github.com`，用户 `git`）。私钥不离开 Kotlin 进程。
 - push 仍是普通 `shell_exec` 命令，沿用现有执行审批；`nexara_git` 的用法说明改为引导配置 Git 凭据，不再建议把令牌写进 URL。
+
+### 内置 Tailscale（tsnet）
+
+- 形态：Go 编写的 `libnxtailnet.so` 可执行文件随 APK 打包，由 Kotlin 像打包 Python 一样以子进程启动；状态目录在 App 私有目录，不进备份。子进程经标准输入输出的 JSON 行协议接受启停、登录、状态查询。
+- 登录：浏览器打开授权链接；或在设置页输入 auth key（`SecretStore`，不进备份）；可填自定义控制服务器地址以支持 Headscale。可选临时节点。
+- 分流：子进程在 127.0.0.1 随机端口提供带每次启动随机凭据的 SOCKS5 与 HTTP CONNECT 代理，代理内按目标分流：tailnet 地址（`100.64.0.0/10`、`fd7a:115c:a1e0::/48`、MagicDNS 后缀与短名）经 tsnet，其它目标直连。OkHttp/Ktor 用按目标选择的 `ProxySelector`，只有 tailnet 目标走代理；JSch 对 tailnet 主机使用 SOCKS5；`shell_exec`、Python 与内置 git 通过代理环境变量接入，域名由代理远端解析使 MagicDNS 生效。
+- 生命周期：设置页总开关启用后，在 App 进程内按需启动，Agent 生成期间保持在线；进程结束即下线，不做后台常驻。
+- Agent 能力：新增只读工具 `tailnet_status`（节点名、IP、系统、在线状态）；访问 tailnet 资源复用现有工具，沿用现有审批规则；设置页可选设备白名单。
+- 构建：Gradle 任务用固定版本的 Go 工具链与 `go.sum` 编译，CI 增加 Go 环境；两个渠道都包含。许可证页加入 Tailscale（BSD-3-Clause）。
 
 ## 分期与关键路径
 
@@ -110,9 +123,10 @@
 4. **P4 选择器与界面**：目录浏览器组件、Agent 编辑页与会话设置入口、知识库“工作区”分组、切换提示与不可用状态；`nexara_git` 只读 JSON 子命令与 Git 变更面板；截图预览与设备测试。
 5. **P5 Agent 用户规则**：编辑页、`agent_rules_read`/`agent_rules_update`、审批差异卡、历史与回滚、提示词注入。
 6. **P6 项目规则**：读取、截断、信任记录与确认卡、提示词注入。
-7. **P7 Git 凭据代理**：凭据设置页、代理、wrapper 改造、nonce 生命周期、Python 与 JVM 测试。
+7. **P7 Git 远端认证**：HTTPS 凭据设置页与凭据注入代理、SSH vendor 与 JSch 桥、wrapper 改造、nonce 生命周期、Python 与 JVM 测试。
+8. **P8 内置 Tailscale**：先完成原型验证（登录、节点发现、SOCKS5 与 HTTP 代理访问、MagicDNS、真机与其它 VPN 共存、耗电与重连），再接入构建、子进程管理、设置页、分流、`tailnet_status` 与权限；设备与真机验收。
 
-P1 先于其它各期；P2 先于 P4、P6；P3 不依赖其它各期；P4 的 Git 面板与 P5 的审批卡依赖 P3；P5 只另依赖 P1；P7 只依赖 P2 的执行环境接线。每期独立提交推送。
+P1 先于其它各期；P2 先于 P4、P6；P3 不依赖其它各期；P4 的 Git 面板与 P5 的审批卡依赖 P3；P5 只另依赖 P1；P7 只依赖 P2 的执行环境接线；P8 不依赖其它各期，P8 完成后 P7 的 SSH 桥对 tailnet 主机经 SOCKS5 连接。每期独立提交推送。
 
 ## 不变量
 
@@ -120,7 +134,8 @@ P1 先于其它各期；P2 先于 P4、P6；P3 不依赖其它各期；P4 的 Gi
 - 自选工作区内不写入 `.nexara*` 标记；Nexara 自身的回收与差异缓存存放在 App 私有目录。
 - 目录后端逐级拒绝符号链接与 `..`，共享卷根不进入 `Android/`，所有路径解析后仍位于工作区根内。
 - 规则修改与项目规则注入都需要用户明确批准或信任；Agent 不能修改自身身份提示词。
-- Git 令牌不出现在参数、命令文本、环境变量、文件、stdout/stderr、日志、异常与备份中。
+- tsnet 节点状态与 auth key 不进备份、不出现在日志与模型上下文；本机代理只接受带凭据的连接，非 tailnet 目标不改变原有直连路径。
+- Git 令牌与 SSH 私钥不出现在参数、命令文本、环境变量、文件、stdout/stderr、日志、异常与备份中。
 - 网络与文件 IO 在 `Dispatchers.IO`。
 
 ## 验收
@@ -146,5 +161,8 @@ python3 -m unittest scripts/tests/test_nexara_git.py
 - 含符号链接、可执行位或仅大小写不同路径的仓库在共享卷上无法完全还原，只能降级处理并提示，此类仓库应使用 Nexara 项目文件夹。
 - 自选工作区不进 Room，文件面板、版本历史与向量索引能力弱于私有工作区。
 - Nexara 项目文件夹不进备份且卸载即删除，未推送的提交会随之丢失；界面需在该类型说明中明示。
-- `dulwich` 纯 Python 实现，大仓库的 status 与本地对象处理明显慢于原生 git，手机 CPU 上差距可能更大；SSH 远端不可用，其它高级命令需逐个验证后再开放白名单。
+- `dulwich` 纯 Python 实现，大仓库的 status 与本地对象处理明显慢于原生 git，手机 CPU 上差距可能更大；其它高级命令需逐个验证后再开放白名单。
+- tsnet 的本机代理端口对同设备其它 App 可见，只靠每次启动随机凭据防护；代理凭据经环境变量交给同 uid 的子进程，任何 `shell_exec` 命令都可使用 tailnet。
+- tsnet 依赖 androidbin 的合成网卡，多网卡切换（Wi‑Fi 与蜂窝）时的重连与直连打洞效果需真机验证；与其它 VPN 共存时流量经该 VPN，规则型代理可能干扰 UDP 直连而只能走 DERP 中继。
+- 构建链引入 Go 工具链，CI 时长与缓存需调整；APK 约增加 7.7 MB。
 - Play 渠道的共享存储能力依赖“所有文件访问”政策审批，当前不纳入。

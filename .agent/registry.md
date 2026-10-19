@@ -11,7 +11,7 @@
 - docs/context-management.md — 阈值预算、完整轮次摘要、工具折叠缓存、立即压缩与旧设置兼容规则
 
 - docs/distribution-builds.md — play/sideload 风味、构建与 CI 入口、APK/mapping 路径、合并清单检查及富内容 WebView 安全与设备验收
-- .agent/plans/20261019-workspace-binding-agent-rules.md — 自选工作区（Nexara 项目文件夹与共享存储目录、Agent/会话绑定、可视化选择器）、差异视图组件、工具差异指示器与只读 Git 变更面板、内置 git 性能路线、Agent 用户规则与修改工具、AGENTS.md 项目规则信任、Git 凭据注入代理实施计划
+- .agent/plans/20261019-workspace-binding-agent-rules.md — 自选工作区（Nexara 项目文件夹与共享存储目录、Agent/会话绑定、可视化选择器）、差异视图组件、工具差异指示器与只读 Git 变更面板、内置 git 性能路线、Agent 用户规则与修改工具、AGENTS.md 项目规则信任、Git 远端认证（HTTPS 凭据代理与 SSH 桥接）、内置 Tailscale（tsnet）实施计划
 - .agent/plans/20261017-mobile-agentic-capabilities.md — 移动端 Agent 能力增强（执行底座与无限制轮次、SAF 工作区与 play/sideload 风味、原生 SSH、隔离脚本运行时、Termux 接入）与知识图谱修复及图检索计划
 - .agent/plans/20261016-keenable-search-provider.md — Keenable 搜索提供商、免密钥与安全凭据、工具/会话路由及验证计划与执行结果
 - assets/branding/design-spec.md — 折叠 N 图标母版、生成谱系、日夜和单色变体、Gradle 跨 IDE 生成契约与验证入口
