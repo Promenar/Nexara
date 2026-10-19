@@ -10324,3 +10324,34 @@ P3 余项：执行差异指示器与文件修改审批卡/执行结果接入；P
 
 ### HLG
 标准 append，先 dry-run 再 apply。
+
+## 2026-10-20T01:40:07+08:00 · P3 余项与 P4 完成：文件改动指示器、审批差异预览、工作区选择器、Git 变更面板与切换提示；真机验收通过
+
+type: implementation
+scope: ["Nexara", "native-ui", "workspace", "git", "ui", "chat"]
+status: verified
+tags: ["file-changes", "approval-diff", "workspace-picker", "git-panel", "workspace-switch-notice", "p3", "p4"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: e39e19d9eb291762c6b2656803caa6da3e890ef46065ccd417a1af9c40977a11
+
+### Summary
+P3 余项提交 9fbf0773：ToolResult/ExecutionStep 新增 fileChanges（created/modified/deleted/moved，单文件 hunk 32 KiB、单结果 128 KiB 上限），MountedWorkspaceSkill 经 FileChangeCapture 采集，脚本网关不采集；ToolExecutor 只复制到界面步骤，不进模型上下文与账本；执行卡片显示 path +N −M，点开为差异 Sheet；审批卡片按审批摘要一致的原始参数生成差异预览。P4 提交 d5ff6c93：WorkspaceDirectoryBrowser（项目根与共享卷，跳过符号链接与 Android 目录，登记幂等），Agent 默认工作区与会话设置上下文页 SessionWorkspaceSettings 入口，知识库新增工作区分组 WorkspaceLibrary，生成中或审批待处理时拒绝切换。P4 提交 12f4f005：nexara_git --nexara-inspect status/read/log/commit 只读 JSON（version 1）；data/git 与 ui/git 下 GitInspector、GitChangesService、SessionGitWorkspaceLocator、GitChangesSheet、GitWorkspaceEntry，资源管理器在工作区为仓库时显示入口；切换工作区插入 name=workspace_switch 的 SYSTEM 提示消息，居中单独渲染，不进入协议消息与摘要，系统提示词追加旧路径可能失效的说明。
+
+### Changed
+子 Agent 并行产出 B（选择器）与 C（Git 面板），主控复核后合入并解决 NexaraApplication 冲突。Robolectric 无应用资源导致 ViewModel 内 getString 抛 NotFoundException，切换提示文本改为可注入。设备门禁脚本新增 workspace-picker 与 git-inspector 阶段（最小范围）。
+
+### Validation
+单元测试 4224 项 0 失败（25 跳过）；lint、assembleSideloadDebug、assemblePlayDebug、validateSideloadDebugScreenshotTest、分发清单检查及其测试、verify-release-apk 与 nexara_git Python 测试通过（dulwich 路径 41 跳过项另以 python3.14 覆盖）。emulator 设备测试：WorkspacePickerDeviceTest 3 项通过（共享卷用例因未授予所有文件访问按假设跳过）、GitInspectorDeviceTest 2 项、DirectoryWorkspaceDeviceTest 3 项、BuiltinExecDeviceTest 11 项通过。真机 3B1F5QEARBRJQZ66 Release（SHA-256 7f3ab474…3e06）：新建项目 p4-accept 并切换，会话内显示切换提示；DeepSeek V4 Flash 依次 create_file（审批卡 +3 新文件差异）、shell_exec git init/config/add/commit（提交 c60d9a4，耗时 19.5 秒）、patch_file（审批卡 +1 −1 行级差异）；执行卡片显示 notes.md +3 与 +1 −1，差异 Sheet 正确；资源管理器 Git 入口显示 master · 1 项改动，面板未暂存差异（索引→工作区）与最近提交（作者、时间）正确；crash 缓冲无 Nexara 记录；输入法已恢复微信输入法。
+
+### Next
+资源管理器文件列表在目录工作区会话仍显示私有工作区（空），需改为列出绑定目录；Git 入口与面板首次加载约 15–20 秒（真机 Python 冷启动），考虑加载占位或复用常驻解释器；shell_exec 真机冷启动约 19 秒同源。
+
+### Risks
+Git 入口在状态返回前隐藏，慢设备上用户可能以为没有入口；共享存储大小写不敏感重复登记未去重；nexara_git tag 无参数列出不支持；不可用原因文案仅中文；大字号下设置项路径截断；最后一个 hunk 之后无折叠行；ToolExecutor 并行步骤可能互相覆盖的既有问题已另行登记待排查；私有工作区快照读取（PrivateWorkspaceTransferBackend）尚未真机覆盖。真机保留测试项目 p4-accept 与会话，无害。
+
+### DIA
+已同步 README（自选工作区条目与使用章节）、CHANGELOG Unreleased（五条）、docs/distribution-builds.md、docs/superpowers/specs/2026-10-18-nexara-exec-backend.md 与计划（P3、P4 完成）；真机验收无新增文档影响。
+
+### HLG
+标准 append，先 dry-run 再 apply。
