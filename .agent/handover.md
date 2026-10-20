@@ -10751,3 +10751,35 @@ Markdown 图片目前会尝试加载任意本机绝对路径，计划收紧为�
 
 ### HLG
 追加本条。
+
+## 2026-10-20T16:15:07+08:00 · 两级技能文件系统运行时与全局审批白名单实施完成
+
+type: feature
+scope: ["native-ui", "skills", "tool-approval", "backup"]
+status: done
+tags: ["skills", "vfs", "approval", "backup", "parallel-delegation"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+event-date: 2026-10-20
+record-fingerprint: eeec53c985247980e970bca345afda1f121745d9ab47c747a2ef3051ec3f6e46
+
+### Summary
+按 .agent/plans/20261020-skills-filesystem-runtime.md 完成 S1–S6：技能仓库层 FileSkillCatalog（两级扫描、openai.yaml 子集、信任与已修改状态）、全局审批白名单、备份 skills 分区（包格式 2 兼容 1，.git 超限降级并在恢复后提示重新 clone）、会话设置工具标签重排与技能视图、模型侧两级技能清单与 activate_skill/read_skill_file、/skills 虚拟根与技能目录写入逐次审批。后端工作包 A/B/C/D/E 经 Codex GPT-6.1-Sol 并行施工，界面包 U 由主控完成，D 经独立审阅两轮修正后合入。
+
+### Changed
+B-native-refactor 合入 A(45659b2f)、B(27bdd21c)、C(5cbd6ed4)、U(ada61034)、E(f378c118)、D(2d8c4c9b)；随后修复 aa6e030e（设置页编辑读取磁盘当前技能）、c0bc19d0（恢复后技能仓库提示）、ff51211b（工具表构建调度器可注入）、6e7ab30d（设备测试按运行时方式解析审批目标）；文档 f454a812 同步 ADR-022、CHANGELOG、README、ARCHITECTURE 与计划状态行。D 的审阅修正：审批与执行层参数语义一致、非字符串参数视为缺省、.agents/skills Unicode 大小写折叠、无法解析目标的路径变更在全自动模式也要求审批且执行层以 INVALID_PATH 拒绝、技能目录 canonicalFile。
+
+### Validation
+主分支 native-ui：:app:testSideloadDebugUnitTest 4516 项 0 失败 25 跳过；:app:lintSideloadDebug、:app:validateSideloadDebugScreenshotTest、:app:assembleSideloadDebug、:app:assemblePlayDebug 均通过；仓库根 check-distribution-manifests.py 通过。设备：ARM64 deviceTest 包在 emulator-5564(API 35) 与 emulator-5562(API 31) 上 SkillsDirectoryDeviceTest 2/2 通过；DirectoryWorkspaceDeviceTest、BuiltinExecDeviceTest、SafExternalFolderDeviceTest、WorkspacePickerDeviceTest 共 18 项通过（共享卷用例因未授予所有文件访问按假设跳过）。反斜杠路径执行层拒绝用例已确认修复前失败、修复后通过。
+
+### Next
+S7 真机与真实模型验收：在 3B1F5QEARBRJQZ66 安装侧载包，用 DeepSeek V4 Flash 验证 Agent 在 /skills 新建技能后下一轮出现在清单、shell 中 git clone 到 $NEXARA_SKILLS 后可发现启用、$技能名 点名、项目级技能信任流程、备份恢复后技能与启用状态一致及重新 clone 提示。
+
+### Risks
+shell_exec/python_exec 等真实进程对技能目录的写入无法按路径拦截，只受执行工具审批约束；旧私有工作区中以 uuid 写到 /skills 路径的 Room 条目在审批卡显示为用户级路径（显示不一致）；备份整包 16 MiB 内存上限会使大技能目录备份失败而非部分备份；全自动模式下无法解析目标的文件变更现在会弹出审批。
+
+### DIA
+已同步 docs/ADR/ADR-022-agent-skills.md、CHANGELOG.md、README.md、docs/ARCHITECTURE.md 与 .agent/plans/20261020-skills-filesystem-runtime.md 状态行。
+
+### HLG
+本记录为 mobile-agentic-capabilities 连续性追加；临时工作树 a/b/c/d/e/u/m 与 tmp/skills-merge-check 分支在推送后清理。
