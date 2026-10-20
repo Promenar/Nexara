@@ -10689,3 +10689,34 @@ testSideloadDebugUnitTest 共 4373 项、0 失败、25 跳过（--rerun）；lin
 
 ### HLG
 追加本条。
+
+## 2026-10-20T14:09:22+08:00 · 登记下一项：技能文件系统运行时计划
+
+type: planning
+scope: ["Nexara", "native-ui", "skills"]
+status: planned
+tags: ["skills", "plan", "next"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 9b65a9e6e5a46d2acd45014f7496bc32e36e1292ab9ed6f19b9f864005bd2dbf
+
+### Summary
+设置页视觉统一已完成（ab879b53）。下一项是技能文件系统运行时，计划见 .agent/plans/20261020-skills-filesystem-runtime.md（分叉会话按用户决定编写，本条随该文件一并提交）。
+
+### Changed
+只提交计划文件，不改代码。计划要点：用户级技能放在虚拟路径 /skills（物理位置沿用 filesDir/agent_skills），项目级为工作区仓库内的 .agents/skills，目录格式遵循 Codex 技能规范。文件是唯一事实源，文件工具、shell、python、内置 git 都能管理技能。技能目录的写入逐次审批，不受白名单覆盖；新出现的用户级技能默认停用，项目级技能按内容哈希确认信任。会话设置的“工具”标签重排，并新增技能视图。审批白名单改为全局级。技能纳入备份，载荷升为 v6。
+
+### Validation
+不涉及代码，未运行测试。计划中的“已验证事实”由分叉会话基于 2026-10-20 的工作树核对。
+
+### Next
+按 S1–S7 实施技能文件系统运行时，S1（技能仓库层）先行；S4 与 S1–S3 无依赖，可独立实施。S4 会改动 SessionSettingsSheet.kt 与审批卡片，排在设置页改造（已完成）之后。计划中若仍有待确认项，开工前先与用户收敛。设置页遗留的可选项见上一条记录。
+
+### Risks
+根模式工作区下仓库自带的 skills/ 会被 /skills 遮蔽；shell_exec 与 python_exec 无法按路径拦截对技能目录的写入，这一边界依赖执行审批与启用/信任状态。
+
+### DIA
+新增计划文件 .agent/plans/20261020-skills-filesystem-runtime.md；README、CHANGELOG 与 registry 暂无影响。
+
+### HLG
+追加本条。
