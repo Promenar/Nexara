@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-10-20T09:22:20+08:00
+> generated_at: 2026-10-20T09:22:38+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -31,6 +31,7 @@
 | 2026-10-20T08:55:06+08:00 | iso | verified | resume | ["Nexara", "native-ui", "chat-ui"] | ["file-changes", "ui", "screenshot-test"] | 执行步骤标题的 +N −M 红绿着色 | `.agent/handover.md` · `2026-10-20T08:55:06+08:00` · `fp:4dd70c49ad` |
 | 2026-10-20T06:24:35+08:00 | iso | verified | resume | ["Nexara", "native-ui", "git", "python"] | ["git-panel", "performance", "pyc", "device-acceptance"] | 真机应用内复测 Git 入口与面板加载速度（预编译字节码后） | `.agent/handover.md` · `2026-10-20T06:24:35+08:00` · `fp:e1d8818ca9` |
 | 2026-10-20T02:20:25+08:00 | iso | verified | resume | ["Nexara", "native-ui", "python", "git", "build", "ci"] | ["packaged-python", "pyc", "git-panel", "performance", "verify-release-apk"] | 打包 Python 构建期预编译哈希 pyc：内置 git 与 Git 面板提速约十倍 | `.agent/handover.md` · `2026-10-20T02:20:25+08:00` · `fp:a7b61d863f` |
+| 2026-10-20T02:08:57+08:00 | iso | verified | resume | ["Nexara", "native-ui", "workspace", "ui", "chat"] | ["resource-explorer", "workspace", "directory-workspace", "p4"] | 资源管理器文件区跟随会话工作区（私有/目录/不可用三态） | `.agent/handover.md` · `2026-10-20T02:08:57+08:00` · `fp:81576e4a24` |
 | 2026-10-20T01:40:07+08:00 | iso | verified | resume | ["Nexara", "native-ui", "workspace", "git", "ui", "chat"] | ["file-changes", "approval-diff", "workspace-picker", "git-panel", "workspace-switch-notice", "p3", "p4"] | P3 余项与 P4 完成：文件改动指示器、审批差异预览、工作区选择器、Git 变更面板与切换提示；真机验收通过 | `.agent/handover.md` · `2026-10-20T01:40:07+08:00` · `fp:e39e19d9eb` |
 | 2026-10-20T01:33:18+08:00 | iso | verified | none | ["Nexara", "native-ui", "chat", "tool-executor"] | ["tool-executor", "message-manager", "execution-steps", "lost-update", "regression-test"] | 修复同批次工具调用执行步骤与引用丢失 | `.agent/handover.md` · `2026-10-20T01:33:18+08:00` · `fp:24b54b88bc` |
 | 2026-10-19T23:50:26+08:00 | iso | verified | resume | ["Nexara", "native-ui", "workspace", "exec", "git", "ui"] | ["workspace-binding", "directory-workspace", "nexara-git", "file-diff-view", "p2", "p3"] | P2 完成：自选工作区目录后端与命令执行；P3 文件差异视图组件完成 | `.agent/handover.md` · `2026-10-19T23:50:26+08:00` · `fp:8a28a79c75` |

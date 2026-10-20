@@ -10383,6 +10383,34 @@ Git 入口在状态返回前隐藏，慢设备上用户可能以为没有入口�
 ### HLG
 标准 append，先 dry-run 再 apply。
 
+## 2026-10-20T02:08:57+08:00 · 资源管理器文件区跟随会话工作区（私有/目录/不可用三态）
+
+type: implementation
+scope: ["Nexara", "native-ui", "workspace", "ui", "chat"]
+status: verified
+tags: ["resource-explorer", "workspace", "directory-workspace", "p4"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 81576e4a24b21f01911bda8b93d92d22944d94b1f5639be371c9c3e7f80f81a9
+
+### Summary
+修复真机问题：会话绑定项目 p4-accept 后资源管理器文件区仍按会话私有工作区加载、显示“暂无文件”。ResourceExplorerViewModel 每次打开先经 SessionWorkspaceResolver 解析：Private 沿用 Room 观察；Directory 用解析器给出的目录后端（RealPathExternalFolderBackend / 共享存储后端）只读列目录、256 KB 文本预览、8 MB 私有只读副本交给其它应用打开；Unavailable 只显示原因与重试，不回退私有工作区。
+
+### Changed
+新增 ResourceExplorerWorkspace.kt（ResourceExplorerWorkspaceAccess、ResourceExplorerWorkspaceMode、DirectoryBrowserState）与 DirectoryWorkspaceBrowser.kt；ResourceExplorerViewModel 增加三态解析、目录浏览/预览/读取（每次列目录或读取前重新解析绑定，绑定变化或失效即切换状态；IO 经可注入 dispatcher，默认 Dispatchers.IO）；ResourceExplorerSheet 按模式渲染：目录/不可用下停用搜索、导入与会话回收站，回收站页说明 Agent 删除的目录文件备份在外部文件夹挂载回收区，文件页根部保留外部文件夹入口；ExternalFoldersPanel 抽出 prepareExternalFileOpen 供复用；新增中英文字符串与 UiTags。
+
+### Validation
+native-ui 依次运行：:app:testSideloadDebugUnitTest 首轮 4231 项中 AgentSkillsViewModelTest 一例因此前测试泄漏的 Dispatchers.IO 续体在 resetMain 后访问 Main 而失败（UncaughtExceptionsBeforeTest），重跑 4231 项 0 失败 25 跳过；新增 ResourceExplorerWorkspaceModeTest 7 项（三态、真实临时目录+JvmBoundRealPathFileSystem 验证符号链接与 .nexara 内部文件不列出且 /link 读取 INVALID_PATH、私有改绑目录后观察者停止、浏览中目录失效切换不可用、解析失败不展示任一侧）与原 ResourceExplorerViewModelTest 20 项通过；:app:lintSideloadDebug、:app:assembleSideloadDebug、:app:assemblePlayDebug、:app:validateSideloadDebugScreenshotTest 成功；仓库根 check-distribution-manifests.py 通过。未做真机复测。
+
+### Next
+真机复测：绑定 p4-accept 的会话打开资源管理器应列出 notes.md，可预览与用其它应用打开；共享存储工作区撤销所有文件访问后应显示不可用原因。可选后续：目录工作区内按名称搜索、导入到目录、直接恢复挂载回收区条目。
+
+### Risks
+AgentSkillsViewModelTest 首轮失败判断为与本改动无关的偶发测试泄漏（泄漏续体回到 Main，新增测试的 IO 续体均回到注入的测试调度器），来源测试未定位，也未在基线提交上复现；目录模式不隐藏真实目录根下名为 mnt 的子目录（Agent 文件工具中被 /mnt 虚拟挂载遮蔽），两处视图在该名称上不一致；不可用原因与目录错误为后端中文领域文案，英文界面下仍显示中文原因。
+
+### DIA
+已同步 CHANGELOG [Unreleased]“资源管理器跟随会话工作区”与 README“自选工作区使用”章节；其它文档无影响。
+
 ## 2026-10-20T02:20:25+08:00 · 打包 Python 构建期预编译哈希 pyc：内置 git 与 Git 面板提速约十倍
 
 type: implementation
