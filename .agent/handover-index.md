@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-10-20T17:30:22+08:00
+> generated_at: 2026-10-20T17:30:38+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -28,6 +28,7 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-10-20T17:23:53+08:00 | iso | done | none | ["native-ui", "markdown-rendering"] | ["markdown", "latex", "rendering", "regression-test"] | Markdown 行内代码美元符号误识别为公式修复 | `.agent/handover.md` · `2026-10-20T17:23:53+08:00` · `fp:bdb976d7be` |
 | 2026-10-20T17:07:46+08:00 | iso | done | resume | ["native-ui", "skills", "backup"] | ["skills", "device-acceptance", "backup", "restore"] | 两级技能运行时 S7 真机与真实模型验收及技能恢复缺陷修复 | `.agent/handover.md` · `2026-10-20T17:07:46+08:00` · `fp:3af9b6b4a7` |
 | 2026-10-20T16:52:23+08:00 | iso | done | none | ["native-ui", "backup"] | ["backup", "restore", "startup-gate", "pending-restore"] | 修复备份恢复失败回滚后启动永久锁定 | `.agent/handover.md` · `2026-10-20T16:52:23+08:00` · `fp:6acbe0b7ef` |
 | 2026-10-20T16:15:07+08:00 | iso | done | resume | ["native-ui", "skills", "tool-approval", "backup"] | ["skills", "vfs", "approval", "backup", "parallel-delegation"] | 两级技能文件系统运行时与全局审批白名单实施完成 | `.agent/handover.md` · `2026-10-20T16:15:07+08:00` · `fp:eeec53c985` |
