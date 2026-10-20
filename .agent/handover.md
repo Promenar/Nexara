@@ -11047,3 +11047,41 @@ generate_image 没有授权目标，审批卡片元信息行此前显示“未�
 
 ### HLG
 本条为 hlg61。
+
+## 2026-10-21T00:49:18+08:00 · 目录工作区与外部文件夹浏览接入媒体查看，清理已并入的 agent worktree
+
+type: task
+scope: ["native-ui/media"]
+status: completed
+tags: ["media", "resource-explorer", "mount", "directory-workspace", "worktree"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 9b48e106d3ee2d0e166c305e3b1380b0745b4f2253d235be3641683ac7aa9b66
+
+### Summary
+选用目录作为会话工作区时的文件浏览（DirectoryWorkspaceBrowser）与“外部文件夹”挂载浏览（ExternalMountBrowserDialog）中，点按图片、视频、音频直接在会话内查看或播放，与资源管理器一致；其它文件保留文本预览。同时清理了 5 个已并入主线的 agent worktree 及其分支。
+
+### Changed
+- 新增 ui/chat/components/WorkspaceMediaOpener.kt：rememberWorkspaceMediaOpener(sessionId, stateKey) 构造媒体环境、承载 WorkspaceMediaViewer 并返回打开函数；isPreviewableMediaName 按文件名判断媒体。
+- WorkspaceFolderBrowser 改用该函数；DirectoryWorkspaceBrowser 新增 onOpenMedia（按 `/a/b.png` 打开），ResourceExplorerSheet 传入；ExternalMountBrowserDialog 按 `/mnt/<别名>/…` 打开。路径与 DefaultWorkspaceMedia 解析一致（目录工作区经 WORKSPACE_ALIAS 映射到目录根）。
+- 回归修复 dc6f67f8：打开回调曾只以媒体环境为 remember 键，资源管理器工作区根由空变为确定后 rememberSaveable 换了新状态，回调写旧状态导致查看器不出现；改为以状态对象为键。
+- 提交：46200119（功能、设备测试、CHANGELOG）、dc6f67f8（回归修复与测试）。
+- worktree 清理：移除 agent-a1497cd2（差异视图，主线 e6f7f48d）、agent-a34d452b（P4 工作区选择器，d5ff6c93）、agent-a53f8c21（P3，9fbf0773）、agent-a5f04f5b（P4 Git 面板，12f4f005）、agent-ae839f1f（nexara_git 抓取策略，e21abe65）及其分支；分支原 SHA 依次为 07f59ba9、8998b259、d7bee7b2、8490d5da、3904a56d，可按 SHA 恢复。
+
+### Validation
+- BrowserMediaOpenTest 4 项（目录工作区媒体与文本分流、无媒体环境回退、挂载按 /mnt 路径打开、状态键变化后仍能打开）与 ResourceExplorerInteractionTest 在 emulator-5564（API 35）与 emulator-5562（API 31）均通过；状态键用例修复前失败。
+- :app:testSideloadDebugUnitTest 4740 项 0 失败；lint、两渠道构建、截图校验与 manifest 检查通过。
+- release 0.2.2-beta 校验通过（SHA-256 f166641f…），真机 3B1F5QEARBRJQZ66 资源管理器 media/test 中 chart.png 打开图片查看器、bbb3.mp4 全屏播放。
+
+### Next
+- 真机上尚无目录工作区与外部文件夹挂载，两个新入口只有模拟器设备测试覆盖；实测需在真机经系统文件选择器挂载一个含媒体的文件夹或切换到目录工作区（需用户操作或授权）。
+- 未清理：claude/vigilant-blackburn-c7966e 含未并入主线的修复 34d9bed1“审批卡片展开后显示完整参数并在卡内限高滚动”（主线 ApprovalPreview 仍截前 12 行），需用户决定是否合入；agent-a9ba1f07 被仍在运行的 Claude 会话（pid 47265）锁定；Nexara-wt-bdpoc 为 B+D 执行后端探针分支，规格文档引用，且可能含被忽略的生成产物。
+
+### Risks
+- 挂载为 SAF 树时媒体经 ContentUri 读取，模拟器测试用假解析器，未覆盖真实 SAF 挂载的播放。
+
+### DIA
+已同步 CHANGELOG（Unreleased · 会话媒体，新增目录工作区与外部文件夹媒体查看条目）。
+
+### HLG
+本条为 hlg62。
