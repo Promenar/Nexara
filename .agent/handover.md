@@ -10938,3 +10938,34 @@ M6 真机验收（3B1F5QEARBRJQZ66）：生图写入工作区并显示卡片；�
 
 ### HLG
 追加本条。
+
+## 2026-10-20T21:45:57+08:00 · 会话媒体 M6 真机验收与修复：流式引用链接闪退、媒体写入回滚、media_fetch UA
+
+type: implementation
+scope: ["Nexara", "native-ui", "chat", "media"]
+status: completed
+tags: ["media", "device-acceptance", "markdown", "crash", "rag"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 735707cb2ee42e43da6881675f35cf5e40743a8629b086d9720735a52c0c0d71
+
+### Summary
+在 OPPO PKH110（ColorOS 16，release 0.2.2-beta）完成会话媒体 M6 真机验收，修复验收中发现的问题并合入 B-native-refactor（e055a2a8、6b7e0614）。通过项：图片、音频、视频与文件卡片渲染；内联播放、播完重播；全屏；保存到 Download/Nexara（MediaStore 可查）；分享与用其它应用打开选择器；资源管理器预览图片、mp4、wav；DeepSeek V4 Flash（非视觉）不暴露 view_media 并给出说明；Gemini 3.8 Flash（原生工具结果媒体）与 GLM-5.3-Flash（Chat 兼容合成 user 消息）正确描述图片和视频关键帧；media_fetch 下载公网 mp4 并显示视频卡片。
+
+### Changed
+1）流式闪退：visibleMarkdownNode 截断引用式链接（SHORT/FULL_REFERENCE_LINK）后 LINK_LABEL 只剩“[”，mikepenz 渲染库 innerList() 越界（fromIndex(1) > toIndex(0)），触发于回复中出现 x=[30,109] 之类文本。未放完的引用链接改为按已放出的纯文本显示。2）媒体写入回滚：DefaultWorkspaceMedia.create 对图片、音视频也发布 FileIndexEvent.Changed，设备上 VectorizationQueue 以“不支持索引 MIME”拒绝，保存被包装为“媒体读写失败”并回滚，media_fetch、生图、MCP 落地在设备上全部失败；JVM 单测用假索引接收端未暴露。改为仅 DocumentReferenceExtractor.supports 的文档发布事件，可索引资源发布失败仍回滚。3）media_fetch 使用与 web_fetch 一致的浏览器式 User-Agent（w3schools 曾返回 403）。4）视频已播完时进入全屏 seekTo(0)，不再黑屏。5）资源管理器不再为图片、音视频显示永远“等待中”的 RAG/KG 徽章（showsIndexStatus）。6）view_media、media_fetch 工具说明去掉末尾句号。新增设备测试 WorkspaceMediaDeviceTest。清理 worktree Nexara-wt-media-{a,b,c,d} 并删除已合并分支 feat/media-{a,b,c,d}；工作包报告已复制到主仓库 .agent/tmp-agent-reports/media-{a,b,c,d}/（gitignored）。
+
+### Validation
+testSideloadDebugUnitTest 4726 项 0 失败 25 跳过；lintSideloadDebug、assembleSideloadDebug、assemblePlayDebug、validateSideloadDebugScreenshotTest 通过；check-distribution-manifests.py 通过。新增测试修复前均失败：MarkdownStreamingLinkTest（复现 IllegalArgumentException）、MediaFetchSkillTest UA 用例、DefaultWorkspaceMediaTest 媒体不入索引用例。WorkspaceMediaDeviceTest 在 emulator-5562（API 31）与 emulator-5564（API 35）均 OK (2 tests)，修复前在 API 35 上 2 项失败且原因链为“不支持索引 MIME”。release APK SHA-256 e9f6542882ea04225487205f70ee86c94797a40fbdafd79e67b7fca18f05d9ca 经 verify-release-apk.py 校验并安装真机，复验流式方括号列表无闪退、media_fetch 落地 788493 字节、播完全屏有画面、资源管理器无媒体徽章。真机输入法已恢复为微信输入法。
+
+### Next
+待用户提供服务或主机后验证：生图写入工作区、ComfyUI over tailnet 的图片与视频、MCP 图片落地且上下文无 base64。后续项：tailnet 明文 http 的 media_fetch 支持（需用户决定）；DirectoryWorkspaceBrowser 与 ExternalFoldersPanel 接入媒体预览；挂载写入整块进内存改为流式；MediaRef 增加内容版本号；工具步骤摘要的失败计数格式（“动作 N 个 · M 个失败”）若要调整需全局统一。
+
+### Risks
+1.3 倍字号与浅色主题只由截图测试覆盖，未在真机改系统设置验证。全屏回到开头后若 playWhenReady 为 true 会直接重播（当前行为）。WorkspaceMediaDeviceTest 的下载用例依赖公网，无网络时以 assumption 跳过。挂载目标的媒体写入未做设备验证。
+
+### DIA
+已同步 CHANGELOG（会话媒体条目补充写入回滚、UA、全屏与徽章修复；新增“流式回复中方括号文本导致闪退”条目）与计划状态行（M1–M6 完成及未覆盖场景）。
+
+### HLG
+追加本条。

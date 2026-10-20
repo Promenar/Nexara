@@ -1,6 +1,6 @@
 # 会话媒体：工作区落地、前端渲染与模型查看实施计划
 
-> 状态（2026-10-20）：M1–M6 已完成：M1–M5 已合入 `B-native-refactor`；M6 已在 OPPO PKH110（ColorOS 16）真机验收会话内卡片、播放、全屏、保存、分享、资源管理器预览，以及 DeepSeek（非视觉）、Gemini 3.8 Flash、GLM-5.3-Flash 的 `view_media`；生图、ComfyUI over tailnet、MCP 图片因缺少服务或主机尚未真机验证。`media_fetch` 对 tailnet 明文 http 返回错误并指引改用脚本下载，tailnet 明文直连为后续项。
+> 状态（2026-10-20）：M1–M6 已完成：M1–M5 已合入 `B-native-refactor`；M6 已在 OPPO PKH110（ColorOS 16）真机验收会话内卡片、播放、全屏、保存、分享、资源管理器预览，以及 DeepSeek（非视觉）、Gemini 3.8 Flash、GLM-5.3-Flash 的 `view_media`，以及 `media_fetch` 下载落地（真机暴露的写入回滚问题已修复，设备回归类 `WorkspaceMediaDeviceTest`）；生图、ComfyUI over tailnet、MCP 图片因缺少服务或主机尚未真机验证。`media_fetch` 对 tailnet 明文 http 返回错误并指引改用脚本下载，tailnet 明文直连为后续项。
 
 ## 目标
 
