@@ -11124,3 +11124,34 @@ record-fingerprint: a77ef70b7d031920f2720189a27ae569b80346c0241f06b8b4aa31480179
 
 ### HLG
 本条为 hlg63。
+
+## 2026-10-21T01:33:13+08:00 · 设置页两处遗留修复与 worktree 清理
+
+type: implementation
+scope: ["Nexara", "native-ui", "settings", "git"]
+status: verified
+tags: ["settings-ui", "worktree", "cleanup", "device-test"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 2207964aa453ec7f1037d0242daec33a08b265fae8e9bf390c73df90267c6528
+
+### Summary
+修复上一轮设置页审计留下的两个问题（5e782cbb），并清理全部 worktree 与已合入的远端分支。用户确认分支会话和子会话都已没有未完成的任务。
+
+### Changed
+NexaraSettingsPageLayout 在无顶栏时（showTopBar = false，目前只有设置首页）放一条与状态栏等高的页面背景色 Spacer，滚动内容不再从状态栏图标下穿过。SSH 页“允许 Agent 管理 SSH 主机”的副标题随开关状态变化：开启时“每次变更都需你审批”，关闭时“Agent 只能连接已配置的主机”；ssh_agent_manage_summary 拆成 _on 与 _off 两条。该开关只控制 ssh_host_list/save/delete/install_key 四个工具。CHANGELOG 已追加条目，SSH 页截图基线 12 张已更新。worktree 清理：移除 .claude/worktrees/agent-a9ba1f073b0624234（本会话的子 Agent 留下，已解锁，无未合入提交），并删除本地分支 worktree-agent-a9ba1f073b0624234（34764517）；移除 ../Nexara-wt-bdpoc，分支 poc/bd-exec 在本地和远端都保留（c80c0af9，执行后端规格引用该分支，被删掉的只是可由脚本重建的构建产物）；删除远端分支 claude/vigilant-blackburn-c7966e（f2a2ea0f），其修复已以 b61035b4 合入主线。现在只剩主 worktree。
+
+### Validation
+testSideloadDebugUnitTest 共 4747 项、0 失败；lintSideloadDebug、assembleSideloadDebug、assemblePlayDebug、validateSideloadDebugScreenshotTest、check-distribution-manifests 均串行通过。Release 43,978,167 字节，verify-release-apk 通过，已安装到真机。真机上设置首页滚动后，内容在状态栏下沿处被截断；SSH 页开关处于开启状态，副标题为“每次变更都需你审批”（关闭时的文案只在截图基线中出现，没有替用户切换开关）。git worktree list 只剩主仓库，fetch --prune 后远端已没有 vigilant 分支。
+
+### Next
+设置页审计的遗留项已全部处理。已合并但仍保留的分支有：codex/v0.2-beta（本地与远端）、origin/codex/md3-redesign、A-RN-deprecated；未合并的有 C-haze-native、D-haze-md3mixed、poc/bd-exec。这些分支是否删除由用户决定。
+
+### Risks
+状态栏垫片使用 colorScheme.background，与设置首页背景一致；以后若有其它无顶栏页面背景不同，需要另行处理。
+
+### DIA
+已同步 CHANGELOG；README 与 registry 无影响（registry 引用的是分支 poc/bd-exec，不是 worktree）。
+
+### HLG
+追加本条。
