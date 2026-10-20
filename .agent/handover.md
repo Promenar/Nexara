@@ -11085,3 +11085,42 @@ record-fingerprint: 9b48e106d3ee2d0e166c305e3b1380b0745b4f2253d235be3641683ac7aa
 
 ### HLG
 本条为 hlg62。
+
+## 2026-10-21T01:12:28+08:00 · 合入审批卡片完整参数修复并完成真机挂载媒体与长代码审批验证
+
+type: task
+scope: ["native-ui/chat"]
+status: completed
+tags: ["approval-card", "media", "mount", "device-acceptance", "worktree"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: a77ef70b7d031920f2720189a27ae569b80346c0241f06b8b4aa314801791ea5
+
+### Summary
+把分支 claude/vigilant-blackburn-c7966e 上未并入的修复 34d9bed1 合入主线：审批卡片参数预览不再在生成时截成前 12 行加“… (+N)”，收起态显示前 6 行，展开后在限高 360dp 的框内滚动查看全文。真机上完成挂载浏览的媒体查看与长代码审批验证，并清理该 worktree。
+
+### Changed
+- b61035b4：cherry-pick 34d9bed1（ApprovalPreview 保留全文；ApprovalTextBlockLayout 与 ApprovalTextBlock 收起/展开分节点；新增 ApprovalTextBlockLayoutTest、ApprovalPreviewTest 用例与 3 张截图基线；同步执行后端规格文档）。CHANGELOG 冲突按两边保留解决。原分支的交接记录提交 f2a2ea0f 未搬运，要点并入本条。
+- e6f2ee47：设备测试 ChatApprovalLayoutTest.parameterBlockUsesSixReadableLinesAndCanExpandAllContent 对齐新结构（收起节点 6 行，展开节点为完整原文 12 行）；原分支未更新该设备测试，合入后在两台模拟器上失败。
+- 移除 worktree .claude/worktrees/vigilant-blackburn-c7966e 与分支（原 f2a2ea0f）。
+
+### Validation
+- :app:testSideloadDebugUnitTest 4747 项 0 失败；lint、两渠道构建、截图校验（含 3 张长代码审批基线，已查看）与 manifest 检查通过。
+- ApprovalCardTagsTest、ChatApprovalLayoutTest、ChatApprovalScopeLayoutTest、TextWrappingDeviceTest、ChatPipelineLayoutTest 在 emulator-5564（API 35）与 emulator-5562（API 31）各 30 项通过。
+- release 0.2.2-beta（SHA-256 b350b0d9…）装到真机 3B1F5QEARBRJQZ66：
+  1）经系统文件选择器把 Download/Nexara/mount-test（本机生成的 png、mp4 与 tone.wav 副本）挂载为 /mnt/external（SAF、只读、仅当前会话），挂载浏览中点按 png 打开图片查看器、mp4 全屏播放、wav 在音频面板播放完毕；随后移除挂载并删除测试文件夹，Download/Nexara 恢复为仅 tone.wav。
+  2）DeepSeek V4 Flash 触发 python_exec 80 行脚本审批：收起态前 6 行，展开后框内滚动到 print("line 80")，框内滚到顶后继续下滑交还聊天列表；随后拒绝，未执行。输入法已切回微信输入法。
+
+### Next
+- 目录工作区模式（会话工作区切换为目录）下的媒体查看仍只有模拟器设备测试覆盖，真机未切换工作区实测。
+- 剩余 worktree：agent-a9ba1f07 被运行中的 Claude 会话锁定；Nexara-wt-bdpoc 为执行后端探针分支，保留。
+- 原记录的风险仍在：展开态为单个 Text，参数达数百 KB 时首次展开排版可能卡顿；argumentsSummary 回退路径的来源是否截断未核查。
+
+### Risks
+- cherry-pick 基于较早主线，已由完整验证链与审批相关设备测试覆盖，未跑全量设备测试套件。
+
+### DIA
+已同步 CHANGELOG（审批卡片完整参数条目随合入带入）与 docs/superpowers/specs/2026-10-18-nexara-exec-backend.md。
+
+### HLG
+本条为 hlg63。
