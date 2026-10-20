@@ -10875,3 +10875,35 @@ record-fingerprint: bdb976d7becc59e7a5a084309c8b3604b09b2637ac4417eb8dcfcef81e00
 
 ### HLG
 本记录经 HLG append 追加。
+
+## 2026-10-20T17:42:52+08:00 · 合入恢复锁定修复与 Markdown 美元符号修复并真机验证
+
+type: verification
+scope: ["native-ui", "backup", "markdown"]
+status: done
+tags: ["merge", "backup", "restore", "markdown", "device-acceptance"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+event-date: 2026-10-20
+record-fingerprint: 1bf9161e0500ca9a2932b11afd117662933c4af2257d8a042c0c650682a3c21b
+
+### Summary
+将 claude/musing-hertz-54db51（47a59d7b，恢复确定性失败且已完整回滚时释放待恢复记录并提示）与 claude/suspicious-wilbur-171fbd（4b1ee967，行内代码与链接中的 $ 不再识别为公式）依次合入 B-native-refactor，并在真机验证。
+
+### Changed
+合并提交 1eaeaf65、c36583b7；冲突仅在 .agent/handover.md（按时间顺序保留三条记录）、handover-index.md（用 hlg-handover.py index 重建）与 CHANGELOG.md（两节并存，较新的 Markdown 节在前）。
+
+### Validation
+合并后 native-ui：:app:testSideloadDebugUnitTest 4531 项 0 失败 25 跳过（含 BackupRestoreFailureRecoveryTest、MarkdownMathDelimiterTest），lint、validateSideloadDebugScreenshotTest、assembleSideloadDebug、assemblePlayDebug 通过；check-distribution-manifests.py 通过。真机调试版：放回此前失败恢复留下的待恢复记录（偏好账本仍含同 txId 的 FINALIZED BEFORE），旧构建启动及点重试均停在安全恢复已阻塞；装合并构建后直接进入主界面并弹出“备份未能恢复”，待恢复记录被清除、技能目录保持原状，重启后不再提示；随后再次导入备份正常恢复并弹出技能恢复提示。真机发布版（c36583b7 签名构建）：此前被排成公式的克隆回复改为正确的加粗编号标题与行内代码。
+
+### Next
+无本线阻断项。可选：Markdown 字面量区间解析在含 $ 的长消息流式更新时每次额外解析一遍全文，如出现卡顿再做缓存。
+
+### Risks
+Markdown 修复对含 $ 且含代码或链接语法的文本增加一次 Markdown 解析，长消息流式时有额外开销，未做性能测量。调试版仍保留 files/diag-keep 下的诊断副本与两条测试技能。
+
+### DIA
+两个分支自带 CHANGELOG 与 handover 已随合并同步；合并本身无新增文档影响。
+
+### HLG
+本记录为 mobile-agentic-capabilities 连续性追加。

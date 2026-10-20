@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-10-20T17:30:38+08:00
+> generated_at: 2026-10-20T17:42:52+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -11,7 +11,7 @@
 | agent-tooling-repair-20261002 | waiting | 2026-10-02T08:00:46+08:00 | done | ["Nexara", "pdec", "release"] | 授权 gpt-6-luna 并交付真机测试签名 APK | `.agent/handover.md` · `2026-10-02T08:00:46+08:00` · `fp:110c0ef84b` |
 | ci-version-sync-20261001 | resume | 2026-10-01T22:20:08+08:00 | in_progress | ["Nexara", "android-ci", "release"] | API31 Prompt 编辑器布局反馈根因修复候选 | `.agent/handover.md` · `2026-10-01T22:20:08+08:00` · `fp:c9c99a4302` |
 | dropdown-menu-anchor-and-style-unification | waiting | 2026-09-27T21:43:18+08:00 | completed | ["ui, dropdown-menu, files-panel, m3-design, release"] | 悬浮菜单位置精准锚定与全站新版视觉样式统一规范收敛 | `.agent/handover.md` · `2026-09-27T21:43:18+08:00` · `fp:31537a3d52` |
-| mobile-agentic-capabilities | resume | 2026-10-20T17:07:46+08:00 | done | ["native-ui", "skills", "backup"] | 两级技能运行时 S7 真机与真实模型验收及技能恢复缺陷修复 | `.agent/handover.md` · `2026-10-20T17:07:46+08:00` · `fp:3af9b6b4a7` |
+| mobile-agentic-capabilities | resume | 2026-10-20T17:42:52+08:00 | done | ["native-ui", "backup", "markdown"] | 合入恢复锁定修复与 Markdown 美元符号修复并真机验证 | `.agent/handover.md` · `2026-10-20T17:42:52+08:00` · `fp:1bf9161e05` |
 | nexara-audit-completion-repair | waiting | 2026-09-22T15:28:29+08:00 | done | ["Nexara", "native-ui", "audit-repair"] | 审计修复、最终签名候选及本机设备验收完成 | `.agent/handover.md` · `2026-09-22T15:28:29+08:00` · `fp:c45ed0053a` |
 | nexara-chat-flow-repair | waiting | 2026-10-16T10:00:45+08:00 | done | ["Nexara", "native-ui", "chat"] | 会话主流程审计 P0/P1 修复交付 | `.agent/handover.md` · `2026-10-16T10:00:45+08:00` · `fp:b968f99f1f` |
 | nexara-independent-model-catalog | resume | 2026-09-22T18:33:08+08:00 | done | ["Nexara", "model-catalog"] | 独立模型目录上线、客户端验收与签名候选交付 | `.agent/handover.md` · `2026-09-22T18:33:08+08:00` · `fp:320878f7b2` |
@@ -28,6 +28,7 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-10-20T17:42:52+08:00 | iso | done | resume | ["native-ui", "backup", "markdown"] | ["merge", "backup", "restore", "markdown", "device-acceptance"] | 合入恢复锁定修复与 Markdown 美元符号修复并真机验证 | `.agent/handover.md` · `2026-10-20T17:42:52+08:00` · `fp:1bf9161e05` |
 | 2026-10-20T17:23:53+08:00 | iso | done | none | ["native-ui", "markdown-rendering"] | ["markdown", "latex", "rendering", "regression-test"] | Markdown 行内代码美元符号误识别为公式修复 | `.agent/handover.md` · `2026-10-20T17:23:53+08:00` · `fp:bdb976d7be` |
 | 2026-10-20T17:07:46+08:00 | iso | done | resume | ["native-ui", "skills", "backup"] | ["skills", "device-acceptance", "backup", "restore"] | 两级技能运行时 S7 真机与真实模型验收及技能恢复缺陷修复 | `.agent/handover.md` · `2026-10-20T17:07:46+08:00` · `fp:3af9b6b4a7` |
 | 2026-10-20T16:52:23+08:00 | iso | done | none | ["native-ui", "backup"] | ["backup", "restore", "startup-gate", "pending-restore"] | 修复备份恢复失败回滚后启动永久锁定 | `.agent/handover.md` · `2026-10-20T16:52:23+08:00` · `fp:6acbe0b7ef` |
