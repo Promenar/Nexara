@@ -10783,3 +10783,35 @@ shell_exec/python_exec 等真实进程对技能目录的写入无法按路径拦
 
 ### HLG
 本记录为 mobile-agentic-capabilities 连续性追加；临时工作树 a/b/c/d/e/u/m 与 tmp/skills-merge-check 分支在推送后清理。
+
+## 2026-10-20T17:07:46+08:00 · 两级技能运行时 S7 真机与真实模型验收及技能恢复缺陷修复
+
+type: verification
+scope: ["native-ui", "skills", "backup"]
+status: done
+tags: ["skills", "device-acceptance", "backup", "restore"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+event-date: 2026-10-20
+record-fingerprint: 3af9b6b4a70c267a054c8f13d98ffb8adb26c3162d93b0339c4a3848a8e14ea8
+
+### Summary
+在真机 3B1F5QEARBRJQZ66（OPPO PKH110 / Android 16）用签名发布版与 DeepSeek V4 Flash 完成 S7 验收，并发现、修复技能分区恢复在 Android 上必然失败的缺陷（提交 440a7694）。
+
+### Changed
+SkillRestoreTransaction.stage 移除 Files.getFileStore 同文件系统预检（Android 抛 SecurityException），跨文件系统由 descriptor 间 renameat 的 EXDEV 失败闭合；BackupRuntime 启动恢复失败时写脱敏错误日志；新增 SkillRestoreTransactionDeviceTest；ADR-022 与计划状态记录验收结果。
+
+### Validation
+模拟器 emulator-5564/5562：SkillRestoreTransactionDeviceTest 修复前复现 SecurityException、修复后与 SkillsDirectoryDeviceTest 共 3/3 通过。真机发布版：Agent 新建 /skills 技能逐次审批且无始终允许、默认停用、启用后隐式加载；allow_implicit_invocation=false 技能不点名回答 UNKNOWN、$点名后生效；shell 克隆到 $NEXARA_SKILLS 后 ~/.agents/skills 可见且可用；项目级技能待信任→信任可用→patch 后回到待信任，私有工作区会话不可见。真机调试版：备份格式 2 含 skills 分区与 .git 降级元数据，删除后恢复，技能与启用集合一致并弹出重新 clone 提示。主分支 :app:testSideloadDebugUnitTest 4516 项 0 失败 25 跳过，lint 通过。
+
+### Next
+两个独立问题已建议另开任务：恢复因确定性原因回滚后 pending 记录同 txId 重试永久失败、应用锁定；行内代码中的 $ 被数学公式识别导致回复排版错乱。另 git 克隆提示按会话私有工作区描述备份上限，目标为技能目录时说明不准确。
+
+### Risks
+恢复失败后的永久锁定为备份核心既有设计缺口，非技能专属，未在本任务修复；验收中为解除调试版锁定手动移走过 pending 记录（调试版测试数据）。真机发布版保留项目文件夹 skills-accept 及其项目技能 proj-check；三个用户级测试技能已删除到回收区；调试版保留 backup-probe、big-repo 与两份测试备份（/sdcard/Download/nexara_backup_1792484788193.nexara、nexara_backup_1792484831831.nexara）。输入法已恢复微信输入法。
+
+### DIA
+已同步 docs/ADR/ADR-022-agent-skills.md 验证小节与 .agent/plans/20261020-skills-filesystem-runtime.md 状态行；缺陷属未发布功能内修复，CHANGELOG 无需新增条目。
+
+### HLG
+本记录为 mobile-agentic-capabilities 连续性追加。
