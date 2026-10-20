@@ -10417,3 +10417,34 @@ record-fingerprint: e1d8818ca9762193c4a9bfd3eca785325d3861aaed7af834b756a0bdfb25
 
 ### HLG
 标准 append，先 dry-run 再 apply。
+
+## 2026-10-20T08:55:06+08:00 · 执行步骤标题的 +N −M 红绿着色
+
+type: implementation
+scope: ["Nexara", "native-ui", "chat-ui"]
+status: verified
+tags: ["file-changes", "ui", "screenshot-test"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 4dd70c49addadacbff8face967bf7d420457eb9ec4be598fc42e8eb356b2d8a9
+
+### Summary
+用户反馈折叠的工具步骤标题里“N 个文件 +X −Y”是纯灰色，看不清。提交 afdae72f 让 +N 用 nexaraDomainColors.success（绿）、−M 用 colorScheme.error（红），与执行卡文件行和差异头部配色一致。
+
+### Changed
+CompactStepRow.kt：segments 改为 List<CharSequence>，summaryText 用 buildAnnotatedString 拼接，AnnotatedString 分段保留样式，无障碍描述仍用纯文本。PipelineBubble.kt：InlineToolRow 改用 fileChangesStyledTitle。diff/FileChangeViews.kt：新增 fileChangesStyledTitle，标题不以计数结尾时回退为纯文本。CHANGELOG 文件改动指示器条目补充着色说明。更新 FileChangeScreenshotTestKt 下 3 张截图基准（深色执行卡、英文大字号、浅色命令工作区）。
+
+### Validation
+按顺序运行 :app:testSideloadDebugUnitTest、lintSideloadDebug、assembleSideloadDebug、assemblePlayDebug、validateSideloadDebugScreenshotTest，全部 rc=0；check-distribution-manifests 及其测试、python unittest（91 项，41 项跳过）均通过。对比新旧截图基准，确认 +2/+6 为绿、−3/−5 为红。HEAD 与 origin/B-native-refactor 均为 afdae72f。
+
+### Next
+P7（Git 远端认证）与 P8（内置 Tailscale）后台 Agent 完成后，复核两条 worktree 分支，合入并接线 TailnetRouting，再跑全量验证、设备测试与 Release 校验。
+
+### Risks
+未在真机上目测着色效果，依据的是截图测试；红绿对色觉障碍用户区分度有限，但 +/− 符号仍保留。
+
+### DIA
+已同步 CHANGELOG（文件改动指示器条目）。
+
+### HLG
+标准 append，先 dry-run 再 apply。
