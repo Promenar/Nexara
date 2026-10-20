@@ -46,7 +46,7 @@
 
 - **物理位置**：沿用 `filesDir/agent_skills/`，现有技能原地生效，无需迁移。
 - **文件工具与脚本网关**：`/skills` 作为与 `/mnt` 同级的保留虚拟根，在所有工作区模式下都可见，映射到物理目录；实现为一个固定的内部挂载后端，复用挂载体系已有的 stat/list/read/write/createDirectory/delete 与回收区。`skills` 加入保留名称，外部挂载不能使用该别名。
-- **根模式下的遮蔽**：自选目录工作区根下若有 `skills/`，文件工具中的 `/skills` 指向用户级目录，该仓库目录只能经 `shell_exec` 以相对路径 `./skills` 访问；工作区存在此目录时，工具指引向模型说明这一点。
+- **根模式下的遮蔽**：`/skills` 路径固定，不随工作区变化（用户已确认）。自选目录工作区根下若有 `skills/`（常见于开发技能的仓库），文件工具中的 `/skills` 指向用户级目录，该仓库目录只能经 `shell_exec` 以相对路径 `./skills` 访问；工作区存在此目录时，工具指引向模型说明这一点。
 - **真实进程**：`BuiltinExecEnvironment.forWorkspace` 导出 `NEXARA_SKILLS=<物理路径>`，并在 HOME 下建立符号链接 `~/.agents/skills → <物理路径>`，与 Codex 的 USER 级位置一致；shell 指引写明“`/skills` 在 shell 中对应 `$NEXARA_SKILLS`”。内置 git 因此可以直接 `git -C "$NEXARA_SKILLS" pull`。
 - **项目级目录**：位于工作区内（`<工作区根>/.agents/skills`），所有工具按工作区原有方式访问，无需额外映射。
 
