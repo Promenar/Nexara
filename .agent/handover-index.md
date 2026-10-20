@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-10-20T10:01:51+08:00
+> generated_at: 2026-10-20T10:36:03+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -11,7 +11,7 @@
 | agent-tooling-repair-20261002 | waiting | 2026-10-02T08:00:46+08:00 | done | ["Nexara", "pdec", "release"] | 授权 gpt-6-luna 并交付真机测试签名 APK | `.agent/handover.md` · `2026-10-02T08:00:46+08:00` · `fp:110c0ef84b` |
 | ci-version-sync-20261001 | resume | 2026-10-01T22:20:08+08:00 | in_progress | ["Nexara", "android-ci", "release"] | API31 Prompt 编辑器布局反馈根因修复候选 | `.agent/handover.md` · `2026-10-01T22:20:08+08:00` · `fp:c9c99a4302` |
 | dropdown-menu-anchor-and-style-unification | waiting | 2026-09-27T21:43:18+08:00 | completed | ["ui, dropdown-menu, files-panel, m3-design, release"] | 悬浮菜单位置精准锚定与全站新版视觉样式统一规范收敛 | `.agent/handover.md` · `2026-09-27T21:43:18+08:00` · `fp:31537a3d52` |
-| mobile-agentic-capabilities | resume | 2026-10-20T10:01:51+08:00 | verified | ["Nexara", "native-ui", "ui", "workspace", "chat"] | 合入两个后台修复分支；上滑面板统一、工作区入口移到资源管理器、会话授权列表精简 | `.agent/handover.md` · `2026-10-20T10:01:51+08:00` · `fp:653c49012d` |
+| mobile-agentic-capabilities | resume | 2026-10-20T10:36:03+08:00 | verified | ["Nexara", "native-ui", "git", "tailnet", "ssh"] | 合入 P7（Git 远端认证）与 P8（内置 Tailscale），完成 tailnet 接线、设备测试与发行校验 | `.agent/handover.md` · `2026-10-20T10:36:03+08:00` · `fp:a1457d656a` |
 | nexara-audit-completion-repair | waiting | 2026-09-22T15:28:29+08:00 | done | ["Nexara", "native-ui", "audit-repair"] | 审计修复、最终签名候选及本机设备验收完成 | `.agent/handover.md` · `2026-09-22T15:28:29+08:00` · `fp:c45ed0053a` |
 | nexara-chat-flow-repair | waiting | 2026-10-16T10:00:45+08:00 | done | ["Nexara", "native-ui", "chat"] | 会话主流程审计 P0/P1 修复交付 | `.agent/handover.md` · `2026-10-16T10:00:45+08:00` · `fp:b968f99f1f` |
 | nexara-independent-model-catalog | resume | 2026-09-22T18:33:08+08:00 | done | ["Nexara", "model-catalog"] | 独立模型目录上线、客户端验收与签名候选交付 | `.agent/handover.md` · `2026-09-22T18:33:08+08:00` · `fp:320878f7b2` |
@@ -28,6 +28,7 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-10-20T10:36:03+08:00 | iso | verified | resume | ["Nexara", "native-ui", "git", "tailnet", "ssh"] | ["p7", "p8", "tailscale", "tsnet", "git-remote", "merge", "release"] | 合入 P7（Git 远端认证）与 P8（内置 Tailscale），完成 tailnet 接线、设备测试与发行校验 | `.agent/handover.md` · `2026-10-20T10:36:03+08:00` · `fp:a1457d656a` |
 | 2026-10-20T10:01:51+08:00 | iso | verified | resume | ["Nexara", "native-ui", "ui", "workspace", "chat"] | ["bottom-sheet", "workspace", "resource-explorer", "session-settings", "merge"] | 合入两个后台修复分支；上滑面板统一、工作区入口移到资源管理器、会话授权列表精简 | `.agent/handover.md` · `2026-10-20T10:01:51+08:00` · `fp:653c49012d` |
 | 2026-10-20T08:55:06+08:00 | iso | verified | resume | ["Nexara", "native-ui", "chat-ui"] | ["file-changes", "ui", "screenshot-test"] | 执行步骤标题的 +N −M 红绿着色 | `.agent/handover.md` · `2026-10-20T08:55:06+08:00` · `fp:4dd70c49ad` |
 | 2026-10-20T06:24:35+08:00 | iso | verified | resume | ["Nexara", "native-ui", "git", "python"] | ["git-panel", "performance", "pyc", "device-acceptance"] | 真机应用内复测 Git 入口与面板加载速度（预编译字节码后） | `.agent/handover.md` · `2026-10-20T06:24:35+08:00` · `fp:e1d8818ca9` |

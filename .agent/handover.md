@@ -10534,3 +10534,34 @@ native-ui 下依次运行：testSideloadDebugUnitTest（4235 项，0 失败，25
 
 ### HLG
 标准 append，先 dry-run 再 apply。
+
+## 2026-10-20T10:36:03+08:00 · 合入 P7（Git 远端认证）与 P8（内置 Tailscale），完成 tailnet 接线、设备测试与发行校验
+
+type: implementation
+scope: ["Nexara", "native-ui", "git", "tailnet", "ssh"]
+status: verified
+tags: ["p7", "p8", "tailscale", "tsnet", "git-remote", "merge", "release"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: a1457d656a1c0bb7c56cdae13c20d64046e3f45e42edd982597579b7ad63d911
+
+### Summary
+两个后台施工分支以 --no-ff 合入：f6eaff41 为 P7（内置 git 的 HTTPS 凭据注入代理与 SSH 桥，每条命令独立 nonce），a2a38452 为 P8（tsnet 子进程 libnxtailnet.so、本机 HTTP+SOCKS5 代理、设置页与 tailnet_status 工具）。冲突在只追加文档与工具设置页：文档按两侧合并；设置项拆成 Git 凭据与 Tailscale 两个入口；截图先取 P8 一侧，再重新生成。ccff62c7 补上两条接线：P7 的 gitRemoteHttpClient 使用 tailnetManager 的 proxySelector 与 proxyAuthenticator；SshRuntime.probe() 与 connection() 一致，经 jschProxy。发行扫描拦下 Tailscale 白名单占位符中的 CGNAT 示例地址 100.64.0.2，已改为 "nas, laptop"。
+
+### Changed
+NexaraApplication.kt：gitRemoteHttpClient 走 tailnet 代理。data/ssh/SshRuntime.kt：probe 设置 tailnet SOCKS5 代理。ui/settings/TailscaleSettingsScreen.kt：占位符去掉 IP 字面量。工具设置页截图基准 7 张（SettingsPagesBatch1、SettingsVisual 的 tools*）。CHANGELOG 的 tailnet 段补充 SSH 指纹探测与 HTTPS 凭据代理上游。registry 中 distribution-builds 与 THIRD_PARTY_NOTICES 的描述加入内置 Tailscale。计划文件中 P7/P8 标为完成（真实环境验收待用户）。
+
+### Validation
+合并后完整套件（含两条接线）：testSideloadDebugUnitTest、lintSideloadDebug、assembleSideloadDebug、assemblePlayDebug、validateSideloadDebugScreenshotTest 全部 rc=0。check-distribution-manifests 通过；Python 单测 115 项 OK（skipped 52）。改占位符后 TailscaleSettingsScreenshotTest 验证通过。arm64 deviceTest 在 emulator-5564（API 35）与 emulator-5562（API 31）上 GitRemoteAuthDeviceTest 3 项、TailnetDeviceTest 4 项、BuiltinExecDeviceTest 11 项、GitInspectorDeviceTest 2 项全部 OK。Release 42,641,712 字节，verify-release-apk 通过（SHA-256 48b97258…）；在 emulator-5564 上安装启动正常，无崩溃。mapping 确认 tailnet 协议的 $$serializer 均已生成。
+
+### Next
+用户验收：在 设置 → 工具 → Tailscale 用浏览器登录，验证 tailnet 上的 SSH/HTTP 连通；在 设置 → 工具 → Git 凭据 填入令牌，验证真实 GitHub push/fetch。真机重新连接后补测。后台 Agent 正在独立 worktree 实施气泡生成统计浮卡（不含费用），完成后复核合入。
+
+### Risks
+OkHttp 默认禁止明文 http:// 访问 tailnet 名称；ScriptHttpClient、LLM、嵌入与下载器不经 tailnet；代理凭据在命令环境变量中可读；x86_64 的 libnxtailnet.so 未在设备上测试；同一主机的 SSH git 操作串行执行；P7/P8 都未用真实账号做端到端测试；Release 的 Tailscale 设置页因引导页需要提供商密钥，未在 R8 包上手动打开。
+
+### DIA
+已同步 CHANGELOG（tailnet 路由覆盖范围）、.agent/registry.md（distribution-builds 与第三方许可的描述）和计划文件；README 已含 P8 说明，无需改动。
+
+### HLG
+追加本条；inspect 中原有的 invalid_continuity=3 与时间戳倒序都是本工作之前就存在的。
