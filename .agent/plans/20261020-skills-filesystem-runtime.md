@@ -1,6 +1,6 @@
 # 技能文件系统运行时：用户级与项目级技能实施计划
 
-> 状态（2026-10-20）：S1–S6 已实施并合入 `B-native-refactor`；`SkillsDirectoryDeviceTest` 已在 API 31/35 ARM64 模拟器通过。S7 真机与真实模型验收待执行。
+> 状态（2026-10-20）：S1–S7 完成。S1–S6 已合入 `B-native-refactor`；技能目录与技能恢复设备测试在 API 31/35 ARM64 模拟器通过；S7 真机（Android 16）与 DeepSeek V4 Flash 验收通过，期间修复技能分区恢复调用 Android 禁用的 `Files.getFileStore` 导致恢复失败的问题。
 
 ## 目标
 
