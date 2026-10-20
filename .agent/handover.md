@@ -10969,3 +10969,45 @@ testSideloadDebugUnitTest 4726 项 0 失败 25 跳过；lintSideloadDebug、asse
 
 ### HLG
 追加本条。
+
+## 2026-10-20T23:53:41+08:00 · 工具失败详情改为错误底板并提取错误码与说明
+
+type: task
+scope: ["native-ui/chat"]
+status: completed
+tags: ["chat", "tool-error", "image-generation", "ui"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 8ea0066675d770f461de3cf2eb76b87df4864e20dafe816c8b019d55f3cf6b6c
+
+### Summary
+展开工具步骤后的失败结果原先只是一行红字，生图失败还会重复前缀并把服务端 JSON 截断在 200 字符处。现在失败结果显示为与参数块同形的错误底板：第一行是图标、“执行失败”和错误码类标签，下面是正文色说明，命令输出等细节用等宽小字单独成框，说明与细节超出折叠行数时统一展开。界面去掉“工具执行失败：”前缀，发给模型的内容不变。
+
+### Changed
+- 新增 data/remote/ApiErrorBody.kt：parseApiErrorBody 解析 OpenAI 兼容错误体（含截断 JSON 的字段找回）；httpErrorSummary 生成“HTTP 503 · code”与说明（说明最多 500 字符）。
+- ImageGenClient 非 2xx 抛出“Image generation failed (HTTP 503 · model_not_found): 说明”；ImageGenerationSkill 不再重复前缀。
+- 新增 ui/chat/ToolErrorPresentation.kt：结构化 JSON 取 error_code/exit_code/timed_out 作标签、guidance/message 作说明、stderr/stdout 作细节；纯文本中的 HTTP 摘要段和嵌入错误体同样提取。
+- 新增 ui/chat/ToolErrorBlock.kt，PipelineBubble 中 type == "error" 的结果改用它；ExpandableToolText 去掉 error 参数。
+- 新增字符串 chat_tool_error_title（Failed / 执行失败）。
+- 提交：f4957d5e（实现、单测、截图基线、CHANGELOG），a26b73b6（设备测试）。
+
+### Validation
+- :app:testSideloadDebugUnitTest 4739 项 0 失败（25 跳过），含 ApiErrorBodyTest 6 项、ToolErrorPresentationTest 6 项、生图 503 回归（修复前失败）。
+- :app:lintSideloadDebug、:app:assembleSideloadDebug、:app:assemblePlayDebug 通过；manifest 检查通过。
+- :app:validateSideloadDebugScreenshotTest 384 项通过；新增 ToolErrorBlockScreenshotTest 3 张基线（深色中文、浅色英文、窄屏 1.3 倍字号）与更新的 chatBatch2ExpandedToolsDarkPreview 已逐张查看。
+- 设备测试 ChatPipelineLayoutTest 在 emulator-5564（API 35）与 emulator-5562（API 31）各 16 项通过，新增 longToolErrorCollapsesMessageAndDetailsAndExpandsTogether。
+- release 0.2.2-beta 校验通过（SHA-256 25689d71…），装到真机 3B1F5QEARBRJQZ66，Media test 会话中 22:50 的旧版截断 503 记录显示为“执行失败 HTTP 503 model_not_found”加完整可读说明。
+
+### Next
+- 可选：generate_image 审批卡片仍显示“未能确认执行目标”，可改为显示写入目标 media/<日期>/（需用户确认）。
+- SenseNova 生图上游网关返回 503 model_not_found，属网关配置问题，用户暂不测试。
+
+### Risks
+- 截图测试只渲染首帧，依赖 onTextLayout 的“展开全部”链接不会出现在基线中；已由设备测试覆盖。
+- ToolErrorPresentation 依赖错误文本形态启发式提取，未知格式按原文显示，不会丢信息。
+
+### DIA
+已同步 CHANGELOG（Unreleased · 工具失败详情样式与生图错误文案）。
+
+### HLG
+本条为 hlg60。
