@@ -11011,3 +11011,39 @@ record-fingerprint: 8ea0066675d770f461de3cf2eb76b87df4864e20dafe816c8b019d55f3cf
 
 ### HLG
 本条为 hlg60。
+
+## 2026-10-21T00:13:04+08:00 · 生图审批卡片显示写入目录
+
+type: task
+scope: ["native-ui/chat"]
+status: completed
+tags: ["chat", "approval", "image-generation", "ui"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: c3ba6e1ab94bbf881adeacbf3f73bc89b769679662ab5500e8536814cdcb8088
+
+### Summary
+generate_image 没有授权目标，审批卡片元信息行此前显示“未能确认执行目标。”。现在显示固定写入位置“generate_image · /media”（结果保存在 /media/<日期>/），与 media_fetch 未指定路径时的显示一致。
+
+### Changed
+- ChatInlineComponents.kt 新增 approvalFixedWriteTarget(name)：generate_image 返回 /media；ApprovalCallBody 在没有执行目标与预览目标时用它代替“未能确认执行目标”。
+- 只改显示层，ToolExecutionTargets.extract 未改动，授权比较、账本与“本会话始终允许”语义不变。
+- 测试：ApprovalRiskSummaryTest 新增单测；ApprovalCardTagsTest 新增 imageGenerationShowsMediaDirectoryInsteadOfUnknownTarget。
+- 提交 52ae7a30。
+
+### Validation
+- :app:testSideloadDebugUnitTest 4740 项 0 失败；lint、两渠道构建、截图校验与 manifest 检查通过。
+- ApprovalCardTagsTest 与 ChatApprovalLayoutTest 在 emulator-5564（API 35）与 emulator-5562（API 31）各 10 项通过。
+- release 0.2.2-beta 校验通过（SHA-256 6c4d6e5e…），装到真机 3B1F5QEARBRJQZ66；在 Media test 会话用 DeepSeek V4 Flash 触发 generate_image，审批卡片显示“generate_image · /media”，随后拒绝，未调用生图服务。输入法已切回微信输入法。
+
+### Next
+- SenseNova 生图上游网关 503 model_not_found 仍待网关侧修复，用户暂不测试。
+
+### Risks
+- 若以后 generate_image 支持自定义保存路径，approvalFixedWriteTarget 需改为读取参数，或让 ToolExecutionTargets 产出真实授权目标。
+
+### DIA
+已同步 CHANGELOG（Unreleased · 工具失败详情样式与生图错误文案，新增审批卡片条目）。
+
+### HLG
+本条为 hlg61。
