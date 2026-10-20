@@ -10658,3 +10658,34 @@ P7 的 Git 令牌真实验收仍待用户。真机上尚未实际保存一次 au
 
 ### HLG
 追加本条。
+
+## 2026-10-20T14:08:20+08:00 · 全站设置页视觉审计与统一（重点 Agent 工具与编辑助手）
+
+type: implementation
+scope: ["Nexara", "native-ui", "settings"]
+status: verified
+tags: ["settings-ui", "visual-polish", "agent-tools", "device-test"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 7cde6b51f7f1111c7a382f2b791e55af2e189ae2fb60539b02955e8f047bbd35
+
+### Summary
+用户要求全面审计设置页并美化仍粗糙的布局，重点是 Agent 设置。按真机截图逐页审计后，复用现有 Nexara 设置组件体系（NexaraSettingsSection/Group/Item、NexaraBottomSheet、bettboxListGroup），没有引入新的组件底座。改动集中在工具设置（三个标签）、编辑助手、SSH、Git 凭据、提供商列表、模型列表、用量、模型编辑与主题页（ab879b53）。
+
+### Changed
+新增 BuiltinToolPresentation.kt（内置工具分组与图标）、ToolListSections.kt（BuiltinToolsSections、LegacyUserToolsSection、McpServersSection），SkillsScreen 改用这些组件。AgentSkillsSection 的导入和新建改为分组末行；AgentRuntimeSettingsCard 的预算行补齐图标与说明，重置授权不再标红。AgentEditScreen 的模型行显示模型名，提示词行显示 systemPromptPreview 预览，去掉重复脚注；NavGraph 中的 scopeLabel 改为字符串 agent_scope_label（本助手）。SshSettingsScreen 每台主机收成一行，并新增无状态的 SshHostActionsContent 操作面板。GitCredentialSettingsScreen 改为面板编辑，抽出无状态 GitCredentialEditor。ProviderListScreen 合并为一个分组，状态和地址写在行内（副标题最多 3 行，保留 16dp 边距）。ProviderModelsScreen 改用新增的 bettboxListGroupItem 拼接连续圆角，能力标签移入卡片。TokenUsageScreen 的按模型统计改为一个分组，清除历史移入数据管理分组。ModelEditorSheet 的模型 ID 不再套卡片。ThemeScreen 强调色排成 4×2。NexaraSettingsItem 与 NexaraSettingsRowLayout 新增 subtitleMaxLines，NexaraStepperSetting 的说明允许两行。新字符串放在 settings_polish_strings.xml，删除不再使用的字符串。新增 BuiltinToolPresentationTest、SystemPromptPreviewTest、SettingsPolishScreenshotTest（10 个预览），并按新结构更新 3 个源码契约测试。
+
+### Validation
+testSideloadDebugUnitTest 共 4373 项、0 失败、25 跳过（--rerun）；lintSideloadDebug、assembleSideloadDebug、assemblePlayDebug、validateSideloadDebugScreenshotTest、check-distribution-manifests 均串行通过，compileSideloadDebugAndroidTestKotlin 通过。约 50 张截图基线已拼图审阅，审阅中发现并修正了提供商分组贴边、窄屏地址被挤掉、步进说明截断、MCP 状态被截掉等问题。Release 42,712,416 字节，verify-release-apk 通过，已安装到真机 3B1F5QEARBRJQZ66。真机逐页截图检查了工具设置三个标签、SSH 主机列表与操作面板、Git 凭据与添加面板、编辑助手、记忆子页（分组标题为“本助手”）、提供商列表（修正后复查）、模型列表和用量页。
+
+### Next
+可选：设置首页滚动时内容会进入状态栏下方，且没有遮罩；SSH 页“允许 Agent 管理 SSH 主机”开关已打开，但副标题仍是“默认关闭”，容易误读。用量页会话标题被截断是数据本身的问题（如“First crea”），本次未改。
+
+### Risks
+360dp 宽、1.3 倍字号下，执行预算各行仍较拥挤。旧版自定义工具与 MCP 服务器展开态只在截图中验证过（真机上没有这类数据）。
+
+### DIA
+已同步 CHANGELOG（设置页视觉统一）；README 与 registry 无影响。
+
+### HLG
+追加本条。
