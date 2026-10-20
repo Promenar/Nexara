@@ -10627,3 +10627,34 @@ P7/P8 的真实验收仍待用户：Tailscale 浏览器登录，Git 凭据填入
 
 ### HLG
 追加本条。
+
+## 2026-10-20T12:51:28+08:00 · tailnet 真机连通验证与 Tailscale 设置页视觉重排
+
+type: implementation
+scope: ["Nexara", "native-ui", "settings", "tailnet"]
+status: verified
+tags: ["tailscale", "tailnet", "settings-ui", "device-test"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: f3471a7d82c16f1fa803711edab05e3ef3f59a30beea93fed30ffd3550ffd690
+
+### Summary
+用户在真机登录 Tailscale 后要求验证 tailnet 连通，并指出 Tailscale 设置页排版粗劣。连通性：真机节点 nexara-pkh110（100.77.52.66）经应用内 python_exec 分别用 IP 与 MagicDNS 名访问 Mac 上的临时 HTTP 服务，都取回了一次性 nonce，服务端日志的来源地址为 100.77.52.66；经 SOCKS5（带用户名密码）CONNECT 到 fnos 的 22 端口，返回 SSH-2.0-Tailscale。Mac 侧 tailscale ping 为直连。临时服务已关闭，输入法已恢复。界面：设置页按设置体系重排（0fc8475d）。
+
+### Changed
+TailscaleSettingsScreen.kt 重写内容区。状态行为彩色圆点 + 阶段文字，副标题显示 tailnet 名，行尾为独立刷新按钮；本机行显示“本机 · IPv4”；健康提示带警示图标。设备区按 sortedForDisplay 排序，每行显示系统图标和在线角标，副标题为“IP · 系统”，并加 stateDescription，脚注为在线数复数串。“登录选项”改名为“高级”：auth key、控制服务器、白名单改为 NexaraValueRow，点开 NexaraBottomSheet 编辑；面板内的编辑组件（TailscaleAuthKeyEditor、TailscaleControlUrlEditor、TailscaleAllowlistEditor）是可独立截图的无状态组件，保存成功由 notice 收起面板。TailscaleSettingsViewModel 新增 authKeyInvalid 与 clearAuthKeyError，并移除 AUTH_KEY_INVALID 提示条。新增 TailscalePeerPresentation.kt 及其 4 项测试，新增 tailscale_strings.xml 存放复数串；精简中英文副标题以免截断。截图测试新增编辑面板预览，预览设备覆盖 Windows/Android/无系统。
+
+### Validation
+testSideloadDebugUnitTest 共 4368 项、0 失败；lintSideloadDebug、assembleSideloadDebug、assemblePlayDebug、validateSideloadDebugScreenshotTest、check-distribution-manifests 均通过。截图基线逐张审阅，覆盖浅色/深色、1.3 倍字号和编辑面板。Release 42,690,004 字节，verify-release-apk 通过，已升级安装到真机。真机已登录状态下截图：8 台设备中 7 台在线，排序、图标、系统名正确；控制服务器编辑面板显示正常，取消后关闭。
+
+### Next
+P7 的 Git 令牌真实验收仍待用户。真机上尚未实际保存一次 auth key、控制服务器和白名单。
+
+### Risks
+已连接时状态副标题显示 tailnet 名；个人 tailnet 的名称是登录邮箱，属预期行为。1.3 倍字号下“退出登录”副标题仍会截断。auth key 校验失败的面板态只在截图中验证过。
+
+### DIA
+已同步 CHANGELOG；README 与 registry 无影响。
+
+### HLG
+追加本条。
