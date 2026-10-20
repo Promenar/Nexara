@@ -10565,3 +10565,34 @@ OkHttp 默认禁止明文 http:// 访问 tailnet 名称；ScriptHttpClient、LLM
 
 ### HLG
 追加本条；inspect 中原有的 invalid_continuity=3 与时间戳倒序都是本工作之前就存在的。
+
+## 2026-10-20T11:19:42+08:00 · 真机补测 P7/P8；合入回复气泡生成统计浮卡并在真机用真实请求验收
+
+type: implementation
+scope: ["Nexara", "native-ui", "chat", "generation", "tailnet"]
+status: verified
+tags: ["generation-stats", "token-usage", "timing", "device-test", "p7", "p8"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: b08f9f811bc9ed6bf01f4555a8fe967098dd6e066114c9589b3b3690db3b177d
+
+### Summary
+真机 3B1F5QEARBRJQZ66 重新连上后补测了 P7/P8。第一次跑出 8 项假失败，原因是解冻循环把 SIGQUIT 也发给了 libnxpython.so 等原生子进程，子进程收到后直接退出；改为只发给测试应用主进程后，4 组 20 项全部通过。Release 升级装到真机后，Tailscale 设置页正常；临时启用时 tsnet 子进程启动，状态为“需要登录”；关闭后子进程退出，开关已恢复为未启用。后台 Agent 交付的生成统计浮卡（a881144b）经主控复核后合入（dad81187）：点击气泡底部的“模型名 · 时间”行弹出卡片，按气泡汇总全部轮次，不显示费用。
+
+### Changed
+协议层 ProtocolUsage、领域层 GenerationChunk.Usage/GenerationSnapshot、持久化层 TokenUsage 新增 cacheReadInput、cacheWriteInput、reasoningOutput（可空），以及每轮 timing（请求开始、首个输出、结束），均为 EncodeDefault.NEVER，不改表结构。OpenAI 与兼容协议读取 cached_tokens/prompt_cache_hit_tokens 和 reasoning_tokens；Responses 协议读取 input/output_tokens_details；Anthropic 的 input 改为含缓存读写；Gemini 读取 cachedContentTokenCount。ChatGenerationRunner 可注入时钟并在每轮打点：自动重试沿用首次开始时间，失败或取消时补记结束时间。新增 ProtocolUsageParsers.kt、GenerationStatsSummary.kt（纯汇总函数）、GenerationStatsCard.kt（Popup 卡片）和 generation_stats_strings.xml（中英文）。PipelineBubble 的 AssistantActionRow 加入点击入口；ChatRoute 传入服务商显示名。新增 5 张截图基准；CHANGELOG 与 README 已同步。记忆中的 ColorOS 冻结条目补充“只向主进程发 SIGQUIT”。
+
+### Validation
+合并后：testSideloadDebugUnitTest、lintSideloadDebug、assembleSideloadDebug、assemblePlayDebug、validateSideloadDebugScreenshotTest 全部 rc=0，check-distribution-manifests 通过。Release 42,677,140 字节，verify-release-apk 通过。真机上 P7/P8 设备测试 20 项通过。真机用 DeepSeek V4 Flash 跑了一条带 shell_exec 的请求，浮卡显示：输入 16,444、输出 116、推理 24、缓存读取 0、首 Token 2.1 秒、端到端 27.8 秒、2 轮合计；运行时间分布为模型 7.0 秒、工具 122 毫秒、其它 20.7 秒（含审批等待）。返回键和点外部都能关闭浮卡；展开分布后卡片会翻到行的上方。人工查看了单轮深色和英文多轮大字号两张截图基准。
+
+### Next
+用户确认几处统计口径：摘要模型用量已扣除；“其它”含审批等待；Anthropic 输入含缓存。可选改进：卡片翻到上方时会贴到状态栏下沿，可以加安全区边距；入口行实际可点高度为 36dp；首屏渲染时每个气泡都会算一次统计，可改为懒计算。P7/P8 的真实登录与令牌验收仍待用户完成。
+
+### Risks
+服务商网关如果不透传缓存明细，缓存读取会显示 0；中文字号 1.3 在 360dp 下没有单独截图；读屏朗读未在设备上验证。
+
+### DIA
+已同步 CHANGELOG 与 README（随浮卡分支提交）；registry 无新增文档，无需改动。
+
+### HLG
+追加本条。
