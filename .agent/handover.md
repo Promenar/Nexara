@@ -10783,3 +10783,33 @@ shell_exec/python_exec 等真实进程对技能目录的写入无法按路径拦
 
 ### HLG
 本记录为 mobile-agentic-capabilities 连续性追加；临时工作树 a/b/c/d/e/u/m 与 tmp/skills-merge-check 分支在推送后清理。
+
+## 2026-10-20T17:23:53+08:00 · Markdown 行内代码美元符号误识别为公式修复
+
+type: bugfix
+scope: ["native-ui", "markdown-rendering"]
+status: done
+tags: ["markdown", "latex", "rendering", "regression-test"]
+continuity: none
+record-fingerprint: bdb976d7becc59e7a5a084309c8b3604b09b2637ac4417eb8dcfcef81e0026d8
+
+### Summary
+修复真机（OPPO PKH110 / Android 16，DeepSeek V4 Flash）上 `**3. 克隆 `$HOME/src-demo` → `$NEXARA_SKILLS/cloned-demo`** ✅` 被排成斜体公式、拆行并裸露 ** 的问题。共四个根因：① splitPositionedRichSegments 在原文上用正则匹配 $...$，未保护行内代码/代码块/链接，从第一个代码里的 $ 匹配到第二个代码里的 $；② repairCompressedMarkdownBoundaries 的压缩编号列表修复在行首 ** 与 `3.` 之间插入换行，导致 ** 裸露；③ normalizeLatexDelimiters 改写代码中的 \(...\)、\[...\]，sanitizeStreamingMarkdown 把代码中的 $$ 当作未闭合公式并截断后文；④ JetBrains GFM 解析器把 `$5 and $` 解析为 INLINE_MATH，mikepenz 渲染器丢弃该节点，货币文字消失（修复前即存在）。
+
+### Changed
+新增 ui/common/MarkdownMathLiterals.kt：markdownMathLiteralRanges（以 AST 求 CODE_SPAN/CODE_FENCE/CODE_BLOCK/INLINE_LINK/AUTOLINK/IMAGE/LINK_DEFINITION 区间，不含引用式链接以免误伤公式中的 [0, 1]）、Regex.findAllOutside（重叠候选从起点后一位重新查找）、Regex.replaceOutside。MarkdownText.kt：分段、括号定界符归一化、流式补全统一跳过字面量区间；行内公式闭合 $ 后紧跟数字时按 Pandoc 约定视为货币；正文注解器把残留 INLINE_MATH 节点按原文逐叶输出；压缩编号修复只移除本行未配对的 **，编号前仅有行首强调标记时不拆行。markdownCodeIndent、readingMarkdownAnnotator 改为 internal 供复用与测试。
+
+### Validation
+先写失败测试：MarkdownMathDelimiterTest 9 项（修复前 7 项失败，真机用例实测得到公式内容 `HOME/src-demo` → `）与 MarkdownTextTest「整行加粗的编号标题保持原文」，修复后全部通过。新增截图 chatMarkdownInlineCodeDollarRegression 并生成基准，人工检查真机行、`$JAVA_HOME`、`echo $$`、`$5/$10` 均按原文显示；已有截图基准无变化。native-ui 执行 ./gradlew :app:testSideloadDebugUnitTest :app:lintSideloadDebug :app:validateSideloadDebugScreenshotTest：BUILD SUCCESSFUL，4526 测试 0 失败、25 跳过。
+
+### Next
+可在真机用含行内代码变量、货币与正常公式的回复复核一次（发布版需重新构建）。未执行 Play 风味测试/构建与 assembleSideloadDebug。
+
+### Risks
+公式识别现在依赖 Markdown 解析边界：公式内若出现形如 [a](b) 的行内链接语法或反引号会被视为字面量而不渲染。WebView 公式在 layoutlib 中不渲染，正常公式的显示只由单元测试覆盖分段结果。流式阶段代码 span 未闭合前仍可能短暂按旧规则处理。
+
+### DIA
+已同步 CHANGELOG.md（Unreleased：Markdown 美元符号与公式识别修复）；README、registry 无影响。候选长期规则（未写入）：AGENTS.md「Markdown 渲染排障分层」可补充“数学定界符识别须先排除代码与链接区间，GFM INLINE_MATH 残留节点须按原文显示”。
+
+### HLG
+本记录经 HLG append 追加。
