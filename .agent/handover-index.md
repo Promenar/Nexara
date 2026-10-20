@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-10-20T16:15:07+08:00
+> generated_at: 2026-10-20T16:52:23+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -28,6 +28,7 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-10-20T16:52:23+08:00 | iso | done | none | ["native-ui", "backup"] | ["backup", "restore", "startup-gate", "pending-restore"] | 修复备份恢复失败回滚后启动永久锁定 | `.agent/handover.md` · `2026-10-20T16:52:23+08:00` · `fp:6acbe0b7ef` |
 | 2026-10-20T16:15:07+08:00 | iso | done | resume | ["native-ui", "skills", "tool-approval", "backup"] | ["skills", "vfs", "approval", "backup", "parallel-delegation"] | 两级技能文件系统运行时与全局审批白名单实施完成 | `.agent/handover.md` · `2026-10-20T16:15:07+08:00` · `fp:eeec53c985` |
 | 2026-10-20T14:37:02+08:00 | iso | planned | resume | ["Nexara", "native-ui", "chat", "media"] | ["media", "plan", "multimodal", "workspace"] | 会话媒体落地工作区、渲染与模型查看计划 | `.agent/handover.md` · `2026-10-20T14:37:02+08:00` · `fp:f8b6178145` |
 | 2026-10-20T14:09:22+08:00 | iso | planned | resume | ["Nexara", "native-ui", "skills"] | ["skills", "plan", "next"] | 登记下一项：技能文件系统运行时计划 | `.agent/handover.md` · `2026-10-20T14:09:22+08:00` · `fp:9b65a9e6e5` |

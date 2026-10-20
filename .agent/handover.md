@@ -10783,3 +10783,33 @@ shell_exec/python_exec 等真实进程对技能目录的写入无法按路径拦
 
 ### HLG
 本记录为 mobile-agentic-capabilities 连续性追加；临时工作树 a/b/c/d/e/u/m 与 tmp/skills-merge-check 分支在推送后清理。
+
+## 2026-10-20T16:52:23+08:00 · 修复备份恢复失败回滚后启动永久锁定
+
+type: bugfix
+scope: ["native-ui", "backup"]
+status: done
+tags: ["backup", "restore", "startup-gate", "pending-restore"]
+continuity: none
+record-fingerprint: 6acbe0b7ef7065a678fcb9c7998ec840a488435fdbf9d8f82a1a6647a4bce743
+
+### Summary
+启动期待恢复事务（PendingRestoreStore，phase=STAGED）在 RoomBackupDataSource 内确定性失败并完整回滚后，pending 记录保留同一 txId；下次启动 AndroidTransactionalBackupPreferenceStore.preflightRestore 因账本中该 txId 已是 FINALIZED/BEFORE 而抛“相同 txId 的偏好 prepared 状态不一致”，BackupRuntime 永远返回 Blocked。现改为：恢复（含解码）失败后向数据源确认“无 restore journal 且无该 txId 完成回执”，成立则清除 pending、以 Ready 启动并弹窗告知“备份未能恢复，数据保持原状”；不成立（journal 仍在，补偿未完成）继续 fail closed。选型理由：同 txId 重放必被偏好账本拒绝，保留 pending 并提供“放弃”按钮没有重试价值，且需改 pending 线格式与启动页交互；自动释放更简单，已锁定设备升级后首次启动即可自愈。
+
+### Changed
+BackupDataSource 新增 isRestoreSettledWithoutApplying(operationId)（默认 false 保持 fail closed）；RoomBackupDataSource 在 restoreMutex 下以 journal.read()==null && 无完成回执实现；BackupRuntime.recoverAll 捕获解码/恢复失败后据此释放 pending 并暴露 restoreNotApplied；NexaraApplication/MainActivity 展示 ui/startup/RestoreNotAppliedDialog；新增 restore_not_applied_* 中英字符串、截图预览与参考图；测试新增 BackupRestoreFailureRecoveryTest（真实偏好账本与密钥事务存储，技能暂存注入 SecurityException 复现真机路径）与 BackupRuntimeTest 用例；RoomBackupDataSourceTest 的 TestRestoreFileOperations 改为 internal 以便复用；CHANGELOG 已记。
+
+### Validation
+修复前新测试 4/4 失败（启动返回 Blocked）；修复后 native-ui 下 ./gradlew :app:testSideloadDebugUnitTest :app:lintSideloadDebug :app:validateSideloadDebugScreenshotTest BUILD SUCCESSFUL，JVM 测试 4521 个 0 失败（含 RestoreCrashPoint 系列），lint 无问题，截图校验通过，新参考图人工查看中英两版排版正常。未做真机验证。
+
+### Next
+可在 OPPO PKH110 上安装新调试包验证：处于锁定态的设备启动后应进入主界面并弹出“备份未能恢复”提示，数据与恢复前一致。
+
+### Risks
+恢复在 journal 写入前的失败（如未恢复的 workspace mutation journal、偶发 IO 错误）同样会释放 pending，需用户重新导入；数据不受影响。恢复已提交但收尾失败（回执存在）的路径保持原行为：本次 Blocked，下次启动凭回执清除 pending。偏好/密钥账本中失败事务的 FINALIZED 记录继续累积，与成功恢复相同。
+
+### DIA
+已同步 CHANGELOG.md；README、架构与部署文档无影响。
+
+### HLG
+本记录经 hlg-handover.py append 追加。
