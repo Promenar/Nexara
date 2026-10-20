@@ -10720,3 +10720,34 @@ record-fingerprint: 9b65a9e6e5a46d2acd45014f7496bc32e36e1292ab9ed6f19b9f864005bd
 
 ### HLG
 追加本条。
+
+## 2026-10-20T14:37:02+08:00 · 会话媒体落地工作区、渲染与模型查看计划
+
+type: planning
+scope: ["Nexara", "native-ui", "chat", "media"]
+status: planned
+tags: ["media", "plan", "multimodal", "workspace"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: f8b617814551642bc7ec3209872f570f0b1ad0dc4f693f694351478527466df7
+
+### Summary
+用户询问会话能否渲染图片、视频、音频，场景包括搜索到的图片、本机或知识库中的媒体、生图生视频产物，以及脚本经公网或 tailnet 调用 ComfyUI 生成的产物。调查后用户要求补齐，并确认了方向：媒体先落工作区，模型可以通过引用交给前端，也可以按自身支持的模态用工具查看。计划见 .agent/plans/20261020-chat-media-workspace.md。
+
+### Changed
+新增计划文件，并在 registry 中登记；不改代码。计划要点：生图、MCP 媒体、新增的 media_fetch 下载、脚本产物统一落到工作区 media/<日期>/；模型在回复中用 Markdown 引用工作区虚拟路径，前端按类型渲染为图片、视频、音频或文件卡片；视频与音频引入 Media3 在会话内播放，支持保存到相册或下载目录、分享；新增 view_media，按 vision、audioInput、videoUnderstanding 决定可查看的模态；模型只支持图片时，视频降级为关键帧，抽帧密度由 Agent 通过参数调整；各协议的工具结果不支持媒体时，改用合成用户消息携带媒体。分期为 M1–M6。
+
+### Validation
+只读调查，结论来自源码，未在真机实测。现状：会话只能显示用户附件、生图工具结果和 Markdown 中的 https 或本机绝对路径图片；没有任何音视频播放；MCP 媒体以 base64 文本进入模型上下文，界面不显示；生图结果存在 filesDir/generated_images，不在工作区；明文 http 只放行 127.0.0.1，Coil 不经内置 Tailscale；四种协议的工具结果都只编码为文字。
+
+### Next
+按 M1–M6 实施：M1（媒体引用模型与统一读取）先行，M2 与 M4 随后可以并行，M3 依赖 M2，M5 只依赖 M1。与技能文件系统运行时计划的先后顺序，由用户决定。实施前要以官方文档核对各协议工具结果能否携带媒体，并确认 Media3 的当前版本。
+
+### Risks
+Markdown 图片目前会尝试加载任意本机绝对路径，计划收紧为只解析工作区虚拟路径与 https；大体积媒体可能超出工作区备份限额；OpenAI Chat 的音频输入只支持 wav 和 mp3，且不转码。
+
+### DIA
+新增计划文件，并同步 registry；README 与 CHANGELOG 暂无影响。
+
+### HLG
+追加本条。
