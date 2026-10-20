@@ -10596,3 +10596,34 @@ record-fingerprint: b08f9f811bc9ed6bf01f4555a8fe967098dd6e066114c9589b3b3690db3b
 
 ### HLG
 追加本条。
+
+## 2026-10-20T11:47:47+08:00 · 生成统计浮卡定位避开系统栏、改为打开时计算；修复 GitPanelViewModelTest 协程泄漏
+
+type: implementation
+scope: ["Nexara", "native-ui", "chat", "test"]
+status: verified
+tags: ["generation-stats", "popup", "flaky-test", "coroutines"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 40a16698c5153aa5082cbbc7574ee54d1ce904a7257d0f994873ea3aadc5df07
+
+### Summary
+用户同意上一轮提出的三处统计口径，并要求顺手处理三个小问题。一、浮卡贴住状态栏：原因是旧代码只离窗口顶端留 16dp，而真机状态栏高 107px，系统把浮卡推到了状态栏下沿。现在上下边界按 safeDrawing 再加边距计算，两侧都不够时放在较大一侧、限高后卡内滚动（c47fe217）。二、入口行可点高度：真机实测为 133px，即 48dp，上一轮说的“36dp”是误读代码，无需修改。三、统计改为打开浮卡时才计算，锚点坐标用非状态引用持有。另外，完整单测连续两次在 AgentSkillsViewModelTest 失败（UncaughtExceptionsBeforeTest），根因是 GitPanelViewModelTest 在 tearDown 里直接 resetMain，而真实 IO 上的续体随后回到 Main 时抛出异常；已改为先取消并等待 ViewModel 协程结束（ff2cf481）。这也是交接记录中此前“来源未定位”的同一个偶发问题。
+
+### Changed
+GenerationStatsCard.kt：新增 GenerationStatsPopupBounds（topLimit/bottomLimit/space*/availableHeight）；AboveAnchorPositionProvider 改为接收 bounds；GenerationStatsPopup 新增参数 anchorBoundsInWindow，maxHeight 取锚点上下两侧可用空间的较大值。PipelineBubble.kt：AssistantActionRow 的 stats 参数改为工厂 () -> GenerationStatsCardModel；新增 StatsAnchorHolder 和 onGloballyPositioned。新增测试 GenerationStatsPopupPositionTest（6 项）。GitPanelViewModelTest：用 track() 登记 ViewModel，tearDown 时对其 viewModelScope 的 job 执行 cancelAndJoin。CHANGELOG 补充浮卡定位说明。
+
+### Validation
+lintSideloadDebug、assembleSideloadDebug、assemblePlayDebug、validateSideloadDebugScreenshotTest、check-distribution-manifests 均通过。修复泄漏后完整单测用 --rerun 连跑两次，都是 4364 项、0 失败、25 跳过。Release 42,680,232 字节，verify-release-apk 通过，已升级装到真机。真机用 DeepSeek V4 Flash 实测：顶部气泡的浮卡收起时放在下方；展开分布后仍在下方，底边止于 2527px（导航栏上沿 2571 减 44px 边距），卡内可滚动到“其它”。底部气泡的浮卡在上方；展开后顶边在状态栏下方并留出边距。返回键和点外部均可关闭。输入法已恢复为微信输入法。
+
+### Next
+P7/P8 的真实验收仍待用户：Tailscale 浏览器登录，Git 凭据填入令牌。
+
+### Risks
+浮卡定位依赖 Popup 锚点与 boundsInWindow 在同一窗口坐标系，在分屏与小窗模式下未测试；读屏朗读仍未在设备上验证。
+
+### DIA
+已同步 CHANGELOG；README 与 registry 无影响。
+
+### HLG
+追加本条。
