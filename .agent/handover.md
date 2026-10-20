@@ -10503,3 +10503,34 @@ P7（Git 远端认证）与 P8（内置 Tailscale）后台 Agent 完成后，复
 
 ### HLG
 标准 append，先 dry-run 再 apply。
+
+## 2026-10-20T10:01:51+08:00 · 合入两个后台修复分支；上滑面板统一、工作区入口移到资源管理器、会话授权列表精简
+
+type: implementation
+scope: ["Nexara", "native-ui", "ui", "workspace", "chat"]
+status: verified
+tags: ["bottom-sheet", "workspace", "resource-explorer", "session-settings", "merge"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 653c49012d20edce28cab223e03f33d031e3648c3cd82e0c450ab21195b1e735
+
+### Summary
+以 --no-ff 合入 claude/peaceful-bassi-46fce9（同批次工具调用步骤与引用被覆盖的修复，b48b59c5）和 claude/busy-wilbur-082d8e（资源管理器文件区跟随会话工作区，0c82ae1c）。handover、索引与 CHANGELOG 的冲突都是双方各自追加：按时间合并两侧条目并重建索引；inspect 中的 invalid_continuity=3 合并前已存在。随后按用户的三点反馈完成界面调整（cd463144）：全站上滑面板统一；会话工作区入口从会话设置移到资源管理器；会话授权列表去重、精简。
+
+### Changed
+ui/common/NexaraBottomSheet.kt：新增 NexaraModalSheet 统一外壳（同一形状、底色与拖动条，始终 skipPartiallyExpanded）和 NexaraSheetHeight{Full, Content}。NexaraBottomSheet 改为 height 参数，默认 Content。14 处直接使用 ModalBottomSheet 的地方迁到 NexaraModalSheet：会话设置、技能编辑、WebDAV、MCP、自定义技能、搜索配置、模型编辑、文件差异、检索详情、知识图谱无障碍列表、模型选择设为 Full；添加自定义模型、文件移动、知识库两处移动、分享导入设为 Content。其余 NexaraBottomSheet 调用方按 Full/Content 归类，去掉固定比例。新增 ui/workspace/SessionWorkspaceBar.kt，取代 SessionWorkspaceSection/SessionWorkspaceSettings；ResourceExplorerSheet 新增 chatViewModel 参数，接入工作区选择器与切换，切换成功后调用 retryLoadSession。ResourceExplorerWorkspaceMode.Directory/Unavailable 补充 kind、location。会话设置的上下文页去掉 workspaceSection。SessionGrantsSection 每条授权占一行，行尾为撤销按钮。字符串变化：新增 workspace_bar_switch、session_grant_revoke；删除 workspace_section_title、workspace_session_choose、workspace_session_footer、session_revoke_tool、session_grant_target；更新两条引导文案。截图：新增授权与工作区栏基准，删除 3 张旧工作区区块基准，更新资源管理器发布预览基准。
+
+### Validation
+native-ui 下依次运行：testSideloadDebugUnitTest（4235 项，0 失败，25 项跳过；ResourceExplorerWorkspaceModeTest 的两条期望已更新为含 kind/location），lintSideloadDebug、assembleSideloadDebug、assemblePlayDebug、validateSideloadDebugScreenshotTest 均 rc=0。仓库根的发行清单检查及其测试、Python unittest（91 项）全部通过。Release 签名包校验通过（SHA-256 383edb59…4154）。emulator-5564 安装 sideload debug 实测：添加 SSH 主机、会话设置、工作区选择器、资源管理器均铺满屏幕；执行模式选择器按内容高度显示；上下文页已无工作区；在资源管理器中新建项目 uibarcheck 并切换，立即进入目录模式；改用私有工作区后恢复；聊天流留下两条切换提示。模拟器 Gboard 已切回拼音。HEAD 与 origin 一致，均为 cd463144。
+
+### Next
+1）P8 后台 Agent 完成后，复核 P7（worktree-agent-a9ba1f073b0624234，提交 a42b5d5e/c0b71635/34764517，P7 报告全部验证通过）与 P8 并合入。把 NexaraApplication.gitRemoteHttpClient 接到 TailnetRouting 的 proxySelector/proxyAuthenticator；SSH 走 P8 改造的 SshRuntime.connection()。P7 修复了 scp 形式地址 port=null 被拒的问题；同一 SSH 主机上的 git 操作会串行执行。2）气泡生成统计面板已出方案，等待用户确认后实施。
+
+### Risks
+真机断开，本轮界面改动只在模拟器上验证；全屏面板在小屏横屏和 200% 字号下未逐一目测。P7 修改了 SkillsScreen.kt（工具设置入口），本轮也把其中 3 个 ModalBottomSheet 迁到 NexaraModalSheet，合入时可能出现小冲突。
+
+### DIA
+已同步 CHANGELOG（新增“上滑面板统一、工作区入口迁移与授权列表精简”小节）和 README（工作区切换入口改为资源管理器）。
+
+### HLG
+标准 append，先 dry-run 再 apply。
