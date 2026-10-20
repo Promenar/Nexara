@@ -11155,3 +11155,34 @@ testSideloadDebugUnitTest 共 4747 项、0 失败；lintSideloadDebug、assemble
 
 ### HLG
 追加本条。
+
+## 2026-10-21T01:41:39+08:00 · 删除已合并分支与早期设计分支
+
+type: maintenance
+scope: ["Nexara", "git"]
+status: verified
+tags: ["git", "branch-cleanup"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 7f39ccbf1896d95f8602e234989451d080617ea98f9272cccdbce8fb8a656a84
+
+### Summary
+按用户要求，删除所有已合并进 B-native-refactor 的分支和早期设计分支，本地与远端一并删除；探针分支 poc/bd-exec 仍被执行后端规格引用，予以保留。删除前确认这些分支没有未关闭的 PR。
+
+### Changed
+已合并的分支：A-RN-deprecated（b2be2326，本地与远端）、codex/v0.2-beta（38fc1dba，本地与远端）、codex/md3-redesign（fb965df8，仅远端）。早期设计分支（未合入主线，各 7 个提交，最后提交在 2026-05-20）：C-haze-native（12508256）、D-haze-md3mixed（537de190），本地与远端都已删除。上面列出的就是删除时的分支尖端，需要时可按这些提交号找回，但远端 GC 后可能无法再取到。现存分支只有 B-native-refactor 与 poc/bd-exec，worktree 只有主仓库。
+
+### Validation
+git fetch --prune 后，git branch -a 只列出 B-native-refactor 与 poc/bd-exec（本地及 origin）；gh pr list 显示没有未关闭的 PR。
+
+### Next
+无。docs/ 下的历史计划与发布验证文档仍写着 codex/md3-redesign、codex/v0.2-beta，它们记录的是已完成的工作，所以没有改。
+
+### Risks
+C-haze-native 与 D-haze-md3mixed 上未合入主线的 14 个提交已不再有分支引用，只能按上面的提交号找回。
+
+### DIA
+无文档影响（registry 与 README 都不引用已删分支）。
+
+### HLG
+追加本条。
