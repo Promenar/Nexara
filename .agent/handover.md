@@ -10907,3 +10907,34 @@ Markdown 修复对含 $ 且含代码或链接语法的文本增加一次 Markdow
 
 ### HLG
 本记录为 mobile-agentic-capabilities 连续性追加。
+
+## 2026-10-20T19:42:32+08:00 · 会话媒体 M1–M5 合入：工作区落地、渲染播放、view_media 与 media_fetch
+
+type: implementation
+scope: ["Nexara", "native-ui", "chat", "media"]
+status: in_progress
+tags: ["media", "media3", "multimodal", "workspace", "parallel-agents"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 9570bbf3eda155b0f0d88a0e9ddd2e40f0f09378fe9d33d5791a9b89aa1cc175
+
+### Summary
+按 .agent/plans/20261020-chat-media-workspace.md 实施 M1–M5，四个工作包并行后合入 B-native-refactor（最终 6ff0981e）。A（Codex GPT 6.1 Sol）：工作区媒体解析与只新建写入服务；B（Opus 5.5 子 Agent）：Markdown 与工具步骤媒体卡片、Media3 1.11.1 播放、MediaStore 保存、FileProvider 分享、资源管理器预览；C（Codex）：view_media 与各协议工具结果媒体编码；D（Codex）：生图与 MCP 媒体落地、media_fetch、系统提示 Media 分节。主控完成合并、冲突处理、设置页“媒体”分组与图标、工具步骤摘要按媒体个数计数、文档同步。
+
+### Changed
+新增 data/media/（DefaultWorkspaceMedia、MediaTypeSniffer、MediaMetadataReader、MediaLocalAccess、download/WorkspaceMediaDownloader）、domain/media/（WorkspaceMediaException、KeyframePlan、ViewedMedia、MediaFetchUrlPolicy、MediaFetchPaths）、ui/media/（卡片、播放器、Fetcher、保存分享）、ViewMediaSkill、MediaFetchSkill、McpMediaResultProcessor；协议层 ProtocolMessage 增加 videoData 与 mediaPaths，Anthropic/Responses/Gemini 3 原生工具结果媒体，Chat/通用兼容在整组 tool 后追加合成 user；Message.viewedMedia 复用 messages.files 信封，无 Room 迁移；生图改写入工作区 media/<日期>/，不再写 generated_images（旧文件仍可显示）；删除无调用方的 ResultSizeOptimizer；file_paths.xml 增加 cache-path workspace-media-share/；新增依赖 androidx.media3:media3-exoplayer 与 media3-ui-compose-material3 1.11.1。提交：c10a7251、88fd0b6c（A）、e760530b（C 合并）、b2d64a6b（B 合并）、a91e9df9/79b5c3b2（D）、80a97dd8（展示层）、6ff0981e（文档与基线）。
+
+### Validation
+主分支最终树：testSideloadDebugUnitTest 4722 项 0 失败 25 跳过；lintSideloadDebug 通过；assembleSideloadDebug、assemblePlayDebug 通过；validateSideloadDebugScreenshotTest 381 项 0 失败（更新 4 张基线：工具步骤大字号摘要“Generated 3 images”、内置工具三张新增媒体分组，均逐张查看）；check-distribution-manifests.py 通过。各工作包另有独立审阅与定向测试，见 .agent/tmp-agent-reports/media-{a,b,c,d}/report.md（gitignored）。未做真机验证。
+
+### Next
+M6 真机验收（3B1F5QEARBRJQZ66）：生图写入工作区并显示卡片；脚本经 tailnet 调用 ComfyUI 生成图片与视频并以 Markdown 引用显示、播放；MCP 图片落地且上下文无 base64；视觉模型 view_media 描述图片、非视觉模型得到说明、视频关键帧；保存相册与分享；资源管理器预览；浅色、深色、1.3 倍字号截图。后续项：tailnet 明文 http 的 media_fetch 支持；DirectoryWorkspaceBrowser 与 ExternalFoldersPanel 接入媒体预览；挂载写入整块进内存（至多 256 MiB）改为流式；MediaRef 增加内容版本号以便 ContentUri 缓存失效；清理 worktree Nexara-wt-media-{a,b,c,d}。
+
+### Risks
+真机行为（Media3 解码、音频焦点、全屏、SAF content://、MediaStore 可见性、接收方读取分享 URI）未验证；根模式与挂载写入大视频时整块读入内存；view_media 每次请求按 SHA-256 重读源文件，大视频有 IO 延迟；固定媒体 token 估算与服务商实际计费可能偏差；Gemini 3 原生函数媒体只认已核对的规范模型 ID；media_fetch 不支持 tailnet 明文 http，依赖脚本下载。
+
+### DIA
+已同步 CHANGELOG（Unreleased 会话媒体条目）、README（会话媒体条目）、docs/context-management.md（view_media 不折叠、媒体只在当前轮发送与预算估算）、计划状态行。
+
+### HLG
+追加本条。
