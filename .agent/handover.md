@@ -11434,3 +11434,33 @@ record-fingerprint: 1c0683a681835c08861653d67df74c607d78f3bed7312db33c7d73617c81
 
 ### HLG
 本条为 P7 交接记录。
+
+## 2026-10-21T16:43:30+08:00 · 聊天页生成进度行与正文分区显示
+
+type: bugfix
+scope: ["Nexara", "native-ui", "chat"]
+status: done
+tags: ["chat", "top-bar", "generation-progress", "screenshot-test", "i18n"]
+continuity: none
+record-fingerprint: a4ecf1dd3f85014d2840ca6451e3a7b46e4ff74ce24c3b12f471877c2fd374d3
+
+### Summary
+修复真机（OPPO ColorOS 16，1080 宽）生成中进度行 p0_progress 无背景、紧贴滚动正文难以阅读的问题。
+
+### Changed
+ChatScreen.kt：进度行位于 Scaffold topBar 槽内（不是列表项），列表本已从 topBar 下方开始并在自身边界裁切；问题在于 TopAppBar 透明、进度行无底色，且分隔线画在标题栏底部即进度行上方，使进度行视觉上落入滚动区、紧贴被裁半截的正文。改为页头 Column 使用页面底色；新增 ChatGenerationProgressBar（页面底色、次要文字色、横向安全区内边距、底部 0.5dp 分隔线，testTag chat_generation_progress）；进度行出现时标题栏自身分隔线隐藏。values/p0_runtime_strings.xml 的 p0_estimated 用引号保留前导空格，修正英文显示为 tokens(estimated)。新增 GenerationProgressScreenshotTest 两张基线（生成进度 深中411、生成进度 深英360 大字号 fontScale 1.3），已目检。预览名含小数点会被截图插件截断文件名，故未使用“1.3”。
+
+### Validation
+native-ui：testSideloadDebugUnitTest（4869 项 0 失败 25 跳过）、lintSideloadDebug、assembleSideloadDebug、validateSideloadDebugScreenshotTest 一次通过；assemblePlayDebug 后仓库根 check-distribution-manifests.py 通过。未在真机生成中复验（设备在调查中途断开，且真机装的是非 debug 签名版本）。
+
+### Next
+下次真机发布安装后，在生成中滚动长会话确认进度行下沿分隔线与正文分界清晰。
+
+### Risks
+重叠根因为推断：已确认 Material3 1.4 Scaffold innerPadding 由快照状态驱动、列表会裁切，未在真机复现生成中的画面。若真机仍有正文画进进度行区域，需要在设备上用布局边界核查列表顶部位置。
+
+### DIA
+已同步 CHANGELOG（Unreleased：修复：生成进度行与正文分区显示）；README、架构与发行文档无影响。
+
+### HLG
+本条为该修复的交接记录。

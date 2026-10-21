@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-10-21T16:33:22+08:00
+> generated_at: 2026-10-21T17:11:56+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -28,6 +28,7 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-10-21T16:43:30+08:00 | iso | done | none | ["Nexara", "native-ui", "chat"] | ["chat", "top-bar", "generation-progress", "screenshot-test", "i18n"] | 聊天页生成进度行与正文分区显示 | `.agent/handover.md` · `2026-10-21T16:43:30+08:00` · `fp:a4ecf1dd3f` |
 | 2026-10-21T16:33:22+08:00 | iso | verified | resume | ["Nexara", "native-ui", "chat", "generation", "subagent", "approval"] | ["subagent", "agent-task", "approval", "release", "device-check", "independent-review"] | P7 子代理 agent_task（运行中审批、只读查看页，含独立审阅修复与真机验收） | `.agent/handover.md` · `2026-10-21T16:33:22+08:00` · `fp:1c0683a681` |
 | 2026-10-21T15:12:31+08:00 | iso | verified | resume | ["Nexara", "native-ui", "rag", "kg", "chat", "database"] | ["session-graph", "room-v23", "turn-memory", "release", "device-check"] | P6 会话图谱抽取与 v23 迁移（含真机验收） | `.agent/handover.md` · `2026-10-21T15:12:31+08:00` · `fp:0f6e6fa3ee` |
 | 2026-10-21T14:14:57+08:00 | iso | verified | resume | ["Nexara", "native-ui", "chat", "rag", "exec", "ssh", "script"] | ["rag-trace", "text-splitter", "live-output", "tool-stop", "release", "device-check"] | 检索过程文案、切块保留分隔符与 P5 命令实时输出（含真机验收） | `.agent/handover.md` · `2026-10-21T14:14:57+08:00` · `fp:c6559e3cd9` |
