@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-10-21T09:46:16+08:00
+> generated_at: 2026-10-21T10:12:53+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -11,7 +11,7 @@
 | agent-tooling-repair-20261002 | waiting | 2026-10-02T08:00:46+08:00 | done | ["Nexara", "pdec", "release"] | 授权 gpt-6-luna 并交付真机测试签名 APK | `.agent/handover.md` · `2026-10-02T08:00:46+08:00` · `fp:110c0ef84b` |
 | ci-version-sync-20261001 | resume | 2026-10-01T22:20:08+08:00 | in_progress | ["Nexara", "android-ci", "release"] | API31 Prompt 编辑器布局反馈根因修复候选 | `.agent/handover.md` · `2026-10-01T22:20:08+08:00` · `fp:c9c99a4302` |
 | dropdown-menu-anchor-and-style-unification | waiting | 2026-09-27T21:43:18+08:00 | completed | ["ui, dropdown-menu, files-panel, m3-design, release"] | 悬浮菜单位置精准锚定与全站新版视觉样式统一规范收敛 | `.agent/handover.md` · `2026-09-27T21:43:18+08:00` · `fp:31537a3d52` |
-| mobile-agentic-capabilities | resume | 2026-10-21T09:46:16+08:00 | planned | ["Nexara", "native-ui", "rag", "knowledge-graph", "chat", "subagent"] | 登记计划：记忆生命周期与范围隔离、命令实时输出、轮次折叠、子代理与记忆指示器 | `.agent/handover.md` · `2026-10-21T09:46:16+08:00` · `fp:9e333bf486` |
+| mobile-agentic-capabilities | resume | 2026-10-21T10:12:53+08:00 | verified | ["Nexara", "native-ui", "rag", "knowledge-graph"] | P1 对话记忆随聊天记录删除失效 | `.agent/handover.md` · `2026-10-21T10:12:53+08:00` · `fp:d074e84473` |
 | nexara-audit-completion-repair | waiting | 2026-09-22T15:28:29+08:00 | done | ["Nexara", "native-ui", "audit-repair"] | 审计修复、最终签名候选及本机设备验收完成 | `.agent/handover.md` · `2026-09-22T15:28:29+08:00` · `fp:c45ed0053a` |
 | nexara-chat-flow-repair | waiting | 2026-10-16T10:00:45+08:00 | done | ["Nexara", "native-ui", "chat"] | 会话主流程审计 P0/P1 修复交付 | `.agent/handover.md` · `2026-10-16T10:00:45+08:00` · `fp:b968f99f1f` |
 | nexara-independent-model-catalog | resume | 2026-09-22T18:33:08+08:00 | done | ["Nexara", "model-catalog"] | 独立模型目录上线、客户端验收与签名候选交付 | `.agent/handover.md` · `2026-09-22T18:33:08+08:00` · `fp:320878f7b2` |
@@ -28,6 +28,7 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-10-21T10:12:53+08:00 | iso | verified | resume | ["Nexara", "native-ui", "rag", "knowledge-graph"] | ["memory", "rag", "knowledge-graph", "deletion", "undo"] | P1 对话记忆随聊天记录删除失效 | `.agent/handover.md` · `2026-10-21T10:12:53+08:00` · `fp:d074e84473` |
 | 2026-10-21T09:46:16+08:00 | iso | planned | resume | ["Nexara", "native-ui", "rag", "knowledge-graph", "chat", "subagent"] | ["plan", "memory", "rag", "knowledge-graph", "streaming-output", "subagent", "indicator"] | 登记计划：记忆生命周期与范围隔离、命令实时输出、轮次折叠、子代理与记忆指示器 | `.agent/handover.md` · `2026-10-21T09:46:16+08:00` · `fp:9e333bf486` |
 | 2026-10-21T01:41:39+08:00 | iso | verified | resume | ["Nexara", "git"] | ["git", "branch-cleanup"] | 删除已合并分支与早期设计分支 | `.agent/handover.md` · `2026-10-21T01:41:39+08:00` · `fp:7f39ccbf18` |
 | 2026-10-21T01:33:13+08:00 | iso | verified | resume | ["Nexara", "native-ui", "settings", "git"] | ["settings-ui", "worktree", "cleanup", "device-test"] | 设置页两处遗留修复与 worktree 清理 | `.agent/handover.md` · `2026-10-21T01:33:13+08:00` · `fp:2207964aa4` |

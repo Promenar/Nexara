@@ -11217,3 +11217,34 @@ record-fingerprint: 9e333bf486d8f4aad1ee292097b9f78719be327e3558f659e8dd2eac30d0
 
 ### HLG
 追加本条。
+
+## 2026-10-21T10:12:53+08:00 · P1 对话记忆随聊天记录删除失效
+
+type: implementation
+scope: ["Nexara", "native-ui", "rag", "knowledge-graph"]
+status: verified
+tags: ["memory", "rag", "knowledge-graph", "deletion", "undo"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: d074e8447327d80cdfe4bb904cf519ad98daf5ba63bdd6e08fc62d8df494dde6
+
+### Summary
+实施计划 .agent/plans/20261021-memory-scope-streaming-collapse-subagent.md 的 P1（ec5fc7ee）：删除单条消息、重新生成丢弃旧回复、回退截断、清空会话后，该轮对话记忆不再参与检索；撤销删除后随消息恢复。P1 不改表结构：数据库版本升级会牵动备份、双库恢复与迁移测试（v22 那次涉及 49 个文件），所以 kg_evidence.message_id 等新增列移到 P6 的 v23 迁移中，计划已同步。
+
+### Changed
+VectorDao 的公共可见条件 ACTIVE_VECTOR/ACTIVE_VECTOR_ALIAS 新增 MEMORY_VISIBLE：metadata 以 {"type":"memory" 开头的行，要求 start/end_message_id 对应的消息都存在。searchFtsExcludeDocs 也加上该条件。文档向量这两列存放的是文档 id，不受影响。新增孤儿记忆的标记、恢复与清除查询（markOrphanMemory、reviveRestoredMemory、purgeOrphanMemory），以及按用户或助手消息取记忆、按 id 删除的查询。KgEvidenceDao 新增 clearSessionMemoryJit：凡用过本会话对话记忆的即时抽取任务，删除其全部即时证据（含文档来源）并回收孤立节点与边。新增 data/rag/ConversationMemoryLifecycle.kt，实现为 RoomConversationMemoryLifecycle，内部用 Mutex 串行：删除时标记孤儿、失效即时证据并清空 JIT 缓存；恢复时撤销标记；编辑用户消息时删除该轮记忆；编辑助手正文时按新正文经 MemoryManager.addTurnToMemory 重写，重写失败也删除旧记忆；purgeExpired 在应用启动进入 Ready 后执行，物理删除超过 24 小时的孤儿记忆。MessageManager 新增可选参数 memoryLifecycle，在删除、丢弃、截断、清空、恢复、编辑后于后台同步，不阻塞也不影响聊天记录本身的变更；应用级与 ChatViewModel 的两个 MessageManager 都已接入。CHANGELOG 与 docs/ARCHITECTURE.md 已同步。
+
+### Validation
+新增 ConversationMemoryLifecycleTest 6 项（Robolectric 内存 Room）：覆盖向量、关键词、按 id 读取三条路径在删除后不可见、恢复后可见；文档向量不受影响；撤销窗口内恢复则保留，超过窗口后物理删除；即时证据整体失效而文档证据保留；编辑用户消息与助手正文；重写失败时旧记忆仍被删除。把 MEMORY_VISIBLE 临时改为恒真时 2 项失败，恢复后通过。MessageManagerDeletionTest 新增 2 项：四条删除路径都触发同步，删除失败时不触发，同步失败不影响删除；撤销后触发恢复。全量 testSideloadDebugUnitTest --rerun 共 4755 项、0 失败、25 跳过；lintSideloadDebug、assembleSideloadDebug、assemblePlayDebug、validateSideloadDebugScreenshotTest、check-distribution-manifests 均串行通过。Release 43,995,947 字节，verify-release-apk 通过，已升级安装到真机 3B1F5QEARBRJQZ66；手机处于锁屏，未做界面验证。emulator-5564 上 debug 包启动正常，日志中无数据库异常；该模拟器没有记忆数据（未配置嵌入模型），无法用真实数据验证。
+
+### Next
+P2：记忆范围隔离，包括对话记忆、图谱、文档三类档位，助手级默认值与上限，私密助手，以及把旧的 isGlobal 迁移为“本助手”。P3 轮次折叠与 P1、P2 没有文件重叠，可以并行。手机解锁后可在真机上确认：删除一轮后检索卡不再命中该轮内容。
+
+### Risks
+统计、知识库页面的记忆列表同样经过 ACTIVE_VECTOR，删除后立即不计入；物理删除要等下一次应用启动时，超过 24 小时的部分才会执行。编辑助手正文时的重写需要嵌入模型可用，不可用时该轮记忆只删除、不重写。即时证据在删除或编辑后整体失效，下次检索会重新抽取，多一次模型调用。
+
+### DIA
+已同步 CHANGELOG（对话记忆随聊天记录删除失效）、docs/ARCHITECTURE.md（对话记忆生命周期）与计划文件；README 与 registry 无影响。
+
+### HLG
+追加本条。
