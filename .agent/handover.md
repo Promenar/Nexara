@@ -11186,3 +11186,34 @@ C-haze-native 与 D-haze-md3mixed 上未合入主线的 14 个提交已不再有
 
 ### HLG
 追加本条。
+
+## 2026-10-21T09:46:16+08:00 · 登记计划：记忆生命周期与范围隔离、命令实时输出、轮次折叠、子代理与记忆指示器
+
+type: planning
+scope: ["Nexara", "native-ui", "rag", "knowledge-graph", "chat", "subagent"]
+status: planned
+tags: ["plan", "memory", "rag", "knowledge-graph", "streaming-output", "subagent", "indicator"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 9e333bf486d8f4aad1ee292097b9f78719be327e3558f659e8dd2eac30d05e26
+
+### Summary
+用户提出五项需求：删除或丢弃聊天记录时清理对应记忆；从会话抽取知识图谱并提供跨会话开关；Agent 执行命令时实时显示输出；一轮结束后收起调用记录、单独显示最终正文；子代理。之后追加两项：RAG 与知识图谱按会话级、助手级做范围隔离；检索、写入与抽取在界面上可感知。经调研与用户逐项确认，计划写入 .agent/plans/20261021-memory-scope-streaming-collapse-subagent.md，本条随该文件一并提交。
+
+### Changed
+只新增计划文件，不改代码。用户已确认的决定：会话图谱抽取默认关闭；图谱对话证据分为关闭、跨会话、跨助手三档；对话记忆与文档同样采用会话级、助手级范围，助手级设默认值与上限；“允许其他助手读取本助手的记忆”默认开启；已有会话的 isGlobal=true 迁移为“本助手”；复制按钮只复制最终正文；子代理过程供用户只读查看，用户不插手，子代理只与主 Agent 通信，与侧边对话不是同一概念。子代理审批参照 Claude Code 与 Codex 的官方做法：继承父会话的执行模式与白名单；需要新授权时在主会话出现标注来源的审批卡；应用在后台时发通知，10 分钟未处理即失败交回父 Agent。
+
+### Validation
+调研结论由 4 个只读调研 Agent 给出，主控逐项对照源码核实：记忆每轮写入，vectors 表的消息列无索引；只有删除整个会话会清理记忆；kg_evidence 的来源只到会话；新会话默认 isGlobal=true，开启后记忆与文档检索不受助手和工作区限制；工具接口一次性返回；生成协调器只有一个运行槽位；渲染按原顺序平铺且完成后不重排；检索指示器已有，写入侧没有指示。子代理审批做法查阅了 Claude Code、Codex、Cursor 的官方文档（Cursor 未写明，只引用论坛反馈）。不涉及代码，未运行测试。
+
+### Next
+按计划 P1 到 P7 实施。P1 为记忆生命周期，含 v23 迁移，先写失败用例。P3 轮次折叠与 P1、P2 没有文件重叠，可以并行。涉及 DefaultChatGenerationRuntime、ApprovalManager、ChatViewModel、SessionSettingsSheet、NexaraApplication 的期次，动工前确认没有其它会话在改这些文件。
+
+### Risks
+检索 SQL 新增消息存在性与助手关联条件，需要确认能命中新索引；迁移为“本助手”后，依赖跨助手记忆的会话检索结果会变少；子代理运行中等待审批引入新的挂起点，需要覆盖父轮取消、应用进入后台、进程被回收几种情况；备份载荷需要包含新增列。
+
+### DIA
+新增计划文件 .agent/plans/20261021-memory-scope-streaming-collapse-subagent.md；README、CHANGELOG 与 registry 暂无影响。
+
+### HLG
+追加本条。
