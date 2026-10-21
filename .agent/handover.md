@@ -11341,3 +11341,34 @@ testSideloadDebugUnitTest --rerun 4794 项、25 跳过，唯一失败 ContextMem
 
 ### HLG
 本条为 P4 交接记录。
+
+## 2026-10-21T14:14:57+08:00 · 检索过程文案、切块保留分隔符与 P5 命令实时输出（含真机验收）
+
+type: implementation
+scope: ["Nexara", "native-ui", "chat", "rag", "exec", "ssh", "script"]
+status: verified
+tags: ["rag-trace", "text-splitter", "live-output", "tool-stop", "release", "device-check"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: c6559e3cd99a2783429955811b1212d36812c9ec3840e22e214b9384dab5186e
+
+### Summary
+三次提交均已推送到 B-native-refactor：9b55695d 未保存检索选项的会话按默认选项写入记忆，检索过程改为“一句结论 + 分行两列明细”；3e3d3cb2 TrigramSplitter 切句保留换行与中文句末标点（旧实现用 Regex.split 丢掉分隔符，相邻句粘连成“User: Say OKAssistant: OK”）；7ce1b930 及其后续修复完成计划 .agent/plans/20261021-memory-scope-streaming-collapse-subagent.md 的 P5（D4 命令实时输出）。
+
+### Changed
+P5：domain/tool/ToolLiveOutput（ToolLiveOutputSink、ToolOutputStream）经 SkillExecutionContext.liveOutput 传入工具；data/exec/ToolLiveOutputStore 只存内存，按 ToolExecutor 原始步骤 id（step_<ms>_<callId>）登记，尾部 16K、100ms 节流、快照在 Default 调度器生成，只有执行方用过的通道可见，activeKeys 供界面判断审批后执行的调用仍在运行。内置命令 TailTextCollector 逐块回调，LiveWorkspaceOutput 处理跨块切开的工作区路径；SSH 用 LiveTee + SshOutputFilter.Stream 流式遮蔽，界面停止断开通道返回 SSH_STOPPED；隔离脚本进程 ScriptOutputForwarder 合并为 ScriptWire.OUTPUT=8（同路片段合并、片段数 ≤256，宿主每次运行最多处理 4000 条），停止以 UserStopped 取消并返回 STOPPED；termux_exec 标注不支持。启动前已请求停止的内置命令与 SSH 命令不再启动。界面 ToolLiveOutputPanel / RunningToolLiveOutput 位于 InlineToolRow 摘要下方，unscopedStepId 把流水线加的“消息id::”前缀还原后读取。
+
+### Validation
+7ce1b930 与修复提交 a6b27d2a 各跑一次全量：testSideloadDebugUnitTest --rerun 分别 4821、4822 项（25 跳过、0 失败），lintSideloadDebug、assembleSideloadDebug、assemblePlayDebug、validateSideloadDebugScreenshotTest、check-distribution-manifests 均通过。Release（SHA-256 c2ada0b1…）verify-release-apk 通过并已安装到真机。真机 3B1F5QEARBRJQZ66 Release 验收发现两处缺陷并修复：①流水线步骤 id 带消息前缀与存储登记 id 不一致，面板不出现；②审批通过后的工具由 ApprovalManager 直接执行、isGenerating 为假，工具行显示“等待处理”且不渲染面板。修复后真机实测：审批 30 秒命令后显示“正在运行命令…”与逐行实时输出，点“停止”后命令在 row 23 结束，模型收到 EXEC_STOPPED 继续本轮。新增回归：CompactStepPresentationTest 步骤 id 还原、ToolLiveOutputStoreTest activeKeys、截图预览改为 isExecuting=false 路径。
+
+### Next
+P6：会话图谱抽取（vectorization_tasks 新类型 session_graph、全局开关默认关闭）、v23 迁移（kg_evidence.message_id 及索引、sessions(agent_id) 索引）、证据可见条件加消息存在性、生命周期与页脚/面板图谱状态、会话设置抽取队列。随后 P7 子代理。
+
+### Risks
+用户停止的命令在工具行摘要中计为“1 个失败”，文案偏重，未改。审批通过后审批卡在执行期间仍显示为置灰状态（既有行为）。真机 enabled_input_methods 中残留一个组件名不同的 KDE Connect 输入法条目（org.kde.kdeconnect.Plugins.RemoteKeyboardPlugin.RemoteKeyboardService），不是本次会话启用的，未处理；默认输入法已确认还原为微信输入法。
+
+### DIA
+已同步 CHANGELOG（Unreleased：检索过程文案、切块保留分隔符、命令实时输出与停止）与 docs/superpowers/specs/2026-10-18-nexara-exec-backend.md（实时输出、停止、跨块路径替换、OUTPUT 上限与限制表）。
+
+### HLG
+本条为 P5 及检索修复的交接记录。
