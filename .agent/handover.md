@@ -11650,3 +11650,34 @@ DefaultChatGenerationRuntime.postProcess：新增 extractable 条件（成功、
 
 ### HLG
 本条为时间化对话记忆真机验收与抽取丢失修复记录。
+
+## 2026-10-22T03:24:03+08:00 · 主页面改版为分组页头样式、知识库更名为「资料」，助手就地展开并移除单助手会话列表页
+
+type: feature
+scope: ["Nexara", "native-ui", "hub", "rag", "settings", "i18n"]
+status: verified
+tags: ["ui", "hub", "library", "rename", "device-test", "release"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 86c5f719e83978c4f22e59bdea5ee25ce4d6cdd6365b8a5294f34ca4bd185115
+
+### Summary
+提交 212e435e 修复会话标题生成：标题经路由由快速模型生成，失败回退会话模型。提交 08fe3249 改版三个主标签页：新增 NexaraTabHeader 大标题页头（标题、搜索、页面操作），对话、资料、设置共用，内容按设置页 NexaraSettingsSection 分组。对话页分“置顶 / 最近 / 助手”三组，“最近”按用户要求限制为 5 个。助手行按用户要求改回就地展开，同一时间只展开一个（rememberSaveable），列出该助手全部会话与“新建会话”，不再跳转二级页面。置顶、编辑、删除改为长按菜单，并提供 TalkBack 自定义操作。资料页页头提供搜索与“+”，“浏览”分组集中工作区、外部文件夹与知识图谱，文件行去掉分割线。「知识库」按用户确认统一改称「资料」（英文 Library）。用户要求在本会话完成清理：移除已无入口的 AgentSessionsScreen 与 session_list/{agentId} 路由；SessionListViewModel 只保留全量会话目录及新建、置顶、删除；操作失败改在对话页以 Snackbar 提示。
+
+### Changed
+新增 NexaraTabHeader.kt、tab_home_strings.xml（中英）、AgentHubSectionsTest。AgentHubScreen 重写：buildHubSections 与 formatHubSessionTime，常量 HUB_RECENT_LIMIT=5、HUB_PINNED_LIMIT=20、HUB_SEARCH_SESSION_LIMIT=50；HubAgentRow 带展开箭头，展开状态写入 stateDescription；HubAgentSessions 为展开区；Content 新增 snackbarHostState 与 initialExpandedAgentId（供截图预览）。UiTags 新增 HUB_NEW_CHAT、hubNewChatAgent、hubSession、hubAgentSession、hubAgentNewSession、RAG_HOME_ADD。RagHomeScreen、KnowledgeWorkspaces、ExternalFoldersPanel、FilesPanel、UserSettingsHomeScreen、NexaraSettingsPageLayout（header 参数）、NexaraSearchBar（fieldModifier）随之调整。删除 AgentSessionsScreen.kt、AgentSessionsMaterialTest、AgentSessionsMaterialContractTest、4 张会话列表页截图，新增 2 张展开态截图（英文长标题、中文 2 倍字号空助手）。移除 NavGraph 路由、MainTabScaffold 的 onNavigateToSessionList，以及 4 个孤立字符串（sessions_cd_new、sessions_cd_settings、sessions_empty_title、sessions_empty_subtitle）。SessionListViewModel 去掉助手元数据、搜索与空操作 selectSession，loadSessions 不再带参数，对应测试同步。
+
+### Validation
+AgentHubScreenContentTest 共 10 项（含展开后点会话、空助手新建会话、收起），在 emulator-5564 上通过。verify.sh 全部通过：testSideloadDebugUnitTest --rerun、lintSideloadDebug、assembleSideloadDebug、assemblePlayDebug、validateSideloadDebugScreenshotTest、发行清单检查。签名 sideload release 通过 verify-release-apk（44419335 bytes，SHA-256 d8f4d91b…b597），已安装到真机 3B1F5QEARBRJQZ66。真机确认：“最近”只显示 5 个；点击破限助手就地展开 12 个会话，“新建会话”文字与会话标题对齐；点展开区会话进入该对话；返回后仍保持展开；再次点击收起。远端 B-native-refactor 为 08fe3249。
+
+### Next
+无必做项。可选：会话很多时展开区一次列出全部会话，若出现上百个会话可考虑只显示前若干个并提供“查看全部”。
+
+### Risks
+首次 build_diag 时 lintVitalAnalyzeSideloadRelease 在未改动的 ShareImportSheet.kt 上发生 lint 内部崩溃（KaFirResolver），重跑通过，判断为偶发未取证。此前记录的测试会话“Remember t…”仍未删除，等待用户决定。先前一轮“生成失败”的原因仍未取证。
+
+### DIA
+已同步 CHANGELOG（主页面改版与「资料」更名小节）、README（知识库改资料）、docs/ARCHITECTURE.md（AgentHubScreen / NexaraTabHeader 条目）、docs/PRD.md（信息架构）、docs/ARCHITECTURE_DESIGN.md（路由表与 NavRoute 示例）；IMPLEMENTATION_ANALYSIS 为历史记录，未改。
+
+### HLG
+本条记录标题生成修复、主页面改版、资料更名、助手就地展开与会话列表页移除。
