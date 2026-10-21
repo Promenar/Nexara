@@ -11619,3 +11619,34 @@ verify.sh 全量：testSideloadDebugUnitTest 4981 项 25 跳过，唯一失败�
 
 ### HLG
 本条为时间化对话记忆实现与验证记录；Codex 在其 worktree 中追加的中间状态记录未合入。
+
+## 2026-10-22T02:10:10+08:00 · 时间化对话记忆真机验收：修复短回复时事件与状态抽取被丢弃
+
+type: bugfix
+scope: ["Nexara", "native-ui", "rag", "memory", "generation"]
+status: verified
+tags: ["rag", "conversation-memory", "session-state", "device-test", "release"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 8fe24e4a88a89a352c42a245a7ab7b6c0581c43bd8bd03f8d865cacbabf337ee
+
+### Summary
+在真机 3B1F5QEARBRJQZ66 上验收 1432263f 的时间化对话记忆，发现并修复状态抽取结果丢失，提交 297e6d7c 已推送。根因：ChatGenerationRunner 先调用 runtime.postProcess 再 persistTerminal；postProcess 排入图谱与状态抽取时，流式正文按 MessageManager 500ms 防抖落库，嵌入较快时数据库里的助手正文缺最后一段，抽取按残缺正文进行，写回前 StateTurn.sameSource 核对时终态正文已落库，判为过期而丢弃（无任何可见痕迹，状态任务失败也会被删除）。修复：postProcess 在排入抽取前调用 messageManager.flushNonApprovalUpdatesNow 冲刷本轮待写正文（persist 写入的就是 snapshot.content，与 markTerminal 一致），冲刷失败时本轮不排入抽取。
+
+### Changed
+DefaultChatGenerationRuntime.postProcess：新增 extractable 条件（成功、会话开启记忆、问答非空、存在图谱或状态调度器且正文冲刷成功），图谱与状态排队共用；状态仍要求 canEmbed。DefaultChatGenerationRuntimeTest 新增 2 项：冲刷先于图谱与状态排队、冲刷失败时不排队。CHANGELOG 时间化对话记忆小节补充修复说明。
+
+### Validation
+新增 2 项测试修复前失败（缺 flush / 冲刷失败仍排队）、修复后通过；generation 与 SessionState/SessionGraph 相关 323 项通过；verify.sh 全量 testSideloadDebugUnitTest 4983 项 25 跳过 0 失败，lint、assembleSideloadDebug、assemblePlayDebug、validateSideloadDebugScreenshotTest、发行清单检查通过。release verify-release-apk 通过（44447755 bytes，SHA-256 57574ce1…edd9）并安装到真机。真机端到端（Qwen3.8 Flash 对话，抽取模型为快速模型 Gemini 3.8 Flash，嵌入 BGE M3）：检索详情出现“对话状态”条目并带时间（user · code editor: VS Code→Zed、terminal: Ghostty→iTerm2、shell: fish），旧值不再出现；“What did we talk about today?”按今天时段检索出 5 条带时间的记忆，模型给出时间范围与话题；问答类轮次抽取返回空事件与空状态。定位过程用了三版仅含 logcat 诊断的临时签名包（未提交，已用正式包覆盖）。
+
+### Next
+无必做项。可选：状态抽取失败目前静默删除任务，可考虑在记忆设置显示类似图谱“后台抽取”的待处理/失败计数；抽取请求 maxOutputTokens 1024 对思考型抽取模型偏紧（本次输出 154–376 token 正常）。
+
+### Risks
+测试中一轮“I switched my editor to Zed today. Reply only: ok”生成失败（思考 0 秒后显示“生成失败，请重试”），同条件改写后的下一轮成功，原因未取证；该失败发生在生成阶段，修复代码只在 postProcess 的异常保护内执行，判断与本次修复无关但未证实。测试会话“Remember t…”未删除：删除确认为不可撤销操作，留待用户决定。测试中一次盲点在桌面误拨电话，已立即挂断（callState=0），已加前台检查防护。
+
+### DIA
+已同步 CHANGELOG（时间化对话记忆小节补充抽取丢失修复）；README 与 ARCHITECTURE 无影响。
+
+### HLG
+本条为时间化对话记忆真机验收与抽取丢失修复记录。

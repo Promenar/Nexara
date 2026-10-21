@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-10-22T01:10:22+08:00
+> generated_at: 2026-10-22T02:10:10+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -11,7 +11,7 @@
 | agent-tooling-repair-20261002 | waiting | 2026-10-02T08:00:46+08:00 | done | ["Nexara", "pdec", "release"] | 授权 gpt-6-luna 并交付真机测试签名 APK | `.agent/handover.md` · `2026-10-02T08:00:46+08:00` · `fp:110c0ef84b` |
 | ci-version-sync-20261001 | resume | 2026-10-01T22:20:08+08:00 | in_progress | ["Nexara", "android-ci", "release"] | API31 Prompt 编辑器布局反馈根因修复候选 | `.agent/handover.md` · `2026-10-01T22:20:08+08:00` · `fp:c9c99a4302` |
 | dropdown-menu-anchor-and-style-unification | waiting | 2026-09-27T21:43:18+08:00 | completed | ["ui, dropdown-menu, files-panel, m3-design, release"] | 悬浮菜单位置精准锚定与全站新版视觉样式统一规范收敛 | `.agent/handover.md` · `2026-09-27T21:43:18+08:00` · `fp:31537a3d52` |
-| mobile-agentic-capabilities | resume | 2026-10-22T01:10:22+08:00 | verified | ["Nexara", "native-ui", "rag", "memory", "settings"] | 时间化对话记忆：按时间线注入、新近度与按时段检索，后台事件与状态提取 | `.agent/handover.md` · `2026-10-22T01:10:22+08:00` · `fp:35d4c7c4eb` |
+| mobile-agentic-capabilities | resume | 2026-10-22T02:10:10+08:00 | verified | ["Nexara", "native-ui", "rag", "memory", "generation"] | 时间化对话记忆真机验收：修复短回复时事件与状态抽取被丢弃 | `.agent/handover.md` · `2026-10-22T02:10:10+08:00` · `fp:8fe24e4a88` |
 | nexara-audit-completion-repair | waiting | 2026-09-22T15:28:29+08:00 | done | ["Nexara", "native-ui", "audit-repair"] | 审计修复、最终签名候选及本机设备验收完成 | `.agent/handover.md` · `2026-09-22T15:28:29+08:00` · `fp:c45ed0053a` |
 | nexara-chat-flow-repair | waiting | 2026-10-16T10:00:45+08:00 | done | ["Nexara", "native-ui", "chat"] | 会话主流程审计 P0/P1 修复交付 | `.agent/handover.md` · `2026-10-16T10:00:45+08:00` · `fp:b968f99f1f` |
 | nexara-independent-model-catalog | resume | 2026-09-22T18:33:08+08:00 | done | ["Nexara", "model-catalog"] | 独立模型目录上线、客户端验收与签名候选交付 | `.agent/handover.md` · `2026-09-22T18:33:08+08:00` · `fp:320878f7b2` |
@@ -28,6 +28,7 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-10-22T02:10:10+08:00 | iso | verified | resume | ["Nexara", "native-ui", "rag", "memory", "generation"] | ["rag", "conversation-memory", "session-state", "device-test", "release"] | 时间化对话记忆真机验收：修复短回复时事件与状态抽取被丢弃 | `.agent/handover.md` · `2026-10-22T02:10:10+08:00` · `fp:8fe24e4a88` |
 | 2026-10-22T01:10:22+08:00 | iso | verified | resume | ["Nexara", "native-ui", "rag", "memory", "settings"] | ["rag", "conversation-memory", "timeline", "session-state", "codex-cli", "release"] | 时间化对话记忆：按时间线注入、新近度与按时段检索，后台事件与状态提取 | `.agent/handover.md` · `2026-10-22T01:10:22+08:00` · `fp:35d4c7c4eb` |
 | 2026-10-21T23:47:18+08:00 | iso | verified | resume | ["Nexara", "native-ui", "params"] | ["parameter-schemes", "confirm-dialog", "device-check", "release"] | 参数方案删除前二次确认 | `.agent/handover.md` · `2026-10-21T23:47:18+08:00` · `fp:cec9483ed1` |
 | 2026-10-21T23:29:50+08:00 | iso | verified | resume | ["Nexara", "native-ui", "params", "session-settings", "agent", "protocol"] | ["sampling-params", "parameter-schemes", "reasoning-effort", "official-endpoint", "device-check", "release"] | 参数页重设计：原位展开编辑器、方案卡与来源标签，非官方接口只提醒不剔除 | `.agent/handover.md` · `2026-10-21T23:29:50+08:00` · `fp:4445e33456` |
