@@ -11526,3 +11526,34 @@ verify.sh 全量：testSideloadDebugUnitTest 4892 项 0 失败 25 跳过，lint�
 
 ### HLG
 本条为触感真机验收与修复记录。
+
+## 2026-10-21T23:29:50+08:00 · 参数页重设计：原位展开编辑器、方案卡与来源标签，非官方接口只提醒不剔除
+
+type: feature
+scope: ["Nexara", "native-ui", "params", "session-settings", "agent", "protocol"]
+status: verified
+tags: ["sampling-params", "parameter-schemes", "reasoning-effort", "official-endpoint", "device-check", "release"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 4445e334562749fedc088f8a3375103d317debea306d80250bc4d56334a47ece
+
+### Summary
+a59644cd 已推送推理强度胶囊与按模型保存的参数方案（采样参数按会话→助手→模型默认解析）。随后按用户对文案排版与第三层面板的反馈重做参数页，用户确认两项方案：（1）同名模型经第三方中转、自建或本地服务时不再剔除参数，只标“可能被忽略”并照常发送，仅厂商官方接口按资料剔除；（2）去掉第三层取值面板，改为点行原位展开的统一编辑器。
+
+### Changed
+ModelParameterProfile：新增 ParamAvailability（SUPPORTED/MAY_BE_IGNORED/NOT_SENT_WHILE_THINKING/NOT_APPLICABLE/NOT_IN_PROTOCOL，isSent 仅前两者），resolveModelParameterProfile 增加 baseUrl，按厂商域名（含子域名）判定官方接口；baseUrl 为空时回退协议默认地址，仍为空（通用兼容、本地）视为非官方，未知 baseUrl（null）、Gemini/Vertex 协议与未匹配家族视为官方。ReasoningRequestFields.adaptedTo 与 OpenAI、OpenAI Responses、Anthropic、通用兼容协议传入 baseUrl；ChatReasoningControl 用 provider.baseUrl。新增 SamplingParamStepping.kt（各参数范围、起点、步长、快捷值；最大输出按 2 的幂翻倍减半；整 K 显示为“8K”；输入解析校验范围）。SamplingParamsEditor.kt 重写：ParameterSchemeSection（标题右侧模型名；已选方案再点打开还原/重命名/删除菜单；差异行“与“X”不同：…”加覆盖/另存为；差异行因逐项调整出现或消失时按同样高度滚动列表，方案卡自身操作 1 秒内不补偿），恢复按钮始终占位且按最长文案（“默认”/“沿用助手”）定宽、无可恢复时置灰，SamplingParamRows 手风琴式原位编辑（减/可输入数值/加/恢复同一行，下一排等宽快捷值；本地草稿 400ms 防抖提交，快捷值与恢复立即提交），来源标签“本会话”“助手”，提醒标签“可能被忽略”“思考时不生效”，不适用参数收进可展开的“N 项不适用于此模型”。NexaraInlineStepper 的按钮公开为 NexaraStepperButton（可描边）。SessionSettingsSheet 请求超时改为行内加减（30–300 秒，步长 10，默认 120）。NexaraValuePickerSheet 恢复到 a59644cd 之前，删除对应四张未设置截图。字符串：params_source_agent 改为“助手”，新增方案差异、还原、提醒标签、不适用分组等文案，删除方案作用域、隐藏说明等旧文案。
+
+### Validation
+提交 14ceb60b 已推送（远端 SHA 一致）。verify.sh 全量：testSideloadDebugUnitTest 4937 项 0 失败 0 错误 25 跳过，lint、assembleSideloadDebug、assemblePlayDebug、validateSideloadDebugScreenshotTest、清单检查通过；新增 SamplingParamSteppingTest 4 项、ModelParameterProfileTest 3 项、ReasoningRequestBodyTest 第三方/本地/官方子域名/仿冒域名用例，SamplingEditorStateTest 5 项。截图参考重生成并逐张目检（含第三方接口新预览 411 中文与 360 英文）。release verify-release-apk 通过（44396707 bytes，SHA-256 cb6bdff1…a98）并安装到 3B1F5QEARBRJQZ66。真机（Qwen3.8 Flash Next，非官方域名 Provider）：方案卡标题右侧模型名、手风琴展开、未设置时恢复按钮置灰占位；温度 +/− 步进 1.00→1.05、输入 3.5 显示“合法范围：0.00–2.00”、输入 0.33 回车生效、快捷值 0.70、恢复；最大输出 4096→8192→16384；存为方案 ClaudeTest、改为 32K 后差异行与覆盖/另存为出现、菜单含还原/重命名/删除方案，还原回 16K，删除后回到“存为方案”；请求超时 120→130→120；按 0.9 秒节奏连点加号三次得到 1.10，加号坐标与编辑行纵向位置均不变（修复前第二下会落到新出现的“默认”上清空数值）。
+
+### Next
+可选：思考强度“平衡”预设是否应写入 Top K 仍待产品确认；Agent 页 360dp 1.3 倍字号下说明文字提前换行，可再微调。
+
+### Risks
+官方接口判定依赖 baseUrl 域名，厂商新增域名需补表；第三方接口上“思考时不生效”的参数显示为“可能被忽略”并照常发送。输入框中途出现的合法值会在 400ms 后写入（例如清空重输时的中间值），最终非法输入失焦后显示最后一次合法值。删除方案没有二次确认。真机测试在“破限助手 / Is 17 a pr…”会话上进行，已恢复为模型默认、请求超时 120 秒，测试方案 ClaudeTest 已删除，输入法已恢复为微信输入法。
+
+### DIA
+已同步 CHANGELOG（参数页、原位编辑器与差异行滚动、请求层仅官方接口剔除）、docs/ARCHITECTURE.md（ParamAvailability、厂商域名、编辑器）与 .agent/plans/20261021-reasoning-effort-parameter-schemes.md（两项决策与风险）。
+
+### HLG
+本条为参数页重设计与真机验收记录。
