@@ -11557,3 +11557,34 @@ ModelParameterProfile：新增 ParamAvailability（SUPPORTED/MAY_BE_IGNORED/NOT_
 
 ### HLG
 本条为参数页重设计与真机验收记录。
+
+## 2026-10-21T23:47:18+08:00 · 参数方案删除前二次确认
+
+type: feature
+scope: ["Nexara", "native-ui", "params"]
+status: verified
+tags: ["parameter-schemes", "confirm-dialog", "device-check", "release"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: cec9483ed1173ae7b24fa2d60cc02b7cdda3fa933a74b2ade9a3e3ea5f4060f9
+
+### Summary
+按用户要求，参数方案菜单中的“删除方案”改为先弹二次确认，提交 a9be060e 已推送。
+
+### Changed
+SamplingParamsEditor.kt：ParameterSchemeSection 新增 deleting 状态，菜单“删除方案”只打开确认框；确认框沿用项目 Dialog + NexaraConfirmDialog（isDestructive，确认按钮 testTag params_scheme_delete_confirm），确认后经 own{} 调用 onDeleteScheme（不触发差异行滚动补偿）。新增字符串 params_scheme_delete_title（删除方案“%1$s”？/ Delete “%1$s”?）与 params_scheme_delete_message（此模型的所有会话和助手将无法再选用它，已在使用的会保留当前取值）；文案依据 ParameterSchemeRepository 按模型共享方案、ChatViewModel/AgentEditViewModel 删除只删方案行不改取值。
+
+### Validation
+verify.sh 全量：testSideloadDebugUnitTest 4937 项 0 失败 0 错误 25 跳过，lint、assembleSideloadDebug、assemblePlayDebug、validateSideloadDebugScreenshotTest、清单检查通过。release verify-release-apk 通过（44394823 bytes，SHA-256 3abd4261…8774）并安装到 3B1F5QEARBRJQZ66。真机：存方案 ClaudeDel → 菜单删除方案弹出确认框（标题含方案名、说明文案、红色“删除方案”按钮）→ 取消后方案仍在 → 再次删除并确认后方案消失、回到“存为方案”。
+
+### Next
+无新增待办。
+
+### Risks
+确认框为对话框窗口，截图测试未覆盖其渲染，依赖真机验证。真机测试后已点“模型默认”恢复测试会话全部采样参数，请求超时 120 秒未改；输入法临时切到 KDE 输入后已恢复为微信输入法并核对。
+
+### DIA
+已同步 CHANGELOG（方案删除前二次确认）；ARCHITECTURE 无影响。
+
+### HLG
+本条为删除确认的实现与真机验收记录。
