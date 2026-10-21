@@ -11495,3 +11495,34 @@ verify.sh 全量：testSideloadDebugUnitTest 4884 项 0 失败 25 跳过，lintS
 
 ### HLG
 本条为触感与界面复查交接记录。
+
+## 2026-10-21T19:24:15+08:00 · 触感真机验收：修复长回复完成提醒，生成中尾部留白加大，补单选振动
+
+type: fix
+scope: ["Nexara", "native-ui", "haptics", "chat", "layout"]
+status: verified
+tags: ["haptics", "status-haptics", "device-check", "chat-layout", "release"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: ddfe20656b89438c49df84e974d36d2eeeedc92d48dda826c05cbfe193b87b58
+
+### Summary
+a5279354 已推送。真机验收 79d506e2 的触感时发现长回复完成提醒从不触发：终态确认（acknowledgeTerminal）后状态在同一次收集中回到 IDLE，界面看不到 COMPLETED。改为 ChatViewModel 按任务发一次结果事件，ChatRoute 中的 ChatStatusHapticTracker 以事件判定完成与失败。同时按用户反馈加大生成中尾部与输入区的距离，并补齐单选类选择的振动、重新打开触感时的回应与外观页说明文案。
+
+### Changed
+ChatStatusHaptics.kt：新增 ChatGenerationOutcome(sessionId, Kind COMPLETED/FAILED/CANCELLED) 与 chatGenerationOutcomeKind(phase, handledFailure)；追踪器拆为 next(snapshot)（审批提醒、运行计时；从非运行进入运行时重新计时）与 onOutcome（需本页看到过运行；完成需批准后运行 ≥10 秒）。ChatViewModel：MutableSharedFlow generationOutcomes（extraBufferCapacity 8），终态分支按 lastOutcomeTaskId 去重发出。接线从 ChatScreenContent 移到 ChatRoute（rememberUpdatedState 持有 haptics）。ChatComposerInsets：contentBottom=输入区高度，streamingOverlap=输入区+32dp，ChatGeneratingExtraBottom=16dp；ChatScreen 列表底部内边距为 contentBottom + animateDpAsState(生成中 16dp)。NexaraHaptics 新增 confirmEnabled()（ThemeScreen 打开触感时调用）与 select(alreadySelected)，接入 SessionSettingsSheet 思考强度、InferencePresets、ColorPickerPanel、ThemeScreen 强调色、NexaraValuePickerContent、ModelSelectionListItem、SkillsScreen EngineOption。haptics_settings_footer 改为“跟随系统触摸振动；长回复指用时超过 10 秒。”
+
+### Validation
+verify.sh 全量：testSideloadDebugUnitTest 4892 项 0 失败 25 跳过，lint、assembleSideloadDebug、assemblePlayDebug、validateSideloadDebugScreenshotTest、清单检查通过。新增 ChatViewModelTest 两项（完成状态已回到 IDLE 仍只发一次完成结果；路由失败发出失败结果，收集需在 Unconfined 调度器上），ChatStatusHapticTrackerTest 改为 9 项（含终态被合并的回归用例），ChatComposerInsetsTest 增加可达性约束，NexaraHapticsTest 增加 select/confirmEnabled。release verify-release-apk 通过（SHA-256 02dd243d…39c4）并安装到 3B1F5QEARBRJQZ66。真机以 logcat 中 VibratorManagerServiceExtImpl 的 performHapticFeedback(constant=…) 为证据（ColorOS 把 CONFIRM 等转为自家预置效果，不进 dumpsys 历史）：底部导航 26、开关关/开 22/21（重新打开触感有 21）、复制 16、发送 16、30 秒长回复完成 16、18 秒回复完成 16、停止 26 且之后无振动、审批出现 0、批准 16、批准后 11 秒完成 16、拒绝 17、分段切换 26、强调色变化 26 且点已选中项不振。截图确认生成中最新一行与工具步骤距输入区约 32dp，审批卡完整在输入区上方。
+
+### Next
+可选：清理 NexaraApplication.hapticEnabled 死字段；思考强度“平衡”会把 Top K 写为 50（预设三元组含 topK），是否应保持“不限”值得产品确认。
+
+### Risks
+真机测试改动了 Media test 会话参数：点“稳健/平衡”预设后已把 Top K 改回“不限”，界面数值与测试前一致，但温度 0.7、Top P 0.9 可能由继承默认变为显式写入的同值。点强调色会关闭动态取色，已重新打开并确认外观页与测试前一致。状态振动只在聊天页处于前台时触发。生成中留白依赖输入区高度测量，首次测量前回退 96dp。
+
+### DIA
+已同步 CHANGELOG（触感：单选类选择与重新打开回应；修复：生成中尾部留白）与 docs/ARCHITECTURE.md（状态振动改由 generationOutcomes 判定、单选振动）。
+
+### HLG
+本条为触感真机验收与修复记录。
