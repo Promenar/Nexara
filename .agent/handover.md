@@ -11310,3 +11310,34 @@ P4：指示与撤销文案（D7，包括“已删除 N 条消息及其记忆”�
 
 ### HLG
 追加本条。
+
+## 2026-10-21T12:16:12+08:00 · P4 记忆与检索范围指示器、状态一致性修复与 Release 构建
+
+type: implementation
+scope: ["Nexara", "native-ui", "chat", "rag"]
+status: verified
+tags: ["memory-indicator", "turn-memory-state", "rag-trace", "release"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 5318442b937958ed4706fa857d868f42f634b2bd8995744cf7bf6a4ab21c02b0
+
+### Summary
+计划 .agent/plans/20261021-memory-scope-streaming-collapse-subagent.md 的 P4（D7 指示器读取侧与写入状态）以 f6e5687a 提交并推送到 B-native-refactor。独立审阅提出的 10 条问题已全部修复并补回归测试。图谱写入状态、面板实体关系与会话设置 KG 队列按计划留到 P6。
+
+### Changed
+新增 TurnMemoryState（JSON 存于该轮最后一条助手消息的 vectorization_status 列，DB 不升版本）、TurnMemoryIndicator（页脚状态与“本轮记忆”面板：可检索范围、片段、移除/重试/重新记入）、memory_indicator_strings。RagRetrievalTrace 增加执行档位、覆盖会话/助手数（RetrievalScopeResolver.stats）、JIT 次数与模型；检索卡显示范围段与来源计数；会话设置显示可检索会话数；撤销提示写明条数及是否含记忆。一致性：MessageManager.writeTurnMemory 统一写入（先 writing，最终状态经 MessageDao.compareAndSetTurnMemoryState 仅在仍为本次 writing 时落盘，取消按 turnChunkCount 恢复）；reconcileTurnMemory 在打开会话与撤销删除后修正残留 writing；摘要归档改用 updateArchiveVectorizationStatus 不覆盖 JSON；updatePartial/appendContent 改为 MessageDao.updateWith 事务内读改写；onMessageEdited 返回各轮状态映射（编辑用户消息→removed，助手重写失败→failed）；MicroGraphResult.modelCalled 使缓存命中不计 JIT；记忆覆盖统计失败不影响检索；进程重建时面板在会话载入前不关闭。
+
+### Validation
+testSideloadDebugUnitTest --rerun 4794 项、25 跳过，唯一失败 ContextMemoryArchivalTest 因夹具未拦截新的归档状态方法而挂起，修正夹具后该类 5 项通过；lintSideloadDebug、assembleSideloadDebug、assemblePlayDebug、validateSideloadDebugScreenshotTest、check-distribution-manifests 通过。新增 MessageManagerTurnMemoryTest 6 项、MessageDaoTest CAS/归档/事务用例、生命周期与 JIT 缓存用例均通过。Release 44,091,887 字节，verify-release-apk 通过（0.2.2-beta / versionCode 4，证书匹配，SHA-256 c0f850f2…）。真机 3B1F5QEARBRJQZ66 本轮未连接，未安装；已在 emulator-5564 安装并冒烟启动，无崩溃。
+
+### Next
+手机重新连接后执行 adb -s 3B1F5QEARBRJQZ66 install -r 安装本轮 Release，并只读核对页脚记忆状态与面板（真机当前无嵌入记忆数据时状态可能不出现）。随后 P5 命令实时输出、P6 会话图谱抽取与 v23 迁移（含 D7 图谱写入状态）、P7 子 Agent。
+
+### Risks
+后处理写入进行中时编辑助手正文，onMessageEdited 看不到尚未写入的片段，写入完成后该轮记忆仍是旧正文（状态显示已记入）；属已知边界，待 P6 统一记忆写入队列时处理。残留 writing 的修正依赖打开会话或撤销删除触发。
+
+### DIA
+已同步 CHANGELOG（Unreleased 记忆指示器条目补充状态修正与编辑行为）、docs/ARCHITECTURE.md（TurnMemoryState 写入与修正链路）、计划 D7 实施划分。
+
+### HLG
+本条为 P4 交接记录。
