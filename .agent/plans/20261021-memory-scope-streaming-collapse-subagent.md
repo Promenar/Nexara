@@ -123,7 +123,7 @@
 - 读取侧（扩展现有 `RagProgressCard` 与 `RagDetailsSheet`）：摘要行显示本次检索范围档位；摘要下一行按来源计数（记忆、文档、图谱路径）并标出 JIT 临时抽取次数；详情页列出范围、参与检索的会话数与助手数、JIT 抽取使用的模型。
 - 写入侧：回复底部模型名所在行新增记忆状态，依次为“写入中 → 已记入记忆 → 图谱抽取中 → 图谱 +N 实体 +M 关系”，失败显示“图谱抽取失败 · 重试”，被删除或移除后显示“已从记忆移除”。记忆关闭的会话不显示。
 - 点按写入状态打开“本轮记忆”面板：可见范围说明、本轮写入的记忆块预览、本轮抽取的实体与关系、“在图谱中查看”、“从记忆中移除本轮”（只移除记忆，不删消息）。
-- 写入状态以每轮一个 JSON 字段持久化在助手消息上，后台图谱任务完成后更新；新增列随 P6 的 v23 迁移一并加入，P4 先使用助手消息已有的 JSON 列。
+- 对话记忆写入状态以 JSON 保存在助手消息已有的列中。图谱抽取状态不写入消息：排队、进行中、失败与未完成由 `vectorization_tasks` 中该轮的 `session_graph` 任务行表达，完成后任务行删除，实体与关系数按证据的 `message_id` 统计；这样后台任务不与记忆状态的整段 JSON 写入竞争。
 - 删除消息的撤销提示写明“已删除 N 条消息及其记忆”。
 - 会话设置的范围档位旁显示当前可见范围（如“本助手 12 个会话”）；会话设置的知识图谱分组显示后台抽取队列（待处理数、今日调用次数）。
 - 子代理查看页同样显示子代理的检索卡；子代理不写入，不显示写入状态。
@@ -138,7 +138,7 @@
 | P3 | D5 轮次折叠与只复制正文 | 无，可与 P1、P2 并行 | `ui/chat/PipelineBubble.kt` 及新组件、显示设置 |
 | P4 | D7 指示器（读取侧扩展、写入状态、本轮记忆面板、撤销提示文案） | P1；写入侧图谱状态在 P6 接入 | `ui/chat/**`、`data/generation/DefaultChatGenerationRuntime.kt` 写入状态 |
 | P5 | D4 命令实时输出 | 无 | `data/exec/**`、`data/ssh/**`、`data/script/**`、`ui/chat/manager/ToolExecutor.kt`、展示存储、`InlineToolRow` |
-| P6 | D3 会话图谱抽取与后台队列，含 v23 迁移（`kg_evidence.message_id` 及索引、助手消息记忆状态列、`sessions(agent_id)` 索引） | P1、P2 | `data/local/db/**`、`data/rag/**`、`VectorizationQueue`、RAG 设置页 |
+| P6 | D3 会话图谱抽取与后台队列，含 v23 迁移（`kg_evidence.message_id` 及索引、`sessions(agent_id)` 索引） | P1、P2 | `data/local/db/**`、`data/rag/**`、`VectorizationQueue`、RAG 设置页 |
 | P7 | D6 子代理，含运行中审批与只读查看页 | P3、P5 | 新 `data/subagent/**`、`ApprovalManager`、`ToolAllowlistStore`、`ui/chat/**`、`NexaraApplication` 注册 |
 
 每期独立提交推送；涉及 `DefaultChatGenerationRuntime`、`ApprovalManager`、`ChatViewModel`、`SessionSettingsSheet`、`NexaraApplication` 的期次，动工前确认没有其它会话在改同一文件。
