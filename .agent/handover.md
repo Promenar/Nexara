@@ -11372,3 +11372,34 @@ P6：会话图谱抽取（vectorization_tasks 新类型 session_graph、全局�
 
 ### HLG
 本条为 P5 及检索修复的交接记录。
+
+## 2026-10-21T15:12:31+08:00 · P6 会话图谱抽取与 v23 迁移（含真机验收）
+
+type: implementation
+scope: ["Nexara", "native-ui", "rag", "kg", "chat", "database"]
+status: verified
+tags: ["session-graph", "room-v23", "turn-memory", "release", "device-check"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 0f6e6fa3eed5b881e905b4f8b8a0a116de148cc78833ff29ee540c49cab4a4aa
+
+### Summary
+计划 .agent/plans/20261021-memory-scope-streaming-collapse-subagent.md 的 P6（D3 会话图谱抽取与 D7 图谱部分）已完成并推送：ecab8b74 功能提交，e7b07d47 真机验收后的两处修复（图谱画布连线裁切、“在图谱中查看”定位到本轮关系中出现最多的实体）。
+
+### Changed
+Room v23：kg_evidence.message_id 及索引、sessions(agent_id) 索引，schema 23.json 导出，身份哈希 7d4eb1523842672010345f378c8b7bd9 同步到恢复契约、Journal、LegacyDatabasePromoter、RoomBackupDataSource 与双库探测。对话证据 source_type=session，可见条件要求所属消息存在。全局开关“从对话抽取知识图谱”（kg_session_extraction，默认关闭，已纳入备份策略）；开启后记忆开启的会话每轮在 postProcess 排入 vectorization_tasks 类型 session_graph（id session-graph-<助手消息id>），后台由 RoomSessionGraphProcessor 抽取并以 GraphStore.replaceTurn 写入；完成删除任务行，未完成标 partial，失败标 failed。图谱状态不写消息列，由任务行与按 message_id 统计的证据合成（计划 D7 已改写为此方案）。编辑助手正文清证据并重新排入，编辑用户消息只清除；启动清理删除消息已不存在的证据与任务行，撤销窗口内仍有记忆片段的轮次保留。页脚显示 图谱抽取中/图谱 +N 实体 +M 关系/未完成/失败·重试，本轮记忆面板列出实体与关系并可跳转 knowledge_graph?query=；会话设置上下文页显示“后台抽取 待处理·失败·今日轮次与调用”。文档检索页的队列状态过滤掉对话任务。
+
+### Validation
+全量（ecab8b74 前与 e7b07d47 前各一次）：testSideloadDebugUnitTest --rerun 4838 项 0 失败 25 跳过，lintSideloadDebug、assembleSideloadDebug、assemblePlayDebug、validateSideloadDebugScreenshotTest、check-distribution-manifests 通过。新增 SessionGraphStoreTest、SessionGraphQueueTest、DefaultChatGenerationRuntimeTest 两项、SessionGraphScreenshotTest 五张。Release（e7b07d47，SHA-256 69c710aa…）verify-release-apk 通过并安装到真机。真机 3B1F5QEARBRJQZ66：开启开关后在 Media test 会话发送一轮，页脚由“图谱抽取中”变为“图谱 +5 实体 +4 关系”，面板列出 Android/Google/JetBrains/Kotlin/Prague 与 4 条关系，“在图谱中查看”跳到图谱并定位 Kotlin，会话设置显示“待处理 0 · 失败 0 · 今日 1 轮、1 次调用”。验收后已把该开关恢复为关闭。
+
+### Next
+P7：D6 子代理（agent_task 内置工具、并行上限 3、运行中审批与 10 分钟超时、分组卡与只读查看页、父会话删除级联）。
+
+### Risks
+会话图谱只在记忆开启的会话抽取；会话的“知识图谱”检索开关独立，关闭时抽取仍进行但本会话检索不读取。图谱页按搜索定位后视图放大，其余实体需手动缩放查看（既有行为）。
+
+### DIA
+已同步 CHANGELOG（Unreleased：从对话抽取知识图谱）、README 与 docs/ARCHITECTURE.md（Room v23 与 session 证据）、docs/distribution-builds.md（v18→v23），计划文档 D7 与 P6 行。
+
+### HLG
+本条为 P6 交接记录。
