@@ -11464,3 +11464,34 @@ native-ui：testSideloadDebugUnitTest（4869 项 0 失败 25 跳过）、lintSid
 
 ### HLG
 本条为该修复的交接记录。
+
+## 2026-10-21T18:15:48+08:00 · 触感反馈与状态提醒振动，新增界面文案与排版修复
+
+type: implementation
+scope: ["Nexara", "native-ui", "haptics", "chat", "subagent", "memory", "settings"]
+status: verified
+tags: ["haptics", "status-haptics", "ui-polish", "screenshot-test", "release"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 2bcf7b9c7580354d79de602786496646bd2efda1c13532acf487660a1b6aa3e8
+
+### Summary
+79d506e2 已推送：振动从仅底部导航扩展为统一的 NexaraHaptics（交互类与状态类两档），外观页新增“触感”分组；同时复查新增界面，重排子代理审批框与查看页时间线、本轮记忆面板、检索卡来源计数和助手记忆策略的文案与布局。
+
+### Changed
+ui/common/NexaraHaptics.kt：事件 SELECTION/STEP/TOGGLE_ON/TOGGLE_OFF/CONFIRM/REJECT 与状态类 ATTENTION/COMPLETED/FAILED，映射到 View.performHapticFeedback 常量（API 34 / 30 以下回退），不申请振动权限；NexaraTheme 按 haptic_enabled、haptic_status_enabled（nexara_settings，已加入备份白名单）提供 LocalNexaraHaptics，关闭触感时把 LocalHapticFeedback 替换为静默实现。调用点：MainTabScaffold、NexaraTabSwitcher、RagHomeScreen、SettingsToggle 与新 NexaraSwitch（替换 ProviderModelsScreen、ToolListSections、SkillCatalogUi 中的裸 Switch）、NexaraInlineStepper（长按每 4 步一次）、NexaraSlider（有刻度时）、发送与停止、ApprovalActionBar、子代理审批弹窗、复制回复/过程/代码/命令。ui/chat/ChatStatusHaptics.kt：ChatStatusHapticTracker 按会话、生成状态与审批身份判定，新的审批请求 ATTENTION、计时 ≥10 秒的完成 COMPLETED、失败 FAILED，审批等待不计时，首次进入、切换会话、主动停止和流式输出不振动。界面：SubagentApprovalContent 复用 ApprovalCallHeader/ApprovalRiskLine/ApprovalTextBlock；查看页时间线由 subagentTimeline() 把调用、审批、结果合并为一步，subagentCallDisplay() 提取主对象、其余参数写成“名称: 值”；TurnMemoryIndicator 可见范围三行对照、你/助手角色标签、图谱实体标签与关系行；ragSourceBreakdown 单一来源不重复计数；AgentMemoryPolicySection 右侧只显示上限。NexaraApplication.hapticEnabled 字段已无 UI 读取，暂保留。
+
+### Validation
+verify.sh 全量：testSideloadDebugUnitTest 4884 项 0 失败 25 跳过，lintSideloadDebug、assembleSideloadDebug、assemblePlayDebug、validateSideloadDebugScreenshotTest、check-distribution-manifests 通过。新增 NexaraHapticsTest 4、ChatStatusHapticTrackerTest 5、SubagentTimelineTest 4、TurnMemoryChunkTest 3，ThemePreferenceStoreTest 增加持久化用例；截图基准更新约 20 张并新增 subagentViewerWaitingLight，逐张复看后修掉外观页副标题截断、策略行尾值截断、长命令中间省略三处问题。release 经 verify-release-apk 校验（包名、versionCode 4、0.2.2-beta、证书）后在 3B1F5QEARBRJQZ66 安装成功。真机振动手感未验证：安装后手机处于锁屏，未解锁。
+
+### Next
+手机解锁后在外观页“触感”分组试开关、发送与停止、审批批准与拒绝、复制的手感，并发一条超过 10 秒的回复确认完成振动；可选清理 NexaraApplication.hapticEnabled 死字段。
+
+### Risks
+状态振动只在聊天页处于前台组合中时触发，后台完成不振动（后台由通知承担）。ATTENTION 在所有 API 级别使用 LONG_PRESS，部分机型手感偏重。360dp、130% 字号下设置副标题仍按现有单行规范截断。英文检索卡来源计数未做复数形式。
+
+### DIA
+已同步 CHANGELOG（Unreleased：触感反馈、新增界面的文案与排版修复）与 docs/ARCHITECTURE.md（NexaraHaptics / ChatStatusHapticTracker 条目）。
+
+### HLG
+本条为触感与界面复查交接记录。
