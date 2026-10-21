@@ -11248,3 +11248,34 @@ P2：记忆范围隔离，包括对话记忆、图谱、文档三类档位，助
 
 ### HLG
 追加本条。
+
+## 2026-10-21T10:55:39+08:00 · P2 记忆与知识的会话级、助手级范围隔离
+
+type: implementation
+scope: ["Nexara", "native-ui", "rag", "knowledge-graph", "agent"]
+status: verified
+tags: ["memory", "scope", "privacy", "knowledge-graph", "agent-policy"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 661fd64f8bfa172d146e7c96cb77e69f6d1bc41c45aab2baff5fbaf0b6e562ea
+
+### Summary
+实施计划 .agent/plans/20261021-memory-scope-streaming-collapse-subagent.md 的 P2（f5afac2c）。会话的“跨会话检索”开关改为三类资源的档位：对话记忆（仅本会话/本助手/全部助手）、图谱对话证据（仅本会话/跨会话/跨助手）、文档（本会话工作区/工作区与知识库/全部已索引文档）。助手可设置每类的会话上限与新会话默认值，以及是否允许其他助手读取（默认开启，关闭即私密助手）。没有改表结构。
+
+### Changed
+ChatModels 新增 ConversationScope 与 DocumentScope 枚举；RagOptions 新增 memoryScope/graphScope/documentScope，旧字段 isGlobal 只在新字段缺省时参与解析（开启→本助手，关闭→仅本会话，文档缺省为工作区与知识库）。AgentConfigModels 新增 AgentMemoryPolicy（含 normalized/defaultsFor/clamp），作为 AgentRetrievalConfig.memoryPolicy 存在 agents.retrieval_config 中。助手继承全局检索参数时，该列只承载记忆权限：AgentConfigResolver 此时返回 retrievalConfig=null，另返回 memoryPolicy。新增 data/rag/RetrievalScope.kt：RetrievalScopeResolver 把档位解析为 ConversationReach（Session/Agent/SharedAgents，按 sessions.agent_id 判定，SharedAgents 排除私密助手）与 DocumentReach（All，或工作区根 + 显式文档与展开的文件夹）。VectorDao 新增按范围读取与 FTS 的查询；VectorStore.searchConversation/searchDocuments、KeywordSearcher.searchScoped、GraphRetrievalStore 的 visible_sessions/visible_docs 共用同一解析结果。MemoryManager 的 RetrieveOptions 以 memoryScope/documentScope 替换 isGlobal，先检查嵌入模型可用再解析范围。ContextBuilder 合并三档后按 agentMemoryPolicy 收紧到上限；DefaultChatGenerationRuntime 两处传入。ChatViewModel 新会话取助手默认档位，新增 agentMemoryPolicy()。界面：新增 ui/chat/SessionScopeSection.kt，替换会话设置中的跨会话开关与“长期记忆”分组；超出上限的档位不可选，已保存的超限档位注明“受助手上限限制”。新增 ui/hub/AgentMemoryPolicySection.kt，接入助手编辑页；共用组件在 ui/common/MemoryScopeControls.kt。新增 memory_scope_strings.xml（中英），删除 6 个不再使用的字符串。CHANGELOG、docs/ARCHITECTURE.md、计划 D2 已同步。
+
+### Validation
+新增 RetrievalScopeTest 5 项（Robolectric 内存 Room）：三档对话记忆在向量、FTS、图谱三条路径命中同一组会话；私密助手不被其他助手的全部助手档读取，自身仍可读取；三档文档三条路径一致（含未登记到工作区的旧文档）；显式文档与文件夹展开，空范围不会退化为全库；旧 isGlobal 迁移、上限收紧、默认值随上限收紧。变异检查：把图谱私密过滤改为恒真时 2 项失败，恢复后通过。另新增 AgentConfigResolverTest 继承场景 1 项，更新 SessionRetrievalSettingsTest 等 8 个既有测试到新字段。全量 testSideloadDebugUnitTest --rerun 共 4761 项、0 失败、25 跳过；lintSideloadDebug、assembleSideloadDebug、assemblePlayDebug、validateSideloadDebugScreenshotTest、check-distribution-manifests 均串行通过。截图：更新会话上下文 3 张，新增受限会话范围、档位选择、助手记忆与知识共 6 张，已逐张查看。尚未在真机验证。
+
+### Next
+P3 轮次折叠由后台子代理在 worktree 中实现，完成后复核其 diff 与测试，合并到 B-native-refactor，再做全量验证与 release 真机安装。之后依次是 P4 指示器（含删除提示文案）、P5 命令实时输出、P6 会话图谱抽取与 v23 迁移（含 sessions(agent_id) 索引）、P7 子代理。
+
+### Risks
+已有会话中开启跨会话检索的，从此只读本助手的记忆（此前读所有助手），检索结果可能变少，可在会话设置改回“全部助手”。关闭跨会话检索的会话，此前不检索任何文档，现在会检索工作区与知识库。助手档位查询按 sessions.agent_id 子查询过滤，该列在 P6 之前没有索引，会话很多时需要关注查询耗时。130% 字号、360dp 宽度下，助手页文档行的档位名会出现省略号。
+
+### DIA
+已同步 CHANGELOG（记忆与知识的会话级、助手级范围隔离）、docs/ARCHITECTURE.md（检索范围）与计划 D2；README 与 registry 无影响。
+
+### HLG
+追加本条。
