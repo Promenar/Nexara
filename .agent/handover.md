@@ -11279,3 +11279,34 @@ P3 轮次折叠由后台子代理在 worktree 中实现，完成后复核其 dif
 
 ### HLG
 追加本条。
+
+## 2026-10-21T11:16:52+08:00 · P3 轮次折叠集成、Release 安装与真机核对
+
+type: implementation
+scope: ["Nexara", "native-ui", "chat", "rag"]
+status: verified
+tags: ["turn-collapse", "memory-scope", "release", "device-verification"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 7528b03115f59552a9dcb65a9a4f47491b80b90c65e95f22fde4fddfaca9df25
+
+### Summary
+计划 .agent/plans/20261021-memory-scope-streaming-collapse-subagent.md 的 P3 轮次折叠由子 Agent 在独立 worktree 完成，主控复核后以 fe78496d 拣选到 B-native-refactor，CHANGELOG 另提交 13673d91，均已推送。P2 与 P3 合并后的工作树完成全量验证，Release 包已升级安装到真机，并在真机与 emulator-5564 上核对两项界面。
+
+### Changed
+fe78496d：新增 ui/chat/TurnCollapse.kt（buildCollapsedTurnPlan 判定一轮是否已完成），完成的一轮把检索、思考、工具步骤收为“已运行 N 步 · 耗时”摘要行，正文单独显示；复制按钮只复制最终正文，⋯ 菜单提供“复制全部过程”；外观设置新增“完成后收起过程”开关（theme_collapse_finished_turns，默认开）。出错中断或有待审批的轮次不折叠。13673d91：CHANGELOG 条目。
+
+### Validation
+合并后工作树串行执行 testSideloadDebugUnitTest --rerun（4775 项、0 失败、25 跳过）、lintSideloadDebug、assembleSideloadDebug、assemblePlayDebug、validateSideloadDebugScreenshotTest、check-distribution-manifests，全部通过。Release 44,042,095 字节，verify-release-apk 通过（版本 0.2.2-beta / versionCode 4，证书指纹匹配），2026-10-21 11:12 安装到真机 3B1F5QEARBRJQZ66。真机只读核对：已有会话中完成的一轮显示“已运行 1 步 · 1 分 5 秒”，点开后展开思考与“运行了 1 条命令”步骤，再点收起；会话设置的上下文页显示“检索范围”区（对话记忆、图谱对话证据（图谱关闭时置灰显示已关闭）、文档三行与提示文案）。未修改真机上任何设置。emulator-5564：助手编辑页“记忆与知识”区渲染正常；把上限改为仅本会话时默认值自动收紧、更大档位置灰并注明超出上限；已把该助手恢复为上限全部助手、默认本助手。
+
+### Next
+P4：指示与撤销文案（D7，包括“已删除 N 条消息及其记忆”）；随后 P5 命令实时输出、P6 会话图谱抽取与 v23 迁移（kg_evidence.message_id、助手消息记忆状态列、sessions(agent_id) 索引）、P7 子 Agent。
+
+### Risks
+真机目前没有嵌入模型产生的跨会话记忆数据，“本助手 / 全部助手”档在真实数据上的命中差异只由 RetrievalScopeTest 等单元测试覆盖，尚未在设备上用真实检索验证。P3 子 Agent 的 worktree（.claude/worktrees/agent-a11c408137e30a933）仍保留在本机，内容已全部合入。check-text-wrapping.py 有 29 项基线既有问题，不在标准验证之内。
+
+### DIA
+无新增文档影响：P3 的 CHANGELOG 已在 13673d91 同步，P2 文档在 f5afac2c 同步；README 与 registry 无影响。
+
+### HLG
+追加本条。
