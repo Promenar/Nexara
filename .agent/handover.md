@@ -11588,3 +11588,34 @@ verify.sh 全量：testSideloadDebugUnitTest 4937 项 0 失败 0 错误 25 跳�
 
 ### HLG
 本条为删除确认的实现与真机验收记录。
+
+## 2026-10-22T01:10:22+08:00 · 时间化对话记忆：按时间线注入、新近度与按时段检索，后台事件与状态提取
+
+type: feature
+scope: ["Nexara", "native-ui", "rag", "memory", "settings"]
+status: verified
+tags: ["rag", "conversation-memory", "timeline", "session-state", "codex-cli", "release"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 35d4c7c4eb027bab17939a23702e2106cd06b23d12976284431445cfb80c6988
+
+### Summary
+按用户确认的四层方案实现时间化会话记忆，提交 1432263f 已推送。第 1–3 层与第 4 层读取注入由主控完成；第 4 层后台抽取与写入经用户授权委派 Codex CLI（gpt-6.1-sol xhigh，workspace-write 沙箱，独立 worktree ../Nexara-wt-state 分支 feat/session-state-memory），主控复核后只合并代码与测试，Codex 自行改动的 README/CHANGELOG/ARCHITECTURE 与其在 worktree 中追加的 HLG 未采用（描述的是读取侧未集成的中间状态），文档由主控按终态重写。worktree 与分支已删除，任务书、报告与日志留档于 .agent/tmp-agent-reports/state-memory/。
+
+### Changed
+MemoryTimeline.kt：时间戳写法（“2026-10-19 14:32 · 3 days ago”，一小时内按分钟、当天按小时、之后按日历天/周/月/年）、当前时间、候选内按名次线性的新近度加分（RECENCY_WEIGHT 0.05）、parseTimeRange（中英文：今天/昨天/前天/大前天、N天前、最近N天、上周X/周X/本周X、上周/本周/上月/本月/N周前/N个月前/去年/今年、具体日期未写年份取最近已过去者、yesterday/last week/N days ago/last Tuesday 等）与 parseRecallTimeRange（需含回顾意味词才生效）。MemoryManager：注入正文为“当前时间与先后规则 → 当前状态 → 按时间先后的事件与记忆 → 按相关度的文档”；时间取 start_message_id（缺失时 end_message_id）消息的 created_at，经新增 MessageDao.getCreatedAt；回顾时段经 getIdsCreatedBetween 筛选、阈值 -1 检索并优先入选；summary（事件）另取至多 3 条（此前 summary 结果在最终选取时被丢弃）；state 行经 latestStates 每键取最新、丢弃撤销值，≤24 条全注入，超出一半按相似度一半按时间；无相似记录时状态仍注入；引用增加 occurredAt 与 kind=state（不显示相似度）。VectorStore：searchConversation 增加 rowFilter，新增 conversationRowsScored。RagTracePresentation：状态类型与时间片段，“摘要”类型改称“事件”。GlobalRagConfigScreen 新增“对话记忆 · 提取事件与状态”开关（memory_state_strings.xml）。Codex 部分：SessionStateMemory.kt（契约辅助、英文系统提示词、容错解析、Room 调度器与处理器、快照复核后事务写入，created_at=用户消息时间）、VectorizationQueue session_state 任务类型（持久化、准入、删除屏障、中断恢复、失败清理）、VectorDao TURN_MEMORY_ROW 覆盖 memory/summary/state 的可见性与孤儿回收（getMemoryBy* 仍只计 memory）、VectorizationTaskDao、ConversationMemoryLifecycle 编辑/移除/重写联动、DefaultChatGenerationRuntime 排队、KgRequestClient 可选 responseParser、RagConfiguration.memoryStateExtractionEnabled（memory_state_extraction，默认关闭，纳入备份白名单）、NexaraApplication 接线（摘要预设模型，未设置时主模型）。
+
+### Validation
+verify.sh 全量：testSideloadDebugUnitTest 4981 项 25 跳过，唯一失败为中英文字符串键一致性约定（rag_details_occurred_at 仅在英文资源），补齐中文后该约定与本地化测试 11 项通过、lint 通过；lint、assembleSideloadDebug、assemblePlayDebug、validateSideloadDebugScreenshotTest、发行清单检查通过。新增测试：MemoryTimelineTest 8 项、MemoryManagerTimelineTest 5 项（消息时间与时间线顺序、新近度阈内优先与阈外不改变、回顾时段优先且普通问题不受限、状态最新值/撤销/无相似记录时注入、事件入选）、RagTracePresentationTest 1 项；Codex 新增 SessionStateMemoryTest 5 项、SessionStateMemoryIntegrationTest 22 项及运行时、设置持久化测试（其报告：全量 4967/0 失败、lint 通过）。记忆设置页三张截图参考重生成并目检。release verify-release-apk 通过（44447443 bytes，SHA-256 d179b1df…5e2c）并已安装到 3B1F5QEARBRJQZ66。真机端到端未进行：手机处于锁屏（isKeyguardShowing=true），模拟器无模型与嵌入配置。
+
+### Next
+用户解锁手机后真机验收：记忆设置开启“提取事件与状态”，在已开启对话记忆且配置嵌入模型的新会话中先说“我用 Vim 写代码”、再说“我换成 VS Code 了”，等待后台抽取后问“我现在用什么编辑器”，在检索详情确认状态为 VS Code 且无 Vim、记录带时间；再问“今天我们聊了什么”确认按时段检索；验收后关闭开关并删除测试会话。根据真实模型输出评估提示词效果（语言、日期省略、是否过度抽取）。
+
+### Risks
+未经真实模型与真机验证：事件与状态的抽取质量、对象属性写法能否稳定复用依赖模型；开启后每轮多一次模型调用，用量计入图谱用量统计。时间解析为规则匹配，未覆盖的说法（如“几天前”“上上周”）不按时段检索；回顾意味判定可能把“我们今天去哪”这类问题也按今天限定，影响为该时段记录优先占位。状态以同一助手为范围复用写法，跨助手共享记忆时不同写法的同一状态不会互相覆盖。注入头部的当前时间与会话“注入时间”开关独立，开启该开关时会出现两处当前时间。
+
+### DIA
+已同步 CHANGELOG（时间化对话记忆）、README（RAG 与知识图谱条目）与 docs/ARCHITECTURE.md（MemoryManager 时间线注入、SessionStateMemory 事件与状态）。
+
+### HLG
+本条为时间化对话记忆实现与验证记录；Codex 在其 worktree 中追加的中间状态记录未合入。
