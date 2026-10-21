@@ -11403,3 +11403,34 @@ P7：D6 子代理（agent_task 内置工具、并行上限 3、运行中审批�
 
 ### HLG
 本条为 P6 交接记录。
+
+## 2026-10-21T16:33:22+08:00 · P7 子代理 agent_task（运行中审批、只读查看页，含独立审阅修复与真机验收）
+
+type: implementation
+scope: ["Nexara", "native-ui", "chat", "generation", "subagent", "approval"]
+status: verified
+tags: ["subagent", "agent-task", "approval", "release", "device-check", "independent-review"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 1c0683a681835c08861653d67df74c607d78f3bed7312db33c7d73617c8190a0
+
+### Summary
+计划 .agent/plans/20261021-memory-scope-streaming-collapse-subagent.md 的 P7（D6 子代理）已完成并推送：7c9ed416 为功能提交（已含独立审阅后的修复），0875758a 为真机验收后的显示修复（探索者名称带序号、卡片一行结论去掉 Markdown 标记、最终正文不再在时间线重复）。计划 P1–P7 全部完成。
+
+### Changed
+内置工具 agent_task：tasks 数组 1–3 项（description、prompt、可选 preset=explorer 强制只读、tool_profile read_only/inherit），一次调用内并行；风险为 SESSION_STATE（半自动不审批，手动审批派生本身）。data/subagent/：SubagentRunner 每轮与每次调用前重读父会话，工具集排除 agent_task、view_media 与会话状态级工具，最多 12 步后追加无工具收尾轮，单个子代理 token 上限 400k，task_token_limit 按子代理数分摊；审批判定镜像 DefaultChatGenerationRuntime.handleTools，需要授权时 SubagentApprovalBroker 挂起并在 MainActivity 全局弹窗（无专门预览的工具显示完整参数，16k 截断有标注；批准后重新解析目标，不一致不执行；oneShot 目标不提供记住），后台发高优先级通知，10 分钟超时以失败交回；非取消异常只记类名转为 FAILED，不波及同批。SubagentLauncher 锁内发布，finally 把仍活动的运行置为 CANCELLED 并记账。SubagentRunStore 内存 StateFlow + noBackupFilesDir/subagents/<sha256>/<sha256>.json 原子写，重启后活动记录显示已中断，会话删除后拒绝写回（内存墓碑）。RoutedSubagentModelClient 复用父模型精确路由，本地推理以 Mutex 串行。DefaultChatGenerationRuntime 在 executeTools 的 finally 中于 NonCancellable 汇入子代理用量到助手消息 summary* 字段。UI：PipelineBubble 内分组卡（状态、步骤、用时、一行结论、运行中实时输出），NavGraph subagent/{sessionId}/{stepId}/{index} 只读查看页（任务与事实、时间线、Markdown 结果、“仅供查看”页脚，提供实时输出与 1 秒计时，加载中不闪“记录不存在”）。SkillExecutionContext 新增 toolStepId。
+
+### Validation
+全量（7c9ed416 前）：testSideloadDebugUnitTest --rerun 4869 项 0 失败 25 跳过，lintSideloadDebug、assembleSideloadDebug、assemblePlayDebug、validateSideloadDebugScreenshotTest、check-distribution-manifests 通过；0875758a 前再次全量通过（4869 项 0 失败）。新增 SubagentRunnerTest 16 项、SubagentRunStoreTest 12 项（含存储、并行、取消、墓碑、预算、oneShot、摘要）、DefaultChatGenerationRuntimeTest 两项（postProcess 汇入、停止本轮仍计入）、SessionRuntimeDataCleanupTest 更新、SubagentScreenshotTest 六张。独立只读审阅（子 Agent）报告 3 高 7 中若干低，已修复：盲批预览、执行模式快照、本地推理并发、审批后目标变化、异常逃逸、取消路径用量、预算约束、提示词绝对路径、并行发布回退、删除后写回、查看页实时输出与计时、记住选项、通知竞态、view_media。真机 3B1F5QEARBRJQZ66（release verify-release-apk 通过后安装）：Media test（半自动）发送两个探索者任务，分组卡显示“2 个子代理并行”、步骤与用时，完成后主 Agent 正确汇总；查看页显示任务、只读档位、模型、步数上限、用量、时间线、Markdown 结果与只读页脚；发送 shell_exec 子任务，弹出“来自子代理 · 子代理 1”审批框（会话、任务、工具、目标、命令预览、10 分钟提示、记住复选框），允许（未记住）后输出 subagent-ok。输入法已恢复 WeType 并禁用 KDE。
+
+### Next
+计划内任务已全部完成。可选后续：聊天顶部“第 N 轮，已调用 N 次，共 N Token”进度行没有背景，生成中与正文重叠（P0 既有，非本计划）；子代理错误文案为中文硬编码，英文界面也显示中文；子代理记录只随会话删除，重新生成或删除单条消息时不清理。
+
+### Risks
+手动模式下经审批执行的 agent_task 运行在 ChatViewModel 的审批任务中，取消该路径时用量可能留到下一轮汇入；进程被杀时内存账本中未汇入的用量丢失。子代理不执行自动检索，检索只通过工具。每个工具结果与审批事件都整批写盘一次，单批最多约 1MB。气泡统计按设计只显示主模型用量，子代理用量进入附加用量与用量专区，真机未单独核对用量专区数字。
+
+### DIA
+已同步 CHANGELOG（Unreleased：子代理）、docs/ARCHITECTURE.md（子代理组件、存储位置、审批与用量）、计划 D6 与 P7 行（tasks 数组并行、只经工具检索、全局审批弹窗、预算分摊）。
+
+### HLG
+本条为 P7 交接记录。
