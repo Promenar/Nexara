@@ -11743,3 +11743,40 @@ record-fingerprint: 2c09afac7f5a6fb0d773cb398e353d9ab017e25d26782f5df68b1a112222
 
 ### HLG
 本条记录真机验收结果。
+
+## 2026-10-22T11:27:16+08:00 · 生成进度胶囊、全站过渡补齐与上下文误判超限修复
+
+type: implementation
+scope: ["Nexara"]
+status: verified
+tags: ["context-budget", "motion", "real-device"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: aeb4b1ca8274aaa391691770597508484c22fd6152ea0c9749fc118dde4398ef
+
+### Summary
+生成进度改为居中胶囊并把过渡动效补到其余页面（3d68c998）；修复上下文充裕时被误判“完整上下文超限”而拒绝发送（c3d22ce9）。
+
+### Changed
+- 新增 ui/chat/GenerationProgressCapsule.kt 与 chat_progress_strings.xml；NavGraph、Git 面板、资料详情、技能、提示词编辑器、引导页、文档编辑器、知识图谱、回收站、资源管理器、Provider 表单/列表/模型页补齐 NexaraMotion 过渡；聊天列表项仅淡入淡出（placementSpec = null）。
+- PreparedPromptBudgetGate：未显式 maxTokens 时输出预留 = min(模型最大输出, 32768)；无完整文档请求改用 ApproximateTokenEstimator，仅携带完整文档时按 UTF-8 字节；新增 PromptWindow.safetyMarginTokens / inputBudgetTokens，ContextCompactionPipeline 预算与门禁共用。
+- GenerationFailure 新增 KEY_FULL_CONTEXT_DOCUMENTS；无文档超限映射 chat_context_error_over_capacity（引导压缩/新会话）。
+- 根因：Qwen3.8 Flash 目录 outputTokens=131072，262K 窗口被预留一半（可用 125830），且字节计量把中文按 3 Token 计（需要 127352，面板实为 33.9K）。
+
+### Validation
+- testSideloadDebugUnitTest --rerun、lintSideloadDebug、assembleSideloadDebug、assemblePlayDebug、validateSideloadDebugScreenshotTest、check-distribution-manifests 全部 exit 0；新增门禁复现测试在修复前失败（预留 131072）、修复后通过。
+- emulator-5564 设备测试 21 类：与 331e466e 基线比较，新增失败仅 ResourceExplorerInteraction 双倍字号高度与 UserSettingsAccessibility 搜索返回两项，单独重跑均通过（并行/前台残留干扰）；DocEditorPerformance、ProviderModelsPerformance 为 API 36 AVD 门禁，环境原因。
+- 真机 3B1F5QEARBRJQZ66 安装 release（verify-release-apk 通过）：原被拦截的「简单的加法问答」会话发送“继续”后正常多轮工具调用至完成，峰值上下文 27%；胶囊显示“2 轮 · 2 次调用 · 76.6K Token”。
+
+### Next
+- 其余设备测试既有失败（ChatImeInteraction 返回杀进程、ChatScreenContentState 模型元数据、RagReleaseAccessibility、UserSettingsAccessibility 提供商行等）基线即失败，需单独排查。
+- Anthropic 协议未设 maxTokens 时默认发送最多 64000，门禁按 32768 预留；极长输入下可能由提供商而非本地门禁报错，可考虑协议感知预留。
+
+### Risks
+- 无文档请求改用近似估算后，ASCII 代码/JSON 密集内容可能略低估，依赖 2% 安全余量与提供商自身校验兜底。
+
+### DIA
+已同步 CHANGELOG.md（两节）与 docs/ARCHITECTURE.md（动效基准、预算门禁口径）。
+
+### HLG
+本记录追加；无规则候选。
