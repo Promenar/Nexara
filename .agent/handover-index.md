@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-10-22T16:20:29+08:00
+> generated_at: 2026-10-22T16:55:15+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -27,6 +27,7 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-10-22T16:55:15+08:00 | iso | done | none | ["native-ui/app"] | ["deadlock", "vectorization-queue", "main-thread", "rag", "share"] | 持锁回调路径排查：向量化队列主线程死锁与工具解析主线程扫盘修复 | `.agent/handover.md` · `2026-10-22T16:55:15+08:00` · `fp:014e1f374d` |
 | 2026-10-22T16:20:29+08:00 | iso | completed | none | ["NexaraApplication 设置监听、ProviderManager 写入路径、NetworkLights、ModelSelectionListItem、主题信号色"] | ["anr", "deadlock", "provider", "network-lights", "theme", "real-device"] | 修复删除提供商死锁（ANR）；网络灯改固定红黄绿并覆盖公网模型 | `.agent/handover.md` · `2026-10-22T16:20:29+08:00` · `fp:97a62a1a67` |
 | 2026-10-22T15:53:20+08:00 | iso | completed | waiting | ["真机 3B1F5QEARBRJQZ66 上的 c9e5391d 签名 release"] | ["tailscale", "tailnet", "real-device", "provider", "ui"] | 真机复测通过：关闭即失败与去开启、连接等待浮窗、设备下拉与端口保留、模型页提示去重 | `.agent/handover.md` · `2026-10-22T15:53:20+08:00` · `fp:a59a341a1e` |
 | 2026-10-22T15:44:37+08:00 | iso | completed-pending-real-device | waiting | ["native-ui/app tailnet 请求门禁、聊天失败操作行、提供商表单 API 源、模型管理页"] | ["tailscale", "tailnet", "provider", "real-device", "ui"] | 内网模型网关真机验收与收尾：关闭时立即失败、设备下拉选择、模型页提示去重 | `.agent/handover.md` · `2026-10-22T15:44:37+08:00` · `fp:8f35840c05` |

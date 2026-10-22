@@ -11904,3 +11904,34 @@ record-fingerprint: 97a62a1a67cd3bfbaf6d9e0a93b05d8513fc47666a138808d01c2a6d65ea
 
 ### HLG
 本条记录经 hlg-handover.py append dry-run 后 --apply 写入。
+
+## 2026-10-22T16:55:15+08:00 · 持锁回调路径排查：向量化队列主线程死锁与工具解析主线程扫盘修复
+
+type: fix
+scope: ["native-ui/app"]
+status: done
+tags: ["deadlock", "vectorization-queue", "main-thread", "rag", "share"]
+continuity: none
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 014e1f374d47edd8962952a7a9ce87ddb137481d816bc942b2a42efa6ab3cfa4
+
+### Summary
+按“排查其它持锁回调路径”要求，由数据层与界面层两个只读审计 Agent 加主控复核完成排查。确认并修复三处：向量化队列重建三方死锁（主线程协程持 deletionBarrierMutex 挂起 → 重建等屏障 → 主线程 getter 阻塞在 resetLatch）；工具审批后 resolveForExecution 在主线程 runBlocking 同步扫描技能目录；分享导入页索引进度绑定首个队列实例，重建后停更。
+
+### Changed
+SynchronizedResettableResource 新增 awaitOrCreate(dispatcher, factory)；NexaraApplication 新增 awaitVectorizationQueue() 与不阻塞的 vectorizationQueueState（observeInstances 转发到当前实例），getter 注明仅供后台线程；RagViewModel、MainActivity、AndroidShareIndexScheduler、会话图谱/状态调度器、FileIndexEventSink、删除屏障与恢复回调改用挂起取队列；sessionToolResolver.resolveForExecution 切到 Dispatchers.IO。测试：新增单线程主调度器死锁回归测试（旧写法失败、新写法通过），同步 RagViewModelTest、AndroidShareIndexSchedulerTest、PendingDocumentIndexApplicationWiringTest、SessionGraphQueueTest；修正过期的 ShareImportSheetTest 文案断言。提交 b461a7a8 与其后测试修正提交。
+
+### Validation
+四个源码集编译通过；完整门禁 testSideloadDebugUnitTest --rerun（5027 测试 0 失败）、lintSideloadDebug、assembleSideloadDebug、validateSideloadDebugScreenshotTest 通过；assemblePlayDebug 与 check-distribution-manifests.py 通过；签名 release 已构建并覆盖安装到真机 3B1F5QEARBRJQZ66（手机锁屏，未做界面冒烟）；emulator-5564 debug 冷启动无崩溃，ShareImportSheetTest 3/3 通过。
+
+### Next
+真机解锁后冒烟：知识库页修改设置触发队列重建同时删除会话、工具审批执行、分享导入进度。
+
+### Risks
+未修复但已评估：TailnetClient writer 锁（仅 IO 线程）；RagViewModel.onCleared 的 closeAndAwait 无超时；updateConfig 锁等待无环；DefaultGenerationCoordinator 在 lifecycleLock 内 job.start() 低风险；OnboardingStateStore 主线程 commit；AndroidPendingRestoreStore 实例化两次。vectorizationQueueState 由主线程转发，读取最多滞后一个主线程消息。resolveForExecution 无独立单测，靠编译与审计证据。
+
+### DIA
+已同步 CHANGELOG（删除提供商卡死节下新增三条）；README 无影响。
+
+### HLG
+本记录。
