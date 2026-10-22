@@ -11681,3 +11681,34 @@ AgentHubScreenContentTest 共 10 项（含展开后点会话、空助手新建�
 
 ### HLG
 本条记录标题生成修复、主页面改版、资料更名、助手就地展开与会话列表页移除。
+
+## 2026-10-22T10:04:04+08:00 · 目录浏览统一页头、外部文件夹改为全高面板、全站过渡动效基准与助手展开振动
+
+type: feature
+scope: ["Nexara", "native-ui", "rag", "workspace", "external-folders", "chat", "hub", "motion"]
+status: verified
+tags: ["ui", "motion", "animation", "external-folders", "haptics", "device-test"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: a035dd238c647b8d71dbc814ea65b2d51538508d39a27c675f8811199ddf3792
+
+### Summary
+用户反馈：目录浏览进入子目录后顶部两个样式相同的返回箭头且不对齐；外部文件夹弹窗视觉廉价；全站缺少过渡动画；助手展开/收起缺振动。处理：新增 NexaraNavigationHeader（唯一返回按钮 + 当前标题 + 可点击上级路径 + 页面操作），FolderBreadcrumbsBar 改建其上，根目录经 onExitRoot 回到外层；资料页、会话工作区（FilesPanel 与目录工作区）、自选工作区面板、工作区选择器、外部文件夹共用。外部文件夹由四个叠放 AlertDialog 改为一个全高 NexaraBottomSheet，管理/添加/浏览/回收区四页切换，系统返回逐级退回。新增 ui/theme/Motion.kt（NexaraMotion：sharedAxisX/Y、fadeThrough、expandIn/shrinkOut、hierarchicalTransition），并应用到目录与面板多页、底部导航、资料页文档/记忆与搜索、对话页分组与助手展开区、聊天思考与工具详情展开、操作行、发送按钮、进度行、FilesPanel 状态与条目、记忆列表；NexaraBottomSheet 在调用方关闭时先 hide 再移除。助手展开/收起加 haptics.toggle。
+
+### Changed
+新增 ui/theme/Motion.kt、ui/common/FolderEntriesList.kt、ui/chat/components/FileTextPreviewPanel.kt；重写 FolderBreadcrumbs.kt 与 ExternalFoldersPanel.kt 的 UI 部分（状态与打开文件逻辑保留，新增 ExternalMountManagerContent/ExternalMountFormContent 供截图）；修改 KnowledgeWorkspaces、DirectoryWorkspaceBrowser、WorkspaceFolderBrowser、WorkspacePicker（新增 WorkspacePickerPage.depth）、RagHomeScreen、FilesPanel、MainTabScaffold、ChatScreen、PipelineBubble、AgentHubScreen、NexaraBottomSheet。新增 10 个 mount 字符串（中英），删除 5 个已无引用字符串（resource_explorer_directory_back、workspace_kb_back、mount_back、mount_close、mount_retry）。测试：NavigationMotionContractTest、WorkspaceNavigationDepthTest、AgentHubScreenContractTest 补振动断言、本地化合同纳入 3 个新文件；androidTest 新增 FolderNavigationHeaderTest、ExternalFoldersSheetTest；截图新增 ExternalFoldersScreenshotTest 4 张，工作区 9 张参考图更新。
+
+### Validation
+提交 fee1819f。verify.sh 全部 exit 0：testSideloadDebugUnitTest --rerun、lintSideloadDebug、assembleSideloadDebug、assemblePlayDebug、validateSideloadDebugScreenshotTest、check-distribution-manifests。emulator-5564（arm64）设备测试 19/19 通过：FolderNavigationHeaderTest 2、ExternalFoldersSheetTest 3、BrowserMediaOpenTest 4、AgentHubScreenContentTest 10。签名 release 经 verify-release-apk 通过（44441907 字节，SHA-256 15a1d6c3…d921），已安装到真机 3B1F5QEARBRJQZ66（Success）。人工检查新截图基线（外部文件夹管理/表单、资料浏览、文件预览）布局正常。
+
+### Next
+审计清单中仍未覆盖的低频项：NavGraph 路由过渡改用 NexaraMotion、聊天消息列表 animateItem（需验证不影响自动跟随滚动）、Git 改动面板、RAG 详情标签、技能页标签、模型列表、Provider 列表、引导页步骤、DocEditor 窗格、知识图谱状态切换等。
+
+### Risks
+真机处于锁屏（isKeyguardShowing=true），未做真机界面、动画流畅度与振动手感验收，需用户解锁后补测；模拟器两套应用停在引导第二步，未在真实数据下走通。NexaraBottomSheet 在 hide 动画进行中再次打开属边缘情况，仅代码层确认。审计清单低频项未覆盖（见 Next）。遗留旧项：测试会话“Remember t…”未删除、此前一次“生成失败”未排查、lint 偶发不稳定。
+
+### DIA
+已同步 CHANGELOG（目录浏览、外部文件夹与全站过渡动效小节）、README（目录逐级返回与外部文件夹使用）、docs/ARCHITECTURE.md（NexaraMotion / NexaraNavigationHeader / FolderEntriesList 条目）。
+
+### HLG
+本条记录目录页头、外部文件夹面板、动效基准与助手展开振动。
