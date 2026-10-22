@@ -11966,3 +11966,34 @@ AGSL 光晕与粒子动画的真实观感和帧率未在实机验证；layoutlib
 
 ### HLG
 本记录。
+
+## 2026-10-22T21:49:07+08:00 · 输入框浮岛改版真机冒烟
+
+type: validation
+scope: ["native-ui/chat"]
+status: completed
+tags: ["device", "chat", "composer", "animation", "performance"]
+continuity: none
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: ce7aa65116a6597a1dbca4aeaa0017995cb6930b5641f014e6f39232eb8d7d66
+
+### Summary
+在真机 3B1F5QEARBRJQZ66（OPPO PKH110 外屏 1140x2616，60Hz）安装 5247ee47 签名 release，冒烟空会话粒子字标与生成光效。
+
+### Changed
+无代码变更；新建一条测试会话（DeepSeek V4 Flash，两轮真实调用）。
+
+### Validation
+空会话字标清晰成形；输入时散开，清空后聚拢，并随键盘高度上移；生成中浮岛顶部展开活动栏（执行中·1 轮·1 次调用·9K Token），描边流光与 AGSL 光晕绕行，结束后淡出收起；生成中可输入草稿，结束后草稿保留且可发送。gfxinfo framestats：字标空闲主线程均值 2.46ms/帧，散开 2.04ms（最大 3.87ms），生成流式 4.31ms（最大 12.24ms），卡顿帧 0%–0.58%。测试草稿已清空，输入法已恢复为微信输入法。
+
+### Next
+出错红光与浅色主题未在真机验证：前者需制造网络失败，后者需改应用主题设置，均未做。
+
+### Risks
+测试会话保留在会话列表中（删除需用户确认）。
+
+### DIA
+无文档影响。
+
+### HLG
+本记录。
