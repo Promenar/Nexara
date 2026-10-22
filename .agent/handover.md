@@ -11811,3 +11811,34 @@ record-fingerprint: fe57bd1a7455bc71ea765a27010d427820e22c220ea347480803323b99f3
 
 ### HLG
 本条记录经 hlg-handover.py append dry-run 后 --apply 写入。
+
+## 2026-10-22T15:44:37+08:00 · 内网模型网关真机验收与收尾：关闭时立即失败、设备下拉选择、模型页提示去重
+
+type: feature
+scope: ["native-ui/app tailnet 请求门禁、聊天失败操作行、提供商表单 API 源、模型管理页"]
+status: completed-pending-real-device
+tags: ["tailscale", "tailnet", "provider", "real-device", "ui"]
+continuity: waiting
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 8f35840c0555b96e6858643e88ab3d37db04c0d1d9946f2de91858efd419ff39
+
+### Summary
+真机 3B1F5QEARBRJQZ66（OPPO PKH110，ColorOS 16）验收 99da0db7 的内网网关功能，并按用户反馈收尾：关闭内置 Tailscale 时 tailnet 请求原先交给系统网络长时间挂起，现立即报 DISABLED 并给出去开启/重试/换用公网模型；提供商表单 tailnet 设备由平铺标签改为接口地址上方的下拉框加底部面板；模型管理页在无模型清单时不再同时显示顶部提示条与列表占位。另修复未配置凭据的提供商被计入内网模型（8f8db8bf）。
+
+### Changed
+提交 8f8db8bf、c9e5391d。TailnetConnectGate 新增 DISABLED 原因与 mayReject；TailnetManager.isUnreachableWhileDisabled（内置关闭、目标为 100.64/10 或 MagicDNS 全名、系统无 tailnet 网卡时判为不可达）；ModelHttp 路由守卫覆盖该情况；GenerationFailureNotice/PipelineBubble 新增 DISABLED 操作行与 CHAT_TAILNET_FAILURE_ENABLE；ProviderApiSourceSection 以 TailnetPeerPicker + TailnetPeerOptions 取代 TailnetPeerChips；TailnetEndpoints.addressForPeer 同一设备保留端口；ModelSyncNotice.visibleSyncNotice 过滤列表已表达的加载中/无模型/同步失败；TailscalePeerIcon 改为 internal。CHANGELOG [Unreleased] 新增“模型管理页不再重复提示加载中与无模型”，tailnet 段与 README 同步。
+
+### Validation
+真机（签名 release）已验证：API 源自动识别、设备候选与地址不一致提示、经 tailnet 连接测试成功（FNOS :3010）、内网模型角标与无障碍描述、经 tailnet 的 DeepSeek 真实对话回复、指示灯已连接/未开启、Tailscale 灯跳转设置。c9e5391d：:app:testSideloadDebugUnitTest --rerun 5023 项通过、25 跳过、0 失败；lintSideloadDebug、assembleSideloadDebug、validateSideloadDebugScreenshotTest、assemblePlayDebug（单独）与 check-distribution-manifests.py 通过；emulator-5564 ProviderModelsAccessibilityTest 17/17 通过；新截图参考（设备面板深/浅、DISABLED 失败气泡、API 源下拉框）已人工查看。签名 release 已安装到真机，但真机处于锁屏，以下新行为尚未在真机复测。
+
+### Next
+1) 用户解锁真机后复测：关闭内置 Tailscale 时发送到内网模型立即出现去开启/重试/换用公网模型；去开启后重试并尽量捕获连接等待浮窗；提供商表单设备下拉与底部面板、同一设备保留端口；模型管理页删除清单后只显示一处无模型/加载中。2) 复测结束后重新开启真机内置 Tailscale。3) 待用户决定：动态取色下 nexaraDomainColors.success/warning 映射为 tertiary/secondary，状态点显示为紫色，属全局行为。
+
+### Risks
+DISABLED 判定依赖 NetworkInterface 扫描识别系统 tailnet 路由，官方 Tailscale App 以外的 VPN 若占用 100.64/10 会被视为有路由而回到系统网络发送。等待浮窗在真机上因 Tailscale 约 3 秒即接入尚未截到。真机测试遗留数据：会话“Initial Greeting”，提供商“OpenAI Chat Completions”已改指 FNOS tailnet（用户自填密钥）。
+
+### DIA
+已同步 CHANGELOG.md [Unreleased]（tailnet 段补充 DISABLED、操作行、设备下拉与端口；新增模型管理页提示去重条目）与 README.md 内置 Tailscale 段落。
+
+### HLG
+本条记录经 hlg-handover.py append dry-run 后 --apply 写入。

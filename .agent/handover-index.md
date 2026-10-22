@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-10-22T12:55:17+08:00
+> generated_at: 2026-10-22T15:44:37+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -11,7 +11,7 @@
 | agent-tooling-repair-20261002 | waiting | 2026-10-02T08:00:46+08:00 | done | ["Nexara", "pdec", "release"] | 授权 gpt-6-luna 并交付真机测试签名 APK | `.agent/handover.md` · `2026-10-02T08:00:46+08:00` · `fp:110c0ef84b` |
 | ci-version-sync-20261001 | resume | 2026-10-01T22:20:08+08:00 | in_progress | ["Nexara", "android-ci", "release"] | API31 Prompt 编辑器布局反馈根因修复候选 | `.agent/handover.md` · `2026-10-01T22:20:08+08:00` · `fp:c9c99a4302` |
 | dropdown-menu-anchor-and-style-unification | waiting | 2026-09-27T21:43:18+08:00 | completed | ["ui, dropdown-menu, files-panel, m3-design, release"] | 悬浮菜单位置精准锚定与全站新版视觉样式统一规范收敛 | `.agent/handover.md` · `2026-09-27T21:43:18+08:00` · `fp:31537a3d52` |
-| mobile-agentic-capabilities | waiting | 2026-10-22T12:55:17+08:00 | completed-pending-real-device | ["native-ui/app 模型网络层、聊天页、提供商表单、模型选择器、androidTest 基线修复"] | 经 Tailscale 访问内网模型网关：共享模型 HTTP、连接等待浮窗、API 源与网络指示灯 | `.agent/handover.md` · `2026-10-22T12:55:17+08:00` · `fp:fe57bd1a74` |
+| mobile-agentic-capabilities | waiting | 2026-10-22T15:44:37+08:00 | completed-pending-real-device | ["native-ui/app tailnet 请求门禁、聊天失败操作行、提供商表单 API 源、模型管理页"] | 内网模型网关真机验收与收尾：关闭时立即失败、设备下拉选择、模型页提示去重 | `.agent/handover.md` · `2026-10-22T15:44:37+08:00` · `fp:8f35840c05` |
 | nexara-audit-completion-repair | waiting | 2026-09-22T15:28:29+08:00 | done | ["Nexara", "native-ui", "audit-repair"] | 审计修复、最终签名候选及本机设备验收完成 | `.agent/handover.md` · `2026-09-22T15:28:29+08:00` · `fp:c45ed0053a` |
 | nexara-chat-flow-repair | waiting | 2026-10-16T10:00:45+08:00 | done | ["Nexara", "native-ui", "chat"] | 会话主流程审计 P0/P1 修复交付 | `.agent/handover.md` · `2026-10-16T10:00:45+08:00` · `fp:b968f99f1f` |
 | nexara-independent-model-catalog | resume | 2026-09-22T18:33:08+08:00 | done | ["Nexara", "model-catalog"] | 独立模型目录上线、客户端验收与签名候选交付 | `.agent/handover.md` · `2026-09-22T18:33:08+08:00` · `fp:320878f7b2` |
@@ -28,6 +28,7 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-10-22T15:44:37+08:00 | iso | completed-pending-real-device | waiting | ["native-ui/app tailnet 请求门禁、聊天失败操作行、提供商表单 API 源、模型管理页"] | ["tailscale", "tailnet", "provider", "real-device", "ui"] | 内网模型网关真机验收与收尾：关闭时立即失败、设备下拉选择、模型页提示去重 | `.agent/handover.md` · `2026-10-22T15:44:37+08:00` · `fp:8f35840c05` |
 | 2026-10-22T12:55:17+08:00 | iso | completed-pending-real-device | waiting | ["native-ui/app 模型网络层、聊天页、提供商表单、模型选择器、androidTest 基线修复"] | ["tailscale", "tailnet", "provider", "model-picker", "a11y", "device-tests"] | 经 Tailscale 访问内网模型网关：共享模型 HTTP、连接等待浮窗、API 源与网络指示灯 | `.agent/handover.md` · `2026-10-22T12:55:17+08:00` · `fp:fe57bd1a74` |
 | 2026-10-22T11:27:16+08:00 | iso | verified | resume | ["Nexara"] | ["context-budget", "motion", "real-device"] | 生成进度胶囊、全站过渡补齐与上下文误判超限修复 | `.agent/handover.md` · `2026-10-22T11:27:16+08:00` · `fp:aeb4b1ca82` |
 | 2026-10-22T10:11:00+08:00 | iso | verified | resume | ["Nexara", "native-ui", "device-test", "motion", "haptics"] | ["real-device", "motion", "haptics", "external-folders"] | 目录页头、外部文件夹面板、过渡动效与助手展开振动真机验收 | `.agent/handover.md` · `2026-10-22T10:11:00+08:00` · `fp:2c09afac7f` |
