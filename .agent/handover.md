@@ -12090,3 +12090,34 @@ ChatScreen.kt 把显示条件抽为 shouldShowEmptyWordmark(uiState)，新增要
 
 ### HLG
 本记录。
+
+## 2026-10-23T01:51:52+08:00 · 输入框消息队列与插队上线
+
+type: feature
+scope: ["native-ui/chat"]
+status: completed
+tags: ["chat", "composer-queue", "steer", "persistence"]
+continuity: none
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: c9d33933c051bd541d7555968fd76aed4ec19ae7500ec2b530c9abd54509f566
+
+### Summary
+实现生成中的消息排队与插队（24fd4819），方案见 .agent/plans/20261023-composer-queue-steer.md（3b752297）；同轮修复浮岛活动栏“执行中”贴左上角（e3442d42）。后端存储与运行时让出由 Codex CLI 在独立工作树实现，主控合并后复核并修复两处缺陷。
+
+### Changed
+新增 data/chat/queue（FileComposerQueueStore 按会话原子写 queue.json 并复制图片，发送租约 claimNext/bindSending/accept/rollback，两阶段编辑；ComposerDraftRecoveryStore 保留入队失败草稿）；ChatGenerationRuntime.shouldYieldAtRoundBoundary 在工具轮边界让出本轮；GenerationCoordinator.awaitSessionIdle；ChatViewModel 队列状态机；ComposerQueueTray 与输入区排队模式（主键排队、次级停止键，仅 UPLOADING/THINKING/RECEIVING 时启用）；生成中附件菜单可用。主控修复：队列清空后清除暂停原因；用户停止时终态优先采用同步记录的 STOPPED，避免被旧快照误报为 INTERRUPTED。
+
+### Validation
+完整门禁通过：单测 5100（0 失败、25 跳过）、lint、assembleSideloadDebug、截图校验、assemblePlayDebug、发行清单检查。设备测试 emulator-5564 共 52/52（ComposerQueueTrayTest 等 6 个类）。真机 OPPO PKH110 release：排队后自动发送、插队在工具边界让出并基于已有工具结果回答、停止后显示“已暂停·生成已停止”、安装重启后显示“已暂停·从上次恢复”、点继续后排队项发出；测试排队项已删除，输入法已恢复微信输入法。
+
+### Next
+可考虑：插队在工具极快完成时实际只能等到本轮结束才让出，后续可评估在单次工具调用之间也检查；队列跨会话的全局视图暂不做。
+
+### Risks
+插队让出依赖工具轮边界，纯文本长回复只能等完成后再发；DeepSeek 限流重试会推迟插队。队列文件损坏时直接丢弃（不会阻塞会话）。
+
+### DIA
+已同步 README（输入区排队与插队）、CHANGELOG（三条新增与生成中可编辑说明）、docs/ARCHITECTURE.md（托盘、附件菜单禁用条件、ComposerQueueStore/插队让出）。
+
+### HLG
+本条记录；Codex 报告副本在 .agent/tmp-agent-reports/composer-queue/codex-report.md（已忽略），工作树 Nexara-wt-queue 与分支 feat/composer-queue 已清理。

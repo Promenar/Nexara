@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-10-22T23:23:39+08:00
+> generated_at: 2026-10-23T01:51:52+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -27,6 +27,7 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-10-23T01:51:52+08:00 | iso | completed | none | ["native-ui/chat"] | ["chat", "composer-queue", "steer", "persistence"] | 输入框消息队列与插队上线 | `.agent/handover.md` · `2026-10-23T01:51:52+08:00` · `fp:c9d33933c0` |
 | 2026-10-22T23:23:39+08:00 | iso | completed | none | ["native-ui/chat"] | ["ui", "chat", "animation", "device"] | 打开非空会话时空会话粒子字标闪现修复 | `.agent/handover.md` · `2026-10-22T23:23:39+08:00` · `fp:5449afe3c6` |
 | 2026-10-22T22:56:46+08:00 | iso | completed | none | ["native-ui/chat, native-ui/common"] | ["ui", "chat", "animation", "streaming", "device"] | 生成指示改为三点波浪，正文新字连续淡入 | `.agent/handover.md` · `2026-10-22T22:56:46+08:00` · `fp:59a56c0647` |
 | 2026-10-22T22:15:47+08:00 | iso | completed | waiting | ["native-ui/chat, native-ui/theme"] | ["ui", "chat", "composer", "agsl", "indication", "device"] | 浮岛光晕方框与点按涟漪方角修复 | `.agent/handover.md` · `2026-10-22T22:15:47+08:00` · `fp:0c22396470` |
@@ -128,15 +129,6 @@
 | 2026-10-17T04:51:37+08:00 | iso | in-progress | resume | ["Nexara", "native-ui", "knowledge-graph", "storage", "ssh", "database"] | ["kg", "saf", "external-mount", "ssh", "room-migration", "graph-retrieval"] | 集成 KG-B 实体证据模型、P1 外部文件夹挂载、KG-C/D 图检索与 P2 原生 SSH | `.agent/handover.md` · `2026-10-17T04:51:37+08:00` · `fp:e3792034df` |
 | 2026-10-17T02:40:42+08:00 | iso | done | resume | ["Nexara", "native-ui", "agent-runtime", "build", "knowledge-graph"] | ["tool-grants", "unlimited-loop", "context-compression", "product-flavor", "webview", "kg"] | 集成 P0 执行底座、发行风味与 WebView 加固及 KG-A 正确性修复 | `.agent/handover.md` · `2026-10-17T02:40:42+08:00` · `fp:92e4d01f85` |
 | 2026-10-17T01:18:55+08:00 | iso | planned | resume | ["Nexara", "native-ui", "agent-tools", "knowledge-graph"] | ["ssh", "saf", "termux", "script-runtime", "tool-budget", "knowledge-graph", "product-flavor"] | 规划移动端 Agent 能力增强并完成知识图谱只读审计 | `.agent/handover.md` · `2026-10-17T01:18:55+08:00` · `fp:02b4c6fee8` |
-| 2026-10-16T23:11:21+08:00 | iso | done | none | ["Nexara", "native-ui", "search"] | ["keenable", "search", "settings", "security", "tests"] | Keenable 搜索提供商接入与验证交付 | `.agent/handover.md` · `2026-10-16T23:11:21+08:00` · `fp:efea69d809` |
-| 2026-10-16T21:06:43+08:00 | iso | done | none | ["Nexara", "native-ui", "branding"] | ["launcher-icon", "branding", "worktree"] | 提交折叠 N 应用图标并清理已合并工作树 | `.agent/handover.md` · `2026-10-16T21:06:43+08:00` · `fp:64d22aac55` |
-| 2026-10-16T20:56:39+08:00 | iso | done | waiting | ["Nexara", "native-ui", "chat", "rag", "release"] | ["chat-ui", "markdown", "rag-trace", "codex-cli", "release"] | 会话步骤紧凑化、正文排版修复与检索指示器缺失修复 | `.agent/handover.md` · `2026-10-16T20:56:39+08:00` · `fp:2828a399eb` |
-| 2026-10-16T19:24:26+08:00 | iso | done | waiting | ["Nexara", "native-ui", "provider", "release"] | ["r8", "persistence", "migration", "release", "launcher-icon", "codex-cli"] | 提供商协议稳定标识修复与折叠 N 图标签名候选 | `.agent/handover.md` · `2026-10-16T19:24:26+08:00` · `fp:1be613d35e` |
-| 2026-10-16T16:04:34+08:00 | iso | done | waiting | ["Nexara", "native-ui", "settings", "model-picker"] | ["model-catalog", "settings-ui", "layout", "provider"] | 模型选择器按运行时目录解析与设置页排版整理 | `.agent/handover.md` · `2026-10-16T16:04:34+08:00` · `fp:6b1e974b1c` |
-| 2026-10-16T15:07:25+08:00 | iso | done | waiting | ["Nexara", "release"] | ["release", "apk", "physical-device"] | P2 与 RAG 指示器修复后签名发行包交付真机测试 | `.agent/handover.md` · `2026-10-16T15:07:25+08:00` · `fp:af39029d8f` |
-| 2026-10-16T14:56:10+08:00 | iso | done | waiting | ["Nexara", "native-ui", "chat", "rag"] | ["chat", "approval", "todo", "rag", "attachment", "tool-budget"] | 会话 P2 修复、图片附件发送修复与 RAG 检索指示器交付 | `.agent/handover.md` · `2026-10-16T14:56:10+08:00` · `fp:41a5d9cf36` |
-| 2026-10-16T10:05:40+08:00 | iso | done | waiting | ["Nexara", "release"] | ["release", "apk", "physical-device"] | 会话流程修复后签名发行包交付真机测试 | `.agent/handover.md` · `2026-10-16T10:05:40+08:00` · `fp:bd23905cbe` |
-| 2026-10-16T10:00:45+08:00 | iso | done | waiting | ["Nexara", "native-ui", "chat"] | ["approval", "tool-loop", "todo", "regenerate", "inference-params"] | 会话主流程审计 P0/P1 修复交付 | `.agent/handover.md` · `2026-10-16T10:00:45+08:00` · `fp:b968f99f1f` |
 
 ## Undated Records
 
