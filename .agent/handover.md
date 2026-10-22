@@ -11712,3 +11712,34 @@ record-fingerprint: a035dd238c647b8d71dbc814ea65b2d51538508d39a27c675f8811199ddf
 
 ### HLG
 本条记录目录页头、外部文件夹面板、动效基准与助手展开振动。
+
+## 2026-10-22T10:11:00+08:00 · 目录页头、外部文件夹面板、过渡动效与助手展开振动真机验收
+
+type: validation
+scope: ["Nexara", "native-ui", "device-test", "motion", "haptics"]
+status: verified
+tags: ["real-device", "motion", "haptics", "external-folders"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 2c09afac7f5a6fb0d773cb398e353d9ab017e25d26782f5df68b1a112222f4b5
+
+### Summary
+真机 3B1F5QEARBRJQZ66（ColorOS 16）安装 0.2.2-beta（提交 fee1819f 对应签名 release）后逐项验收：对话页助手展开/收起振动、资料页会话工作区两级目录进出、工作区面板目录与文件预览、外部文件夹面板管理/添加表单/回收区、对话发送与生成态。
+
+### Changed
+无代码变更；仅真机验收。
+
+### Validation
+振动：logcat VibratorManagerServiceExtImpl 记录展开 performHapticFeedback constant=21（TOGGLE_ON）、收起 constant=22（TOGGLE_OFF），usage=TOUCH。页头：资料与工作区子目录均只有一个返回按钮，标题与按钮垂直居中对齐，上级路径以小字链接显示（全部文件 › 会话工作区；p4-accept）。返回：按钮逐级退回到根后退出浏览；文件预览中系统返回一次回到所在目录；工作区与外部文件夹面板根部系统返回关闭面板。外部文件夹：已挂载/添加文件夹/挂载回收区三组、添加存储路径表单分区与底部按钮、回收区空态布局正常；未创建任何挂载。动效流畅度：ColorOS 禁止 screenrecord，改用 dumpsys gfxinfo：目录与面板操作 527 帧 Janky 2.47%、P95 12ms、P99 30ms；对话生成与思考展开 653 帧 Janky 0.77%、P95 6ms。发送一条测试消息（Qwen3.8 Flash Next）：发送键生成中切为停止、完成后恢复，进度行生成中显示、结束后隐藏，操作行完成后出现，思考区展开收起正常。
+
+### Next
+无本轮阻断项；审计清单低频页面过渡仍待后续批次。
+
+### Risks
+真机原空会话 New Chat 被本次测试消息使用并自动命名为“简单的加法问答”，未删除（删除需用户确认）。该次思考区展开后正文只有“已思考”三个字，应用代码不会把该文案写入推理内容，推测为模型返回的推理文本，未取证（release 包不可 run-as 读库）。
+
+### DIA
+无文档影响（仅验收）。
+
+### HLG
+本条记录真机验收结果。
