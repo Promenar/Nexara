@@ -11935,3 +11935,34 @@ SynchronizedResettableResource 新增 awaitOrCreate(dispatcher, factory)；Nexar
 
 ### HLG
 本记录。
+
+## 2026-10-22T19:23:59+08:00 · 输入框浮岛改版：厚实质感、生成光效、空会话粒子字标与品牌名实体
+
+type: feature
+scope: ["native-ui/chat"]
+status: completed
+tags: ["ui", "chat", "composer", "animation", "agsl", "branding"]
+continuity: waiting
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 1d58e939a3a2a3187f01488a9b9bd5f1f1ae109cf38f9c1566b5631603b05391
+
+### Summary
+按用户确认的方案改造输入框浮岛：与底部导航同款厚实材质；生成统计并入浮岛顶部活动栏（有计划时并入计划条收起行），移除标题栏下胶囊；生成中描边绕行流光，API 33+ 带同步 AGSL 光晕，出错整圈泛红消退；生成期间输入框可编辑（发送键仍为停止，未实现队列/插队）；空会话粒子字标（brand_wordmark 栅格化采样、流场、输入散开、按住避让），画在列表下层不拦截触摸；品牌名改为各资源文件内的 brand 实体。用户原话“Nexrar/NEXRAR”按 Nexara/NEXARA 处理。提交 5247ee47。
+
+### Changed
+新增 ui/chat/ComposerIsland.kt、EmptyChatWordmark.kt、WordmarkParticles.kt；GenerationProgressCapsule.kt 改名重写为 GenerationActivityRow.kt；ChatScreen、TaskFloatingPanel（generationProgress 参数）、NexaraDomainColors.isDark、UiTags.CHAT_EMPTY_WORDMARK；8 个字符串资源文件声明 brand 实体，新增 brand_name/brand_wordmark/chat_input_placeholder_generating/chat_empty_prompt，删除 welcome_brand；GenerateLauncherIcons 资源校验允许内部 DTD（禁外部实体）；测试：BrandNameContractTest、ComposerIslandGlowTest、WordmarkParticlesTest、GenerationActivityRowTest，更新 NavigationMotion/ReleaseReachableUiLocalization/BackupContentUi 契约与截图预览；README、CHANGELOG、docs/ARCHITECTURE.md。
+
+### Validation
+门禁 testSideloadDebugUnitTest --rerun + lintSideloadDebug + assembleSideloadDebug + validateSideloadDebugScreenshotTest 通过；assemblePlayDebug 与 check-distribution-manifests 通过；emulator-5564 设备测试 GenerationActivityRowTest、ChatImeInteractionTest、ChatScreenContentStateTest、AttachmentActionMenuTest、AccessibilitySmokeTest、ShareImportSheetTest 共 42 项全部通过。设备测试曾抓到两处真实缺陷并已修复：粒子绘制缓冲区在状态切换帧尺寸为 0 导致崩溃；字标覆盖层截走审批按钮点击。帧循环改用 withInfiniteAnimationFrameNanos，测试环境可空闲。
+
+### Next
+真机 3B1F5QEARBRJQZ66 本轮未连接：连上且已解锁后安装签名 release，冒烟空会话粒子、输入散开/清空聚拢、按住避让、生成流光与活动栏、出错红光、浅色主题，并用 gfxinfo 取证帧率。模拟器应用处于引导页需填 API Key，未做实机动画目测。消息队列/插队后续单独设计。
+
+### Risks
+AGSL 光晕与粒子动画的真实观感和帧率未在实机验证；layoutlib 截图中浅色浮岛底部阴影边缘有方角痕迹，需实机确认是否为截图渲染伪影；品牌名实体解释为 NEXARA 属于假设。
+
+### DIA
+已同步 README、CHANGELOG、docs/ARCHITECTURE.md。
+
+### HLG
+本记录。
