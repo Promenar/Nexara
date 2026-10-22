@@ -11997,3 +11997,34 @@ record-fingerprint: ce7aa65116a6597a1dbca4aeaa0017995cb6930b5641f014e6f39232eb8d
 
 ### HLG
 本记录。
+
+## 2026-10-22T22:15:47+08:00 · 浮岛光晕方框与点按涟漪方角修复
+
+type: bugfix
+scope: ["native-ui/chat, native-ui/theme"]
+status: completed
+tags: ["ui", "chat", "composer", "agsl", "indication", "device"]
+continuity: waiting
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 0c223964708f295d391069b8cd848aea7c23ecc2e76422d57bd1cd1ab2a1f0db
+
+### Summary
+用户真机反馈两处可辨识的方形边界：生成中 AGSL 光晕在消息列表上显出矩形外框；气泡底部模型名标签等无形状点击区域的 MD 涟漪露出直角矩形。提交 3254927f。
+
+### Changed
+ComposerIsland.kt 光晕着色器重写：圆角盒 SDF 外沿 16-44dp 平滑衰减窗口（绘制范围 64dp 内归零），高斯衰减替代指数尾巴，圆周采样 fbm 噪声消除接缝，弧光与底光分色避免角度回绕跳变，半级抖动消除 8 位色带；ComposerHaloAgsl 改 internal 供测试，工厂返回 android.graphics.Shader（修 lint NewApi）。新增 ui/theme/NexaraIndication.kt（IndicationNodeFactory：水波+状态层裁在 min(12dp, 短边一半) 圆角矩形内，颜色跟随 LocalContentColor），在 NexaraTheme 的 MaterialTheme 内容中全局提供 LocalIndication，覆盖约 56 处未裁剪的 clickable。测试：androidTest ComposerHaloShaderTest（HardwareRenderer+ImageReader GPU 渲染，外沿 16dp 带 alpha 必须为 0）、NexaraIndicationTest（按住时四角保持背景色、中心变化），单测 NexaraIndicationGeometryTest；CHANGELOG、docs/ARCHITECTURE.md。
+
+### Validation
+门禁 testSideloadDebugUnitTest --rerun + lintSideloadDebug + assembleSideloadDebug + validateSideloadDebugScreenshotTest 通过；assemblePlayDebug 与 check-distribution-manifests 通过；emulator-5564 设备测试 8 个类共 44 项通过。真机 release：生成中截图提亮 4 倍未见矩形边界；模型名标签涟漪呈圆角。
+
+### Next
+用户提出生成状态的块状光标偏终端风格，需重新设计（PipelineBubble 独立光标与 MarkdownText 行内光标两处），走原型确认后实施。出错红光与浅色主题仍未在真机验证。
+
+### Risks
+全局 LocalIndication 改变所有未自带形状的点击反馈外观，自带 Material 形状的组件不受影响；极端细长区域按胶囊形裁剪。
+
+### DIA
+已同步 CHANGELOG、docs/ARCHITECTURE.md。
+
+### HLG
+本记录。
