@@ -11780,3 +11780,34 @@ record-fingerprint: aeb4b1ca8274aaa391691770597508484c22fd6152ea0c9749fc118dde43
 
 ### HLG
 本记录追加；无规则候选。
+
+## 2026-10-22T12:55:17+08:00 · 经 Tailscale 访问内网模型网关：共享模型 HTTP、连接等待浮窗、API 源与网络指示灯
+
+type: feature
+scope: ["native-ui/app 模型网络层、聊天页、提供商表单、模型选择器、androidTest 基线修复"]
+status: completed-pending-real-device
+tags: ["tailscale", "tailnet", "provider", "model-picker", "a11y", "device-tests"]
+continuity: waiting
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: fe57bd1a7455bc71ea765a27010d427820e22c220ea347480803323b99f33a43
+
+### Summary
+模型调用（对话协议、连接测试、向量化、重排、生图）统一走 ModelHttp：tailnet 目标经内置 Tailscale 代理，未接入时由 TailnetConnectGate 等待（启动→接入，超时上限），需登录或失败直接报 TAILNET_UNAVAILABLE，不回退直连。聊天页新增等待浮窗与失败操作行；提供商表单新增 API 源分组（自动识别、手动切换、设备候选、https 提示）；模型选择器与会话设置新增公网/Tailscale 两盏指示灯与内网模型角标。同时修复了 7 个基线失败的设备测试类与资料页向量化浮钮的无障碍回归。
+
+### Changed
+新增 data/remote/ModelHttp.kt、data/tailnet/TailnetConnectGate.kt、data/tailnet/TailnetEndpoints.kt、data/network/PublicNetworkMonitor.kt、ui/common/network/NetworkLights.kt、ui/chat/TailnetConnectOverlay.kt、ui/settings/ProviderApiSource.kt、ui/settings/ProviderApiSourceSection.kt；修改各协议与 EmbeddingClient/Reranker/ImageGenClient/ProviderConnectionProbe 改用 ModelHttp，DefaultChatGenerationRuntime/GenerationPresentationStore 发布 tailnetWait，GenerationFailureCodec 白名单 tailnetReason，ChatScreen/ChatRoute/ChatViewModel/PipelineBubble/SessionSettingsSheet/ModelPicker/ModelSelectionListItem/ProviderFormScreen/NavGraph/MainActivity 接线，RagHomeScreen 浮钮语义收敛为单一事实源；中英字符串各 62 条。androidTest：ChatIme/DocEditor/ProviderModels/AttachmentActionMenu 用 closeSoftKeyboard 与菜单外点击，ChatScreenContentState 用未合并语义树，UserSettings/RagRelease 测试对齐当前 UI。新增截图测试 TailnetGatewayScreenshotTest（13 张参考图）。文档：CHANGELOG [Unreleased]、README 内置 Tailscale 段落。
+
+### Validation
+提交 99da0db7。单元测试 :app:testSideloadDebugUnitTest --rerun 5018 项通过、25 项跳过、0 失败（期间 SecureSecretUiContractTest 发现提供商表单设备刷新用 runCatching 吞掉取消，已改为重新抛出 CancellationException）；lintSideloadDebug、assembleSideloadDebug、assemblePlayDebug（单独执行）、validateSideloadDebugScreenshotTest 均通过，check-distribution-manifests.py 通过。emulator-5564（API 35）设备测试：ChatScreenContentState、UserSettingsAccessibility、RagReleaseAccessibility 共 58 项通过，ChatIme ×5、DocEditor、ProviderModels、AttachmentActionMenu 关闭动画此前已通过。新增 TailnetGatewayScreenshotTest 13 张参考图，已人工查看。真机未测。
+
+### Next
+1) 用户接回真机 3B1F5QEARBRJQZ66 后安装 sideload 包，实测：提供商 API 源自动识别与设备候选、首次发送到内网模型的等待浮窗与自动继续、关闭内置 Tailscale 时的失败操作行、模型选择器指示灯；并对比微信输入法下返回键收起输入法的行为。2) 可选：资料页标签切换器触控高度约 40dp（RagHomeScreen 标签 height(48)+padding(4)），可补到 48dp；RagGraphEntry 缺测试覆盖。3) ACCESS_NETWORK_STATE 已由依赖库合并进清单，如需显式声明可补。
+
+### Risks
+真机未验收：ColorOS 后台冻结或网络切换可能影响等待浮窗时序；PublicNetworkMonitor 依赖默认网络回调，VPN/受限网络下的“受限”判定只在模拟器验证。DocEditorPerformance 与 ProviderModelsPerformance 仅在 API 36 AVD 运行，本轮未覆盖。API 35 模拟器上 Gboard 收起输入法的返回键会同时关闭页面，测试已改用 closeSoftKeyboard，属于平台行为。
+
+### DIA
+已同步 CHANGELOG.md [Unreleased]“经 Tailscale 访问内网模型网关”与 README.md 内置 Tailscale 段落；无数据库、权限或构建配置变化。
+
+### HLG
+本条记录经 hlg-handover.py append dry-run 后 --apply 写入。
