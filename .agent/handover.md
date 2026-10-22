@@ -11842,3 +11842,34 @@ DISABLED 判定依赖 NetworkInterface 扫描识别系统 tailnet 路由，官�
 
 ### HLG
 本条记录经 hlg-handover.py append dry-run 后 --apply 写入。
+
+## 2026-10-22T15:53:20+08:00 · 真机复测通过：关闭即失败与去开启、连接等待浮窗、设备下拉与端口保留、模型页提示去重
+
+type: validation
+scope: ["真机 3B1F5QEARBRJQZ66 上的 c9e5391d 签名 release"]
+status: completed
+tags: ["tailscale", "tailnet", "real-device", "provider", "ui"]
+continuity: waiting
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: a59a341a1ef31bfcb2b8f26d0dba81142937b540aaa0266ca705d3a07a4b482e
+
+### Summary
+在真机（OPPO PKH110，ColorOS 16，折叠态）复测 c9e5391d 的签名 sideload release，前一条记录中待真机复测的四项全部通过。
+
+### Changed
+无代码变更。真机数据变化：内置 Tailscale 由关闭恢复为开启；会话“Initial Greeting”新增一轮“tailnet disabled test”；新增临时提供商 empty-list-test（promenar-fnos tailnet 地址、无 API Key，同步后含 o3、o1 两个模型），删除需用户确认。输入法已恢复微信输入法。
+
+### Validation
+1) 内置 Tailscale 关闭时向 tailnet DeepSeek V4 Flash 发送，1.5 秒内出现“内置 Tailscale 未开启，消息没有发出”与“去开启 / 重试 / 换用公网模型”。2) 去开启跳转 Tailscale 设置页，开启后返回点重试，捕获到等待浮窗：启动内置 Tailscale 完成 → 接入 tailnet 进行中 → 发送到 promenar-fnos，已等待 0–1 秒、最多 30 秒、可取消，随后显示“已连接 Tailscale，正在发送”，模型正常回复（并调用了 tailnet_status）。3) 添加提供商选 Tailscale 内网后，tailnet 设备下拉框打开底部面板，8 台设备在线在前、离线设备副标题以“离线”开头，选中 promenar-fnos 填入 https://promenar-fnos.tail6046d5.ts.net/v1 并识别为内网；编辑现有提供商时下拉框显示当前设备并打勾，再选同一设备地址保留 :3010。4) 新建无模型提供商进入模型页只在列表中显示一次“该提供商未返回任何模型”，同步中只在列表显示“加载中…”，顶部无重复提示；同步完成提示条正常出现。
+
+### Next
+1) 用户确认后删除临时提供商 empty-list-test（或由用户自行删除）。2) 待用户决定：动态取色下状态点 success/warning 映射为 tertiary/secondary 显示为紫色（设备面板在线角标同样受影响）。3) 可选核查：无 API Key 的 OpenAI 预设提供商同步模型也提示同步完成并新增 o3、o1，来源是否为预设清单待确认。
+
+### Risks
+等待浮窗只在 Tailscale 约 1–2 秒接入的快速路径下观察到，超时 30 秒路径仅由单元测试与截图覆盖。
+
+### DIA
+无文档影响（仅真机验证）。
+
+### HLG
+本条记录经 hlg-handover.py append dry-run 后 --apply 写入。
