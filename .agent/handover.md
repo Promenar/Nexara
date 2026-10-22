@@ -11873,3 +11873,34 @@ record-fingerprint: a59a341a1ef31bfcb2b8f26d0dba81142937b540aaa0266ca705d3a07a4b
 
 ### HLG
 本条记录经 hlg-handover.py append dry-run 后 --apply 写入。
+
+## 2026-10-22T16:20:29+08:00 · 修复删除提供商死锁（ANR）；网络灯改固定红黄绿并覆盖公网模型
+
+type: bugfix
+scope: ["NexaraApplication 设置监听、ProviderManager 写入路径、NetworkLights、ModelSelectionListItem、主题信号色"]
+status: completed
+tags: ["anr", "deadlock", "provider", "network-lights", "theme", "real-device"]
+continuity: none
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 97a62a1a67cd3bfbaf6d9e0a93b05d8513fc47666a138808d01c2a6d65eaa189
+
+### Summary
+用户在真机删除临时提供商时遇到“崩溃”，取证为 ANR：ProviderManager.deleteProvider（@Synchronized）持锁 apply() 设置，主线程同步回调 NexaraApplication.settingsListener → rebuildEmbeddingClient → rebuildGraphExtractor 等待 kgExtractorLock；后台 vectorizationQueue 创建时持 kgExtractorLock 调 kgExtractionSettings → getSavedProviderConfig → ProviderManager.getMainProviderConfig 等待 ProviderManager 锁，形成锁顺序反转。同时按用户要求把网络灯改为固定红黄绿（动态取色下原为紫色）、加亮，并让公网模型也带灯。
+
+### Changed
+提交 a780c2d6。新增 utils/DeferredPreferenceChangeListener（回调经 post 推迟执行）；NexaraApplication 的 providerListener 与 settingsListener 改用它并 post 到主线程 Handler。NexaraDomainColors 新增 signalOn/signalPending/signalDown（深色 4ADE80/FACC15/F87171，浅色 22C55E/F59E0B/EF4444，动态取色按明暗选用同一组）。NetworkLights：SignalTone 三档（CONNECTED 绿；CONNECTING、公网 LIMITED 黄；OFFLINE、NEEDS_LOGIN、FAILED、OFF 红），形状保留，实心与菱形加径向柔光；ModelNetworkBadge（Public/Tailnet）取代仅内网的角标，本机推理（ProtocolType.Local）提供商不显示；ModelSelectionListItem 参数改为 networkBadge；无障碍描述“经公网访问，{状态}”/“经 Tailscale 内网访问，{状态}”。CHANGELOG 新增删除提供商卡死修复条目并更新网络行描述。
+
+### Validation
+取证：dumpsys dropbox data_app_anr（2026-10-22 15:54:31，Input dispatching timed out），用 sideloadRelease mapping 经 retrace 还原两线程栈。DeferredPreferenceChangeListenerTest 复现锁顺序反转：回调同步执行时写入线程 2 秒后仍存活（失败），推迟执行后三方完成（通过）。NetworkLightsTest 新增灯色三档与全模型角标用例。:app:testSideloadDebugUnitTest --rerun 5026 通过、25 跳过、0 失败；lintSideloadDebug、assembleSideloadDebug、validateSideloadDebugScreenshotTest、assemblePlayDebug（单独）、check-distribution-manifests.py 通过；emulator-5564 ModelPickerAccessibilityTest 通过；截图参考已人工查看。真机安装 a780c2d6 签名 release：动态取色下会话设置模型页网络行与 7 个模型角标均为绿色带柔光，uiautomator 读到 3 个“经 Tailscale 内网访问，已连接”与 4 个“经公网访问，已连接”。
+
+### Next
+无必须项。删除提供商死锁属竞态，真机未重放删除（删除需用户确认），由回归测试与栈证据覆盖。
+
+### Risks
+设置监听推迟一条主线程消息执行，写入后到组件重建之间有极短窗口仍使用旧客户端（原先后台线程写入时已是同样的异步行为）。其它在持锁期间回调外部代码的路径（如 ProviderManager 其它 apply 调用方监听）未逐一排查，本次只覆盖 NexaraApplication 的两个监听。
+
+### DIA
+已同步 CHANGELOG.md [Unreleased]（删除提供商卡死修复、网络灯颜色与模型角标）；README 无影响。
+
+### HLG
+本条记录经 hlg-handover.py append dry-run 后 --apply 写入。
