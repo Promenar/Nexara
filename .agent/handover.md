@@ -12059,3 +12059,34 @@ record-fingerprint: 59a56c0647730aa24d92ab9ee7aff983ab5de66c03820b33be35e9ef9956
 
 ### HLG
 本记录。
+
+## 2026-10-22T23:23:39+08:00 · 打开非空会话时空会话粒子字标闪现修复
+
+type: bugfix
+scope: ["native-ui/chat"]
+status: completed
+tags: ["ui", "chat", "animation", "device"]
+continuity: none
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 5449afe3c6d6bcf2a6f53ddb867346b3b93a107196ba28147157cf398f930cbb
+
+### Summary
+用户真机反馈：点进非空会话时，空会话粒子字标会瞬间出现、向中心收束，然后消失。根因：ChatRoute 在 LaunchedEffect 中才调用 loadSession，进入会话的首帧 ChatUiState 中 session 为空、消息为空、isLoading 为 false，满足原显示条件，字标先淡入，再随消息到达淡出。提交 29e4b1ee。
+
+### Changed
+ChatScreen.kt 把显示条件抽为 shouldShowEmptyWordmark(uiState)，新增要求 session != null。新增单测 EmptyWordmarkVisibilityTest；androidTest 新增 openingNonEmptySession_neverComposesEmptyWordmark（从未载入状态切到有消息的会话，断言字标从未组合），修复前失败、修复后通过。CHANGELOG 已同步。
+
+### Validation
+门禁 testSideloadDebugUnitTest --rerun + lintSideloadDebug + assembleSideloadDebug + validateSideloadDebugScreenshotTest 通过；assemblePlayDebug 与 check-distribution-manifests 通过；ChatScreenContentStateTest 14 项设备测试通过。真机 release：连拍打开「简单的加法问答」「Initial Greeting」两个非空会话，含转场帧在内都没有粒子；空会话 New Chat 字标正常显示。
+
+### Next
+无。
+
+### Risks
+如果以后出现会话对象先载入、消息稍后分批载入的路径，需要另加判断。当前 getById 和 store 中的会话都带完整消息。
+
+### DIA
+已同步 CHANGELOG；架构文档无影响。
+
+### HLG
+本记录。

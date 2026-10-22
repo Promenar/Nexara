@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-10-22T22:56:46+08:00
+> generated_at: 2026-10-22T23:23:39+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -27,6 +27,7 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-10-22T23:23:39+08:00 | iso | completed | none | ["native-ui/chat"] | ["ui", "chat", "animation", "device"] | 打开非空会话时空会话粒子字标闪现修复 | `.agent/handover.md` · `2026-10-22T23:23:39+08:00` · `fp:5449afe3c6` |
 | 2026-10-22T22:56:46+08:00 | iso | completed | none | ["native-ui/chat, native-ui/common"] | ["ui", "chat", "animation", "streaming", "device"] | 生成指示改为三点波浪，正文新字连续淡入 | `.agent/handover.md` · `2026-10-22T22:56:46+08:00` · `fp:59a56c0647` |
 | 2026-10-22T22:15:47+08:00 | iso | completed | waiting | ["native-ui/chat, native-ui/theme"] | ["ui", "chat", "composer", "agsl", "indication", "device"] | 浮岛光晕方框与点按涟漪方角修复 | `.agent/handover.md` · `2026-10-22T22:15:47+08:00` · `fp:0c22396470` |
 | 2026-10-22T21:49:07+08:00 | iso | completed | none | ["native-ui/chat"] | ["device", "chat", "composer", "animation", "performance"] | 输入框浮岛改版真机冒烟 | `.agent/handover.md` · `2026-10-22T21:49:07+08:00` · `fp:ce7aa65116` |
