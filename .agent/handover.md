@@ -12028,3 +12028,34 @@ ComposerIsland.kt 光晕着色器重写：圆角盒 SDF 外沿 16-44dp 平滑衰
 
 ### HLG
 本记录。
+
+## 2026-10-22T22:56:46+08:00 · 生成指示改为三点波浪，正文新字连续淡入
+
+type: feature
+scope: ["native-ui/chat, native-ui/common"]
+status: completed
+tags: ["ui", "chat", "animation", "streaming", "device"]
+continuity: none
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 59a56c0647730aa24d92ab9ee7aff983ab5de66c03820b33be35e9ef995651c7
+
+### Summary
+用户认为生成状态的块状光标偏终端风格，看过原型后选定方案 A（三点波浪）加正文淡入。提交 4d6ed62f。
+
+### Changed
+新增 ui/common/GenerationDots.kt：rememberInfiniteTransition 驱动的三点波浪（1.2s 一轮，相位差 0.125，每点在一轮前 60% 做一次半正弦起落），中间点颜色用 hueMidpoint 沿色相环取主色与第三色的中点（直接插值会落到灰色）；系统关闭动画或预览时静止；读屏 chat_cd_generating_response。PipelineBubble 的独立光标改为 GenerationIndicator（UiTags.CHAT_GENERATING_INDICATOR）；MarkdownText 行内光标同样换成小号三点（当前调用方均不显示）。StreamRevealer：淡入窗口 120ms 改为 StreamRevealFadeNanos=280ms，streamRevealAlpha 从 0.2 三次缓出到 1，新增 streamRevealTint 从 1 平滑退到 0；阅读注解器按区间把颜色从 primary 插值回正文色。测试：GenerationDotsTest、StreamRevealTintTest、SmoothStreamContentTest 改写，androidTest 新增 waitingForFirstToken_showsGenerationDotsUntilContentArrives，截图新增等待首字深/浅两张；CHANGELOG、docs/ARCHITECTURE.md。
+
+### Validation
+门禁 testSideloadDebugUnitTest --rerun + lintSideloadDebug + assembleSideloadDebug + validateSideloadDebugScreenshotTest 通过；assemblePlayDebug 与 check-distribution-manifests 通过；emulator-5564 设备测试 12 个类共 65 项通过。真机 release（DeepSeek V4 Flash 两次真实调用）：思考与等待阶段三点依次上浮变亮；流式时末尾约 20 个字从淡强调色渐变为正文色，无分档跳变。输入法已恢复为微信输入法。
+
+### Next
+无必需后续。若用户觉得末尾淡蓝段像链接色，可缩短 StreamRevealFadeNanos 或降低 streamRevealTint 起点。
+
+### Risks
+截图更新任务只在差异超过阈值时改写参考图，小幅颜色改动需先删除旧参考图再更新。测试会话新增两轮对话（删除需用户确认）。
+
+### DIA
+已同步 CHANGELOG、docs/ARCHITECTURE.md。
+
+### HLG
+本记录。
