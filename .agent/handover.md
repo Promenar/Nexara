@@ -12214,3 +12214,34 @@ Doze/OEM 执行窗口、精确闹钟权限撤销、进程被杀后通知点击�
 
 ### HLG
 本条记录三包合并与接线；工作树报告已归档到 .agent/tmp-agent-reports/{canvasws,jobs,schedule}/report.md（gitignored），工作树与本地 feat 分支已清理。
+
+## 2026-10-23T20:07:51+08:00 · 画布工作区、后台任务与定时任务真机验收及缺陷修复
+
+type: validation
+scope: ["native-ui 定时任务、后台任务、画布工作区；OPPO Find N5 (ColorOS 16) 真机"]
+status: completed
+tags: ["schedule", "background-jobs", "canvas", "real-device", "coloros", "tool-schema"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 5046e9a6e7491b5afba98bd30eed20d3b81097c915d83842331e977a1875489f
+
+### Summary
+在 OPPO PKH110（ColorOS 16）上以 sideload release 包、DeepSeek V4 Flash 完成四项真机验收：画布写入工作区与外部补丁导入、shell_exec 后台任务 wake 续轮、Termux 后台任务实时输出与 wake 续轮、精确定时任务（亮屏后台的审批暂停通知深链 + 熄屏锁屏触发完成通知）。真机发现 schedule_create 工具 schema 使用 oneOf/const/minimum/maxLength，被 ToolSchemaValidator 整体拒绝，对话中完全无法创建定时任务；已修复并补回归测试。同时修复补发判定过严、活动面板重复停止按钮、Termux 审批卡显示原始 JSON、审批暂停通知标题正文重复。
+
+### Changed
+ScheduleSkills.kt：schedule_create schema 只用校验器支持的关键字，trigger 拍平为 type 枚举 + at/every_minutes/expr，变体约束写入描述，运行时仍由 ScheduleCalculation 校验。ScheduleCalculation：once 的 at 带 Z 或偏移时换算为设备本地时间。DefaultScheduledTaskController：补发容差 CATCH_UP_TOLERANCE_MILLIS = 5 分钟（原 60 秒）。ApprovalPreview：termux_exec 显示命令正文，不标记工作区风险。ToolLiveOutputPanel/ChatRoute：活动面板内实时输出隐藏自身停止按钮。SystemTriggerNotifications：需要处理通知使用独立正文 schedule_notification_needs_user_text。测试：BuiltInToolSchemaDefinitionTest 纳入定时与 job 工具（修复前失败）、ScheduleCalculationTest、DefaultScheduledTaskControllerTest（修复前失败）、ApprovalPreviewTest、BuiltinExecToolTargetTest。CHANGELOG 同步。
+
+### Validation
+真机：画布 v1→v2 与工作区路径、长按菜单通过；shell_exec sleep 90 后台任务审批卡后台运行行、活动条、前台服务通知、19:28 结束触发行与自动续轮通过；Termux 6 行 tick 实时输出与 19:31 自动续轮通过；schedule_create 修复后审批卡（名称、精确标签、触发于时间、无始终允许）通过，过去时间显示参数未通过校验风险行；19:48 闹钟→ScheduledTaskAlarmService→后台生成→shell_exec 审批暂停→高优先级通知→点击深链直达会话审批卡→批准完成；熄屏 Dozing 下 20:03 触发并发出已完成：Screen off test / pong 通知。门禁：testSideloadDebugUnitTest --rerun、lintSideloadDebug、assembleSideloadDebug、validateSideloadDebugScreenshotTest、assemblePlayDebug 与 check-distribution-manifests.py全部通过：5407 测试 0 失败 25 跳过，lint 0 错误，截图校验与渠道清单检查通过；修复提交 75a16d6e 已推送。
+
+### Next
+评估把定时“已完成”通知拆到默认重要性渠道：ColorOS 下 SystemUI 在完成通知发出 1 秒后点亮了锁屏。是否需要在 schedule_create 描述或系统提示中给出当前设备时间，减少模型填过去时间（DeepSeek 曾填 19:54 于 19:55）。
+
+### Risks
+ColorOS 对 setExactAndAllowWhileIdle 闹钟施加约 1.5–2.3 分钟对齐窗口且在窗口末端送达，精确任务实际晚到 89–137 秒，属厂商行为，UI 标注为精确仍有偏差。手机当前停在锁屏，最后一条定时会话无待审批项。
+
+### DIA
+已同步 CHANGELOG.md（补发容差、Termux 审批卡、单一停止按钮）；README、ARCHITECTURE、distribution-builds 无影响。
+
+### HLG
+本条记录真机验收与修复；continuity_key mobile-agentic-capabilities。
