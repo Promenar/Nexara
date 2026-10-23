@@ -12152,3 +12152,34 @@ record-fingerprint: bce0d4293cffca0fede9ac8816c85a6985f9e00be01c91c1476c0fa72f6a
 
 ### HLG
 本条记录；continuity waiting 于真机验收。
+
+## 2026-10-23T13:15:13+08:00 · 六项新需求真机验收与两处修复（结束原因分类、空白处取消选择）
+
+type: validation
+scope: ["native-ui chat / remote protocol"]
+status: done
+tags: ["real-device", "canvas", "state-board", "finish-reason", "selection"]
+continuity: none
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 11cb04acbbc8a6c414884d7e9c170a53c5d2bdd682515a16df304687e314f049
+
+### Summary
+真机 3B1F5QEARBRJQZ66（ColorOS 16，Google WebView 155）安装正式版，用 DeepSeek V4 Flash 验收：助手正文长按选字与跨段拖选、用户气泡无涟漪且菜单“选择文本”面板、斜杠候选与 /new、生成时 KEEP_SCREEN_ON 及浮岛开关即时撤除、状态面板（AI 自动创建与每轮更新、列表追加、金币扣减、手动改值后 AI 读到新值）、画布（卡片预览、全屏、按钮经草稿桥接写入输入框不自动发送、canvas_update 生成第 2 版且旧卡标“已有新版本”、右上角画布列表）。修复 703646106：五个协议的非正常结束原因分类；聊天列表轻点空白处释放正文选区。
+
+### Changed
+新增 GenerationFailureCode.OUTPUT_LIMIT、CONTENT_FILTERED 与提示文案；LlmProtocol.abnormalFinishError 统一映射 length/max_tokens/MAX_TOKENS/max_output_tokens、content_filter/refusal/SAFETY 等、insufficient_system_resource/aborted（SERVER 可重试）；OpenAI Chat 与兼容协议、Anthropic message_delta、Gemini completion、Responses response.incomplete 接入。ChatScreen 消息列表 pointerInput detectTapGestures(onLongPress={}) 轻点清焦点。
+
+### Validation
+AbnormalFinishReasonTest 先红（4/5 失败）后绿 5/5；完整单元测试 5230 项 0 失败 25 跳过；lint、assembleSideloadDebug、validateSideloadDebugScreenshotTest、assemblePlayDebug、清单检查通过（首次门禁 lint 因 playDebug KSP 生成物缺失失败，重跑通过）。emulator-5564 设备测试 52/52（ChatPipelineLayout 18、ChatScreenContentState 14、ChatImeInteraction 5、SlashCommandPalette 5、StateBoardPanel 4、ChatFollowCompletion 3、CanvasChatEntry 3）。真机复测选区：长按选中后抬手保留，轻点空白处释放。
+
+### Next
+无阻断。可选：真机复测输出截断提示（需模型真实触发）；手机未装技能，技能斜杠命令与检索放大镜动画未在真机覆盖。
+
+### Risks
+画布首轮真机请求在思考 80 秒后失败，修复前显示“提供商暂时不可用”，正式版无日志无法确认是 insufficient_system_resource/aborted 还是 length；修复后前者自动重发、后者提示调大最大 Token。轻点消息区空白处现在会收起键盘。重新生成回退因“确认抛弃后续内容”对话框按约定取消，仅有 JVM 覆盖。模型偶有先更新状态再推进剧情导致位置滞后一轮。
+
+### DIA
+已同步 CHANGELOG（修复：输出被截断或中断时误报；消息选择条目补充空白处取消选择）；README、ARCHITECTURE 无影响。
+
+### HLG
+本条记录。
