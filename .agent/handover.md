@@ -12245,3 +12245,34 @@ ColorOS 对 setExactAndAllowWhileIdle 闹钟施加约 1.5–2.3 分钟对齐窗�
 
 ### HLG
 本条记录真机验收与修复；continuity_key mobile-agentic-capabilities。
+
+## 2026-10-23T20:58:33+08:00 · 定时任务前台准点触发与 Agent 轮询真机验收
+
+type: implementation
+scope: ["native-ui 定时任务调度：前台计时器、活动标签等待执行状态"]
+status: completed
+tags: ["schedule", "foreground", "polling", "real-device", "coloros"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 3aac7ebaf4f772260d7fdcb15aa8f652f80b9e8f2d7a722b09d33dc0a1320726
+
+### Summary
+用户明确定时工具首要目标是 Agent 在前台任务中挂轮询，系统级后台延时可接受。真机发现即使 Nexara 在前台，ColorOS 也给精确闹钟加 2–3.7 分钟对齐窗口并在窗口末端送达。新增 ForegroundScheduleTicker：应用前台可见时由进程内计时器按 next_fire_at 准点调用 fire，系统闹钟/JobScheduler 保留为后台兜底，重复回调由领取令牌去重。活动标签与面板在过点排队时显示“等待执行”，刷新时钟同时在下次触发时刻唤醒。
+
+### Changed
+新增 data/schedule/ForegroundScheduleTicker.kt（combine 前台状态与任务列表，collectLatest 内只计时，fire 在应用作用域独立启动，按任务与计划时刻去重）；NexaraApplication 在启动就绪后以 ProcessLifecycleOwner.currentStateFlow≥STARTED 启动。AgentActivity/AgentActivityPanel：agent_schedules_due(_many) 文案与按下次触发时刻刷新。测试 ForegroundScheduleTickerTest（准点、后台不触发回前台补触发、列表重发不重复、多任务同时到期、执行中列表变化不取消生成）。CHANGELOG、README、ARCHITECTURE 同步。
+
+### Validation
+真机（OPPO PKH110 ColorOS 16，DeepSeek V4 Flash）：旧版本下完成前台轮询闭环——sleep 420 后台构建 + 每 5 分钟精确轮询；闹钟 20:39:25 送达（计划 20:37:20）时 Agent 正执行前台 sleep 200，触发排队，20:42 命令结束后轮询执行，job_status 报 BUILD_OK 并 schedule_cancel 自行取消。新版本：单次任务计划 20:51:00，前台于 20:51:00.03 由应用内计时器触发（无 sending alarm 记录），回复 pong，系统闹钟 20:51:06 随完成取消。单元测试 ForegroundScheduleTickerTest 5/5、DefaultScheduledTaskControllerTest 22/22。完整门禁通过：5412 测试 0 失败 25 跳过，lint 0 错误，截图校验与渠道清单检查通过；提交 ee2c4010 已推送。
+
+### Next
+前台长命令执行期间审批卡以置灰状态停留在实时输出下方，属原有行为，可评估批准后折叠。最短间隔仍为非精确 15 分钟、精确 5 分钟；若前台轮询需要更短间隔，可评估前台计时下放宽下限。
+
+### Risks
+后台/熄屏触发仍受厂商闹钟对齐影响，按用户决定接受。前台计时依赖进程存活与 STARTED 状态，分屏或画中画等边缘状态未单独验证。
+
+### DIA
+已同步 CHANGELOG.md、README.md、docs/ARCHITECTURE.md。
+
+### HLG
+本条记录前台准点触发实现与真机验收。
