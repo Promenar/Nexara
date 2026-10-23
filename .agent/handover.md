@@ -12276,3 +12276,34 @@ record-fingerprint: 3aac7ebaf4f772260d7fdcb15aa8f652f80b9e8f2d7a722b09d33dc0a132
 
 ### HLG
 本条记录前台准点触发实现与真机验收。
+
+## 2026-10-23T22:03:35+08:00 · 定时任务前台 1 分钟轮询、后台降频、单次倒计时与审批卡收起
+
+type: implementation
+scope: ["native-ui 定时任务调度、schedule_create 工具、审批卡与画布卡片间距"]
+status: completed
+tags: ["schedule", "foreground", "polling", "countdown", "approval", "canvas", "real-device"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: d0f445801c2c4c39edd1ccc85483c7f65ec0ec1a924a5b1ce79653eed05524a8
+
+### Summary
+按用户要求：前台最短间隔放宽到 1 分钟；单次任务新增 in_minutes 倒计时，避免模型填错绝对日期；批准后工具执行期间收起审批卡；画布卡片与上方正文留段落级间距（此前 PipelineBubble 中卡片紧贴正文，从未有顶部间隔）。后端调度由 GPT-6.1（codex worktree feat/schedule-cadence）施工，主控复核 diff 与语义后并入主树。
+
+### Changed
+ScheduleCalculation：parse(args, zoneId, nowMillis)、in_minutes 1–10080 与 at 互斥、过去 at 报错附设备当前时间、前台下限 1 分钟、新增纯函数 backgroundFireAt=max(next,(lastFired?:created)+5/15 分钟，单次不受限)。DefaultScheduledTaskController：fire 增加 background 参数，平台回调在领取前检查后台时刻；补发按领取前任务行计算；reconcile 不再改写 next_fire_at；interval 生成越过计划时刻时下一次为结束+完整间隔。AndroidScheduleBackend 用后台时刻登记；ScheduledTaskComponents 四处平台入口传 background=true（文件边界例外，理由：周期 Job 可在窗口内提前回调）。ScheduleSkills schema/描述、SystemPromptSections 提示同步。AgentApprovalPreviews 新增 countdownMinutes，审批卡显示“N 分钟后执行一次”。ChatScreen 在 isApprovalSubmitting 时不渲染审批卡；CanvasInvocationCards 顶部 16dp。中英文案区分前台准点与后台 5/15 分钟下限，中文资源改用 &brand; 实体。截图参考 3 张更新。CHANGELOG、README、ARCHITECTURE 同步。提交 79b3eddb。
+
+### Validation
+codex 自测：定向 60 项、完整单测 5427 项 0 失败、lint 0 错误。主控：复核 diff 语义；完整门禁（testSideloadDebugUnitTest --rerun 5427 项 0 失败 25 跳过、lintSideloadDebug 0 错误、assembleSideloadDebug、validateSideloadDebugScreenshotTest、assemblePlayDebug）通过，渠道清单检查通过；首轮门禁抓出中文资源直写品牌名（BrandNameContractTest），已修。androidTest approvalCardCollapsesWhileDecisionIsSubmitting 在 emulator-5564 通过（15/15）。真机 OPPO PKH110 ColorOS 16 release + DeepSeek V4 Flash：审批卡显示“2 分钟后执行一次 · 触发于 21:59”与 1 分钟间隔 21:58/21:59；批准于 21:57:35，tick 第 1 次 21:58:35、pong 与 tick 第 2 次 21:59:35 同时到点按串行执行，max_runs=2 后停止；前台 sleep 40 命令批准后审批卡收起，仅显示运行行与实时输出，完成后回复 finished；画布卡片顶边与正文间隔约 45px，与段落节奏一致。IME 已恢复微信输入法。
+
+### Next
+可评估审批卡对 cron 等高频后台任务说明后台实际节奏（目前前三次预览仅为前台节奏）。完成通知渠道重要性（用户定为低优先级）。
+
+### Risks
+夏令时回拨重复时段内 in_minutes 换算为本地时间后按较早偏移解析，可能被判为过去（无夏令时时区不受影响），需单独决定是否存储精确瞬间。后台送达仍受厂商推迟影响，按用户决定接受。后台降频路径（熄屏下 5/15 分钟门禁）只有单测与 Robolectric 服务测试，未做真机熄屏验证。
+
+### DIA
+已同步 CHANGELOG.md、README.md、docs/ARCHITECTURE.md。
+
+### HLG
+本条记录前台 1 分钟轮询、倒计时、审批卡收起与画布间距的实现与真机验收；工作包报告存于 .agent/tmp-agent-reports/cadence/report.md（不纳入 Git）。
