@@ -12121,3 +12121,34 @@ record-fingerprint: c9d33933c051bd541d7555968fd76aed4ec19ae7500ec2b530c9abd54509
 
 ### HLG
 本条记录；Codex 报告副本在 .agent/tmp-agent-reports/composer-queue/codex-report.md（已忽略），工作树 Nexara-wt-queue 与分支 feat/composer-queue 已清理。
+
+## 2026-10-23T10:12:01+08:00 · 聊天六项新需求：选字/涟漪/检索动画/亮屏、斜杠命令、会话画布、会话状态面板
+
+type: feature
+scope: ["native-ui chat"]
+status: done
+tags: ["chat", "slash-commands", "canvas", "state-board", "room-v25", "backup-v7"]
+continuity: waiting
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: bce0d4293cffca0fede9ac8816c85a6985f9e00be01c91c1476c0fa72f6acd9f
+
+### Summary
+完成用户六项需求并推送 B-native-refactor：40fd55d0（去长按涟漪、助手正文长按直接选字、用户气泡“选择文本”面板、检索放大镜巡游动画、生成时保持亮屏默认开+浮岛临时开关）；3a5fd033 斜杠命令（技能命令预加载 + 8 个内置命令）；3f1384c3 会话画布（canvas_create/update/read/list，文件存储，独占 WebView）；3903772e 会话状态面板（state_define/update/get/remove，Room v25，备份载荷 v7）。斜杠、画布、状态板分别在独立 worktree 由子 Agent / Codex 施工后主控 squash 合并，worktree 与 feat 分支已删除，报告存于 .agent/tmp-agent-reports/{slash,canvas,state}/。
+
+### Changed
+合并时统一工具来源消息字段：SkillExecutionContext 仅保留 assistantMessageId（画布原 messageId 并入），ToolExecutor.executeSkill 只传 ownerMessageId；BranchSessionUseCase 在同一事务内按 messageIdMap 同时复制画布与状态快照。助手正文改为 SelectionContainer 后，中间助手段落的长按重新生成/分支入口取消，仅保留轮末操作栏。斜杠命令：不认识的命令词按普通消息发送，输入框保持 String 版 BasicTextField。
+
+### Validation
+主线 3903772e：testSideloadDebugUnitTest --rerun 5225 项 0 失败 25 跳过；lintSideloadDebug、assembleSideloadDebug、validateSideloadDebugScreenshotTest、assemblePlayDebug 通过；check-distribution-manifests 通过。emulator-5564 设备测试 42/42：ChatPipelineLayoutTest 18、ComposerQueueTrayTest 8、SlashCommandPaletteTest 5、StateBoardPanelTest 4、CanvasComponentsTest 4、CanvasChatEntryTest 3；此前 GenerationActivityRowTest、RagDetailsAccessibilityTest 11/11、ChatImeInteractionTest 5/5 通过。新增截图基线：画布 4、状态板 4、斜杠 2，人工查看正常。正式版 APK 已从 3903772e 构建（app-sideload-release.apk）。
+
+### Next
+真机 3B1F5QEARBRJQZ66 断开未重连：重连后安装正式版，验证正文长按选字与“选择文本”面板、亮屏开关、微信输入法下斜杠候选、画布（先 dumpsys webviewupdate 确认 WebView≥152，再让 DeepSeek V4 Flash 生成画布并测草稿桥接）、状态板（文字游戏场景多轮自动更新、手动编辑、重新生成回退）。
+
+### Risks
+画布脚本与草稿桥接仅在 Google WebView/Chrome ≥152 启用，模拟器 WebView 124 只验证了静态预览，响应头 sandbox、空 Connection-Allowlist 与消息端口尚无设备实证；画布文件不在备份协议内。状态板未经真实模型多轮验证是否每轮主动调用 state_update；AndroidDualDatabaseSourceProbe 的 SecureDirectoryStream 路径仅能在 Android 上验证。斜杠技能命令发送前有一次 IO 扫描延迟，检索查询仍含 /技能名 前缀。
+
+### DIA
+已同步 CHANGELOG（消息选择与生成辅助、斜杠命令、会话画布、会话状态面板）、README 会话阅读与输入段、docs/ARCHITECTURE（斜杠命令、会话画布、会话状态面板条目，数据库版本链 v25 与备份载荷 v7）。
+
+### HLG
+本条记录；continuity waiting 于真机验收。

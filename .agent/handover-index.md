@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-10-23T01:51:52+08:00
+> generated_at: 2026-10-23T10:12:01+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -11,6 +11,7 @@
 | agent-tooling-repair-20261002 | waiting | 2026-10-02T08:00:46+08:00 | done | ["Nexara", "pdec", "release"] | 授权 gpt-6-luna 并交付真机测试签名 APK | `.agent/handover.md` · `2026-10-02T08:00:46+08:00` · `fp:110c0ef84b` |
 | ci-version-sync-20261001 | resume | 2026-10-01T22:20:08+08:00 | in_progress | ["Nexara", "android-ci", "release"] | API31 Prompt 编辑器布局反馈根因修复候选 | `.agent/handover.md` · `2026-10-01T22:20:08+08:00` · `fp:c9c99a4302` |
 | dropdown-menu-anchor-and-style-unification | waiting | 2026-09-27T21:43:18+08:00 | completed | ["ui, dropdown-menu, files-panel, m3-design, release"] | 悬浮菜单位置精准锚定与全站新版视觉样式统一规范收敛 | `.agent/handover.md` · `2026-09-27T21:43:18+08:00` · `fp:31537a3d52` |
+| mobile-agentic-capabilities | waiting | 2026-10-23T10:12:01+08:00 | done | ["native-ui chat"] | 聊天六项新需求：选字/涟漪/检索动画/亮屏、斜杠命令、会话画布、会话状态面板 | `.agent/handover.md` · `2026-10-23T10:12:01+08:00` · `fp:bce0d4293c` |
 | nexara-audit-completion-repair | waiting | 2026-09-22T15:28:29+08:00 | done | ["Nexara", "native-ui", "audit-repair"] | 审计修复、最终签名候选及本机设备验收完成 | `.agent/handover.md` · `2026-09-22T15:28:29+08:00` · `fp:c45ed0053a` |
 | nexara-chat-flow-repair | waiting | 2026-10-16T10:00:45+08:00 | done | ["Nexara", "native-ui", "chat"] | 会话主流程审计 P0/P1 修复交付 | `.agent/handover.md` · `2026-10-16T10:00:45+08:00` · `fp:b968f99f1f` |
 | nexara-independent-model-catalog | resume | 2026-09-22T18:33:08+08:00 | done | ["Nexara", "model-catalog"] | 独立模型目录上线、客户端验收与签名候选交付 | `.agent/handover.md` · `2026-09-22T18:33:08+08:00` · `fp:320878f7b2` |
@@ -27,6 +28,7 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-10-23T10:12:01+08:00 | iso | done | waiting | ["native-ui chat"] | ["chat", "slash-commands", "canvas", "state-board", "room-v25", "backup-v7"] | 聊天六项新需求：选字/涟漪/检索动画/亮屏、斜杠命令、会话画布、会话状态面板 | `.agent/handover.md` · `2026-10-23T10:12:01+08:00` · `fp:bce0d4293c` |
 | 2026-10-23T01:51:52+08:00 | iso | completed | none | ["native-ui/chat"] | ["chat", "composer-queue", "steer", "persistence"] | 输入框消息队列与插队上线 | `.agent/handover.md` · `2026-10-23T01:51:52+08:00` · `fp:c9d33933c0` |
 | 2026-10-22T23:23:39+08:00 | iso | completed | none | ["native-ui/chat"] | ["ui", "chat", "animation", "device"] | 打开非空会话时空会话粒子字标闪现修复 | `.agent/handover.md` · `2026-10-22T23:23:39+08:00` · `fp:5449afe3c6` |
 | 2026-10-22T22:56:46+08:00 | iso | completed | none | ["native-ui/chat, native-ui/common"] | ["ui", "chat", "animation", "streaming", "device"] | 生成指示改为三点波浪，正文新字连续淡入 | `.agent/handover.md` · `2026-10-22T22:56:46+08:00` · `fp:59a56c0647` |
