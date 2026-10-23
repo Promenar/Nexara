@@ -12183,3 +12183,34 @@ AbnormalFinishReasonTest 先红（4/5 失败）后绿 5/5；完整单元测试 5
 
 ### HLG
 本条记录。
+
+## 2026-10-23T19:11:02+08:00 · 画布入工作区、后台任务、定时任务与系统触发三包合并接线
+
+type: feature
+scope: ["native-ui canvas/jobs/schedule/trigger/settings"]
+status: implemented-pending-device
+tags: ["canvas", "background-jobs", "schedule", "system-trigger", "distribution"]
+continuity: resume
+continuity-key: mobile-agentic-capabilities
+record-fingerprint: 71103fc5e7d0687e25239cc404e06e7814d99d8bc9ff01920d8e1a40fafe8c7d
+
+### Summary
+按 .agent/plans/20261023-canvas-workspace-jobs-schedule.md 完成 A/B/C 三个工作包：画布当前版本镜像到会话工作区 canvas/<标题>.html 并重做卡片；shell/python/termux 后台任务与 job_* 工具；应用级 SystemTurnDispatcher、Room v26 定时任务、JobScheduler/侧载精确闹钟、HEADLESS 确认持久化与通知深链。后端由 GPT-6.1 (Codex) 三个工作树并行施工，主控复核、合并、接线界面。
+
+### Changed
+合并 feat/canvas-workspace(bdf9d246)、feat/jobs(7a6e7962)、feat/schedule(c2490673)。主控修正：分支保留 workspaceId、copySession 清空画布 workspacePath；visibleSessionId 统一；后台任务唤醒直连 systemTurnDispatcher，会话令牌在 IO 签发；调度排队改用 SessionDao.hasPendingApproval。界面：聊天页活动标签/面板（后台任务、定时任务、授权精确闹钟）、system_trigger 居中触发行、schedule_create 审批卡预览（名称/规则/提示/接下来三次）、后台命令审批行、工具摘要 SCHEDULE 类别与 job_* 归 COMMAND、设置→工具→后台与定时页（运行条件+跨会话列表）；Play/侧载差异统一用 ChannelLimitChip 标签。文档：CHANGELOG、README、ARCHITECTURE、distribution-builds。提交 c9f25de0、03e619cc、a7ad1617、f3dcf10c。
+
+### Validation
+完整门禁 testSideloadDebugUnitTest --rerun 5404 项 0 失败 25 跳过（真实联网用例）、lintSideloadDebug 0 错误、assembleSideloadDebug/assemblePlayDebug、validateSideloadDebugScreenshotTest 通过；check-distribution-manifests.py 通过（Play 无精确闹钟权限）。emulator-5564 设备测试 AgentActivityTest 3 项、CanvasComponentsTest 4 项、CanvasChatEntryTest 3 项通过；CanvasChatEntryTest 历史版本用例与其它套件同进程时出现一次 5 秒超时，单独与整类重复运行均通过。截图基准新增活动面板 7、设置页 2，更新画布卡 2、工具设置页头 7。
+
+### Next
+真机 3B1F5QEARBRJQZ66（当前未连接）用 DeepSeek V4 Flash 验收：画布文件出现在工作区 canvas/ 且 patch_file 后成为新版本；后台 sleep 90; echo done 加 on_exit=wake 唤醒；Termux 后台任务；侧载 5 分钟精确定时在锁屏下触发、审批暂停与通知深链；ColorOS 冻结观察（logcat 与 gfxinfo，禁录屏）。模拟器可补 1 分钟单次精确定时与通知深链。
+
+### Risks
+Doze/OEM 执行窗口、精确闹钟权限撤销、进程被杀后通知点击、HEADLESS 审批完整设备路径均未在设备上验证；BackgroundWorkspace 的 SecureDirectoryStream 依赖既有生产路径与 androidTest 推断，未单独设备验证；定时任务不进入备份；系统触发全局串行，任意会话待审批会阻塞其它定时最多 30 分钟后跳过。
+
+### DIA
+已同步 CHANGELOG.md、README.md、docs/ARCHITECTURE.md、docs/distribution-builds.md。
+
+### HLG
+本条记录三包合并与接线；工作树报告已归档到 .agent/tmp-agent-reports/{canvasws,jobs,schedule}/report.md（gitignored），工作树与本地 feat 分支已清理。
