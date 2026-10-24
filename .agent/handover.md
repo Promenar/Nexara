@@ -12398,3 +12398,33 @@ tailnet 上受信任 https 的端到端成功路径未在真机验证，目前�
 
 ### HLG
 本记录经 hlg-handover.py append 追加。
+
+## 2026-10-24T17:35:13+08:00 · 工作区三分类、目录文件操作与删除会话保留文件
+
+type: feature
+scope: ["native-ui", "workspace"]
+status: done
+tags: ["workspace", "resource-explorer", "file-ops", "copy-cleanup", "device-test"]
+continuity: none
+record-fingerprint: c0060f92fbfe7dcb38d8ae7c98e469ec7cd60b3aa2e245d099c452923ed4e595
+
+### Summary
+工作区统一为三类：会话专用空间、内置文件系统、设备文件系统，选择器按类分组并用标签区分生命周期；Agent 可达范围收为工作区栏上的图标入口。资源管理器对目录工作区提供改名、移动、复制、剪切粘贴、多选和删除；改名与移动用原子 rename，复制为流式逐文件复制，均无 32 MiB 快照上限；删除超出回收区上限时询问是否永久删除。删除会话默认把会话专用空间文件保留到内置文件系统，并以 Toast 告知位置。全站冗余文案清理分支 claude/copy-cleanup-5088ea 已合并。
+
+### Changed
+后端（Codex 两轮，主控审阅后合并）：DefaultDirectoryWorkspaceFiles、PrivateWorkspaceFileRetention（跳过符号链接与特殊文件）、DirectoryWorkspaceBusyChecks、RealPathExternalFolderBackend 的 move/copy、ExternalFolderBackend 默认 move/copy、SessionDeletionCoordinator.keepFiles、SessionExecutionGate.withSessionMutation、NexaraApplication 接入点；契约 DirectoryWorkspaceFiles.delete(permanent) 与 DirectoryFileOpCode.TOO_LARGE。前端：ResourceExplorerViewModel/Workspace/Sheet、DirectoryFileOperations、DirectoryWorkspaceBrowser、FolderBreadcrumbs、DeleteSessionDialog、ChatViewModel、SessionListViewModel、WorkspacePicker、KnowledgeWorkspaces 及中英字符串。提交：b59fbacd、02b5995d、65cafd47（合并）、203a69aa（文案清理合并）、97a92e04。
+
+### Validation
+native-ui 下 --no-daemon 全量：testSideloadDebugUnitTest 5515 项、testPlayDebugUnitTest 5505 项，0 失败；lintSideloadDebug、assembleSideloadDebug、assemblePlayDebug、validateSideloadDebugScreenshotTest 通过；check-distribution-manifests.py 通过。真机 3B1F5QEARBRJQZ66（debug 包）验收：移动、复制、删除与回收站恢复、删除会话保留文件均在磁盘核对；选择器根显示“工作区”、新建文件夹无常驻提示、目录根部不重复名称。
+
+### Next
+无必需后续。Codex worktree ../Nexara-wt-wsops 与分支 codex/workspace-file-ops 已清理；文案清理会话的 worktree 由该会话归档时处理。
+
+### Risks
+rename 跨卷（EXDEV）直接报 IO，不回退复制；永久删除不可恢复，仅在超出回收区上限且用户确认后执行。SAF 等非真实路径后端的 move/copy 默认抛 UNSUPPORTED，目录工作区当前只经真实路径后端访问。
+
+### DIA
+已同步 CHANGELOG.md、README.md、docs/ARCHITECTURE.md。
+
+### HLG
+本记录经 hlg-handover.py append 追加。
