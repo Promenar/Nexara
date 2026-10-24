@@ -12489,3 +12489,34 @@ TurnCollapseTest 13/13、ToolInvocationPresentationTest 通过；updateSideloadD
 
 ### HLG
 追加本验收记录，scope-permissions 工作流结束。
+
+## 2026-10-24T22:33:47+08:00 · 移动工作流能力测试清单与精简回归入口
+
+type: planning
+scope: ["Nexara", "testing", "mobile-workflows"]
+status: planned
+tags: ["testing", "capabilities", "mobile-workflows", "remote-services"]
+continuity: resume
+continuity-key: mobile-workflow-capability-acceptance
+record-fingerprint: 9b33d996b244886492c0d5bd5b74c74a0b7fa119e3eba008a78970e06699b6a0
+
+### Summary
+已将桌面项目、经营资料和创作工作抽象为移动工作流能力验收清单：65项基础、19项远端服务、28个端到端场景和12类故障变体，提供15项精简回归。测试设计已完成，所有能力条目初始为NOT_RUN。
+
+### Changed
+新增docs/testing/mobile-workflow-capability-checklist.md；同步README、CHANGELOG和registry。仅修改测试文档和交接，不处理其他开发中的代码、截图或制品。
+
+### Validation
+核对当前权限策略、技能ADR、发行验证入口及两条完整历史交接原记录；检查124个稳定ID无重复且分组连续、15项精简组引用有效、各项操作与预期非空、全部本地来源链接存在、导航入口齐全和git diff --check。没有运行Gradle、安装设备、调用模型/远端服务或进行媒体生成。
+
+### Next
+固定实际执行的源码与APK/设备/服务映射，准备合成材料及独立预期；按B0至B5分批执行，先权限/路径与15项精简组，再既有服务和完整业务交付，结果按批次记录。
+
+### Risks
+当前仓库高频迭代，存在其他工作未提交；历史测试和清单不构成当前APK通过。相同网络不证明工具接入、认证、TLS、脚本依赖与渠道行为相同。实际付费生成、生产启停、安装与公开发布沿用专项授权，不由清单触发。
+
+### DIA
+已同步README、CHANGELOG、registry和能力测试清单；没有修改产品行为与执行契约。
+
+### HLG
+通过HLG append先dry-run后apply写入现有.agent治理根；连续性键mobile-workflow-capability-acceptance用于实际验收接续。

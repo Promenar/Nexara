@@ -8,6 +8,8 @@
 
 ## 按需文档
 
+- docs/testing/mobile-workflow-capability-checklist.md — 移动端承接桌面项目、经营资料与创作任务的能力验收：基础能力、同服务池远端调用、端到端交付、故障边界、15 项精简回归及执行证据模板；未执行条目保持 NOT_RUN。
+
 - docs/context-management.md — 阈值预算、完整轮次摘要、工具折叠缓存、立即压缩与旧设置兼容规则
 
 - docs/distribution-builds.md — play/sideload 风味、构建与 CI 入口、APK/mapping 路径、合并清单检查、内置 Tailscale（Go 构建与发行校验）及富内容 WebView 安全与设备验收
