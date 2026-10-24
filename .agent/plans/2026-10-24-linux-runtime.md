@@ -1,6 +1,6 @@
 # 内置 Linux 执行环境（proot + Alpine）
 
-日期：2026-10-24 · 状态：方案待确认（前端原型待确认）
+日期：2026-10-24 · 状态：方案与原型已确认，P0 可行性探针进行中
 
 ## 目标
 
@@ -38,13 +38,24 @@
 - **R4 许可证**：proot 和 rootfs 里的 busybox 都是 GPL-2.0。它们以独立程序随 APK 分发，属于聚合分发，但需要在 THIRD_PARTY_NOTICES 中写明来源，并提供对应源码（固定的提交与源码包链接）。
 - **R5 性能**：开销集中在路径类系统调用和进程启动。大仓库 git、装包这类场景会变慢，P0 用基准测试定量。
 
-## 待确认决策（按推荐值规划）
+## 决策（2026-10-24 用户确认）
 
-1. **工具形态**：推荐不新增工具名，安装并启用 Linux 环境后，`shell_exec` 改在 Alpine 中运行；未安装或 Play 版仍用 `/system/bin/sh`。结果加 `runtime: linux|system` 字段，系统提示词按当前状态说明可用命令。`python_exec` 和 `python_sandbox` 保持打包的 Python 不变（两个渠道都可用）；Linux 中的 `python3` 由 apk 安装。备选：新增独立的 `linux_exec` 工具，审批和界面更直观，但模型需要选择的工具更多。
-2. **渠道**：推荐只放侧载版，Play 版不变。
-3. **rootfs 来源**：推荐把 4 MB 的 minirootfs 作为 asset 随 APK 发布，首次安装可以离线完成；apk 仓库默认使用官方 CDN，可切换为清华、中科大、阿里云镜像，并提供测速。
-4. **工作区位置**：推荐把当前会话工作区绑定到容器内的 `/workspace`（`NEXARA_WORKSPACE=/workspace`），命令可见的挂载绑定到 `/mnt/<别名>`；Linux 主目录 `/root` 作为“内置文件系统”类的目录工作区出现在工作区选择器中。
-5. **交互式终端**：推荐纳入本期，重新启用 `libtermux.so` 的本地 PTY，复用 SSH 终端组件。
+1. **工具形态**：不新增工具名。安装并启用 Linux 环境后，`shell_exec` 改在 Alpine 中运行；未安装或 Play 版仍用 `/system/bin/sh`。结果增加 `runtime: linux|system` 字段，系统提示词按当前状态说明可用命令。`python_exec` 和 `python_sandbox` 保持使用打包的 Python（两个渠道都可用）；Linux 中的 `python3` 由 apk 安装。
+2. **渠道**：本期只做侧载版，Play 版不变。Play 版的补充路线见下一节，侧载版落地后再决定。
+3. **rootfs 来源**：4 MB 的 minirootfs 作为 asset 随 APK 发布，首次安装可以离线完成；apk 仓库可选清华、中科大、阿里云和官方 CDN，并提供测速。
+4. **工作区位置**：当前会话工作区绑定到容器内的 `/workspace`（`NEXARA_WORKSPACE=/workspace`），命令可见的挂载绑定到 `/mnt/<别名>`；Linux 主目录 `/root` 作为目录工作区出现在工作区选择器中。
+5. **交互式终端**：纳入本期，重新启用 `libtermux.so` 的本地 PTY，复用 SSH 终端组件。
+6. **原型**：视觉原型基本通过。会话页的命令记录和审批卡按原型精修；**输入浮岛保持现有实现，不按原型改**（原型里的输入框只是占位）。
+
+## Play 版补充路线（待侧载版落地后决定）
+
+Play 政策禁止应用从 Google Play 以外下载可执行代码（dex、JAR、.so 等），只豁免在虚拟机或解释器中运行、通过它们间接访问 Android API 的代码（[Play 设备和网络滥用政策](https://support.google.com/googleplay/android-developer/answer/16273414)）。proot 下的程序是原生执行，不属于这类豁免。以下三条路线都不在 Play 版应用内偷偷下载可执行代码：
+
+- **A 配套扩展应用（推荐评估）**：把侧载版的 Linux 运行时单独打包为同签名的“Nexara Linux 扩展”，在 GitHub/F-Droid 发布。Play 版只显示引导和官方下载页链接，不在应用内下载或安装 APK，也不申请 `REQUEST_INSTALL_PACKAGES`。两者通过签名级权限保护的 bound service 通信，扩展以自己的 UID 运行命令；工作区沿用后台任务的“副本运行、结束合入”机制交换。现有 Termux 引导已是同类做法。是否会被审核视为引导侧载，需要提审前再核实政策。
+- **B Play Feature Delivery 按需模块**：由 Play 分发一个预装精选工具（python、git、node）的 rootfs 模块，不开放 `apk add`，工具随应用更新。技术前提是按需模块中的原生库能进入可执行的 nativeLibraryDir，这一点现行规格列为“未测”。
+- **C 现有 Termux / SSH 引导**：已实现，作为兜底。
+
+为给 A 留接口，B2 中 `shell_exec` 到 Linux 运行时的调用经过 `LinuxRuntime` 接口，进程内实现与将来的扩展实现可以互换。
 
 ## 架构
 
@@ -80,7 +91,7 @@ shell_exec / 后台任务 / 终端页
 | F2 设置与引导 | 工具页入口、安装引导、环境管理页、软件包页、镜像源 | 主控或同模型子代理 | F1、B1/B3 状态模型 |
 | F3 资源管理器加强 | 目录浏览器加属性、排序、隐藏文件、新建文件、文本编辑、十六进制预览；Linux 文件入口与“在终端打开” | 同模型子代理 | F1、B4 |
 | F4 终端与输出 | 本地终端页（复用 SSH 终端组件）；完整输出查看器（stdout/stderr 分页签、ANSI 颜色） | 主控 | F1、B4 |
-| F5 接入 | 审批卡类别条“Linux 命令”、可达范围面板行（可点击去修复）、活动面板 runner 名 | 主控 | B2 |
+| F5 接入 | 审批卡类别条“Linux 命令”与命令记录按原型精修（输入浮岛不动）、可达范围面板行（可点击去修复）、活动面板 runner 名 | 主控 | B2 |
 | 集成与验收 | 合并、全量验证、真机验收、文档 | 主控 | 全部 |
 
 B2、B3、B4 在 B1 合入后可以分别在独立 worktree 并行，文件所有权见下表；F 阶段可以先基于假数据状态模型开工。
