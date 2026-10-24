@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-10-24T22:51:33+08:00
+> generated_at: 2026-10-25T00:10:42+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -13,7 +13,7 @@
 | agent-tooling-repair-20261002 | waiting | 2026-10-02T08:00:46+08:00 | done | ["Nexara", "pdec", "release"] | 授权 gpt-6-luna 并交付真机测试签名 APK | `.agent/handover.md` · `2026-10-02T08:00:46+08:00` · `fp:110c0ef84b` |
 | ci-version-sync-20261001 | resume | 2026-10-01T22:20:08+08:00 | in_progress | ["Nexara", "android-ci", "release"] | API31 Prompt 编辑器布局反馈根因修复候选 | `.agent/handover.md` · `2026-10-01T22:20:08+08:00` · `fp:c9c99a4302` |
 | dropdown-menu-anchor-and-style-unification | waiting | 2026-09-27T21:43:18+08:00 | completed | ["ui, dropdown-menu, files-panel, m3-design, release"] | 悬浮菜单位置精准锚定与全站新版视觉样式统一规范收敛 | `.agent/handover.md` · `2026-09-27T21:43:18+08:00` · `fp:31537a3d52` |
-| linux-runtime | waiting | 2026-10-24T22:51:33+08:00 | planned | ["Nexara", "native-ui", "linux-runtime"] | 内置 Linux 执行环境（proot + Alpine）方案与前端原型 | `.agent/handover.md` · `2026-10-24T22:51:33+08:00` · `fp:052e01fcc6` |
+| linux-runtime | waiting | 2026-10-25T00:10:42+08:00 | done | ["Nexara", "native-ui", "linux-runtime"] | Linux 环境 P0 探针真机通过（proot + Alpine，targetSdk 36） | `.agent/handover.md` · `2026-10-25T00:10:42+08:00` · `fp:43c2bfa79b` |
 | mobile-agentic-capabilities | resume | 2026-10-23T22:03:35+08:00 | completed | ["native-ui 定时任务调度、schedule_create 工具、审批卡与画布卡片间距"] | 定时任务前台 1 分钟轮询、后台降频、单次倒计时与审批卡收起 | `.agent/handover.md` · `2026-10-23T22:03:35+08:00` · `fp:d0f445801c` |
 | mobile-workflow-capability-acceptance | resume | 2026-10-24T22:33:47+08:00 | planned | ["Nexara", "testing", "mobile-workflows"] | 移动工作流能力测试清单与精简回归入口 | `.agent/handover.md` · `2026-10-24T22:33:47+08:00` · `fp:9b33d996b2` |
 | nexara-audit-completion-repair | waiting | 2026-09-22T15:28:29+08:00 | done | ["Nexara", "native-ui", "audit-repair"] | 审计修复、最终签名候选及本机设备验收完成 | `.agent/handover.md` · `2026-09-22T15:28:29+08:00` · `fp:c45ed0053a` |
@@ -33,6 +33,7 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-10-25T00:10:42+08:00 | iso | done | waiting | ["Nexara", "native-ui", "linux-runtime"] | ["linux-runtime", "proot", "alpine", "real-device", "benchmark", "coloros"] | Linux 环境 P0 探针真机通过（proot + Alpine，targetSdk 36） | `.agent/handover.md` · `2026-10-25T00:10:42+08:00` · `fp:43c2bfa79b` |
 | 2026-10-24T22:51:33+08:00 | iso | planned | waiting | ["Nexara", "native-ui", "linux-runtime"] | ["linux-runtime", "proot", "alpine", "exec-backend", "prototype"] | 内置 Linux 执行环境（proot + Alpine）方案与前端原型 | `.agent/handover.md` · `2026-10-24T22:51:33+08:00` · `fp:052e01fcc6` |
 | 2026-10-24T22:35:24+08:00 | iso | planned | waiting | ["Nexara", "product-idea"] | ["launcher", "assistant-role", "voice", "phone-use", "idea"] | 产品点子：以 Agent 为核心的可选 Android 桌面（暂存） | `.agent/handover.md` · `2026-10-24T22:35:24+08:00` · `fp:f50e888cde` |
 | 2026-10-24T22:33:47+08:00 | iso | planned | resume | ["Nexara", "testing", "mobile-workflows"] | ["testing", "capabilities", "mobile-workflows", "remote-services"] | 移动工作流能力测试清单与精简回归入口 | `.agent/handover.md` · `2026-10-24T22:33:47+08:00` · `fp:9b33d996b2` |
@@ -131,17 +132,6 @@
 | 2026-10-19T00:32:33+08:00 | iso | done | waiting | ["Nexara", "native-ui", "rag"] | ["rag", "embedding", "merge"] | 检索未配置嵌入模型静默跳过修复并入主线（892617fa） | `.agent/handover.md` · `2026-10-19T00:32:33+08:00` · `fp:1b60c92f67` |
 | 2026-10-19T00:24:31+08:00 | iso | done | waiting | ["Nexara", "native-ui", "rag"] | ["rag", "embedding", "retrieval-trace", "chat-ui"] | 检索未配置嵌入模型时静默跳过（237a007a，分支 claude/compassionate-feynman-8d2ec8） | `.agent/handover.md` · `2026-10-19T00:24:31+08:00` · `fp:f55b75cfee` |
 | 2026-10-19T00:23:26+08:00 | iso | completed | resume | ["Nexara", "native-ui", "tool-runtime"] | ["tools", "failure-summary", "workspace-tools"] | 工具失败文案结构化与文件工具未找到指引（0df332c0） | `.agent/handover.md` · `2026-10-19T00:23:26+08:00` · `fp:71d2691895` |
-| 2026-10-18T23:55:58+08:00 | iso | completed | resume | ["Nexara", "native-ui", "tool-runtime"] | ["poc", "builtin-shell", "termux", "background", "spec"] | B+D 真机验证收尾：白名单后台、Termux 双向与共享存储三方（63ce1458；探针 c80c0af9） | `.agent/handover.md` · `2026-10-18T23:55:58+08:00` · `fp:76a7c74a73` |
-| 2026-10-18T23:11:58+08:00 | iso | in_progress | resume | ["Nexara", "native-ui", "tool-runtime"] | ["poc", "builtin-shell", "termux", "python", "spec"] | B+D 执行后端真机验证与规格（e8979f73；探针 poc/bd-exec 91836500） | `.agent/handover.md` · `2026-10-18T23:11:58+08:00` · `fp:9c4bf18213` |
-| 2026-10-18T22:12:25+08:00 | iso | completed | resume | ["Nexara", "native-ui", "settings-ui"] | ["redesign", "settings", "row-height"] | 带副标题设置行改为 64dp（1347ff6e）；截断问题并入 B+D | `.agent/handover.md` · `2026-10-18T22:12:25+08:00` · `fp:0f60e7163f` |
-| 2026-10-18T21:54:28+08:00 | iso | completed | resume | ["Nexara", "native-ui", "share-import"] | ["share-import", "merge"] | 分享导入重复判定修复并入主线（5bbb6dba） | `.agent/handover.md` · `2026-10-18T21:54:28+08:00` · `fp:3543be5bd8` |
-| 2026-10-18T21:45:06+08:00 | iso | completed | resume | ["Nexara", "native-ui", "chat-ui", "release"] | ["redesign", "chat", "batch2", "device-acceptance"] | 会话界面重设计第二批真机验收完成；修正展开区与下一段正文间距（d7b765fc） | `.agent/handover.md` · `2026-10-18T21:45:06+08:00` · `fp:edfe69fea8` |
-| 2026-10-18T21:02:15+08:00 | iso | in_progress | resume | ["Nexara", "native-ui", "chat-ui", "markdown", "release"] | ["redesign", "chat", "batch2", "release", "device-test"] | 会话界面视觉重设计第二批合并主线（2cdff11a）并产出签名候选；真机验收待解锁 | `.agent/handover.md` · `2026-10-18T21:02:15+08:00` · `fp:7cccd3f3f0` |
-| 2026-10-18T19:59:50+08:00 | iso | done | none | ["native-ui/app/share", "MainActivity"] | ["share-import", "durable-inbox", "dedupe", "android"] | 分享导入：再次分享同一文件被永久判重复的修复 | `.agent/handover.md` · `2026-10-18T19:59:50+08:00` · `fp:667936a56b` |
-| 2026-10-18T09:16:44+08:00 | iso | planned | resume | ["Nexara", "native-ui", "settings-ui", "tool-runtime"] | ["decision", "settings", "termux", "builtin-shell", "poc"] | 方向决策：设置行两行高度 64dp；命令执行采用内置固定工具集（B）+ 保留 Termux/SSH（D），第二批合并后先做真机验证 | `.agent/handover.md` · `2026-10-18T09:16:44+08:00` · `fp:58367e225e` |
-| 2026-10-18T08:47:51+08:00 | iso | in-progress | resume | ["Nexara", "native-ui", "chat-ui"] | ["visual-redesign", "chat", "codex", "streaming"] | 会话界面视觉重设计第二批派发 Codex（worktree Nexara-wt-redesign2，分支 redesign-batch2，基于 0b81703c） | `.agent/handover.md` · `2026-10-18T08:47:51+08:00` · `fp:10b5c88ae5` |
-| 2026-10-18T03:17:28+08:00 | iso | done | resume | ["Nexara", "native-ui", "settings-ui", "release"] | ["visual-redesign", "settings", "codex", "device-tests", "release-candidate"] | 设置页视觉重设计第一批合并（762146c3）：共享设置行、值行与数值选择弹层、行内步进器、全部设置页整理 | `.agent/handover.md` · `2026-10-18T03:17:28+08:00` · `fp:c9471ca065` |
-| 2026-10-18T00:04:18+08:00 | iso | in-progress | resume | ["Nexara", "native-ui", "settings-ui", "chat-ui", "design"] | ["visual-redesign", "settings", "design-spec", "codex"] | 设置页与会话界面重设计规格定稿，第一批（令牌、设置组件与全部设置页）已派发 Codex | `.agent/handover.md` · `2026-10-18T00:04:18+08:00` · `fp:1bfc5b863c` |
 
 ## Undated Records
 

@@ -12582,3 +12582,34 @@ R1：guest ELF 由 loader 从应用数据目录以可执行方式映射，现行
 
 ### HLG
 追加本记录，continuity waiting，等待用户确认原型。
+
+## 2026-10-25T00:10:42+08:00 · Linux 环境 P0 探针真机通过（proot + Alpine，targetSdk 36）
+
+type: verification
+scope: ["Nexara", "native-ui", "linux-runtime"]
+status: done
+tags: ["linux-runtime", "proot", "alpine", "real-device", "benchmark", "coloros"]
+continuity: waiting
+continuity-key: linux-runtime
+record-fingerprint: 43c2bfa79b219be7ba114988cc130010134f66422dd1e15863c205f4b4635589
+
+### Summary
+Codex（gpt-6.1-sol xhigh，worktree ../Nexara-wt-linux-p0，分支 codex/linux-p0，提交 55e72aa3）实现了只接入 sideloadDebug 的 P0 探针：proot（termux/proot b27d81a6）与 talloc 2.4.4 从源码编译为 libnxproot.so 和 libnxproot-loader.so，内置 Alpine 3.24.3 rootfs，提供可由 adb 启动的探针 Activity。主控在 PKH110（ColorOS V16.1.0）上实测通过：从 nativeLibraryDir 直接 exec、seccomp 加速已启用、启动中位数 53 ms、apk add bash python3 git 用时 7.5 秒、联网正常、计算性能与原生相当；文件元数据密集的操作慢 10–20 倍。
+
+### Changed
+分支 codex/linux-p0 新增 buildSrc 的 BuildLinuxProbe、PrepareLinuxProbeAssets、LinuxProbeInputs，app/linux（CMake、properties、talloc 兼容层、probe-entry.c），debug 源集下的探针 Kotlin 代码，sideloadDebug 的 Manifest 与资源，以及 17 项单元测试；build.gradle.kts 只为 sideloadDebug 接入。主线更新了计划文件的 P0 结果段。报告、运行日志和 probe-result-PKH110.json 存放在 .agent/tmp-agent-reports/linux-p0/。
+
+### Validation
+Codex 侧：全量单元测试 5560 项，0 失败、25 跳过；assembleSideloadDebug、assemblePlayDebug、lintSideloadDebug 均通过；Play 包不含探针。主控侧：真机安装后 am start 自动运行，读取 probe-result.json 与 logcat；用 run-as 以 proot -v 2 确认 seccomp 加速已启用；logcat 中有 avc granted execute（app_data_file）记录。系统对照组的 bench-create 在 120 秒超时（mksh 的 printf 不是内建命令），因此 find、tar 的对照只覆盖 1.6 万个文件，倍数为估算值。
+
+### Next
+等待用户的决策门（是否进入 B1）。进入后：B1 以探针的构建任务为基础，产品化打包与安装器（release 接入、verify-release-apk 校验、GPL/LGPL 声明）；B2 接入 shell_exec 与前台服务，并在真机上验证后台与 Hans 冻结；之后按计划推进 B3、B4 与 F2–F5。worktree ../Nexara-wt-linux-p0 先保留，供 B1 继续使用。
+
+### Risks
+R1 已由审计记录证实：平台一旦收紧，整套环境就会失效。文件元数据操作慢 10–20 倍，大规模解包、删除时用户可以感知。后台：不带前台服务会被 Hans 立即冻结，带前台服务的表现尚未验证。Codex 报告 TermuxBackgroundJobsTest 有间歇性的启动回执失败（8 次中 1 次 exit=73），与本任务无关，但仍未解决。talloc 为 LGPL-3.0-or-later，正式分发前需要补齐声明。
+
+### DIA
+已同步计划文件的 P0 结果段；README、CHANGELOG 不需要改，探针只存在于 debug 构建且尚未合入主线。
+
+### HLG
+追加本验收记录，linux-runtime 工作流处于 waiting，等待决策门。

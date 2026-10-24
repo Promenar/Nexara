@@ -1,6 +1,6 @@
 # 内置 Linux 执行环境（proot + Alpine）
 
-日期：2026-10-24 · 状态：方案与原型已确认，P0 可行性探针进行中
+日期：2026-10-24 · 状态：方案与原型已确认；P0 真机通过（2026-10-25），等待决策门
 
 ## 目标
 
@@ -29,6 +29,29 @@
 | 写死 DNS 会导致 VPN（Tailscale 等）的私有域名无法解析；应从 ConnectivityManager 读取当前网络的 DNS（VPN 优先）生成 `resolv.conf`，原子写入，并且不覆盖用户的修改 | Aether issue #111、#67 |
 | 发行 APK 的上限是 50 MiB，当前通用 APK 约 34.7 MB | `scripts/verify-release-apk.py` |
 | 项目已经用 termux `terminal-emulator`/`terminal-view` 0.118.0 实现 SSH 终端，但构建时排除了 `libtermux.so`（本地 PTY 桥） | `native-ui/app/build.gradle.kts:464,599` |
+
+## P0 真机结果（2026-10-25，PKH110，ColorOS V16.1.0，targetSdk 36）
+
+探针提交 `55e72aa3`，在分支 `codex/linux-p0` 上，尚未合入主线。proot 来自 termux/proot 提交 `b27d81a6`，talloc 2.4.4，均从源码编译；APK 内为 `libnxproot.so` 约 257 KB、`libnxproot-loader.so` 约 3 KB，另带 Alpine 3.24.3 rootfs。原始数据存在 `.agent/tmp-agent-reports/linux-p0/probe-result-PKH110.json`。
+
+| 项目 | 结果 |
+| --- | --- |
+| 从 nativeLibraryDir 直接 exec proot | 可行，不经过 linker64 |
+| seccomp 加速 | 已启用（proot -v 输出 `ptrace acceleration (seccomp mode 2) enabled`） |
+| 解包 rootfs | 345 ms |
+| 启动开销（`true`，20 次） | 中位数 53 ms，p90 54 ms |
+| `apk update` 与 `apk add bash python3 git` | 0.8 秒和 7.5 秒；包数据库写入正常（`--link2symlink`），共 29 个包、66.6 MiB |
+| HTTPS 联网、DNS（ConnectivityManager） | 正常 |
+| 纯计算（Python 循环 1000 万次） | Alpine python3 0.98 秒，打包 Python 1.18 秒，没有额外开销 |
+| 生成 2 万个文件（shell 循环） | proot 4.3 秒；系统 sh 120 秒内只生成 1.6 万个（mksh 每次 printf 都要起进程，busybox ash 是内建命令） |
+| find 遍历 2 万个文件 | proot 1.9 秒，系统 toybox 0.16 秒（只有 1.6 万个文件），慢约 10 倍 |
+| tar 打包加解包 2 万个文件 | proot 52 秒，系统 2.2 秒（1.6 万个文件），慢约 15–20 倍 |
+| rm -rf 2 万个文件 | proot 19.5 秒，系统 1.3 秒，慢约 12 倍 |
+| git status（2 万个文件） | 1.09 秒 |
+| SELinux 审计 | 加载 rootfs 中的 ELF 时记录 `avc: granted { execute }`，`tcontext=app_data_file`，证实了 R1 |
+| 后台 | 探针没有前台服务，退到桌面后 Hans 立即冻结（`scene: LcdOn`），和现有内置命令不带前台服务时一样；带前台服务的表现在 B2 的真机验收中验证。前台运行期间没有出现 ColorOS 15 那种 SIGKILL 杀掉 proot 的情况 |
+
+结论：技术上可行。计算和 shell 脚本的性能与原生相当或更好；文件元数据密集的操作比原生慢 10–20 倍，比讨论阶段估计的 2–5 倍更严重。大规模解包、`rm -rf node_modules` 这类操作会明显变慢。工作区对账、资源管理器等宿主侧文件操作不经过 proot，不受影响。
 
 ## 风险（按严重程度）
 
