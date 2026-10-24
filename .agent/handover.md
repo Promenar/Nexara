@@ -12428,3 +12428,34 @@ rename 跨卷（EXDEV）直接报 IO，不回退复制；永久删除不可恢�
 
 ### HLG
 本记录经 hlg-handover.py append 追加。
+
+## 2026-10-24T21:56:57+08:00 · 按范围授权的两档权限模型与会话挂载前端落地
+
+type: feature
+scope: ["native-ui", "permissions", "workspace-mounts"]
+status: done
+tags: ["permissions", "approval", "mounts", "runtime-data", "frontend"]
+continuity: waiting
+continuity-key: scope-permissions
+record-fingerprint: bcc28c17237775596c805475c2482968c57dfe940a34c849071c8b6c33c89656
+
+### Summary
+以“工作区（默认）/完全访问”两档取代手动、半自动、全自动三种模式。后端由 Codex 在 codex/scope-permissions 与 codex/workspace-paths 两个分支实现，主控复核后合入（c0ea5441、96a69886），并修正挂载规整（改为 Room onOpen 幂等规整，schema 保持 v26）与关键数据检测误报。前端由主控完成：审批卡类别条（内置命令/Termux/SSH 命令与内置工具，命令用强调色淡底描边）、模式选择两档及说明、删除“始终允许”与脚本写入审批的全部界面、关键数据变化常驻提示（runtime_changes）、挂载面板去掉只读/作用域并标注命令可见性、Termux 设置页改为指引在会话中授权、系统提示词逐个列出本会话挂载及其命令可见性。
+
+### Changed
+ui/chat（ChatInlineComponents.ApprovalKindNote、PipelineBubble.RuntimeChangesNotice、ToolInvocationPresentation.runtimeChanges/parseRuntimeChanges、SubagentViews、ScriptFileApprovalDialog、ChatViewModel/Screen/Route）、ui/common/ExecutionModeSelector、ui/workspace/AgentReach*、ui/settings（删除 ToolAllowlistScreen 与 ScriptRuntimeSettingsCard，清理 Termux 挂载残留）、ui/chat/components/ExternalFoldersPanel、ui/chat/manager/SystemPromptSections 与 ContextBuilder（新增 mounts 参数）、data/generation/DefaultChatGenerationRuntime.visibleMounts；中英文字符串；测试与 53 张截图基线；README、CHANGELOG、docs/ARCHITECTURE.md、.agent/plans/2026-10-24-scope-permissions.md。
+
+### Validation
+testSideloadDebugUnitTest 5542 项与 testPlayDebugUnitTest 5532 项中仅 TermuxBackgroundJobsTest 在全量负载下失败 1–2 项（用例不固定），单独重跑两渠道 14/14 通过；lintSideloadDebug、assembleSideloadDebug、assemblePlayDebug、validateSideloadDebugScreenshotTest 通过；check-distribution-manifests.py 通过；androidTest 与 screenshotTest 源集编译通过。截图目检审批卡类别条（深浅色）、挂载面板、添加表单与 Termux 第 5 步。新增 SystemPromptMountsTest 2 项、ToolInvocationPresentationTest 新增 2 项。
+
+### Next
+真机验收（设备锁屏，需用户解锁）：工作区档文件写入免审批；命令审批卡显示类别条；完全访问档命令免审批；技能目录变更审批；关键数据提示；资源管理器布局。验收后清理 worktree ../Nexara-wt-perm、../Nexara-wt-paths 与分支 codex/scope-permissions、codex/workspace-paths。
+
+### Risks
+设备测试（androidTest）只做了编译，未在设备上运行。命令无法按路径约束（真机内核未开启 Landlock），工作区档依赖逐条审批；RuntimeDataMonitor 只做检测不做拦截。ToolAllowlistStore 仅保留启动时 clearLegacyOnce 清空旧白名单；ApprovalManager 与 DefaultChatGenerationRuntime 仍有未使用的 toolAllowlistStore 构造参数，可另行清理。
+
+### DIA
+已同步 README（权限、命令执行、挂载、可达范围）、CHANGELOG（Unreleased 新增两档权限条目）、docs/ARCHITECTURE.md（按范围授权条目）、计划文件状态改为已实施待真机验收。
+
+### HLG
+本记录追加于 .agent/handover.md；continuity waiting，等待真机验收。

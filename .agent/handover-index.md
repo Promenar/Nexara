@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-10-24T17:35:13+08:00
+> generated_at: 2026-10-24T21:56:57+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -22,6 +22,7 @@
 | rag-fab-drilldown-isolation | completed | 2026-09-26T23:05:00+08:00 | completed | rag, ui-status, fab, explorer-breadcrumbs, sandbox-isolation | 知识库集中式 FAB 状态指示微件、同层下钻式目录切换与工作区沙箱深度隔离 | `.agent/handover.md` · `2026-09-26T23:05:00+08:00` · `fp:5c7e9d4ff9` |
 | rag-global-workspace-explorer | waiting | 2026-09-26T14:15:05+08:00 | completed | ["rag", "workspace", "vfs", "explorer", "compose-ui"] | 知识库全局资源管理器实机全链路验收与VFS崩溃恢复加固 | `.agent/handover.md` · `2026-09-26T14:15:05+08:00` · `fp:0d9d575a7e` |
 | rag-infinite-indexing-fix-top-spacing | completed | 2026-09-27T02:30:00+08:00 | completed | rag, vectorization, error-handling, ui-layout, release | 向量化“无限进行中”根治、任务主动取消与主页顶部呼吸感对齐 | `.agent/handover.md` · `2026-09-27T02:30:00+08:00` · `fp:ffec7cc374` |
+| scope-permissions | waiting | 2026-10-24T21:56:57+08:00 | done | ["native-ui", "permissions", "workspace-mounts"] | 按范围授权的两档权限模型与会话挂载前端落地 | `.agent/handover.md` · `2026-10-24T21:56:57+08:00` · `fp:bcc28c1723` |
 | v0.2-beta-release-readiness | waiting | 2026-07-29T12:29:30+08:00 | done | ["nexara", "v0.2-beta-release-readiness"] | v0.2-beta SSH 签名标签与 GitHub prerelease 发布闭环 | `.agent/handover.md` · `2026-07-29T12:29:30+08:00` · `fp:274e812f49` |
 | v0.2.1-beta-release-followup | waiting | 2026-08-26T12:23:48+08:00 | done | ["Nexara", "native-ui", "release"] | 根页面与会话可靠性全量调整及签名 APK 交付 | `.agent/handover.md` · `2026-08-26T12:23:48+08:00` · `fp:ddf8f9f0bf` |
 
@@ -29,6 +30,7 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-10-24T21:56:57+08:00 | iso | done | waiting | ["native-ui", "permissions", "workspace-mounts"] | ["permissions", "approval", "mounts", "runtime-data", "frontend"] | 按范围授权的两档权限模型与会话挂载前端落地 | `.agent/handover.md` · `2026-10-24T21:56:57+08:00` · `fp:bcc28c1723` |
 | 2026-10-24T17:35:13+08:00 | iso | done | none | ["native-ui", "workspace"] | ["workspace", "resource-explorer", "file-ops", "copy-cleanup", "device-test"] | 工作区三分类、目录文件操作与删除会话保留文件 | `.agent/handover.md` · `2026-10-24T17:35:13+08:00` · `fp:c0060f92fb` |
 | 2026-10-24T15:34:22+08:00 | iso | completed | none | ["native-ui 网络策略、Agent 可达范围面板、网络访问页；OPPO PKH110 ColorOS 16 真机 release"] | ["network", "tailnet", "allowlist", "cleartext", "agent-reach", "real-device", "coloros"] | Agent 可达范围与网络策略真机验收及明文预检、tailnet 错误归类修复 | `.agent/handover.md` · `2026-10-24T15:34:22+08:00` · `fp:9bcda81686` |
 | 2026-10-24T14:59:38+08:00 | iso | completed | none | ["native-ui testPlay：RealPathMountSupportTest"] | ["test", "distribution", "play", "storage", "workspace"] | Play 渠道 RealPathMountSupportTest 基线失败修复 | `.agent/handover.md` · `2026-10-24T14:59:38+08:00` · `fp:711a9b8d89` |
