@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-10-24T22:33:47+08:00
+> generated_at: 2026-10-24T22:51:33+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -8,10 +8,12 @@
 
 | continuity-key | continuity | last update | status | scope | title | source |
 | :--- | :---: | :---: | :---: | :--- | :--- | :--- |
+| agent-launcher-idea | waiting | 2026-10-24T22:35:24+08:00 | planned | ["Nexara", "product-idea"] | 产品点子：以 Agent 为核心的可选 Android 桌面（暂存） | `.agent/handover.md` · `2026-10-24T22:35:24+08:00` · `fp:f50e888cde` |
 | agent-reach-network-device-acceptance | waiting | 2026-10-24T14:15:02+08:00 | completed | ["native-ui 网络策略（web_fetch / media_fetch / 脚本联网）、会话资源面板、设置 → 工具 → 网络访问"] | Agent 可达范围面板与统一 Agent 网络策略 | `.agent/handover.md` · `2026-10-24T14:15:02+08:00` · `fp:013623913a` |
 | agent-tooling-repair-20261002 | waiting | 2026-10-02T08:00:46+08:00 | done | ["Nexara", "pdec", "release"] | 授权 gpt-6-luna 并交付真机测试签名 APK | `.agent/handover.md` · `2026-10-02T08:00:46+08:00` · `fp:110c0ef84b` |
 | ci-version-sync-20261001 | resume | 2026-10-01T22:20:08+08:00 | in_progress | ["Nexara", "android-ci", "release"] | API31 Prompt 编辑器布局反馈根因修复候选 | `.agent/handover.md` · `2026-10-01T22:20:08+08:00` · `fp:c9c99a4302` |
 | dropdown-menu-anchor-and-style-unification | waiting | 2026-09-27T21:43:18+08:00 | completed | ["ui, dropdown-menu, files-panel, m3-design, release"] | 悬浮菜单位置精准锚定与全站新版视觉样式统一规范收敛 | `.agent/handover.md` · `2026-09-27T21:43:18+08:00` · `fp:31537a3d52` |
+| linux-runtime | waiting | 2026-10-24T22:51:33+08:00 | planned | ["Nexara", "native-ui", "linux-runtime"] | 内置 Linux 执行环境（proot + Alpine）方案与前端原型 | `.agent/handover.md` · `2026-10-24T22:51:33+08:00` · `fp:052e01fcc6` |
 | mobile-agentic-capabilities | resume | 2026-10-23T22:03:35+08:00 | completed | ["native-ui 定时任务调度、schedule_create 工具、审批卡与画布卡片间距"] | 定时任务前台 1 分钟轮询、后台降频、单次倒计时与审批卡收起 | `.agent/handover.md` · `2026-10-23T22:03:35+08:00` · `fp:d0f445801c` |
 | mobile-workflow-capability-acceptance | resume | 2026-10-24T22:33:47+08:00 | planned | ["Nexara", "testing", "mobile-workflows"] | 移动工作流能力测试清单与精简回归入口 | `.agent/handover.md` · `2026-10-24T22:33:47+08:00` · `fp:9b33d996b2` |
 | nexara-audit-completion-repair | waiting | 2026-09-22T15:28:29+08:00 | done | ["Nexara", "native-ui", "audit-repair"] | 审计修复、最终签名候选及本机设备验收完成 | `.agent/handover.md` · `2026-09-22T15:28:29+08:00` · `fp:c45ed0053a` |
@@ -31,6 +33,8 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-10-24T22:51:33+08:00 | iso | planned | waiting | ["Nexara", "native-ui", "linux-runtime"] | ["linux-runtime", "proot", "alpine", "exec-backend", "prototype"] | 内置 Linux 执行环境（proot + Alpine）方案与前端原型 | `.agent/handover.md` · `2026-10-24T22:51:33+08:00` · `fp:052e01fcc6` |
+| 2026-10-24T22:35:24+08:00 | iso | planned | waiting | ["Nexara", "product-idea"] | ["launcher", "assistant-role", "voice", "phone-use", "idea"] | 产品点子：以 Agent 为核心的可选 Android 桌面（暂存） | `.agent/handover.md` · `2026-10-24T22:35:24+08:00` · `fp:f50e888cde` |
 | 2026-10-24T22:33:47+08:00 | iso | planned | resume | ["Nexara", "testing", "mobile-workflows"] | ["testing", "capabilities", "mobile-workflows", "remote-services"] | 移动工作流能力测试清单与精简回归入口 | `.agent/handover.md` · `2026-10-24T22:33:47+08:00` · `fp:9b33d996b2` |
 | 2026-10-24T22:26:32+08:00 | iso | done | none | ["native-ui", "permissions"] | ["permissions", "device-acceptance", "runtime-data", "cleanup"] | 两档权限模型真机验收与收尾 | `.agent/handover.md` · `2026-10-24T22:26:32+08:00` · `fp:081bf4c1ae` |
 | 2026-10-24T21:56:57+08:00 | iso | done | waiting | ["native-ui", "permissions", "workspace-mounts"] | ["permissions", "approval", "mounts", "runtime-data", "frontend"] | 按范围授权的两档权限模型与会话挂载前端落地 | `.agent/handover.md` · `2026-10-24T21:56:57+08:00` · `fp:bcc28c1723` |

@@ -12520,3 +12520,65 @@ record-fingerprint: 9b33d996b244886492c0d5bd5b74c74a0b7fa119e3eba008a78970e06699
 
 ### HLG
 通过HLG append先dry-run后apply写入现有.agent治理根；连续性键mobile-workflow-capability-acceptance用于实际验收接续。
+
+## 2026-10-24T22:35:24+08:00 · 产品点子：以 Agent 为核心的可选 Android 桌面（暂存）
+
+type: decision
+scope: ["Nexara", "product-idea"]
+status: planned
+tags: ["launcher", "assistant-role", "voice", "phone-use", "idea"]
+continuity: waiting
+continuity-key: agent-launcher-idea
+record-fingerprint: f50e888cdeb9949d5dc7ef70026b113e5301e44c9eb914ffbea2528b3a3aeed1
+
+### Summary
+用户提出把 Nexara 做成可选的 Android 桌面，作为日常终端：首页可直接给 Agent 交代任务，带应用库与搜索，后续加一键语音主按钮唤起顶层 Agent，由它向各助手和会话派发任务、切换应用、phoneUse、打电话、发消息。用户明确这只是点子，先记下，不排期；当前优先 proot 内置 Linux 执行环境。
+
+### Changed
+无代码变更，仅记录讨论结论。
+
+### Validation
+未做原型或真机验证。讨论依据是 Android 平台机制：HOME intent-filter、LauncherApps、AppWidgetHost、ROLE_ASSISTANT/VoiceInteractionService、AccessibilityService，以及 Play 对 SEND_SMS 和无障碍用途的政策限制。
+
+### Next
+启动时先做 spec-intake。建议顺序：1）轻量桌面外壳（Agent 入口、最近会话、应用库、搜索）；2）默认数字助理角色加语音主按钮（在任意应用中唤起，并获取屏幕上下文）；3）顶层调度 Agent 向会话派发任务、打开应用；4）设备动作：先做 Intent 级（拨号、预填短信），再做无障碍 phoneUse，统一纳入两档权限模型并对不可逆动作强制确认。
+
+### Risks
+桌面必须秒开、不能 ANR，需与 Nexara 的重模块隔离（独立进程或延迟加载）。最近任务界面由系统桌面提供；ColorOS 下第三方桌面的手势兼容性未核实；Hans 冻结是否豁免第三方桌面未核实。短信、无障碍 phoneUse 基本只能放侧载版，Play 版限于 Intent 级动作。打电话、发消息不可撤回，需要强制确认。
+
+### DIA
+无文档影响，仅讨论记录。
+
+### HLG
+追加本决策记录，continuity waiting，等用户排期。
+
+## 2026-10-24T22:51:33+08:00 · 内置 Linux 执行环境（proot + Alpine）方案与前端原型
+
+type: planning
+scope: ["Nexara", "native-ui", "linux-runtime"]
+status: planned
+tags: ["linux-runtime", "proot", "alpine", "exec-backend", "prototype"]
+continuity: waiting
+continuity-key: linux-runtime
+record-fingerprint: 052e01fcc663043bba8d74c2c792f189449ab6b88ce9a12dd794b815a2718406
+
+### Summary
+按用户要求规划内置 Linux 执行环境，方案见 .agent/plans/2026-10-24-linux-runtime.md。方向：侧载版内置 proot 加 Alpine 3.24.3 minirootfs，安装后 shell_exec 在 Alpine 中运行，并提供软件包管理、镜像源、Linux 文件浏览、本地终端、完整输出查看器。前端原型共 12 屏：https://claude.ai/artifact/5YYvBzA13FyLcqwGXtWwhG 。分工：后端经 Codex CLI（gpt-6.1-sol xhigh）在独立 worktree 施工，前端由主控和同模型子代理完成。
+
+### Changed
+新增 .agent/plans/2026-10-24-linux-runtime.md；没有代码变更。
+
+### Validation
+已核实：真机 PKH110 为 ColorOS V16.1.0（Android 16，构建日期 2026-08-04）；Alpine latest-releases.yaml 的版本与 sha256；termux/proot 仍在维护，许可证 GPL-2.0；ReTerminal 为 targetSdk 37，proot 放在 jniLibs；Aether 用 targetSdk 28 加 linker64，并且必须加 --link2symlink（issue #81）。子代理调研了现有执行层扩展点与前端组件。没有做任何构建或真机原型。
+
+### Next
+等待用户确认原型与五项待确认决策（工具形态、渠道、rootfs 内置、/workspace 映射、本期是否含终端）。确认后执行 P0 可行性探针：Codex 用 NDK 编译 proot 并打进 debug 包，主控在 PKH110 上实测执行、apk add、联网、基准测试、avc 审计与后台冻结。P0 通过决策门后再进入 B1–B4 与 F2–F5。
+
+### Risks
+R1：guest ELF 由 loader 从应用数据目录以可执行方式映射，现行执行后端规格把这种行为记为“当前可行但有审计记录、不作为依赖”，平台收紧后整套环境会失效，退路是 Termux/SSH。R2：ColorOS 杀 proot 进程（15 早期固件出现过）以及后台冻结，需真机验证。R3：apk 下载可执行代码，Play 版不能提供。R4：proot 与 busybox 为 GPL-2.0，需写明来源并提供源码。
+
+### DIA
+新增计划文件；README、CHANGELOG、规格待实施时同步，目前没有用户可见行为变化。
+
+### HLG
+追加本记录，continuity waiting，等待用户确认原型。
