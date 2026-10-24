@@ -12459,3 +12459,33 @@ testSideloadDebugUnitTest 5542 项与 testPlayDebugUnitTest 5532 项中仅 Termu
 
 ### HLG
 本记录追加于 .agent/handover.md；continuity waiting，等待真机验收。
+
+## 2026-10-24T22:26:32+08:00 · 两档权限模型真机验收与收尾
+
+type: verification
+scope: ["native-ui", "permissions"]
+status: done
+tags: ["permissions", "device-acceptance", "runtime-data", "cleanup"]
+continuity: none
+record-fingerprint: 081bf4c1ae5c75a9ca6afa0a7a7d8927a12539b47d6009a803fd3018cf001d54
+
+### Summary
+在真机 3B1F5QEARBRJQZ66 的调试包（用户配置的 DeepSeek V4 Flash）上完成两档权限验收：工作区档 create_file 写入 /accept/a.txt 未弹审批；shell_exec 弹出带“内置命令”类别条的审批卡，批准后执行；切到完全访问后 shell_exec 免审批执行，在 files/agent_skills 下新建探针，结果显示“改动了运行时关键数据”及两条 added 路径；完全访问档下 delete_file 删除 /skills/zz-accept-probe 仍弹审批（类别条为“内置工具”），批准后技能目录恢复为 backup-probe、big-repo。界面验收：会话设置两档选项与说明、资源管理器新布局、Agent 可达范围面板、外部文件夹面板与存储路径表单。
+
+### Changed
+验收中修复两处：本轮完成后过程自动收起时关键数据提示被隐藏，改为由 TurnProcessSummary.runtimeChanges 在收起摘要下方显示（展开时由工具行显示，不重复）；可达范围面板隔离脚本说明由“写文件需批准”改为“只能访问工作区路径”（中英文）。同步 TurnCollapseTest、AgentReach 截图基线、CHANGELOG 与计划状态。移除 worktree ../Nexara-wt-perm、../Nexara-wt-paths，删除已合入的本地分支 codex/scope-permissions、codex/workspace-paths（远端无同名分支）。
+
+### Validation
+TurnCollapseTest 13/13、ToolInvocationPresentationTest 通过；updateSideloadDebugScreenshotTest 后 validateSideloadDebugScreenshotTest 与 lintSideloadDebug 通过；新包安装真机后收起态提示截图确认。
+
+### Next
+无。可选：清理 ApprovalManager 与 DefaultChatGenerationRuntime 中未使用的 toolAllowlistStore 构造参数。
+
+### Risks
+设备测试（androidTest）仍未在设备上运行。真机调试包的测试会话保持在完全访问档，会话专用空间留有 /accept/a.txt。输入 ASCII 指令时临时切换到 KDE 远程键盘，已切回微信输入法。
+
+### DIA
+已同步 CHANGELOG（收起态提示与隔离脚本说明）与计划状态（已完成）。
+
+### HLG
+追加本验收记录，scope-permissions 工作流结束。

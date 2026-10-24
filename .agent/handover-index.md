@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-10-24T21:56:57+08:00
+> generated_at: 2026-10-24T22:26:32+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -30,6 +30,7 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-10-24T22:26:32+08:00 | iso | done | none | ["native-ui", "permissions"] | ["permissions", "device-acceptance", "runtime-data", "cleanup"] | 两档权限模型真机验收与收尾 | `.agent/handover.md` · `2026-10-24T22:26:32+08:00` · `fp:081bf4c1ae` |
 | 2026-10-24T21:56:57+08:00 | iso | done | waiting | ["native-ui", "permissions", "workspace-mounts"] | ["permissions", "approval", "mounts", "runtime-data", "frontend"] | 按范围授权的两档权限模型与会话挂载前端落地 | `.agent/handover.md` · `2026-10-24T21:56:57+08:00` · `fp:bcc28c1723` |
 | 2026-10-24T17:35:13+08:00 | iso | done | none | ["native-ui", "workspace"] | ["workspace", "resource-explorer", "file-ops", "copy-cleanup", "device-test"] | 工作区三分类、目录文件操作与删除会话保留文件 | `.agent/handover.md` · `2026-10-24T17:35:13+08:00` · `fp:c0060f92fb` |
 | 2026-10-24T15:34:22+08:00 | iso | completed | none | ["native-ui 网络策略、Agent 可达范围面板、网络访问页；OPPO PKH110 ColorOS 16 真机 release"] | ["network", "tailnet", "allowlist", "cleartext", "agent-reach", "real-device", "coloros"] | Agent 可达范围与网络策略真机验收及明文预检、tailnet 错误归类修复 | `.agent/handover.md` · `2026-10-24T15:34:22+08:00` · `fp:9bcda81686` |
