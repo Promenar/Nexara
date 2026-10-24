@@ -12368,3 +12368,33 @@ native-ui/app/src/testPlay/java/com/promenar/nexara/data/storage/RealPathMountSu
 
 ### HLG
 本记录经 hlg-handover.py append 追加。
+
+## 2026-10-24T15:34:22+08:00 · Agent 可达范围与网络策略真机验收及明文预检、tailnet 错误归类修复
+
+type: validation
+scope: ["native-ui 网络策略、Agent 可达范围面板、网络访问页；OPPO PKH110 ColorOS 16 真机 release"]
+status: completed
+tags: ["network", "tailnet", "allowlist", "cleartext", "agent-reach", "real-device", "coloros"]
+continuity: none
+record-fingerprint: 9bcda816868fca6143cb57249bdb87923a3cce3060c3011ba7b7f570ebfc7666
+
+### Summary
+在真机上覆盖安装 sideload release（签名 00be4cdd…，firstInstallTime 保持不变），验收 Agent 可达范围面板与网络访问页，通过新会话让 Agent 实测 web_fetch。发现两处问题并修复：其一，局域网明文 http 加入白名单后仍被 Android 网络安全配置拒绝（发行配置只允许 127.0.0.1 明文），而判定阶段没有提示；其二，tailnet 上 fnOS 自签名证书的 https 失败被报成“内置 Tailscale 未运行”。另核实了新会话面板显示“半自动”属正确：运行时审批与面板读取同一个 session.executionMode，新会话默认为 semi。
+
+### Changed
+AgentNetworkPolicy 新增末位参数 cleartextPermitted，NexaraApplication 接入 NetworkSecurityPolicy。系统不允许的明文 http（tailnet 之外）在白名单判定之前以 CLEARTEXT_BLOCKED 拒绝。AgentTailnetProxy.failure 区分 SSLException（报 TAILNET_TLS_ERROR）与其它 IO 错误（报 TAILNET_PROXY_ERROR，附原因），已接入 WebFetchSkill、WorkspaceMediaDownloader 与 ScriptHttpClient。network_section_controls_footer 与 network_lan_hosts_desc 的中英文均补充“局域网服务需使用 https”；更新网络访问页 4 张截图基线。新增测试：AgentNetworkPolicyTest 明文预检；AgentHttpRoutingTest 自签名证书归类、连接失败保留原因。同步 CHANGELOG、README、docs/ARCHITECTURE.md。
+
+### Validation
+真机（修复后的 release，DeepSeek 之外的 Qwen3.8 Flash Next 会话）：http://192.168.2.71:8765 报 CLEARTEXT_BLOCKED；http://127.0.0.1:8766（加入白名单，adb reverse 转发到 Mac 测试页）读到校验码 LAN-7342；http://100.72.176.103 报 TAILNET_CLEARTEXT；https://promenar-fnos.tail6046d5.ts.net/（自签名）报 TAILNET_TLS_ERROR。修复前：局域网未加白名单报 LAN_HOST_NOT_ALLOWED，加入白名单后系统报 CLEARTEXT 错误，fnOS 报 TAILNET_PROXY_ERROR。白名单编辑：非法输入显示行内错误，保存后面板与设置页实时显示 1→2 个主机。JVM：testPlayDebugUnitTest 共 5450 项 0 失败；testSideloadDebugUnitTest 共 5460 项，1 项失败，为 GitPanelViewModelTest 在全量负载下等待 10s 超时，单独重跑 3 次均 5/5 通过，判定为偶发。lintSideloadDebug、两个渠道的 assembleDebug、validateSideloadDebugScreenshotTest、check-distribution-manifests 均通过。
+
+### Next
+无必需后续。tailnet https 访问成功的路径需要一个持有受信任证书的 tailnet 服务（例如在某设备上运行 tailscale serve），本次未创建，因为会签发公开证书。
+
+### Risks
+tailnet 上受信任 https 的端到端成功路径未在真机验证，目前只有 JVM 的真实 CONNECT 加 TLS 测试。测试会话“Web Fetch Tool Test”保留在真机的“破限助手”下，可自行删除。真机现场已还原：白名单清空，输入法切回微信，adb reverse 已移除，Mac 上两个临时 http.server 已停止（同端口的 FrameWeave 未受影响）。
+
+### DIA
+已同步 CHANGELOG.md（明文预检与 tailnet 错误归类两条）、README.md（脚本联网段补充明文范围）、docs/ARCHITECTURE.md（Agent 网络访问条目）。
+
+### HLG
+本记录经 hlg-handover.py append 追加。
