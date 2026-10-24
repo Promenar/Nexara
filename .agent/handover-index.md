@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-10-24T14:15:02+08:00
+> generated_at: 2026-10-24T14:59:38+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -29,6 +29,7 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-10-24T14:59:38+08:00 | iso | completed | none | ["native-ui testPlay：RealPathMountSupportTest"] | ["test", "distribution", "play", "storage", "workspace"] | Play 渠道 RealPathMountSupportTest 基线失败修复 | `.agent/handover.md` · `2026-10-24T14:59:38+08:00` · `fp:711a9b8d89` |
 | 2026-10-24T14:15:02+08:00 | iso | completed | waiting | ["native-ui 网络策略（web_fetch / media_fetch / 脚本联网）、会话资源面板、设置 → 工具 → 网络访问"] | ["network", "tailnet", "allowlist", "workspace", "agent-reach", "settings", "codex"] | Agent 可达范围面板与统一 Agent 网络策略 | `.agent/handover.md` · `2026-10-24T14:15:02+08:00` · `fp:013623913a` |
 | 2026-10-23T22:03:35+08:00 | iso | completed | resume | ["native-ui 定时任务调度、schedule_create 工具、审批卡与画布卡片间距"] | ["schedule", "foreground", "polling", "countdown", "approval", "canvas", "real-device"] | 定时任务前台 1 分钟轮询、后台降频、单次倒计时与审批卡收起 | `.agent/handover.md` · `2026-10-23T22:03:35+08:00` · `fp:d0f445801c` |
 | 2026-10-23T20:58:33+08:00 | iso | completed | resume | ["native-ui 定时任务调度：前台计时器、活动标签等待执行状态"] | ["schedule", "foreground", "polling", "real-device", "coloros"] | 定时任务前台准点触发与 Agent 轮询真机验收 | `.agent/handover.md` · `2026-10-23T20:58:33+08:00` · `fp:3aac7ebaf4` |

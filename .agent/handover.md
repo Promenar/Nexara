@@ -12338,3 +12338,33 @@ native-ui（-Pnexara.tailnet=false）：testSideloadDebugUnitTest 5457 项，0 �
 
 ### HLG
 本记录经 hlg-handover.py append 追加；Codex 报告位于 worktree 的 .agent/tmp-agent-reports/20261024-agent-network-policy.md，被忽略规则保护，不纳入提交。
+
+## 2026-10-24T14:59:38+08:00 · Play 渠道 RealPathMountSupportTest 基线失败修复
+
+type: maintenance
+scope: ["native-ui testPlay：RealPathMountSupportTest"]
+status: completed
+tags: ["test", "distribution", "play", "storage", "workspace"]
+continuity: none
+record-fingerprint: 711a9b8d891574a33585c90da8d56ed5b14aaf987e6f4dbc5ebc95e7269256ac
+
+### Summary
+Play 渠道测试原先断言 RealPathExternalFolderBackend 类不存在。e21abe65 起该类移入 src/main，作为两个渠道共用的目录后端（SessionWorkspaceResolver 的项目文件夹、ExternalFolderManager 的技能目录、WorkspaceCanvasFiles），这条断言随之过时，导致 Play 单测一直失败。现改为断言 Play 版在入口层面的约束：不提供所有文件访问授权、没有共享存储卷、拒绝创建真实路径挂载，并新增用例验证 AndroidSharedStorageVolumes 在 Play 上不支持共享存储工作区。
+
+### Changed
+native-ui/app/src/testPlay/java/com/promenar/nexara/data/storage/RealPathMountSupportTest.kt：删除 ClassNotFoundException 断言，补充 sharedVolumeRoots 为空的断言，新增 playBuildOffersNoSharedStorageWorkspace 用例。生产代码未改动。
+
+### Validation
+修改前该用例在两轮 Play 全量单测中均失败。修改后：-Pnexara.tailnet=false :app:testPlayDebugUnitTest 共 5447 项，0 失败、25 跳过；仓库根 check-distribution-manifests.py 通过。Sideload 测试源码集未改动。
+
+### Next
+无。
+
+### Risks
+测试只校验运行时入口行为。“Play manifest 中没有 MANAGE_EXTERNAL_STORAGE”这一点仍由 check-distribution-manifests.py 负责检查。
+
+### DIA
+无文档影响：只改测试，用户可见行为不变。
+
+### HLG
+本记录经 hlg-handover.py append 追加。
