@@ -1,6 +1,6 @@
 # Handover Index
 
-> generated_at: 2026-10-23T22:03:35+08:00
+> generated_at: 2026-10-24T14:15:02+08:00
 > generated: true; do not edit manually
 > recovery_window_days: 7
 
@@ -8,6 +8,7 @@
 
 | continuity-key | continuity | last update | status | scope | title | source |
 | :--- | :---: | :---: | :---: | :--- | :--- | :--- |
+| agent-reach-network-device-acceptance | waiting | 2026-10-24T14:15:02+08:00 | completed | ["native-ui 网络策略（web_fetch / media_fetch / 脚本联网）、会话资源面板、设置 → 工具 → 网络访问"] | Agent 可达范围面板与统一 Agent 网络策略 | `.agent/handover.md` · `2026-10-24T14:15:02+08:00` · `fp:013623913a` |
 | agent-tooling-repair-20261002 | waiting | 2026-10-02T08:00:46+08:00 | done | ["Nexara", "pdec", "release"] | 授权 gpt-6-luna 并交付真机测试签名 APK | `.agent/handover.md` · `2026-10-02T08:00:46+08:00` · `fp:110c0ef84b` |
 | ci-version-sync-20261001 | resume | 2026-10-01T22:20:08+08:00 | in_progress | ["Nexara", "android-ci", "release"] | API31 Prompt 编辑器布局反馈根因修复候选 | `.agent/handover.md` · `2026-10-01T22:20:08+08:00` · `fp:c9c99a4302` |
 | dropdown-menu-anchor-and-style-unification | waiting | 2026-09-27T21:43:18+08:00 | completed | ["ui, dropdown-menu, files-panel, m3-design, release"] | 悬浮菜单位置精准锚定与全站新版视觉样式统一规范收敛 | `.agent/handover.md` · `2026-09-27T21:43:18+08:00` · `fp:31537a3d52` |
@@ -28,6 +29,7 @@
 
 | date | format | status | continuity | scope | tags | title | source |
 | :---: | :---: | :---: | :---: | :--- | :--- | :--- | :--- |
+| 2026-10-24T14:15:02+08:00 | iso | completed | waiting | ["native-ui 网络策略（web_fetch / media_fetch / 脚本联网）、会话资源面板、设置 → 工具 → 网络访问"] | ["network", "tailnet", "allowlist", "workspace", "agent-reach", "settings", "codex"] | Agent 可达范围面板与统一 Agent 网络策略 | `.agent/handover.md` · `2026-10-24T14:15:02+08:00` · `fp:013623913a` |
 | 2026-10-23T22:03:35+08:00 | iso | completed | resume | ["native-ui 定时任务调度、schedule_create 工具、审批卡与画布卡片间距"] | ["schedule", "foreground", "polling", "countdown", "approval", "canvas", "real-device"] | 定时任务前台 1 分钟轮询、后台降频、单次倒计时与审批卡收起 | `.agent/handover.md` · `2026-10-23T22:03:35+08:00` · `fp:d0f445801c` |
 | 2026-10-23T20:58:33+08:00 | iso | completed | resume | ["native-ui 定时任务调度：前台计时器、活动标签等待执行状态"] | ["schedule", "foreground", "polling", "real-device", "coloros"] | 定时任务前台准点触发与 Agent 轮询真机验收 | `.agent/handover.md` · `2026-10-23T20:58:33+08:00` · `fp:3aac7ebaf4` |
 | 2026-10-23T20:07:51+08:00 | iso | completed | resume | ["native-ui 定时任务、后台任务、画布工作区；OPPO Find N5 (ColorOS 16) 真机"] | ["schedule", "background-jobs", "canvas", "real-device", "coloros", "tool-schema"] | 画布工作区、后台任务与定时任务真机验收及缺陷修复 | `.agent/handover.md` · `2026-10-23T20:07:51+08:00` · `fp:5046e9a6e7` |
@@ -128,14 +130,6 @@
 | 2026-10-18T08:47:51+08:00 | iso | in-progress | resume | ["Nexara", "native-ui", "chat-ui"] | ["visual-redesign", "chat", "codex", "streaming"] | 会话界面视觉重设计第二批派发 Codex（worktree Nexara-wt-redesign2，分支 redesign-batch2，基于 0b81703c） | `.agent/handover.md` · `2026-10-18T08:47:51+08:00` · `fp:10b5c88ae5` |
 | 2026-10-18T03:17:28+08:00 | iso | done | resume | ["Nexara", "native-ui", "settings-ui", "release"] | ["visual-redesign", "settings", "codex", "device-tests", "release-candidate"] | 设置页视觉重设计第一批合并（762146c3）：共享设置行、值行与数值选择弹层、行内步进器、全部设置页整理 | `.agent/handover.md` · `2026-10-18T03:17:28+08:00` · `fp:c9471ca065` |
 | 2026-10-18T00:04:18+08:00 | iso | in-progress | resume | ["Nexara", "native-ui", "settings-ui", "chat-ui", "design"] | ["visual-redesign", "settings", "design-spec", "codex"] | 设置页与会话界面重设计规格定稿，第一批（令牌、设置组件与全部设置页）已派发 Codex | `.agent/handover.md` · `2026-10-18T00:04:18+08:00` · `fp:1bfc5b863c` |
-| 2026-10-17T23:44:42+08:00 | iso | done | resume | ["Nexara", "native-ui", "termux", "release"] | ["termux", "coloros", "background-control", "device-debug", "release-candidate"] | Termux 真机根因确认为 ColorOS 后台行为管控；恢复普通启动优先并补引导，f857c5e2 签名候选真机诊断与会话调用通过 | `.agent/handover.md` · `2026-10-17T23:44:42+08:00` · `fp:5603c875ec` |
-| 2026-10-17T23:05:17+08:00 | iso | in-progress | resume | ["Nexara", "native-ui", "termux", "settings-ui", "chat-ui"] | ["termux", "startForegroundService", "visual-redesign", "streaming", "chat-steps"] | Termux 改用前台服务启动并前置错误码；用户否决设置页视觉，确定全站设置与会话界面重设计方向 | `.agent/handover.md` · `2026-10-17T23:05:17+08:00` · `fp:2711e34240` |
-| 2026-10-17T17:52:09+08:00 | iso | completed | resume | ["Nexara", "native-ui", "settings-ui", "context-management", "release"] | ["visual-unify", "context-compaction", "manual-compaction", "quick-model", "release-candidate"] | 设置界面视觉统一与阈值驱动的统一上下文压缩合入，产出 b7d09363 双渠道签名候选 | `.agent/handover.md` · `2026-10-17T17:52:09+08:00` · `fp:2ce5a328cd` |
-| 2026-10-17T15:10:30+08:00 | iso | in-progress | resume | ["Nexara", "native-ui", "termux", "settings-ui", "context-management"] | ["termux", "tool-arguments", "settings-layout", "context-compression"] | 真机反馈：修复 termux_exec 参数误拒，评估工具设置页布局与两级上下文压缩协调 | `.agent/handover.md` · `2026-10-17T15:10:30+08:00` · `fp:c8ea87d05a` |
-| 2026-10-17T07:16:02+08:00 | iso | completed | resume | ["Nexara", "native-ui", "release", "device-e2e", "ssh", "script", "termux"] | ["device-acceptance", "release-candidate", "room-v21", "tool-schema", "upgrade-gate"] | 移动端 Agent 能力全部工作包完成设备验收并产出双渠道签名候选 6690fb1c | `.agent/handover.md` · `2026-10-17T07:16:02+08:00` · `fp:6359e5acb1` |
-| 2026-10-17T04:51:37+08:00 | iso | in-progress | resume | ["Nexara", "native-ui", "knowledge-graph", "storage", "ssh", "database"] | ["kg", "saf", "external-mount", "ssh", "room-migration", "graph-retrieval"] | 集成 KG-B 实体证据模型、P1 外部文件夹挂载、KG-C/D 图检索与 P2 原生 SSH | `.agent/handover.md` · `2026-10-17T04:51:37+08:00` · `fp:e3792034df` |
-| 2026-10-17T02:40:42+08:00 | iso | done | resume | ["Nexara", "native-ui", "agent-runtime", "build", "knowledge-graph"] | ["tool-grants", "unlimited-loop", "context-compression", "product-flavor", "webview", "kg"] | 集成 P0 执行底座、发行风味与 WebView 加固及 KG-A 正确性修复 | `.agent/handover.md` · `2026-10-17T02:40:42+08:00` · `fp:92e4d01f85` |
-| 2026-10-17T01:18:55+08:00 | iso | planned | resume | ["Nexara", "native-ui", "agent-tools", "knowledge-graph"] | ["ssh", "saf", "termux", "script-runtime", "tool-budget", "knowledge-graph", "product-flavor"] | 规划移动端 Agent 能力增强并完成知识图谱只读审计 | `.agent/handover.md` · `2026-10-17T01:18:55+08:00` · `fp:02b4c6fee8` |
 
 ## Undated Records
 

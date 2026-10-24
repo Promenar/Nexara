@@ -12307,3 +12307,34 @@ codex 自测：定向 60 项、完整单测 5427 项 0 失败、lint 0 错误。
 
 ### HLG
 本条记录前台 1 分钟轮询、倒计时、审批卡收起与画布间距的实现与真机验收；工作包报告存于 .agent/tmp-agent-reports/cadence/report.md（不纳入 Git）。
+
+## 2026-10-24T14:15:02+08:00 · Agent 可达范围面板与统一 Agent 网络策略
+
+type: implementation
+scope: ["native-ui 网络策略（web_fetch / media_fetch / 脚本联网）、会话资源面板、设置 → 工具 → 网络访问"]
+status: completed
+tags: ["network", "tailnet", "allowlist", "workspace", "agent-reach", "settings", "codex"]
+continuity: waiting
+continuity-key: agent-reach-network-device-acceptance
+record-fingerprint: 013623913a8b0bc871f935a0bb03f6f923d4519fdb31924a6287308599c8d06b
+
+### Summary
+新增 AgentNetworkPolicy，统一 web_fetch、media_fetch 与脚本联网的目标判定：公网放行；局域网与本机需精确白名单，白名单共享 nexara_settings/script_lan_hosts；tailnet 固定经 TailnetRouting.agentProxy() 的本机 CONNECT 代理，代理不可用即失败。新增“Agent 可达范围”面板（资源管理器工作区栏入口），分工作区、路径、执行后端、审批、网络五节。新增设置 → 工具 → 网络访问页，脚本设置中的白名单入口迁到这里。后端由 Codex CLI（GPT 6.1 sol xhigh）在独立 worktree 的 codex/agent-network-policy 分支实现；Codex 的沙箱写不了 worktree 索引，由主控复核后提交 1dd9d1ce，并快进合并。前端由 Opus 实现。
+
+### Changed
+后端：domain/network/AgentNetworkPolicy，data/network/{AgentNetworkSettings, DefaultAgentNetworkAccess, AgentHttpRouting, AgentTailnetProxy, AgentHttpCall}，以及 WebFetchSkill（改用 OkHttp，逐跳判定）、WorkspaceMediaDownloader、ScriptHttpClient、ScriptSettings（委托共享设置），TailnetRouting 新增 agentProxy()，NexaraApplication 暴露 agentNetworkAccess。主控另把 web_fetch 的非 200 响应改为普通 HTTP 错误，并补了测试。前端：ui/workspace/AgentReach{Models,ViewModel,Sheet}，ui/settings/NetworkAccess{Table,SettingsScreen}；改动 SessionWorkspaceBar、ResourceExplorerSheet、ChatRoute、AgentRuntimeSettingsCard、ScriptRuntimeSettingsCard、SkillsScreen、SettingsViewModel、NavGraph（network_access 路由）。新增 agent_reach / network_access 中英字符串，删除无引用的 settings_hosts_*、script_lan_hosts*、script_save_hosts。新增单测 AgentReachModelsTest、NetworkAccessSettingsTest；新增截图 AgentReachScreenshotTest、NetworkAccessScreenshotTest，并更新工具设置页基线。文档：CHANGELOG、README、docs/ARCHITECTURE.md。
+
+### Validation
+native-ui（-Pnexara.tailnet=false）：testSideloadDebugUnitTest 5457 项，0 失败。testPlayDebugUnitTest 5446 项，1 项失败，为基线遗留的 RealPathMountSupportTest（e21abe65 把 RealPathExternalFolderBackend 移入 src/main 后，Play 断言该类不存在）。lintSideloadDebug 通过；assembleSideloadDebug、assemblePlayDebug 通过；validateSideloadDebugScreenshotTest 通过，新截图已逐张目检（中英、深浅色、1.3 倍字号）。仓库根 check-distribution-manifests.py 通过。第一轮 Play 测试中 TermuxBackgroundJobsTest 失败一次，单独重跑 14 项全过，判定为偶发。
+
+### Next
+真机验收：会话资源面板 → Agent 可达范围（私有工作区与共享工作区各看一次），设置 → 工具 → 网络访问（编辑白名单）；内置 Tailscale 连接后 web_fetch / media_fetch / 脚本访问 tailnet https；局域网未加白名单时拦截并给出指引。另需单独修复基线遗留的 Play RealPathMountSupportTest。
+
+### Risks
+未启动真实 tsnet 节点，也未做真机联网验收；tailnet 代理路径只在 JVM 用本机 CONNECT 加真实 TLS 验证过。media_fetch 对局域网 HTTPS 和本机明文的访问收紧为需白名单，原先依赖这类访问的用法需要先加白名单。截图工具单张高度上限为 3000dp，可达范围面板的大字号截图只覆盖到网络分区上半部分。worktree /Users/promenar/Codex/Nexara-wt-netpolicy 与分支 codex/agent-network-policy 仍保留，删除前需确认。
+
+### DIA
+已同步 CHANGELOG.md（Unreleased / Agent 可达范围与网络访问）、README.md（内置 Tailscale、脚本联网、Agent 可达范围段落）、docs/ARCHITECTURE.md（Agent 网络访问条目与脚本能力代理描述）。
+
+### HLG
+本记录经 hlg-handover.py append 追加；Codex 报告位于 worktree 的 .agent/tmp-agent-reports/20261024-agent-network-policy.md，被忽略规则保护，不纳入提交。
